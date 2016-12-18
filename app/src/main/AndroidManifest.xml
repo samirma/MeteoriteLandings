@@ -26,6 +26,12 @@
             android:parentActivityName=".ui.activity.MeteoriteListMainActivity">
 
         </activity>
+
+        <provider
+            android:name=".service.repository.generated.MeteoriteProvider"
+            android:authorities="com.example.xyzreader"
+            android:exported="false" />
+
     </application>
 
 </manifest>

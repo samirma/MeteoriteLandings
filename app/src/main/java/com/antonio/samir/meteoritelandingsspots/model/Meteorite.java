@@ -12,8 +12,6 @@ public class Meteorite implements Parcelable {
 
     private String recclass;
 
-    private Geolocation geolocation;
-
     private String name;
 
     private String fall;
@@ -62,16 +60,6 @@ public class Meteorite implements Parcelable {
     public void setRecclass (String recclass)
     {
         this.recclass = recclass;
-    }
-
-    public Geolocation getGeolocation ()
-    {
-        return geolocation;
-    }
-
-    public void setGeolocation (Geolocation geolocation)
-    {
-        this.geolocation = geolocation;
     }
 
     public String getName ()
@@ -136,7 +124,6 @@ public class Meteorite implements Parcelable {
         dest.writeString(this.id);
         dest.writeString(this.nametype);
         dest.writeString(this.recclass);
-        dest.writeParcelable(this.geolocation, flags);
         dest.writeString(this.name);
         dest.writeString(this.fall);
         dest.writeString(this.year);
@@ -152,7 +139,6 @@ public class Meteorite implements Parcelable {
         this.id = in.readString();
         this.nametype = in.readString();
         this.recclass = in.readString();
-        this.geolocation = in.readParcelable(Geolocation.class.getClassLoader());
         this.name = in.readString();
         this.fall = in.readString();
         this.year = in.readString();
