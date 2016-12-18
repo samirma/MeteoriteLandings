@@ -10,11 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.antonio.samir.meteoritelandingsspots.R;
-import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListPresenter;
 import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListView;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.MeteoriteAdapter;
@@ -44,7 +42,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     private MeteoriteListPresenter presenter;
     private StaggeredGridLayoutManager sglm;
     private MeteoriteAdapter meteoriteAdapter;
-    private Meteorite selectedMeteorite;
+    private String selectedMeteorite;
 
     private ProgressDialog fetchingDialog;
 
@@ -183,12 +181,12 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     MeteoriteSelectorView
      */
     @Override
-    public void selectLandscape(final Meteorite meteorite) {
+    public void selectLandscape(final String meteorite) {
 
     }
 
     @Override
-    public void selectPortrait(final Meteorite meteorite) {
+    public void selectPortrait(final String meteorite) {
         selectedMeteorite = meteorite;
         final Intent intent = new Intent(this, MeteoriteDetailActivity.class);
         intent.putExtra(ITEM_SELECTED, meteorite);
@@ -200,7 +198,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
-        savedInstanceState.putParcelable(ITEM_SELECTED, selectedMeteorite);
+        savedInstanceState.putString(ITEM_SELECTED, selectedMeteorite);
 
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
