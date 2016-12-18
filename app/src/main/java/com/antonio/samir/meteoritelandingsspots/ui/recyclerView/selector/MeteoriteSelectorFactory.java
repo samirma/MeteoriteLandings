@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.ui.meteoriteRecyclerView.selector;
+package com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector;
 
 /**
  * MeteoriteSelector factory used by MeteoriteAdapter to prevent it figure out

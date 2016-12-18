@@ -14,9 +14,20 @@ public class ViewHolderMeteorite extends RecyclerView.ViewHolder {
 
     @BindView(R.id.title)
     public TextView titleView;
+    private String id;
 
     public ViewHolderMeteorite(View view) {
         super(view);
         ButterKnife.bind(this, view);
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+
 }
