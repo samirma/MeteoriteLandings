@@ -1,7 +1,5 @@
-package com.antonio.samir.meteoritelandingsspots.ui.meteoriteRecyclerView.selector;
+package com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector;
 
-
-import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 
 public class MeteoriteSelectorLandscape implements MeteoriteSelector {
 
@@ -12,7 +10,7 @@ public class MeteoriteSelectorLandscape implements MeteoriteSelector {
     }
 
     @Override
-    public void selectItemId(final Meteorite meteorite) {
+    public void selectItemId(final String meteorite) {
         view.selectLandscape(meteorite);
     }
 

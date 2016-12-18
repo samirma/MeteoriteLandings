@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.ui.meteoriteRecyclerView.selector;
+package com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector;
 
 
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
@@ -8,6 +8,6 @@ import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
  */
 public interface MeteoriteSelector {
 
-    void selectItemId(final Meteorite meteorite);
+    void selectItemId(final String meteorite);
 
 }

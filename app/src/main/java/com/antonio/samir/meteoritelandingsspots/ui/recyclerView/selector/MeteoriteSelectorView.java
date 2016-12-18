@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.ui.meteoriteRecyclerView.selector;
+package com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector;
 
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 
