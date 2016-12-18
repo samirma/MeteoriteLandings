@@ -1,7 +1,9 @@
 package com.antonio.samir.meteoritelandingsspots.model;
 
-public class Meteorite
-{
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Meteorite implements Parcelable {
     private String mass;
 
     private String id;
@@ -123,4 +125,50 @@ public class Meteorite
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.mass);
+        dest.writeString(this.id);
+        dest.writeString(this.nametype);
+        dest.writeString(this.recclass);
+        dest.writeParcelable(this.geolocation, flags);
+        dest.writeString(this.name);
+        dest.writeString(this.fall);
+        dest.writeString(this.year);
+        dest.writeString(this.reclong);
+        dest.writeString(this.reclat);
+    }
+
+    public Meteorite() {
+    }
+
+    protected Meteorite(Parcel in) {
+        this.mass = in.readString();
+        this.id = in.readString();
+        this.nametype = in.readString();
+        this.recclass = in.readString();
+        this.geolocation = in.readParcelable(Geolocation.class.getClassLoader());
+        this.name = in.readString();
+        this.fall = in.readString();
+        this.year = in.readString();
+        this.reclong = in.readString();
+        this.reclat = in.readString();
+    }
+
+    public static final Parcelable.Creator<Meteorite> CREATOR = new Parcelable.Creator<Meteorite>() {
+        @Override
+        public Meteorite createFromParcel(Parcel source) {
+            return new Meteorite(source);
+        }
+
+        @Override
+        public Meteorite[] newArray(int size) {
+            return new Meteorite[size];
+        }
+    };
 }
