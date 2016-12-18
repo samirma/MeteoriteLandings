@@ -2,4 +2,26 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="cardMargin">4dp</dimen>
+
+    <dimen name="detail_title_text_size">32sp</dimen>
+
+    <!-- list -->
+    <dimen name="list_side_margin">4dp</dimen>
+    <dimen name="list_toolbar_side_margin">0dp</dimen>
+
+    <!-- detail -->
+    <bool name="detail_is_card">false</bool>
+    <dimen name="detail_meteorite_height">304dp</dimen>
+    <dimen name="detail_card_top_margin">@dimen/detail_meteorite_height</dimen>
+    <dimen name="detail_inner_horiz_margin">16dp</dimen>
+    <dimen name="detail_card_max_width">10000dp</dimen> <!-- force match_parent -->
+    <dimen name="detail_metabar_vert_padding">16dp</dimen>
+    <dimen name="detail_metabar_title_bottom_padding">4dp</dimen>
+    <dimen name="detail_body_top_margin">16dp</dimen>
+    <dimen name="detail_body_bottom_margin">88dp</dimen>
+    <dimen name="frame_image_padding">4dp</dimen>
 </resources>
+
+
