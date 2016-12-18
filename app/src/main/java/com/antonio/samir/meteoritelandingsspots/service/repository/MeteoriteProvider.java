@@ -4,7 +4,6 @@ import android.net.Uri;
 
 import net.simonvt.schematic.annotation.ContentProvider;
 import net.simonvt.schematic.annotation.ContentUri;
-import net.simonvt.schematic.annotation.InexactContentUri;
 import net.simonvt.schematic.annotation.TableEndpoint;
 
 
@@ -29,20 +28,10 @@ public class MeteoriteProvider {
     @TableEndpoint(table = MeteoriteDatabase.Meteorites)
     public static class Meteorites {
         @ContentUri(
-                path = Path.METEORITES,
-                type = "vnd.android.cursor.dir/meteorite"
-        )
-        public static final Uri CONTENT_URI = buildUri(Path.METEORITES);
+                path = "lists",
+                type = "vnd.android.cursor.dir/list",
+                defaultSort = MeteoriteColumns.ID + " ASC")
+        public static final Uri LISTS = Uri.parse("content://" + AUTHORITY + "/lists");
 
-        @InexactContentUri(
-                name = "QUOTE_ID",
-                path = Path.METEORITES + "/*",
-                type = "vnd.android.cursor.item/meteorites",
-                whereColumn = MeteoriteColumns.ID,
-                pathSegment = 1
-        )
-        public static Uri meteorites() {
-            return buildUri(Path.METEORITES);
-        }
     }
 }
