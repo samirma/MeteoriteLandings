@@ -11,7 +11,6 @@ import android.os.Bundle;
 
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns;
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteProvider;
-import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServerException;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceFactory;
 import com.antonio.samir.meteoritelandingsspots.util.NetworkUtil;
@@ -79,7 +78,7 @@ public class MeteoriteListPresenter implements LoaderManager.LoaderCallbacks<Cur
 
     @Override
     public void onLoadFinished(final Loader<Cursor> loader, final Cursor data) {
-        final boolean isNotEmpty = data.getCount() > 0;
+        final boolean isNotEmpty = (data != null && (data.getCount() > 0));
         if (isNotEmpty) {
             mView.setMeteorites(data);
             mView.showList();
@@ -113,7 +112,7 @@ public class MeteoriteListPresenter implements LoaderManager.LoaderCallbacks<Cur
                         , MeteoriteColumns.RECLONG
                         , MeteoriteColumns.RECLAT},
                 null,
-                new String[]{"1"},
+                null,
                 null);
     }
 
