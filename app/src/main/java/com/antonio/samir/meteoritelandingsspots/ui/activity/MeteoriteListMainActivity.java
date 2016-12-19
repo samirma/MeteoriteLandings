@@ -114,7 +114,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
      */
     @Override
     public Context getContext() {
-        return getBaseContext();
+        return this;
     }
 
     @Override
