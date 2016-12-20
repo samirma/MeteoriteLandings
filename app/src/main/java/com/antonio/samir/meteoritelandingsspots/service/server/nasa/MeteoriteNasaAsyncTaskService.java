@@ -1,19 +1,28 @@
 package com.antonio.samir.meteoritelandingsspots.service.server.nasa;
 
+import android.content.Context;
+import android.content.OperationApplicationException;
 import android.os.AsyncTask;
+import android.os.RemoteException;
+import android.util.Log;
 
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
+import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteProvider;
+import com.antonio.samir.meteoritelandingsspots.service.repository.ResultUtil;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServerException;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServerResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MeteoriteNasaAsyncTaskService extends AsyncTask<Void, Void, MeteoriteServerResult> {
 
-    private NasaService nasaService;
+    private final Context mContext;
+    private NasaService mNasaService;
 
-    public MeteoriteNasaAsyncTaskService(NasaService nasaService) {
-        this.nasaService = nasaService;
+    public MeteoriteNasaAsyncTaskService(NasaService nasaService, Context context) {
+        mNasaService = nasaService;
+        mContext = context;
     }
 
     @Override
@@ -23,7 +32,7 @@ public class MeteoriteNasaAsyncTaskService extends AsyncTask<Void, Void, Meteori
 
         final List<Meteorite> meteorites;
         try {
-            meteorites = nasaService.getMeteorites();
+            meteorites = mNasaService.getMeteorites();
             meteoriteServerResult.setMeteorites(meteorites);
         } catch (MeteoriteServerException e) {
             meteoriteServerResult.setException(e);
@@ -40,6 +49,13 @@ public class MeteoriteNasaAsyncTaskService extends AsyncTask<Void, Void, Meteori
     @Override
     protected void onPostExecute(final MeteoriteServerResult result) {
 
+        try {
+            final List<Meteorite> meteorites = result.getMeteorites();
+            final ArrayList operations = ResultUtil.quoteJsonToContentVals(meteorites);
+            mContext.getContentResolver().applyBatch(MeteoriteProvider.AUTHORITY, operations);
+        } catch (MeteoriteServerException | RemoteException | OperationApplicationException e) {
+            Log.e(MeteoriteNasaAsyncTaskService.class.getSimpleName(), e.getMessage(), e);
+        }
 
     }
 

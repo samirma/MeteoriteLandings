@@ -1,30 +1,24 @@
 package com.antonio.samir.meteoritelandingsspots.presenter;
 
 
-import android.app.Activity;
-import android.app.LoaderManager;
 import android.content.Context;
-import android.content.CursorLoader;
-import android.content.Loader;
 import android.database.Cursor;
-import android.os.Bundle;
+import android.util.Log;
 
-import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns;
-import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteProvider;
+import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServerException;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteService;
+import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceDelegate;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceFactory;
 import com.antonio.samir.meteoritelandingsspots.util.NetworkUtil;
 
 /**
  * Presenter layer responsible for manage the interactions between the activity and the services
  */
-public class MeteoriteListPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MeteoriteListPresenter implements MeteoriteServiceDelegate {
 
     public static final String TAG = MeteoriteListPresenter.class.getSimpleName();
-    private static final int CURSOR_LOADER_ID = 1;
     private final Context mContext;
     private final MeteoriteService meteoriteFetchService;
-    private final LoaderManager loaderManager;
     private MeteoriteListView mView;
 
     public MeteoriteListPresenter(MeteoriteListView view) {
@@ -33,10 +27,6 @@ public class MeteoriteListPresenter implements LoaderManager.LoaderCallbacks<Cur
         mContext = view.getContext();
 
         meteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(mContext);
-
-        loaderManager = ((Activity) mContext).getLoaderManager();
-
-        loaderManager.initLoader(CURSOR_LOADER_ID, null, this);
 
     }
 
@@ -70,14 +60,17 @@ public class MeteoriteListPresenter implements LoaderManager.LoaderCallbacks<Cur
     }
 
     private void recoverMeteorites() {
-        meteoriteFetchService.getMeteorites();
+        meteoriteFetchService.getMeteorites(this);
     }
 
+    //MeteoriteServiceDelegate Implemendation
+    @Override
+    public void onPreExecute() {
 
-    // LoaderManager.LoaderCallbacks<Cursor> implemendation
+    }
 
     @Override
-    public void onLoadFinished(final Loader<Cursor> loader, final Cursor data) {
+    public void setPhotos(Cursor data) {
         final boolean isNotEmpty = (data != null && (data.getCount() > 0));
         if (isNotEmpty) {
             mView.setMeteorites(data);
@@ -96,24 +89,21 @@ public class MeteoriteListPresenter implements LoaderManager.LoaderCallbacks<Cur
         if (!NetworkUtil.hasConnectivity(mContext)) {
             mView.unableToFetch();
         }
-
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void fail(MeteoriteServerException e) {
+        Log.e(TAG, e.getMessage(), e);
+        mView.error(e.getMessage());
+    }
+
+    @Override
+    public void reReseted() {
         mView.clearList();
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        // This narrows the return to only the stocks that are most current.
-        return new CursorLoader(mContext, MeteoriteProvider.Meteorites.LISTS,
-                new String[]{MeteoriteColumns.ID, MeteoriteColumns.NAME, MeteoriteColumns.YEAR
-                        , MeteoriteColumns.RECLONG
-                        , MeteoriteColumns.RECLAT},
-                null,
-                null,
-                null);
+    public void unableToFetch() {
+        mView.unableToFetch();
     }
-
 }
