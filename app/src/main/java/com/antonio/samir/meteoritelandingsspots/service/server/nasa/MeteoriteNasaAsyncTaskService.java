@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.service.server.nasa;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.OperationApplicationException;
 import android.os.AsyncTask;
@@ -52,7 +53,9 @@ public class MeteoriteNasaAsyncTaskService extends AsyncTask<Void, Void, Meteori
         try {
             final List<Meteorite> meteorites = result.getMeteorites();
             final ArrayList operations = ResultUtil.quoteJsonToContentVals(meteorites);
-            mContext.getContentResolver().applyBatch(MeteoriteProvider.AUTHORITY, operations);
+            final ContentResolver contentResolver = mContext.getContentResolver();
+            contentResolver.delete(MeteoriteProvider.Meteorites.LISTS, null, null);
+            contentResolver.applyBatch(MeteoriteProvider.AUTHORITY, operations);
         } catch (MeteoriteServerException | RemoteException | OperationApplicationException e) {
             Log.e(MeteoriteNasaAsyncTaskService.class.getSimpleName(), e.getMessage(), e);
         }

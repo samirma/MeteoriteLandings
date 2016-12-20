@@ -31,7 +31,7 @@ public class MeteoriteTestDelegate implements MeteoriteServiceDelegate {
     }
 
     @Override
-    public void setPhotos(Cursor result) {
+    public void setCursor(Cursor result) {
         onPostExecute.set(true);
         signal.countDown();
     }
