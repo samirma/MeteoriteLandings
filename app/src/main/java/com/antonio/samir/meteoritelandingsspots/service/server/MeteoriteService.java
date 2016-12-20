@@ -2,7 +2,7 @@ package com.antonio.samir.meteoritelandingsspots.service.server;
 
 public interface MeteoriteService {
 
-    void getMeteorites();
+    void getMeteorites(MeteoriteServiceDelegate delegate);
 
     boolean isDated();
 }

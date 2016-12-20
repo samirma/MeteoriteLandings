@@ -4,23 +4,41 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Meteorite implements Parcelable {
-    private String mass;
+    public static final Parcelable.Creator<Meteorite> CREATOR = new Parcelable.Creator<Meteorite>() {
+        @Override
+        public Meteorite createFromParcel(Parcel source) {
+            return new Meteorite(source);
+        }
 
+        @Override
+        public Meteorite[] newArray(int size) {
+            return new Meteorite[size];
+        }
+    };
     private String id;
-
+    private String mass;
     private String nametype;
-
     private String recclass;
-
     private String name;
-
     private String fall;
-
     private String year;
-
     private String reclong;
-
     private String reclat;
+
+    public Meteorite() {
+    }
+
+    protected Meteorite(Parcel in) {
+        this.mass = in.readString();
+        this.id = in.readString();
+        this.nametype = in.readString();
+        this.recclass = in.readString();
+        this.name = in.readString();
+        this.fall = in.readString();
+        this.year = in.readString();
+        this.reclong = in.readString();
+        this.reclat = in.readString();
+    }
 
     public String getMass ()
     {
@@ -112,7 +130,6 @@ public class Meteorite implements Parcelable {
         this.reclat = reclat;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -130,31 +147,4 @@ public class Meteorite implements Parcelable {
         dest.writeString(this.reclong);
         dest.writeString(this.reclat);
     }
-
-    public Meteorite() {
-    }
-
-    protected Meteorite(Parcel in) {
-        this.mass = in.readString();
-        this.id = in.readString();
-        this.nametype = in.readString();
-        this.recclass = in.readString();
-        this.name = in.readString();
-        this.fall = in.readString();
-        this.year = in.readString();
-        this.reclong = in.readString();
-        this.reclat = in.readString();
-    }
-
-    public static final Parcelable.Creator<Meteorite> CREATOR = new Parcelable.Creator<Meteorite>() {
-        @Override
-        public Meteorite createFromParcel(Parcel source) {
-            return new Meteorite(source);
-        }
-
-        @Override
-        public Meteorite[] newArray(int size) {
-            return new Meteorite[size];
-        }
-    };
 }
