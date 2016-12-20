@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.support.v7.widget.RecyclerView;
 
+import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns;
+
 /**
  * Created by sam_chordas on 10/6/15.
  * Credit to skyfishjy gist:
@@ -80,7 +82,7 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
             if (mDataSetObserver != null) {
                 mCursor.registerDataSetObserver(mDataSetObserver);
             }
-            rowIdColumn = newCursor.getColumnIndexOrThrow("_id");
+            rowIdColumn = newCursor.getColumnIndexOrThrow(MeteoriteColumns.ID);
             dataIsValid = true;
             notifyDataSetChanged();
         } else {

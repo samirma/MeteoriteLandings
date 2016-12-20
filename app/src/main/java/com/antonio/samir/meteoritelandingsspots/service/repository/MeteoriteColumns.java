@@ -8,7 +8,7 @@ import net.simonvt.schematic.annotation.PrimaryKey;
 public class MeteoriteColumns {
     @DataType(DataType.Type.INTEGER)
     @PrimaryKey
-    public static final String ID = "id";
+    public static final String ID = "_id";
 
     @DataType(DataType.Type.TEXT)
     @NotNull

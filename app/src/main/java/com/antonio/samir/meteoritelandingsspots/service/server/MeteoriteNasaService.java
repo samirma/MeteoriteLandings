@@ -7,6 +7,7 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns;
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteProvider;
@@ -29,7 +30,6 @@ public class MeteoriteNasaService implements MeteoriteService, LoaderManager.Loa
         nasaService = NasaServiceFactory.getNasaService(context);
 
         mLoaderManager = ((Activity) mContext).getLoaderManager();
-        mLoaderManager.initLoader(CURSOR_LOADER_ID, null, this);
 
     }
 
@@ -40,9 +40,12 @@ public class MeteoriteNasaService implements MeteoriteService, LoaderManager.Loa
             @Override
             protected void onPostExecute(MeteoriteServerResult result) {
                 super.onPostExecute(result);
+                mContext.getContentResolver().notifyChange(MeteoriteProvider.Meteorites.LISTS, null);
+                mLoaderManager.restartLoader(CURSOR_LOADER_ID, null, MeteoriteNasaService.this);
             }
         };
-        taskService.execute();
+        //taskService.execute();
+        mLoaderManager.initLoader(CURSOR_LOADER_ID, null, this);
     }
 
     @Override
@@ -53,7 +56,8 @@ public class MeteoriteNasaService implements MeteoriteService, LoaderManager.Loa
     // LoaderManager.LoaderCallbacks<Cursor> implemendation
     @Override
     public void onLoadFinished(final Loader<Cursor> loader, final Cursor data) {
-        mDelegate.setPhotos(data);
+        Log.i(TAG, String.format("Data count %s", data.getCount()));
+        mDelegate.setCursor(data);
     }
 
     @Override

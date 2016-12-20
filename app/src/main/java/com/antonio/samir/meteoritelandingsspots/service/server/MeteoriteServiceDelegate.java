@@ -9,7 +9,7 @@ import android.database.Cursor;
 public interface MeteoriteServiceDelegate {
     void onPreExecute();
 
-    void setPhotos(Cursor result);
+    void setCursor(Cursor result);
 
     void fail(MeteoriteServerException e);
 

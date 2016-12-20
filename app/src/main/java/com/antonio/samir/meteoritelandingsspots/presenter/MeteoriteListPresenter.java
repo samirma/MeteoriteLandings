@@ -70,7 +70,7 @@ public class MeteoriteListPresenter implements MeteoriteServiceDelegate {
     }
 
     @Override
-    public void setPhotos(Cursor data) {
+    public void setCursor(Cursor data) {
         final boolean isNotEmpty = (data != null && (data.getCount() > 0));
         if (isNotEmpty) {
             mView.setMeteorites(data);
