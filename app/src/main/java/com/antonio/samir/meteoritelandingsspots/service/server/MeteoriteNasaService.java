@@ -15,7 +15,7 @@ import com.antonio.samir.meteoritelandingsspots.service.server.nasa.MeteoriteNas
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaService;
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaServiceFactory;
 
-public class MeteoriteNasaService implements MeteoriteService, LoaderManager.LoaderCallbacks<Cursor> {
+class MeteoriteNasaService implements MeteoriteService, LoaderManager.LoaderCallbacks<Cursor> {
     private static final int CURSOR_LOADER_ID = 1;
 
     private static final String TAG = MeteoriteNasaService.class.getSimpleName();
@@ -51,18 +51,21 @@ public class MeteoriteNasaService implements MeteoriteService, LoaderManager.Loa
     @Override
     public void onLoadFinished(final Loader<Cursor> loader, final Cursor data) {
         if (data == null || data.getCount() < 1) {
+            Log.i(TAG, "No data found starting to recovery service");
             if (firstAttempt) {
                 final MeteoriteNasaAsyncTaskService taskService = new MeteoriteNasaAsyncTaskService(nasaService, mContext) {
                     @Override
                     protected void onPostExecute(MeteoriteServerResult result) {
                         super.onPostExecute(result);
+                        Log.i(TAG, "Recovery service done");
+                        //Reloading LoaderManager in order to get the data from data base
                         mLoaderManager.restartLoader(CURSOR_LOADER_ID, null, MeteoriteNasaService.this);
                     }
                 };
                 firstAttempt = false;
                 taskService.execute();
             } else {
-                //???
+                mDelegate.unableToFetch();
             }
         } else {
             Log.i(TAG, String.format("Data count %s", data.getCount()));

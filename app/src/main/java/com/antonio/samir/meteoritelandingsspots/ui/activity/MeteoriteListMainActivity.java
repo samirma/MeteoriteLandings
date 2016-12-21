@@ -203,4 +203,11 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        final MeteoriteListView view = this;
+        presenter.removeView(view);
+    }
 }
