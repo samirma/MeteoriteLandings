@@ -23,6 +23,7 @@ public class MeteoriteNasaService implements MeteoriteService, LoaderManager.Loa
     private final LoaderManager mLoaderManager;
     private Context mContext;
     private MeteoriteServiceDelegate mDelegate;
+    private boolean firstAttempt;
 
 
     public MeteoriteNasaService(final Context context) {
@@ -31,20 +32,13 @@ public class MeteoriteNasaService implements MeteoriteService, LoaderManager.Loa
 
         mLoaderManager = ((Activity) mContext).getLoaderManager();
 
+        firstAttempt = true;
+
     }
 
     @Override
     public void getMeteorites(MeteoriteServiceDelegate delegate) {
         mDelegate = delegate;
-        final MeteoriteNasaAsyncTaskService taskService = new MeteoriteNasaAsyncTaskService(nasaService, mContext) {
-            @Override
-            protected void onPostExecute(MeteoriteServerResult result) {
-                super.onPostExecute(result);
-                mContext.getContentResolver().notifyChange(MeteoriteProvider.Meteorites.LISTS, null);
-                mLoaderManager.restartLoader(CURSOR_LOADER_ID, null, MeteoriteNasaService.this);
-            }
-        };
-        //taskService.execute();
         mLoaderManager.initLoader(CURSOR_LOADER_ID, null, this);
     }
 
@@ -56,8 +50,24 @@ public class MeteoriteNasaService implements MeteoriteService, LoaderManager.Loa
     // LoaderManager.LoaderCallbacks<Cursor> implemendation
     @Override
     public void onLoadFinished(final Loader<Cursor> loader, final Cursor data) {
-        Log.i(TAG, String.format("Data count %s", data.getCount()));
-        mDelegate.setCursor(data);
+        if (data == null || data.getCount() < 1) {
+            if (firstAttempt) {
+                final MeteoriteNasaAsyncTaskService taskService = new MeteoriteNasaAsyncTaskService(nasaService, mContext) {
+                    @Override
+                    protected void onPostExecute(MeteoriteServerResult result) {
+                        super.onPostExecute(result);
+                        mLoaderManager.restartLoader(CURSOR_LOADER_ID, null, MeteoriteNasaService.this);
+                    }
+                };
+                firstAttempt = false;
+                taskService.execute();
+            } else {
+                //???
+            }
+        } else {
+            Log.i(TAG, String.format("Data count %s", data.getCount()));
+            mDelegate.setCursor(data);
+        }
     }
 
     @Override
