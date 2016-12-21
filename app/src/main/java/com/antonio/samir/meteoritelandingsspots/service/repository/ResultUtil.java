@@ -1,6 +1,7 @@
 package com.antonio.samir.meteoritelandingsspots.service.repository;
 
 import android.content.ContentProviderOperation;
+import android.support.annotation.NonNull;
 
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 
@@ -32,16 +33,25 @@ public class ResultUtil {
                 MeteoriteProvider.Meteorites.LISTS);
 
         builder.withValue(MeteoriteColumns.ID, meteorite.getId());
-        builder.withValue(MeteoriteColumns.MESS, meteorite.getId());
-        builder.withValue(MeteoriteColumns.NAMETYPE, meteorite.getId());
-        builder.withValue(MeteoriteColumns.RECCLASS, meteorite.getId());
-        builder.withValue(MeteoriteColumns.NAME, meteorite.getId());
-        builder.withValue(MeteoriteColumns.FALL, meteorite.getId());
-        builder.withValue(MeteoriteColumns.YEAR, meteorite.getId());
-        builder.withValue(MeteoriteColumns.RECLONG, meteorite.getId());
-        builder.withValue(MeteoriteColumns.RECLAT, meteorite.getId());
+
+        builder.withValue(MeteoriteColumns.MASS, getValue(meteorite.getMass()));
+
+        builder.withValue(MeteoriteColumns.NAMETYPE, meteorite.getNametype());
+        builder.withValue(MeteoriteColumns.RECCLASS, meteorite.getRecclass());
+        builder.withValue(MeteoriteColumns.NAME, meteorite.getName());
+        builder.withValue(MeteoriteColumns.FALL, meteorite.getFall());
+
+        builder.withValue(MeteoriteColumns.YEAR, getValue(meteorite.getYear()));
+
+        builder.withValue(MeteoriteColumns.RECLONG, getValue(meteorite.getReclong()));
+        builder.withValue(MeteoriteColumns.RECLAT, getValue(meteorite.getReclat()));
 
         return builder.build();
+    }
+
+    @NonNull
+    private static String getValue(String value) {
+        return (value == null) ? "" : value;
     }
 }
 
