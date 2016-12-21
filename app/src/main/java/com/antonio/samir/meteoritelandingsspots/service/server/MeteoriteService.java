@@ -5,4 +5,6 @@ public interface MeteoriteService {
     void getMeteorites(MeteoriteServiceDelegate delegate);
 
     boolean isDated();
+
+    void remove();
 }

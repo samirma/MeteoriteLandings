@@ -75,13 +75,11 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
         final boolean noMeteoriteSelected = selectedMeteorite == null;
 
-        if (savedInstanceState == null) {
-            presenter.startToRecoverMeteorites();
-        }
-
         if (!noMeteoriteSelected) {
             meteoriteSelector.selectItemId(selectedMeteorite);
         }
+
+        presenter.startToRecoverMeteorites();
 
     }
 
@@ -198,7 +196,9 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
-        savedInstanceState.putString(ITEM_SELECTED, selectedMeteorite);
+        if (selectedMeteorite != null) {
+            savedInstanceState.putString(ITEM_SELECTED, selectedMeteorite);
+        }
 
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
