@@ -7,25 +7,22 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.antonio.samir.meteoritelandingsspots.R;
-import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelector;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.ID;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.NAME;
+import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.YEAR;
 
 /**
  * Custom RecyclerView.Adapter to deal with meteorites cursor
  */
 public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteorite> {
     private final MeteoriteSelector meteoriteSelector;
-    private Context context;
+    private Context mContext;
 
     public MeteoriteAdapter(Context context, Cursor cursor, final MeteoriteSelector meteoriteSelector) {
         super(context, cursor);
-        this.context = context;
+        this.mContext = context;
         this.meteoriteSelector = meteoriteSelector;
     }
 
@@ -65,8 +62,17 @@ public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteor
 
     @Override
     public void onBindViewHolder(final ViewHolderMeteorite viewHolder, final Cursor cursor) {
-        final String stockName = cursor.getString(cursor.getColumnIndex(NAME));
-        viewHolder.titleView.setText(stockName);
+        final String meteoriteName = cursor.getString(cursor.getColumnIndex(NAME));
+        final String location = cursor.getString(cursor.getColumnIndex(NAME));
+        final String year = cursor.getString(cursor.getColumnIndex(YEAR));
+
+
+        viewHolder.name.setText(meteoriteName);
+        viewHolder.location.setText("Some City");
+
+        viewHolder.year.setText(year);
+
+
         final int id = cursor.getColumnIndex(ID);
         viewHolder.setId(cursor.getString(id));
     }

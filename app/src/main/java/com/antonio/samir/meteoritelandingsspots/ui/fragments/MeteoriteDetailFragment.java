@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -19,17 +18,15 @@ public class MeteoriteDetailFragment extends Fragment {
 
     public static final String METEORITE = "METEORITE";
     public static final String TAG = MeteoriteDetailFragment.class.getSimpleName();
-
-    private Meteorite meteorite;
-
-    @BindView(R.id.image)
-    ImageView imageView;
-
     @BindView(R.id.title)
     TextView title;
-
+    @BindView(R.id.location)
+    TextView location;
+    @BindView(R.id.year)
+    TextView year;
     @BindView(R.id.content_detail)
     LinearLayout contentDetail;
+    private Meteorite meteorite;
 
     /**
      * Create a MeteoriteDetailFragment to show the meteorite param
@@ -61,6 +58,9 @@ public class MeteoriteDetailFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         title.setText(meteorite.getName());
+        title.setText(meteorite.getName());
+        title.setText(meteorite.getName());
+
 
         return view;
     }
