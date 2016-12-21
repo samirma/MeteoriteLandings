@@ -12,7 +12,7 @@ public class MeteoriteColumns {
 
     @DataType(DataType.Type.TEXT)
     @NotNull
-    public static final String MESS = "mass";
+    public static final String MASS = "mass";
 
     @DataType(DataType.Type.TEXT)
     @NotNull
