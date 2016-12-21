@@ -79,8 +79,12 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
             meteoriteSelector.selectItemId(selectedMeteorite);
         }
 
-        presenter.startToRecoverMeteorites();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.startToRecoverMeteorites();
     }
 
     private String getPreviousSelectedMeteorite(Bundle savedInstanceState) {
