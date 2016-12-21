@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.antonio.samir.meteoritelandingsspots.R;
-import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -13,7 +12,14 @@ import butterknife.ButterKnife;
 public class ViewHolderMeteorite extends RecyclerView.ViewHolder {
 
     @BindView(R.id.title)
-    public TextView titleView;
+    public TextView name;
+
+    @BindView(R.id.location)
+    public TextView location;
+
+    @BindView(R.id.year)
+    public TextView year;
+
     private String id;
 
     public ViewHolderMeteorite(View view) {
