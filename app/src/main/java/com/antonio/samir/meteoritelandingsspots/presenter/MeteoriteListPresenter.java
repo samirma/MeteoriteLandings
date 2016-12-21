@@ -64,7 +64,7 @@ public class MeteoriteListPresenter implements MeteoriteServiceDelegate {
     }
 
     public void removeView(final MeteoriteListView view) {
-
+        meteoriteFetchService.remove();
     }
 
     //MeteoriteServiceDelegate Implemendation

@@ -47,6 +47,11 @@ class MeteoriteNasaService implements MeteoriteService, LoaderManager.LoaderCall
         return false;
     }
 
+    @Override
+    public void remove() {
+        mLoaderManager.destroyLoader(CURSOR_LOADER_ID);
+    }
+
     // LoaderManager.LoaderCallbacks<Cursor> implemendation
     @Override
     public void onLoadFinished(final Loader<Cursor> loader, final Cursor data) {
