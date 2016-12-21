@@ -16,7 +16,7 @@ import com.antonio.samir.meteoritelandingsspots.util.NetworkUtil;
  */
 public class MeteoriteListPresenter implements MeteoriteServiceDelegate {
 
-    public static final String TAG = MeteoriteListPresenter.class.getSimpleName();
+    private static final String TAG = MeteoriteListPresenter.class.getSimpleName();
     private final Context mContext;
     private final MeteoriteService meteoriteFetchService;
     private MeteoriteListView mView;
@@ -63,10 +63,14 @@ public class MeteoriteListPresenter implements MeteoriteServiceDelegate {
         meteoriteFetchService.getMeteorites(this);
     }
 
+    public void removeView(final MeteoriteListView view) {
+
+    }
+
     //MeteoriteServiceDelegate Implemendation
     @Override
     public void onPreExecute() {
-
+        mView.onPreExecute();
     }
 
     @Override
