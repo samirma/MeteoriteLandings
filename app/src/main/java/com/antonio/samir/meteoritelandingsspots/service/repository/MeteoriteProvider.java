@@ -32,8 +32,8 @@ public class MeteoriteProvider {
                 type = "vnd.android.cursor.item/meteorite",
                 whereColumn = MeteoriteColumns.ID,
                 pathSegment = 1)
-        public static Uri withId(long id) {
-            return Uri.parse("content://" + AUTHORITY + METEORITES + id);
+        public static Uri withId(String id) {
+            return Uri.parse(String.format("content://%s%s/%s", AUTHORITY, METEORITES, id));
         }
 
     }
