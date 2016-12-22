@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Meteorite Landings spots</string>
+    <string name="app_name">Meteorite Landings Spots</string>
     <string name="title_activity_main">@string/app_name</string>
 
     <string name="no_network">Please check you network connection!</string>
