@@ -1,6 +1,7 @@
 package com.antonio.samir.meteoritelandingsspots.presenter;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
@@ -26,7 +27,7 @@ public class MeteoriteListPresenter implements MeteoriteServiceDelegate {
 
         mContext = view.getContext();
 
-        meteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(mContext);
+        meteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService((Activity) mContext);
 
     }
 

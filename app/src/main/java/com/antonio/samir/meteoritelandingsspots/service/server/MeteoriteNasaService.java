@@ -2,10 +2,10 @@ package com.antonio.samir.meteoritelandingsspots.service.server;
 
 import android.app.Activity;
 import android.app.LoaderManager;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -14,6 +14,7 @@ import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteProv
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.MeteoriteNasaAsyncTaskService;
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaService;
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaServiceFactory;
+import com.antonio.samir.meteoritelandingsspots.util.NetworkUtil;
 
 class MeteoriteNasaService implements MeteoriteService, LoaderManager.LoaderCallbacks<Cursor> {
     private static final int CURSOR_LOADER_ID = 1;
@@ -21,16 +22,16 @@ class MeteoriteNasaService implements MeteoriteService, LoaderManager.LoaderCall
     private static final String TAG = MeteoriteNasaService.class.getSimpleName();
     private final NasaService nasaService;
     private final LoaderManager mLoaderManager;
-    private Context mContext;
+    private Activity mActivity;
     private MeteoriteServiceDelegate mDelegate;
     private boolean firstAttempt;
 
 
-    public MeteoriteNasaService(final Context context) {
-        mContext = context;
-        nasaService = NasaServiceFactory.getNasaService(context);
+    public MeteoriteNasaService(final Activity activity) {
+        mActivity = activity;
+        nasaService = NasaServiceFactory.getNasaService(mActivity);
 
-        mLoaderManager = ((Activity) mContext).getLoaderManager();
+        mLoaderManager = mActivity.getLoaderManager();
 
         firstAttempt = true;
 
@@ -39,7 +40,19 @@ class MeteoriteNasaService implements MeteoriteService, LoaderManager.LoaderCall
     @Override
     public void getMeteorites(MeteoriteServiceDelegate delegate) {
         mDelegate = delegate;
-        mLoaderManager.initLoader(CURSOR_LOADER_ID, null, this);
+
+        final boolean hasNetWork = NetworkUtil.hasConnectivity(mActivity);
+        if (hasNetWork) {
+            mActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mLoaderManager.initLoader(CURSOR_LOADER_ID, null, MeteoriteNasaService.this);
+                }
+            });
+        } else {
+            delegate.unableToFetch();
+        }
+
     }
 
     @Override
@@ -52,13 +65,36 @@ class MeteoriteNasaService implements MeteoriteService, LoaderManager.LoaderCall
         mLoaderManager.destroyLoader(CURSOR_LOADER_ID);
     }
 
+    @Override
+    public Cursor getMeteoriteById(String meteoriteId) {
+
+        final Uri url = MeteoriteProvider.Meteorites.withId(meteoriteId);
+
+        final Cursor cursor = mActivity.getContentResolver().query(url,
+                new String[]{
+                        MeteoriteColumns.ID
+                        , MeteoriteColumns.NAME
+                        , MeteoriteColumns.YEAR
+                        , MeteoriteColumns.RECLONG
+                        , MeteoriteColumns.RECLAT},
+                null,
+                null,
+                null);
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+
+        return cursor;
+    }
+
     // LoaderManager.LoaderCallbacks<Cursor> implemendation
     @Override
     public void onLoadFinished(final Loader<Cursor> loader, final Cursor data) {
         if (data == null || data.getCount() < 1) {
             Log.i(TAG, "No data found starting to recovery service");
             if (firstAttempt) {
-                final MeteoriteNasaAsyncTaskService taskService = new MeteoriteNasaAsyncTaskService(nasaService, mContext) {
+                final MeteoriteNasaAsyncTaskService taskService = new MeteoriteNasaAsyncTaskService(nasaService, mActivity) {
                     @Override
                     protected void onPostExecute(MeteoriteServerResult result) {
                         super.onPostExecute(result);
@@ -87,7 +123,7 @@ class MeteoriteNasaService implements MeteoriteService, LoaderManager.LoaderCall
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         mDelegate.onPreExecute();
         // This narrows the return to only the stocks that are most current.
-        return new CursorLoader(mContext, MeteoriteProvider.Meteorites.LISTS,
+        return new CursorLoader(mActivity, MeteoriteProvider.Meteorites.LISTS,
                 new String[]{MeteoriteColumns.ID, MeteoriteColumns.NAME, MeteoriteColumns.YEAR
                         , MeteoriteColumns.RECLONG
                         , MeteoriteColumns.RECLAT},

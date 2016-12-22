@@ -1,16 +1,17 @@
 package com.antonio.samir.meteoritelandingsspots.service;
 
-import android.content.Context;
-import android.support.test.InstrumentationRegistry;
+import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServerException;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceFactory;
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaServiceFactory;
+import com.antonio.samir.meteoritelandingsspots.ui.activity.MeteoriteDetailActivity;
 import com.antonio.samir.meteoritelandingsspots.util.NetworkUtil;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -26,12 +27,16 @@ public class MeteoriteServiceTestTest {
 
     public static final int TIMEOUT = 1000;
     private static MeteoriteServiceTest meteorite;
-    private static Context context;
+
+    @Rule
+    public ActivityTestRule<MeteoriteDetailActivity> mActivityTestRule = new ActivityTestRule<>(MeteoriteDetailActivity.class);
+    private MeteoriteDetailActivity activity;
+
 
     @Before
     public void init() {
         meteorite = new MeteoriteServiceTest();
-        context = InstrumentationRegistry.getTargetContext();
+        activity = mActivityTestRule.getActivity();
         NasaServiceFactory.setNasaService(meteorite);
     }
 
@@ -51,7 +56,7 @@ public class MeteoriteServiceTestTest {
 
         final MeteoriteTestDelegate meteoriteTestDelegate = new MeteoriteTestDelegate(onPreExecuted, onPostExecute, unableToFetch, fail, signal);
 
-        final MeteoriteService MeteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(context);
+        final MeteoriteService MeteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(activity);
 
         MeteoriteFetchService.getMeteorites(meteoriteTestDelegate);
 
@@ -76,12 +81,12 @@ public class MeteoriteServiceTestTest {
 
 
         final MeteoriteTestDelegate meteoriteTestDelegate = new MeteoriteTestDelegate(onPreExecuted, onPostExecute, unableToFetch, fail, signal);
-        final MeteoriteService MeteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(context);
+        final MeteoriteService MeteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(activity);
         MeteoriteFetchService.getMeteorites(meteoriteTestDelegate);
 
         signal.await(TIMEOUT, TimeUnit.SECONDS);
 
-        assertTrue("onPreExecuted should be executed", !onPreExecuted.get());
+        assertTrue("onPreExecuted not should be executed", !onPreExecuted.get());
         assertTrue("setMeteorites should be executed", !onPostExecute.get());
         assertTrue("unableToFetch should not be executed", unableToFetch.get());
         assertTrue("fail should not be executed", !fail.get());
@@ -99,7 +104,7 @@ public class MeteoriteServiceTestTest {
         NetworkUtil.setConnectivity(true);
 
         final MeteoriteTestDelegate meteoriteTestDelegate = new MeteoriteTestDelegate(onPreExecuted, onPostExecute, unableToFetch, fail, signal);
-        final MeteoriteService MeteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(context);
+        final MeteoriteService MeteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(activity);
         MeteoriteFetchService.getMeteorites(meteoriteTestDelegate);
 
         signal.await(TIMEOUT, TimeUnit.SECONDS);

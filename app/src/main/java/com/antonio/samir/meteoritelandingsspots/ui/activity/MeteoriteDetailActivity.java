@@ -35,25 +35,30 @@ public class MeteoriteDetailActivity extends AppCompatActivity {
 
         selectedMeteorite = getPreviousSelectedMeteorite(savedInstanceState);
 
-        if (isLandscape) {
-            //If MeteoriteDetailActivity is created on landscape so return to MeteoriteListMainActivity
-            final Intent intent = new Intent(this, MeteoriteListMainActivity.class);
-            intent.putExtra(ITEM_SELECTED, selectedMeteorite);
-            startActivity(intent);
-        } else {
-            //If MeteoriteDetailActivity is created on portrait so load the fragment
-            final MeteoriteDetailFragment meteoriteDetailFragment = MeteoriteDetailFragment.newInstance(selectedMeteorite);
-            final FragmentManager fm = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fm.beginTransaction();
-            fragmentTransaction.add(R.id.frag_detail, meteoriteDetailFragment);
-            fragmentTransaction.commit();
+        if (selectedMeteorite != null) {
+            if (isLandscape) {
+                //If MeteoriteDetailActivity is created on landscape so return to MeteoriteListMainActivity
+                final Intent intent = new Intent(this, MeteoriteListMainActivity.class);
+                intent.putExtra(ITEM_SELECTED, selectedMeteorite);
+                startActivity(intent);
+            } else {
+                //If MeteoriteDetailActivity is created on portrait so load the fragment
+                final MeteoriteDetailFragment meteoriteDetailFragment = MeteoriteDetailFragment.newInstance(selectedMeteorite);
+                final FragmentManager fm = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                fragmentTransaction.add(R.id.frag_detail, meteoriteDetailFragment);
+                fragmentTransaction.commit();
+            }
         }
 
     }
 
     private String getPreviousSelectedMeteorite(Bundle savedInstanceState) {
-        String meteorite = getIntent().getExtras().getString(ITEM_SELECTED);
-        if (meteorite == null && savedInstanceState != null) {
+        final Bundle extras = getIntent().getExtras();
+        String meteorite = null;
+        if (extras != null) {
+            meteorite = extras.getString(ITEM_SELECTED);
+        } else if (meteorite == null && savedInstanceState != null) {
             meteorite = savedInstanceState.getString(ITEM_SELECTED);
         }
         return meteorite;
