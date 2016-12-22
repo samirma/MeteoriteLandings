@@ -1,7 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.ui.fragments;
 
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,8 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.antonio.samir.meteoritelandingsspots.R;
-import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns;
-import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteProvider;
+import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteService;
+import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceFactory;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,19 +62,9 @@ public class MeteoriteDetailFragment extends Fragment {
 
         ButterKnife.bind(this, view);
 
-        final Uri url = MeteoriteProvider.Meteorites.withId(meteoriteId);
-        final Cursor cursor = getContext().getContentResolver().query(url,
-                new String[]{
-                        MeteoriteColumns.ID
-                        , MeteoriteColumns.NAME
-                        , MeteoriteColumns.YEAR
-                        , MeteoriteColumns.RECLONG
-                        , MeteoriteColumns.RECLAT},
-                null,
-                null,
-                null);
+        final MeteoriteService meteoriteService = MeteoriteServiceFactory.getMeteoriteService(getActivity());
 
-        cursor.moveToFirst();
+        final Cursor cursor = meteoriteService.getMeteoriteById(meteoriteId);
 
         final String meteoriteName = cursor.getString(cursor.getColumnIndex(NAME));
         final String location = cursor.getString(cursor.getColumnIndex(NAME));

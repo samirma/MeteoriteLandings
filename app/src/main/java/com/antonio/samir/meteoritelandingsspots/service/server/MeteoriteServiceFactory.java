@@ -1,7 +1,7 @@
 package com.antonio.samir.meteoritelandingsspots.service.server;
 
 
-import android.content.Context;
+import android.app.Activity;
 
 /**
  * Create MeteoriteService used by UI to recover meteorites
@@ -9,7 +9,7 @@ import android.content.Context;
  */
 public class MeteoriteServiceFactory {
 
-    public static MeteoriteService getMeteoriteService(final Context context){
+    public static MeteoriteService getMeteoriteService(final Activity context) {
 
         final MeteoriteService server = new MeteoriteNasaService(context);
 
