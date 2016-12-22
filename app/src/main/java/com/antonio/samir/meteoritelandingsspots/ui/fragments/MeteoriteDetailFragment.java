@@ -1,5 +1,7 @@
 package com.antonio.samir.meteoritelandingsspots.ui.fragments;
 
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,10 +11,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.antonio.samir.meteoritelandingsspots.R;
-import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
+import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns;
+import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteProvider;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.NAME;
+import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.YEAR;
 
 public class MeteoriteDetailFragment extends Fragment {
 
@@ -26,17 +32,17 @@ public class MeteoriteDetailFragment extends Fragment {
     TextView year;
     @BindView(R.id.content_detail)
     LinearLayout contentDetail;
-    private Meteorite meteorite;
+    private String meteoriteId;
 
     /**
      * Create a MeteoriteDetailFragment to show the meteorite param
      * @param meteorite
      * @return
      */
-    public static MeteoriteDetailFragment newInstance(final Meteorite meteorite) {
+    public static MeteoriteDetailFragment newInstance(final String meteorite) {
         MeteoriteDetailFragment fragment = new MeteoriteDetailFragment();
         Bundle args = new Bundle();
-        args.putParcelable(METEORITE, meteorite);
+        args.putString(METEORITE, meteorite);
         fragment.setArguments(args);
         return fragment;
     }
@@ -46,7 +52,7 @@ public class MeteoriteDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             //Recovering the meteorite to work on it
-            meteorite = getArguments().getParcelable(METEORITE);
+            meteoriteId = getArguments().getString(METEORITE);
         }
     }
 
@@ -57,10 +63,27 @@ public class MeteoriteDetailFragment extends Fragment {
 
         ButterKnife.bind(this, view);
 
-        title.setText(meteorite.getName());
-        title.setText(meteorite.getName());
-        title.setText(meteorite.getName());
+        final Uri url = MeteoriteProvider.Meteorites.withId(meteoriteId);
+        final Cursor cursor = getContext().getContentResolver().query(url,
+                new String[]{
+                        MeteoriteColumns.ID
+                        , MeteoriteColumns.NAME
+                        , MeteoriteColumns.YEAR
+                        , MeteoriteColumns.RECLONG
+                        , MeteoriteColumns.RECLAT},
+                null,
+                null,
+                null);
 
+        cursor.moveToFirst();
+
+        final String meteoriteName = cursor.getString(cursor.getColumnIndex(NAME));
+        final String location = cursor.getString(cursor.getColumnIndex(NAME));
+        final String year = cursor.getString(cursor.getColumnIndex(YEAR));
+
+        title.setText(meteoriteName);
+        this.location.setText(location);
+        this.year.setText(year);
 
         return view;
     }

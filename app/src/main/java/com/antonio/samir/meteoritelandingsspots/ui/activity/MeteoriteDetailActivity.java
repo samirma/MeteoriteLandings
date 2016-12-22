@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.antonio.samir.meteoritelandingsspots.R;
-import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 import com.antonio.samir.meteoritelandingsspots.ui.fragments.MeteoriteDetailFragment;
 
 import butterknife.BindView;
@@ -19,10 +18,9 @@ import static com.antonio.samir.meteoritelandingsspots.ui.activity.MeteoriteList
 
 public class MeteoriteDetailActivity extends AppCompatActivity {
 
-    private Meteorite selectedMeteorite;
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    private String selectedMeteorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +51,10 @@ public class MeteoriteDetailActivity extends AppCompatActivity {
 
     }
 
-    private Meteorite getPreviousSelectedMeteorite(Bundle savedInstanceState) {
-        Meteorite meteorite = getIntent().getParcelableExtra(ITEM_SELECTED);
+    private String getPreviousSelectedMeteorite(Bundle savedInstanceState) {
+        String meteorite = getIntent().getExtras().getString(ITEM_SELECTED);
         if (meteorite == null && savedInstanceState != null) {
-            meteorite = savedInstanceState.getParcelable(ITEM_SELECTED);
+            meteorite = savedInstanceState.getString(ITEM_SELECTED);
         }
         return meteorite;
     }
@@ -69,7 +67,7 @@ public class MeteoriteDetailActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
         //Saving the selected meteorite
-        savedInstanceState.putParcelable(ITEM_SELECTED, selectedMeteorite);
+        savedInstanceState.putString(ITEM_SELECTED, selectedMeteorite);
 
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
