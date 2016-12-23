@@ -1,14 +1,13 @@
 package com.antonio.samir.meteoritelandingsspots.service.repository;
 
 import android.content.ContentProviderOperation;
-import android.location.Address;
+import android.content.ContentResolver;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.antonio.samir.meteoritelandingsspots.Application;
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
-import com.antonio.samir.meteoritelandingsspots.service.server.GeoLocationUtil;
+import com.antonio.samir.meteoritelandingsspots.service.server.AddressService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,26 +24,28 @@ public class ResultUtil {
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     private static final String TAG = ResultUtil.class.getSimpleName();
 
-    public static ArrayList quoteJsonToContentVals(List<Meteorite> list) {
+    public static ArrayList quoteJsonToContentVals(List<Meteorite> list, ContentResolver contentResolver) {
         ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
+
+        final AddressService addressService = new AddressService(contentResolver);
 
         for (Meteorite meteorite:list) {
 
-            final ContentProviderOperation e = buildBatchOperation(meteorite);
+            final ContentProviderOperation e = buildBatchOperation(meteorite, addressService);
             batchOperations.add(e);
 
         }
 
         return batchOperations;
     }
-    
 
 
-    public static ContentProviderOperation buildBatchOperation(final Meteorite meteorite) {
+    public static ContentProviderOperation buildBatchOperation(final Meteorite meteorite, AddressService addressService) {
         ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
                 MeteoriteProvider.Meteorites.LISTS);
 
-        builder.withValue(MeteoriteColumns.ID, meteorite.getId());
+        final String id = meteorite.getId();
+        builder.withValue(MeteoriteColumns.ID, id);
 
         builder.withValue(MeteoriteColumns.MASS, getValue(meteorite.getMass()));
 
@@ -70,39 +71,13 @@ public class ResultUtil {
         }
         builder.withValue(MeteoriteColumns.YEAR, yearParsed);
 
-        final String recLong = getValue(meteorite.getReclong());
         final String recLat = getValue(meteorite.getReclat());
+        final String recLong = getValue(meteorite.getReclong());
 
         builder.withValue(MeteoriteColumns.RECLONG, recLong);
         builder.withValue(MeteoriteColumns.RECLAT, recLat);
 
-        String addressString = "";
-        if (!TextUtils.isEmpty(recLat) && !TextUtils.isEmpty(recLong)) {
-            final Address address = GeoLocationUtil.getAddress(Double.parseDouble(recLat), Double.parseDouble(recLong), Application.getContext());
-            if (address != null) {
-
-                final String city = address.getLocality();
-                if (!TextUtils.isEmpty(city)) {
-                    addressString = addressString + city;
-                }
-
-                final String state = address.getAdminArea();
-                if (!TextUtils.isEmpty(state)) {
-                    addressString = addressString + ", " + state;
-                }
-
-                final String countryName = address.getCountryName();
-                if (!TextUtils.isEmpty(countryName)) {
-                    if (!TextUtils.isEmpty(countryName)) {
-                        addressString = addressString + ", " + countryName;
-                    }
-                }
-            }
-        }
-
-        builder.withValue(MeteoriteColumns.ADDRESS, addressString);
-
-
+        addressService.recoverAddress(id, recLat, recLong);
 
         return builder.build();
     }

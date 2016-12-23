@@ -42,7 +42,4 @@ public class MeteoriteColumns {
     @NotNull
     public static final String RECLAT = "reclat";
 
-    @DataType(DataType.Type.TEXT)
-    @NotNull
-    public static final String ADDRESS = "address";
 }
