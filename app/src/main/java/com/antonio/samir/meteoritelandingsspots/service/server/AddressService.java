@@ -2,7 +2,9 @@ package com.antonio.samir.meteoritelandingsspots.service.server;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.location.Address;
+import android.net.Uri;
 
 import com.antonio.samir.meteoritelandingsspots.Application;
 import com.antonio.samir.meteoritelandingsspots.service.repository.AddressColumns;
@@ -15,6 +17,8 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import static com.antonio.samir.meteoritelandingsspots.service.repository.AddressColumns.ADDRESS;
 
 /**
  * Created by samir on 12/23/16.
@@ -75,5 +79,24 @@ public class AddressService {
         }
 
         return addressString;
+    }
+
+    public String getAddressFromId(String idString) {
+        final Uri uri = MeteoriteProvider.Addresses.withId(idString);
+        final Cursor cursor = mContentResolver.query(uri,
+                new String[]{ADDRESS},
+                null,
+                null,
+                null);
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+
+        String address = "";
+        if (cursor.getCount() == 1) {
+            address = cursor.getString(cursor.getColumnIndex(ADDRESS));
+        }
+        return address;
     }
 }

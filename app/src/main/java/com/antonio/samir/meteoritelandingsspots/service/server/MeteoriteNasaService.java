@@ -45,10 +45,12 @@ class MeteoriteNasaService implements MeteoriteService, LoaderManager.LoaderCall
         final boolean hasNetWork = NetworkUtil.hasConnectivity(mActivity);
         if (hasNetWork) {
             mActivity.runOnUiThread(new Runnable() {
+
                 @Override
                 public void run() {
                     mLoaderManager.initLoader(CURSOR_LOADER_ID, null, MeteoriteNasaService.this);
                 }
+
             });
         } else {
             delegate.unableToFetch();
