@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.antonio.samir.meteoritelandingsspots.R;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelector;
 
+import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.ADDRESS;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.ID;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.NAME;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.YEAR;
@@ -63,12 +64,12 @@ public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteor
     @Override
     public void onBindViewHolder(final ViewHolderMeteorite viewHolder, final Cursor cursor) {
         final String meteoriteName = cursor.getString(cursor.getColumnIndex(NAME));
-        final String location = cursor.getString(cursor.getColumnIndex(NAME));
+        final String location = cursor.getString(cursor.getColumnIndex(ADDRESS));
         final String year = cursor.getString(cursor.getColumnIndex(YEAR));
 
 
         viewHolder.name.setText(meteoriteName);
-        viewHolder.location.setText("Some City");
+        viewHolder.location.setText(location);
 
         viewHolder.year.setText(year);
 

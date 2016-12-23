@@ -1,11 +1,14 @@
 package com.antonio.samir.meteoritelandingsspots.service.repository;
 
 import android.content.ContentProviderOperation;
+import android.location.Address;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.antonio.samir.meteoritelandingsspots.Application;
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
+import com.antonio.samir.meteoritelandingsspots.service.server.GeoLocationUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -67,8 +70,39 @@ public class ResultUtil {
         }
         builder.withValue(MeteoriteColumns.YEAR, yearParsed);
 
-        builder.withValue(MeteoriteColumns.RECLONG, getValue(meteorite.getReclong()));
-        builder.withValue(MeteoriteColumns.RECLAT, getValue(meteorite.getReclat()));
+        final String recLong = getValue(meteorite.getReclong());
+        final String recLat = getValue(meteorite.getReclat());
+
+        builder.withValue(MeteoriteColumns.RECLONG, recLong);
+        builder.withValue(MeteoriteColumns.RECLAT, recLat);
+
+        String addressString = "";
+        if (!TextUtils.isEmpty(recLat) && !TextUtils.isEmpty(recLong)) {
+            final Address address = GeoLocationUtil.getAddress(Double.parseDouble(recLat), Double.parseDouble(recLong), Application.getContext());
+            if (address != null) {
+
+                final String city = address.getLocality();
+                if (!TextUtils.isEmpty(city)) {
+                    addressString = addressString + city;
+                }
+
+                final String state = address.getAdminArea();
+                if (!TextUtils.isEmpty(state)) {
+                    addressString = addressString + ", " + state;
+                }
+
+                final String countryName = address.getCountryName();
+                if (!TextUtils.isEmpty(countryName)) {
+                    if (!TextUtils.isEmpty(countryName)) {
+                        addressString = addressString + ", " + countryName;
+                    }
+                }
+            }
+        }
+
+        builder.withValue(MeteoriteColumns.ADDRESS, addressString);
+
+
 
         return builder.build();
     }

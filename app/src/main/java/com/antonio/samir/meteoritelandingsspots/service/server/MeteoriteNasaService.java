@@ -75,6 +75,7 @@ class MeteoriteNasaService implements MeteoriteService, LoaderManager.LoaderCall
                         MeteoriteColumns.ID
                         , MeteoriteColumns.NAME
                         , MeteoriteColumns.YEAR
+                        , MeteoriteColumns.ADDRESS
                         , MeteoriteColumns.RECLONG
                         , MeteoriteColumns.RECLAT},
                 null,
@@ -125,6 +126,7 @@ class MeteoriteNasaService implements MeteoriteService, LoaderManager.LoaderCall
         // This narrows the return to only the stocks that are most current.
         return new CursorLoader(mActivity, MeteoriteProvider.Meteorites.LISTS,
                 new String[]{MeteoriteColumns.ID, MeteoriteColumns.NAME, MeteoriteColumns.YEAR
+                        , MeteoriteColumns.ADDRESS
                         , MeteoriteColumns.RECLONG
                         , MeteoriteColumns.RECLAT},
                 null,
