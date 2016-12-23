@@ -2,6 +2,7 @@ package com.antonio.samir.meteoritelandingsspots.service.server;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
@@ -21,7 +22,7 @@ class MeteoriteNasaService implements MeteoriteService, LoaderManager.LoaderCall
 
     private static final String TAG = MeteoriteNasaService.class.getSimpleName();
     private final NasaService nasaService;
-    private final LoaderManager mLoaderManager;
+    private LoaderManager mLoaderManager;
     private Activity mActivity;
     private MeteoriteServiceDelegate mDelegate;
     private boolean firstAttempt;
@@ -31,8 +32,6 @@ class MeteoriteNasaService implements MeteoriteService, LoaderManager.LoaderCall
         mActivity = activity;
         nasaService = NasaServiceFactory.getNasaService(mActivity);
 
-        mLoaderManager = mActivity.getLoaderManager();
-
         firstAttempt = true;
 
     }
@@ -40,6 +39,8 @@ class MeteoriteNasaService implements MeteoriteService, LoaderManager.LoaderCall
     @Override
     public void getMeteorites(MeteoriteServiceDelegate delegate) {
         mDelegate = delegate;
+
+        mLoaderManager = mActivity.getLoaderManager();
 
         final boolean hasNetWork = NetworkUtil.hasConnectivity(mActivity);
         if (hasNetWork) {
@@ -70,12 +71,12 @@ class MeteoriteNasaService implements MeteoriteService, LoaderManager.LoaderCall
 
         final Uri url = MeteoriteProvider.Meteorites.withId(meteoriteId);
 
-        final Cursor cursor = mActivity.getContentResolver().query(url,
+        final ContentResolver contentResolver = mActivity.getContentResolver();
+        final Cursor cursor = contentResolver.query(url,
                 new String[]{
                         MeteoriteColumns.ID
                         , MeteoriteColumns.NAME
                         , MeteoriteColumns.YEAR
-                        , MeteoriteColumns.ADDRESS
                         , MeteoriteColumns.RECLONG
                         , MeteoriteColumns.RECLAT},
                 null,
@@ -126,12 +127,12 @@ class MeteoriteNasaService implements MeteoriteService, LoaderManager.LoaderCall
         // This narrows the return to only the stocks that are most current.
         return new CursorLoader(mActivity, MeteoriteProvider.Meteorites.LISTS,
                 new String[]{MeteoriteColumns.ID, MeteoriteColumns.NAME, MeteoriteColumns.YEAR
-                        , MeteoriteColumns.ADDRESS
                         , MeteoriteColumns.RECLONG
                         , MeteoriteColumns.RECLAT},
                 null,
                 null,
                 null);
     }
+
 
 }

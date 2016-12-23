@@ -11,11 +11,14 @@ import net.simonvt.schematic.annotation.TableEndpoint;
 @ContentProvider(authority = MeteoriteProvider.AUTHORITY, database = MeteoriteDatabase.class)
 public class MeteoriteProvider {
     public static final String AUTHORITY = "com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteProvider";
-    static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+
     private static final String METEORITES = "/meteorites";
+    private static final String ADDRESSES = "/addresses";
+
 
     interface Path {
         String METEORITES = "meteorites";
+        String ADDRESSES = "addresses";
     }
 
     @TableEndpoint(table = MeteoriteDatabase.METEORITES)
@@ -37,4 +40,25 @@ public class MeteoriteProvider {
         }
 
     }
+
+    @TableEndpoint(table = MeteoriteDatabase.ADDRESSES)
+    public static class Addresses {
+        @ContentUri(
+                path = Path.ADDRESSES,
+                type = "vnd.android.cursor.dir/address",
+                defaultSort = AddressColumns.ID + " ASC")
+        public static final Uri LISTS = Uri.parse("content://" + AUTHORITY + ADDRESSES);
+
+        @InexactContentUri(
+                path = Path.ADDRESSES + "/#",
+                name = "LIST_ID",
+                type = "vnd.android.cursor.item/address",
+                whereColumn = AddressColumns.ID,
+                pathSegment = 1)
+        public static Uri withId(String id) {
+            return Uri.parse(String.format("content://%s%s/%s", AUTHORITY, ADDRESSES, id));
+        }
+
+    }
+
 }

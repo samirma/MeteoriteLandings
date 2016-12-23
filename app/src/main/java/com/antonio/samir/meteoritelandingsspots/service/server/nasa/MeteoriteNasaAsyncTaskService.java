@@ -39,6 +39,8 @@ public class MeteoriteNasaAsyncTaskService extends AsyncTask<Void, Void, Meteori
             meteoriteServerResult.setException(e);
         }
 
+        saveMeteorites(meteoriteServerResult);
+
         return meteoriteServerResult;
     }
 
@@ -47,19 +49,17 @@ public class MeteoriteNasaAsyncTaskService extends AsyncTask<Void, Void, Meteori
         super.onPreExecute();
     }
 
-    @Override
-    protected void onPostExecute(final MeteoriteServerResult result) {
 
+    private void saveMeteorites(MeteoriteServerResult result) {
         try {
             final List<Meteorite> meteorites = result.getMeteorites();
-            final ArrayList operations = ResultUtil.quoteJsonToContentVals(meteorites);
             final ContentResolver contentResolver = mContext.getContentResolver();
+            final ArrayList operations = ResultUtil.quoteJsonToContentVals(meteorites, contentResolver);
             contentResolver.delete(MeteoriteProvider.Meteorites.LISTS, null, null);
             contentResolver.applyBatch(MeteoriteProvider.AUTHORITY, operations);
         } catch (MeteoriteServerException | RemoteException | OperationApplicationException e) {
             Log.e(MeteoriteNasaAsyncTaskService.class.getSimpleName(), e.getMessage(), e);
         }
-
     }
 
 }

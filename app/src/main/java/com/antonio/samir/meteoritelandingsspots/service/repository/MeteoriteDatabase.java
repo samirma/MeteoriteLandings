@@ -10,6 +10,9 @@ public class MeteoriteDatabase {
     @Table(MeteoriteColumns.class)
     public static final String METEORITES = "meteorites";
 
+    @Table(AddressColumns.class)
+    public static final String ADDRESSES = "addresses";
+
     private MeteoriteDatabase() {
     }
 }
