@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +13,11 @@ import android.view.ViewGroup;
 
 import com.antonio.samir.meteoritelandingsspots.R;
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteProvider;
+import com.antonio.samir.meteoritelandingsspots.service.server.AddressService;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelector;
 
 import org.apache.commons.lang3.StringUtils;
 
-import static com.antonio.samir.meteoritelandingsspots.service.repository.AddressColumns.ADDRESS;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.ID;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.NAME;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.YEAR;
@@ -87,27 +88,34 @@ public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteor
         viewHolder.setId(idString);
     }
 
-    private void recoverAddress(ViewHolderMeteorite viewHolder, String idString) {
+    private void recoverAddress(final ViewHolderMeteorite viewHolder, final String idString) {
+
         final ContentResolver contentResolver = mContext.getContentResolver();
 
-        final Uri uri = MeteoriteProvider.Addresses.withId(idString);
-        final Cursor cursor = contentResolver.query(uri,
-                new String[]{ADDRESS},
-                null,
-                null,
-                null);
+        final AddressService addressService = new AddressService(contentResolver);
 
-        if (cursor != null) {
-            cursor.moveToFirst();
-        }
-
-        String address = cursor.getString(cursor.getColumnIndex(ADDRESS));
+        String address = addressService.getAddressFromId(idString);
 
         if (StringUtils.isBlank(address)) {
-            address = "";
+
+            final Uri uri = MeteoriteProvider.Addresses.withId(idString);
+
+            observer = new ContentObserver(new Handler()) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    super.onChange(selfChange);
+                    final String address = addressService.getAddressFromId(idString);
+                    viewHolder.location.setText(address);
+                    //mContext.getContentResolver().unregisterContentObserver(observer);
+                }
+            };
+
+            contentResolver.registerContentObserver(uri, true, observer);
+
+        } else {
+            viewHolder.location.setText(address);
         }
 
-        viewHolder.location.setText(address);
 
     }
 
