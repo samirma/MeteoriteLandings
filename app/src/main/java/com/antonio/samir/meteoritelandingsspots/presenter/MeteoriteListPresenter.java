@@ -1,9 +1,9 @@
 package com.antonio.samir.meteoritelandingsspots.presenter;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServerException;
@@ -27,7 +27,7 @@ public class MeteoriteListPresenter implements MeteoriteServiceDelegate {
 
         mContext = view.getContext();
 
-        meteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService((Activity) mContext);
+        meteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService((AppCompatActivity) mContext);
 
     }
 
