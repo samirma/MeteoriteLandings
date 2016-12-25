@@ -13,6 +13,7 @@ import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteProv
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.MeteoriteNasaAsyncTaskService;
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaService;
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaServiceFactory;
+import com.antonio.samir.meteoritelandingsspots.util.GPSTracker;
 import com.antonio.samir.meteoritelandingsspots.util.NetworkUtil;
 
 class MeteoriteNasaService implements MeteoriteService, android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor> {
@@ -20,6 +21,7 @@ class MeteoriteNasaService implements MeteoriteService, android.support.v4.app.L
 
     private static final String TAG = MeteoriteNasaService.class.getSimpleName();
     private final NasaService nasaService;
+    private final GPSTracker gpsTracker;
     private android.support.v4.app.LoaderManager mLoaderManager;
     private AppCompatActivity mActivity;
     private MeteoriteServiceDelegate mDelegate;
@@ -31,6 +33,8 @@ class MeteoriteNasaService implements MeteoriteService, android.support.v4.app.L
         nasaService = NasaServiceFactory.getNasaService(mActivity);
 
         firstAttempt = true;
+
+        gpsTracker = new GPSTracker(mActivity);
 
     }
 
@@ -107,13 +111,24 @@ class MeteoriteNasaService implements MeteoriteService, android.support.v4.app.L
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
         mDelegate.onPreExecute();
         // This narrows the return to only the stocks that are most current.
+
+        String sortOrder = null;
+
+        final boolean gpsEnabled = gpsTracker.isGPSEnabled();
+
+        if (gpsEnabled && gpsTracker.getLocation() != null) {
+            final double latitude = gpsTracker.getLatitude();
+            final double longitude = gpsTracker.getLongitude();
+            sortOrder = String.format("ABS(reclat - %s ) + ABS(reclong - %s) ASC", latitude, longitude);
+        }
+
         final CursorLoader cursorLoader = new CursorLoader(mActivity, MeteoriteProvider.Meteorites.LISTS,
                 new String[]{MeteoriteColumns.ID, MeteoriteColumns.NAME, MeteoriteColumns.YEAR
                         , MeteoriteColumns.RECLONG
                         , MeteoriteColumns.RECLAT},
                 null,
                 null,
-                null);
+                sortOrder);
         return cursorLoader;
     }
 
