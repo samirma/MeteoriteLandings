@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.location.Address;
 import android.net.Uri;
+import android.util.Log;
 
 import com.antonio.samir.meteoritelandingsspots.Application;
 import com.antonio.samir.meteoritelandingsspots.service.repository.AddressColumns;
@@ -26,10 +27,10 @@ import static com.antonio.samir.meteoritelandingsspots.service.repository.Addres
 
 public class AddressService {
 
+    public static final String TAG = AddressService.class.getSimpleName();
     final static ThreadPoolExecutor executor = new ThreadPoolExecutor(0, 1000,
             1L, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>());
-
     private final ContentResolver mContentResolver;
 
     public AddressService(ContentResolver contentResolver) {
@@ -47,6 +48,7 @@ public class AddressService {
                 mNewValues.put(AddressColumns.ID, id);
                 mNewValues.put(AddressColumns.ADDRESS, address);
                 mContentResolver.insert(MeteoriteProvider.Addresses.LISTS, mNewValues);
+                Log.i(TAG, String.format("Address for id %s recoverd", id));
             }
         });
 
