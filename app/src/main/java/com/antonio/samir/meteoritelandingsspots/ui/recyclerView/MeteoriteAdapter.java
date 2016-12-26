@@ -76,8 +76,10 @@ public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteor
         final String idString = cursor.getString(id);
 
         viewHolder.name.setText(meteoriteName);
-
         viewHolder.year.setText(year);
+
+        viewHolder.name.setContentDescription(meteoriteName);
+        viewHolder.year.setContentDescription(year);
 
         recoverAddress(viewHolder, idString);
 
@@ -104,6 +106,7 @@ public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteor
         };
 
         viewHolder.location.setText(address);
+        viewHolder.location.setContentDescription(address);
 
         contentResolver.registerContentObserver(uri, true, viewHolder.observer);
 
