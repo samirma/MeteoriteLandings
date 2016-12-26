@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.ui.recyclerView;
 
+import android.database.ContentObserver;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -19,7 +20,7 @@ public class ViewHolderMeteorite extends RecyclerView.ViewHolder {
 
     @BindView(R.id.year)
     public TextView year;
-
+    public ContentObserver observer;
     private String id;
 
     public ViewHolderMeteorite(View view) {

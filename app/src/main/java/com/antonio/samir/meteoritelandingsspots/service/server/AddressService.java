@@ -99,6 +99,7 @@ public class AddressService {
         if (cursor.getCount() == 1) {
             address = cursor.getString(cursor.getColumnIndex(ADDRESS));
         }
+        cursor.close();
         return address;
     }
 }
