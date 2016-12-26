@@ -96,12 +96,20 @@ public class MeteoriteDetailFragment extends Fragment {
 
         final String mass = cursor.getString(cursor.getColumnIndex(MASS));
 
-        title.setText(meteoriteName);
+        this.title.setText(meteoriteName);
         this.location.setText(address);
         this.year.setText(year);
         this.recclass.setText(recclass);
         this.mass.setText(mass);
         this.nametype.setText(nametype);
+
+
+        this.title.setContentDescription(meteoriteName);
+        this.location.setContentDescription(address);
+        this.year.setContentDescription(year);
+        this.recclass.setContentDescription(recclass);
+        this.mass.setContentDescription(mass);
+        this.nametype.setContentDescription(nametype);
 
         cursor.close();
 
