@@ -5,4 +5,6 @@
     <string name="no_network">Please check you network connection!</string>
     <string name="load">Loading Meteorites</string>
     <string name="general_error">Sorry, some kind of error has occurred</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>
