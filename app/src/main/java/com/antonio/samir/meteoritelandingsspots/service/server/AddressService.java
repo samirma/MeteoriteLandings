@@ -48,7 +48,7 @@ public class AddressService {
                 mNewValues.put(AddressColumns.ID, id);
                 mNewValues.put(AddressColumns.ADDRESS, address);
                 mContentResolver.insert(MeteoriteProvider.Addresses.LISTS, mNewValues);
-                Log.i(TAG, String.format("Address for id %s recoverd", id));
+                Log.i(TAG, String.format("Address for id %s recovered", id));
             }
         });
 

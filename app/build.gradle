@@ -2,11 +2,21 @@ apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 apply plugin: 'com.neenbedankt.android-apt'
 
-def compatVersion = '25.0.1'
+def compatVersion = "25.0.1"
 
 android {
+
+    signingConfigs {
+        config {
+            keyAlias 'dev_key'
+            keyPassword 'dev_key'
+            storeFile file('dev_key.jks')
+            storePassword 'dev_key'
+        }
+    }
+
     compileSdkVersion 25
-    buildToolsVersion compatVersion
+    buildToolsVersion "25.0.1"
     defaultConfig {
         applicationId "com.antonio.samir.meteoritelandingsspots"
         minSdkVersion 17
