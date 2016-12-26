@@ -11,13 +11,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.antonio.samir.meteoritelandingsspots.R;
+import com.antonio.samir.meteoritelandingsspots.service.server.AddressService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceFactory;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.MASS;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.NAME;
+import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.NAMETYPE;
+import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.RECCLASS;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.YEAR;
 
 public class MeteoriteDetailFragment extends Fragment {
@@ -32,6 +36,17 @@ public class MeteoriteDetailFragment extends Fragment {
     TextView year;
     @BindView(R.id.content_detail)
     LinearLayout contentDetail;
+
+    @BindView(R.id.mass)
+    TextView mass;
+
+
+    @BindView(R.id.nametype)
+    TextView nametype;
+
+    @BindView(R.id.recclass)
+    TextView recclass;
+
     private String meteoriteId;
 
     /**
@@ -68,12 +83,27 @@ public class MeteoriteDetailFragment extends Fragment {
         final Cursor cursor = meteoriteService.getMeteoriteById(meteoriteId);
 
         final String meteoriteName = cursor.getString(cursor.getColumnIndex(NAME));
-        final String location = cursor.getString(cursor.getColumnIndex(NAME));
+
+        final AddressService addressService = new AddressService(getActivity().getContentResolver());
+
+        final String address = addressService.getAddressFromId(meteoriteId);
+
         final String year = cursor.getString(cursor.getColumnIndex(YEAR));
 
+        final String nametype = cursor.getString(cursor.getColumnIndex(NAMETYPE));
+
+        final String recclass = cursor.getString(cursor.getColumnIndex(RECCLASS));
+
+        final String mass = cursor.getString(cursor.getColumnIndex(MASS));
+
         title.setText(meteoriteName);
-        this.location.setText(location);
+        this.location.setText(address);
         this.year.setText(year);
+        this.recclass.setText(recclass);
+        this.mass.setText(mass);
+        this.nametype.setText(nametype);
+
+        cursor.close();
 
         return view;
     }
