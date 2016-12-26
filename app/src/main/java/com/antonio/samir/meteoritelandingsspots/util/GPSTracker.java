@@ -39,7 +39,7 @@ public final class GPSTracker implements LocationListener {
 
     public GPSTracker(Context context) {
         this.mContext = context;
-        enableGPS();
+
     }
 
     /**
@@ -48,6 +48,7 @@ public final class GPSTracker implements LocationListener {
      * @return
      */
     public Location getLocation() {
+        enableGPS();
         return location;
     }
 

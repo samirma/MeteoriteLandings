@@ -6,7 +6,6 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +14,6 @@ import com.antonio.samir.meteoritelandingsspots.R;
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteProvider;
 import com.antonio.samir.meteoritelandingsspots.service.server.AddressService;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelector;
-
-import org.apache.commons.lang3.StringUtils;
 
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.ID;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.NAME;
@@ -28,7 +25,6 @@ import static com.antonio.samir.meteoritelandingsspots.service.repository.Meteor
 public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteorite> {
     private final MeteoriteSelector meteoriteSelector;
     private Context mContext;
-    private ContentObserver observer;
 
     public MeteoriteAdapter(Context context, Cursor cursor, final MeteoriteSelector meteoriteSelector) {
         super(context, cursor);
@@ -96,35 +92,30 @@ public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteor
 
         String address = addressService.getAddressFromId(idString);
 
-        if (StringUtils.isBlank(address)) {
+        final Uri uri = MeteoriteProvider.Addresses.withId(idString);
 
-            final Uri uri = MeteoriteProvider.Addresses.withId(idString);
+        viewHolder.observer = new ContentObserver(new Handler()) {
+            @Override
+            public void onChange(boolean selfChange) {
+                super.onChange(selfChange);
+                final String address = addressService.getAddressFromId(idString);
+                viewHolder.location.setText(address);
+            }
+        };
 
-            observer = new ContentObserver(new Handler()) {
-                @Override
-                public void onChange(boolean selfChange) {
-                    super.onChange(selfChange);
-                    final String address = addressService.getAddressFromId(idString);
-                    viewHolder.location.setText(address);
-                    //mContext.getContentResolver().unregisterContentObserver(observer);
-                }
-            };
+        viewHolder.location.setText(address);
 
-            contentResolver.registerContentObserver(uri, true, observer);
-
-        } else {
-            viewHolder.location.setText(address);
-        }
-
+        contentResolver.registerContentObserver(uri, true, viewHolder.observer);
 
     }
 
     @Override
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView);
-        if (observer != null) {
-            mContext.getContentResolver().unregisterContentObserver(observer);
+    public void onViewDetachedFromWindow(ViewHolderMeteorite holder) {
+        super.onViewDetachedFromWindow(holder);
+        if (holder.observer != null) {
+            mContext.getContentResolver().unregisterContentObserver(holder.observer);
         }
     }
+
 
 }
