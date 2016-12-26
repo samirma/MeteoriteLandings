@@ -4,7 +4,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -26,17 +25,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.MeteoriteDetailActivity"
+        <activity
+            android:name=".ui.activity.MeteoriteDetailActivity"
             android:parentActivityName=".ui.activity.MeteoriteListMainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <provider
             android:name=".service.repository.generated.MeteoriteProvider"
             android:authorities="com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteProvider"
             android:exported="true" />
 
+        <receiver android:name=".ui.MeteoritesAppWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/meteorites_app_widget_info" />
+        </receiver>
     </application>
 
 </manifest>
