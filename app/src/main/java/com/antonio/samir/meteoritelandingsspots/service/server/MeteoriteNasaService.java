@@ -8,13 +8,21 @@ import android.support.v4.content.CursorLoader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns;
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteProvider;
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.MeteoriteNasaAsyncTaskService;
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaService;
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaServiceFactory;
 import com.antonio.samir.meteoritelandingsspots.util.GPSTracker;
 import com.antonio.samir.meteoritelandingsspots.util.NetworkUtil;
+
+import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.ID;
+import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.MASS;
+import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.NAME;
+import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.NAMETYPE;
+import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.RECCLASS;
+import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.RECLAT;
+import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.RECLONG;
+import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.YEAR;
 
 class MeteoriteNasaService implements MeteoriteService, android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor> {
     private static final int CURSOR_LOADER_ID = 1;
@@ -89,11 +97,14 @@ class MeteoriteNasaService implements MeteoriteService, android.support.v4.app.L
         final ContentResolver contentResolver = mActivity.getContentResolver();
         final Cursor cursor = contentResolver.query(url,
                 new String[]{
-                        MeteoriteColumns.ID
-                        , MeteoriteColumns.NAME
-                        , MeteoriteColumns.YEAR
-                        , MeteoriteColumns.RECLONG
-                        , MeteoriteColumns.RECLAT},
+                        ID
+                        , NAME
+                        , YEAR
+                        , NAMETYPE
+                        , RECCLASS
+                        , MASS
+                        , RECLONG
+                        , RECLAT},
                 null,
                 null,
                 null);
@@ -123,9 +134,9 @@ class MeteoriteNasaService implements MeteoriteService, android.support.v4.app.L
         }
 
         final CursorLoader cursorLoader = new CursorLoader(mActivity, MeteoriteProvider.Meteorites.LISTS,
-                new String[]{MeteoriteColumns.ID, MeteoriteColumns.NAME, MeteoriteColumns.YEAR
-                        , MeteoriteColumns.RECLONG
-                        , MeteoriteColumns.RECLAT},
+                new String[]{ID, NAME, YEAR
+                        , RECLONG
+                        , RECLAT},
                 null,
                 null,
                 sortOrder);
