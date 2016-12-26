@@ -23,6 +23,7 @@ public final class GPSTracker implements LocationListener {
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 10 meters
     // The minimum time between updates in milliseconds
     private static final long MIN_TIME_BW_UPDATES = 1; // 1 minute
+    private static final String TAG = GPSTracker.class.getSimpleName();
     private final Context mContext;
     // flag for GPS status
     public boolean isGPSEnabled = false;
@@ -38,7 +39,7 @@ public final class GPSTracker implements LocationListener {
 
     public GPSTracker(Context context) {
         this.mContext = context;
-        getLocation();
+        enableGPS();
     }
 
     /**
@@ -47,6 +48,10 @@ public final class GPSTracker implements LocationListener {
      * @return
      */
     public Location getLocation() {
+        return location;
+    }
+
+    private void enableGPS() {
         try {
             final boolean isGPSEnabled = isGPSEnabled();
             if (!isGPSEnabled) {
@@ -63,7 +68,7 @@ public final class GPSTracker implements LocationListener {
                             LocationManager.NETWORK_PROVIDER,
                             MIN_TIME_BW_UPDATES,
                             MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                    Log.d("Network", "Network");
+                    Log.d(TAG, "Network");
                     if (locationManager != null) {
                         location = locationManager
                                 .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
@@ -81,7 +86,7 @@ public final class GPSTracker implements LocationListener {
                                 LocationManager.GPS_PROVIDER,
                                 MIN_TIME_BW_UPDATES,
                                 MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                        Log.d("GPS Enabled", "GPS Enabled");
+                        Log.d(TAG, "GPS Enabled");
                         if (locationManager != null) {
                             location = locationManager
                                     .getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -95,10 +100,8 @@ public final class GPSTracker implements LocationListener {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage(), e);
         }
-
-        return location;
     }
 
     public boolean isGPSEnabled() {
@@ -209,6 +212,7 @@ public final class GPSTracker implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
+        this.location = location;
     }
 
     @Override
