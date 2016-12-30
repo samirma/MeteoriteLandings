@@ -25,6 +25,8 @@
 
     <dimen name="fab_elevation">4dp</dimen>
 
+    <dimen name="forecast_detail_horizontal_padding">32dp</dimen>
+
 
     <!--
 Refer to App Widget Documentation for margin information

@@ -9,5 +9,11 @@
     <string name="add_widget">Add widget</string>
 
     <string name="action_share">Share</string>
+    <string name="mass">Mass</string>
+    <string name="nametype">Name Type</string>
+    <string name="recclass">Rec Class</string>
+    <string name="year">Year</string>
+    <string name="fall">Fall</string>
+    <string name="location">Location</string>
 
 </resources>
