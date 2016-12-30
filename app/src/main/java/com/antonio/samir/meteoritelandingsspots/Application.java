@@ -3,6 +3,7 @@ package com.antonio.samir.meteoritelandingsspots;
 
 import android.content.Context;
 
+import com.antonio.samir.meteoritelandingsspots.util.analytics.AnalyticsUtil;
 import com.facebook.stetho.Stetho;
 
 public class Application extends android.app.Application {
@@ -18,5 +19,8 @@ public class Application extends android.app.Application {
         //chrome://inspect
         Stetho.initializeWithDefaults(this);
         applicationContext = getApplicationContext();
+
+        AnalyticsUtil.start(this);
+
     }
 }
