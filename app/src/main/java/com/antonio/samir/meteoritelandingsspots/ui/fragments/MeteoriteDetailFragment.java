@@ -3,11 +3,9 @@ package com.antonio.samir.meteoritelandingsspots.ui.fragments;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.antonio.samir.meteoritelandingsspots.R;
@@ -34,8 +32,7 @@ public class MeteoriteDetailFragment extends Fragment {
     TextView location;
     @BindView(R.id.year)
     TextView year;
-    @BindView(R.id.content_detail)
-    LinearLayout contentDetail;
+
 
     @BindView(R.id.mass)
     TextView mass;
@@ -78,7 +75,7 @@ public class MeteoriteDetailFragment extends Fragment {
 
         ButterKnife.bind(this, view);
 
-        final MeteoriteService meteoriteService = MeteoriteServiceFactory.getMeteoriteService((AppCompatActivity) getActivity());
+        final MeteoriteService meteoriteService = MeteoriteServiceFactory.getMeteoriteService(getActivity());
 
         final Cursor cursor = meteoriteService.getMeteoriteById(meteoriteId);
 

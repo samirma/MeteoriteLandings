@@ -35,7 +35,8 @@
             android:authorities="com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteProvider"
             android:exported="true" />
 
-        <receiver android:name=".ui.MeteoritesAppWidget">
+        <!--Widget-->
+        <receiver android:name=".ui.widget.MeteoritesAppWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -44,6 +45,8 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/meteorites_app_widget_info" />
         </receiver>
+
+
     </application>
 
 </manifest>

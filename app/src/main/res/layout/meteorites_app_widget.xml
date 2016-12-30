@@ -1,21 +1,31 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#09C"
+    android:orientation="vertical"
     android:padding="@dimen/widget_margin">
 
-    <TextView
-        android:id="@+id/appwidget_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="8dp"
-        android:background="#09C"
-        android:contentDescription="@string/appwidget_text"
-        android:text="@string/appwidget_text"
-        android:textColor="#ffffff"
-        android:textSize="24sp"
-        android:textStyle="bold|italic" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-</RelativeLayout>
+        <ListView
+            android:id="@+id/widget_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            tools:listitem="@layout/list_item_meteorite" />
+
+        <TextView
+            android:id="@+id/widget_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="center"
+            android:text="@string/no_network"
+            android:textAppearance="?android:textAppearanceLarge" />
+    </FrameLayout>
+
+</LinearLayout>
