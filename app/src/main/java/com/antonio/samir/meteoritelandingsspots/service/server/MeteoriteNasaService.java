@@ -1,9 +1,11 @@
 package com.antonio.samir.meteoritelandingsspots.service.server;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.CursorLoader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -31,28 +33,28 @@ class MeteoriteNasaService implements MeteoriteService, android.support.v4.app.L
     private final NasaService nasaService;
     private final GPSTracker gpsTracker;
     private android.support.v4.app.LoaderManager mLoaderManager;
-    private AppCompatActivity mActivity;
+    private Context mContext;
     private MeteoriteServiceDelegate mDelegate;
     private boolean firstAttempt;
 
 
-    public MeteoriteNasaService(final AppCompatActivity activity) {
-        mActivity = activity;
-        nasaService = NasaServiceFactory.getNasaService(mActivity);
+    public MeteoriteNasaService(final Context context) {
+        mContext = context;
+        nasaService = NasaServiceFactory.getNasaService(mContext);
 
         firstAttempt = true;
 
-        gpsTracker = new GPSTracker(mActivity);
+        gpsTracker = new GPSTracker(mContext);
 
     }
 
     @Override
-    public void getMeteorites(MeteoriteServiceDelegate delegate) {
+    public void getMeteorites(MeteoriteServiceDelegate delegate, AppCompatActivity mActivity) {
         mDelegate = delegate;
 
         mLoaderManager = mActivity.getSupportLoaderManager();
 
-        final boolean hasNetWork = NetworkUtil.hasConnectivity(mActivity);
+        final boolean hasNetWork = NetworkUtil.hasConnectivity(mContext);
         if (hasNetWork) {
             mActivity.runOnUiThread(new Runnable() {
 
@@ -60,14 +62,12 @@ class MeteoriteNasaService implements MeteoriteService, android.support.v4.app.L
                 public void run() {
                     final android.support.v4.content.Loader<Object> loader = mLoaderManager.getLoader(CURSOR_LOADER_ID);
                     if (loader == null) {
-                        final android.support.v4.content.Loader<Cursor> cursorLoader = mLoaderManager.initLoader(CURSOR_LOADER_ID, null, MeteoriteNasaService.this);
-                        Log.e(TAG, String.format("%s %s %s", cursorLoader.isStarted(), cursorLoader.isAbandoned(), cursorLoader.isReset()));
+                        mLoaderManager.initLoader(CURSOR_LOADER_ID, null, MeteoriteNasaService.this);
                     } else {
                         final android.support.v4.content.Loader<Cursor> cursorLoader = mLoaderManager.restartLoader(CURSOR_LOADER_ID, null, MeteoriteNasaService.this);
                         cursorLoader.startLoading();
                         cursorLoader.forceLoad();
                         cursorLoader.getContext().getContentResolver().notifyChange(MeteoriteProvider.Meteorites.LISTS, null);
-                        Log.e(TAG, String.format("%s %s %s", cursorLoader.isStarted(), cursorLoader.isAbandoned(), cursorLoader.isReset()));
 
                     }
                 }
@@ -86,7 +86,7 @@ class MeteoriteNasaService implements MeteoriteService, android.support.v4.app.L
 
     @Override
     public void remove() {
-        //mLoaderManager.destroyLoader(CURSOR_LOADER_ID);
+        mLoaderManager.destroyLoader(CURSOR_LOADER_ID);
     }
 
     @Override
@@ -94,7 +94,7 @@ class MeteoriteNasaService implements MeteoriteService, android.support.v4.app.L
 
         final Uri url = MeteoriteProvider.Meteorites.withId(meteoriteId);
 
-        final ContentResolver contentResolver = mActivity.getContentResolver();
+        final ContentResolver contentResolver = mContext.getContentResolver();
         final Cursor cursor = contentResolver.query(url,
                 new String[]{
                         ID
@@ -123,6 +123,13 @@ class MeteoriteNasaService implements MeteoriteService, android.support.v4.app.L
         mDelegate.onPreExecute();
         // This narrows the return to only the stocks that are most current.
 
+        final CursorLoader cursorLoader = getMeteoriteListCursorLoader();
+        return cursorLoader;
+    }
+
+    @NonNull
+    @Override
+    public CursorLoader getMeteoriteListCursorLoader() {
         String sortOrder = null;
 
         final boolean gpsEnabled = gpsTracker.isGPSEnabled();
@@ -133,14 +140,13 @@ class MeteoriteNasaService implements MeteoriteService, android.support.v4.app.L
             sortOrder = String.format("ABS(reclat - %s ) + ABS(reclong - %s) ASC", latitude, longitude);
         }
 
-        final CursorLoader cursorLoader = new CursorLoader(mActivity, MeteoriteProvider.Meteorites.LISTS,
+        return new CursorLoader(mContext, MeteoriteProvider.Meteorites.LISTS,
                 new String[]{ID, NAME, YEAR
                         , RECLONG
                         , RECLAT},
                 null,
                 null,
                 sortOrder);
-        return cursorLoader;
     }
 
     @Override
@@ -149,7 +155,7 @@ class MeteoriteNasaService implements MeteoriteService, android.support.v4.app.L
             if (data == null || data.getCount() < 1) {
                 Log.i(TAG, "No data found starting to recovery service");
                 if (firstAttempt) {
-                    final MeteoriteNasaAsyncTaskService taskService = new MeteoriteNasaAsyncTaskService(nasaService, mActivity) {
+                    final MeteoriteNasaAsyncTaskService taskService = new MeteoriteNasaAsyncTaskService(nasaService, mContext) {
                         @Override
                         protected void onPostExecute(MeteoriteServerResult result) {
                             super.onPostExecute(result);

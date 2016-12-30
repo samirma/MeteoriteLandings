@@ -27,7 +27,7 @@ public class MeteoriteListPresenter implements MeteoriteServiceDelegate {
 
         mContext = view.getContext();
 
-        meteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService((AppCompatActivity) mContext);
+        meteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(mContext);
 
     }
 
@@ -61,7 +61,7 @@ public class MeteoriteListPresenter implements MeteoriteServiceDelegate {
     }
 
     private void recoverMeteorites() {
-        meteoriteFetchService.getMeteorites(this);
+        meteoriteFetchService.getMeteorites(this, (AppCompatActivity) mView.getContext());
     }
 
     public void removeView(final MeteoriteListView view) {

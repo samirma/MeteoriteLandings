@@ -58,7 +58,7 @@ public class MeteoriteServiceTestTest {
 
         final MeteoriteService MeteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(activity);
 
-        MeteoriteFetchService.getMeteorites(meteoriteTestDelegate);
+        MeteoriteFetchService.getMeteorites(meteoriteTestDelegate, mActivity);
 
         signal.await(TIMEOUT, TimeUnit.SECONDS);
 
@@ -82,7 +82,7 @@ public class MeteoriteServiceTestTest {
 
         final MeteoriteTestDelegate meteoriteTestDelegate = new MeteoriteTestDelegate(onPreExecuted, onPostExecute, unableToFetch, fail, signal);
         final MeteoriteService MeteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(activity);
-        MeteoriteFetchService.getMeteorites(meteoriteTestDelegate);
+        MeteoriteFetchService.getMeteorites(meteoriteTestDelegate, mActivity);
 
         signal.await(TIMEOUT, TimeUnit.SECONDS);
 
@@ -105,7 +105,7 @@ public class MeteoriteServiceTestTest {
 
         final MeteoriteTestDelegate meteoriteTestDelegate = new MeteoriteTestDelegate(onPreExecuted, onPostExecute, unableToFetch, fail, signal);
         final MeteoriteService MeteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(activity);
-        MeteoriteFetchService.getMeteorites(meteoriteTestDelegate);
+        MeteoriteFetchService.getMeteorites(meteoriteTestDelegate, mActivity);
 
         signal.await(TIMEOUT, TimeUnit.SECONDS);
 
