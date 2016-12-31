@@ -46,6 +46,9 @@
         </receiver>
 
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyB448gjrib2Y6ewcpIj0JaudkhNZdyCB94" />
     </application>
 
 </manifest>
