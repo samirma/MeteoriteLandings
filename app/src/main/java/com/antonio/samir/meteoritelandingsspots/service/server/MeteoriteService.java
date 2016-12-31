@@ -17,4 +17,8 @@ public interface MeteoriteService {
 
     @NonNull
     CursorLoader getMeteoriteListCursorLoader();
+
+    String getOrderString();
+
+    String[] getProjection();
 }
