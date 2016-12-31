@@ -5,16 +5,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.antonio.samir.meteoritelandingsspots.R;
 import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListPresenter;
 import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListView;
+import com.antonio.samir.meteoritelandingsspots.ui.fragments.MeteoriteDetailFragment;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.MeteoriteAdapter;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelector;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelectorFactory;
@@ -31,9 +34,9 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     public static final String ITEM_SELECTED = "ITEM_SELECTED";
 
     @BindView(R.id.recycler_view)
-    RecyclerView recyclerView;
+    RecyclerView mRecyclerView;
 
-    @BindView(R.id.message)
+    //@BindView(R.id.message)
     TextView message;
 
     @BindView(R.id.toolbar)
@@ -45,6 +48,8 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     private String selectedMeteorite;
 
     private ProgressDialog fetchingDialog;
+    private FrameLayout frameLayout;
+    private MeteoriteDetailFragment meteoriteDetailFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,13 +66,15 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
         meteoriteAdapter = new MeteoriteAdapter(this, null, meteoriteSelector);
         meteoriteAdapter.setHasStableIds(true);
-        recyclerView.setAdapter(meteoriteAdapter);
+        mRecyclerView.setAdapter(meteoriteAdapter);
+
+        frameLayout = (FrameLayout) findViewById(R.id.fragment);
 
         int columnCount = getResources().getInteger(R.integer.list_column_count);
 
         sglm =
                 new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(sglm);
+        mRecyclerView.setLayoutManager(sglm);
 
         presenter = new MeteoriteListPresenter(this);
 
@@ -128,8 +135,8 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
     @Override
     public void setMeteorites(Cursor meteorites) {
-        recyclerView.setVisibility(View.VISIBLE);
-        message.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.VISIBLE);
+        //message.setVisibility(View.GONE);
         meteoriteAdapter.swapCursor(meteorites);
         dismissDialog();
     }
@@ -147,7 +154,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
     @Override
     public void error(final String messageString) {
-        recyclerView.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.GONE);
         message.setVisibility(View.VISIBLE);
         message.setText(messageString);
         dismissDialog();
@@ -185,6 +192,21 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     @Override
     public void selectLandscape(final String meteorite) {
 
+        if (selectedMeteorite == null) {
+            frameLayout.setVisibility(View.VISIBLE);
+            sglm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+            mRecyclerView.setLayoutManager(sglm);
+
+            final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            meteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteorite);
+            fragmentTransaction.add(R.id.fragment, meteoriteDetailFragment);
+            fragmentTransaction.commit();
+
+        } else {
+            meteoriteDetailFragment.setMeteorite(meteorite);
+        }
+
+        selectedMeteorite = meteorite;
     }
 
     @Override
