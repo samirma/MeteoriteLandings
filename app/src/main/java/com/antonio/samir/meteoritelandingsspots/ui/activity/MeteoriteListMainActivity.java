@@ -23,6 +23,8 @@ import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.Meteori
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelectorFactory;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelectorView;
 
+import org.apache.commons.lang3.StringUtils;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -84,9 +86,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
         final String selectedMeteorite = getPreviousSelectedMeteorite(savedInstanceState);
 
-        final boolean noMeteoriteSelected = selectedMeteorite == null;
-
-        if (!noMeteoriteSelected) {
+        if (StringUtils.isNoneBlank(selectedMeteorite)) {
             meteoriteSelector.selectItemId(selectedMeteorite);
         }
 
@@ -103,11 +103,12 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         String meteorite = null;
 
         if (savedInstanceState != null) {
-            meteorite = savedInstanceState.getParcelable(ITEM_SELECTED);
+            meteorite = savedInstanceState.getString(ITEM_SELECTED);
         }
 
-        if (meteorite == null) {
-            meteorite = getIntent().getParcelableExtra(ITEM_SELECTED);
+        final Bundle extras = getIntent().getExtras();
+        if (meteorite == null && extras != null) {
+            meteorite = extras.getString(ITEM_SELECTED);
         }
 
         return meteorite;
