@@ -54,6 +54,8 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
     private double lat;
     private double log;
     private String meteoriteName;
+    private MeteoriteService meteoriteService;
+    private GoogleMap map;
 
     /**
      * Create a MeteoriteDetailFragment to show the meteorite param
@@ -101,7 +103,38 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
         }
 
 
-        final MeteoriteService meteoriteService = MeteoriteServiceFactory.getMeteoriteService(getActivity());
+        meteoriteService = MeteoriteServiceFactory.getMeteoriteService(getActivity());
+
+        setMeteorite(meteoriteId);
+
+        return view;
+    }
+
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+        this.map = map;
+
+        setupMap();
+
+    }
+
+    public void setupMap() {
+        map.clear();
+
+        final LatLng latLng = new LatLng(lat, log);
+
+        map.addMarker(new MarkerOptions().position(
+                latLng).title(meteoriteName));
+
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 30));
+
+        // Zoom in, animating the camera.
+        map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+    }
+
+    public void setMeteorite(String meteoriteId) {
+        this.meteoriteId = meteoriteId;
 
         final Cursor cursor = meteoriteService.getMeteoriteById(meteoriteId);
 
@@ -136,21 +169,8 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
 
         cursor.close();
 
-        return view;
-    }
-
-
-    @Override
-    public void onMapReady(GoogleMap map) {
-        final LatLng latLng = new LatLng(lat, log);
-
-        map.addMarker(new MarkerOptions().position(
-                latLng).title(meteoriteName));
-
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 30));
-
-        // Zoom in, animating the camera.
-        map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
-
+        if (map != null) {
+            setupMap();
+        }
     }
 }
