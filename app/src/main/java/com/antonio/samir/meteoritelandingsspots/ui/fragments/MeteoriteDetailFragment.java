@@ -14,6 +14,12 @@ import com.antonio.samir.meteoritelandingsspots.R;
 import com.antonio.samir.meteoritelandingsspots.service.server.AddressService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceFactory;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,9 +27,11 @@ import butterknife.ButterKnife;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.MASS;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.NAME;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.RECCLASS;
+import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.RECLAT;
+import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.RECLONG;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.YEAR;
 
-public class MeteoriteDetailFragment extends Fragment {
+public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallback {
 
     public static final String METEORITE = "METEORITE";
     public static final String TAG = MeteoriteDetailFragment.class.getSimpleName();
@@ -43,6 +51,9 @@ public class MeteoriteDetailFragment extends Fragment {
     TextView recclass;
 
     private String meteoriteId;
+    private double lat;
+    private double log;
+    private String meteoriteName;
 
     /**
      * Create a MeteoriteDetailFragment to show the meteorite param
@@ -73,6 +84,11 @@ public class MeteoriteDetailFragment extends Fragment {
 
         ButterKnife.bind(this, view);
 
+
+        SupportMapFragment mapFragment = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map));
+        mapFragment.getMapAsync(this);
+
+
         AppCompatActivity activity = (AppCompatActivity) getActivity();
 
         Toolbar toolbarView = (Toolbar) view.findViewById(R.id.toolbar);
@@ -89,7 +105,7 @@ public class MeteoriteDetailFragment extends Fragment {
 
         final Cursor cursor = meteoriteService.getMeteoriteById(meteoriteId);
 
-        final String meteoriteName = cursor.getString(cursor.getColumnIndex(NAME));
+        meteoriteName = cursor.getString(cursor.getColumnIndex(NAME));
 
         final AddressService addressService = new AddressService(getActivity().getContentResolver());
 
@@ -100,6 +116,10 @@ public class MeteoriteDetailFragment extends Fragment {
         final String recclass = cursor.getString(cursor.getColumnIndex(RECCLASS));
 
         final String mass = cursor.getString(cursor.getColumnIndex(MASS));
+
+        lat = cursor.getDouble(cursor.getColumnIndex(RECLAT));
+
+        log = cursor.getDouble(cursor.getColumnIndex(RECLONG));
 
         this.title.setText(meteoriteName);
         this.location.setText(address);
@@ -120,5 +140,17 @@ public class MeteoriteDetailFragment extends Fragment {
     }
 
 
+    @Override
+    public void onMapReady(GoogleMap map) {
+        final LatLng latLng = new LatLng(lat, log);
 
+        map.addMarker(new MarkerOptions().position(
+                latLng).title(meteoriteName));
+
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 30));
+
+        // Zoom in, animating the camera.
+        map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+
+    }
 }
