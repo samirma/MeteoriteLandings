@@ -15,5 +15,6 @@
     <string name="year">Year</string>
     <string name="fall">Fall</string>
     <string name="location">Location</string>
+    <string name="stringNull">null</string>
 
 </resources>

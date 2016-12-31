@@ -3,6 +3,8 @@ package com.antonio.samir.meteoritelandingsspots.ui.fragments;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +20,6 @@ import butterknife.ButterKnife;
 
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.MASS;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.NAME;
-import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.NAMETYPE;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.RECCLASS;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.YEAR;
 
@@ -37,9 +38,6 @@ public class MeteoriteDetailFragment extends Fragment {
     @BindView(R.id.mass)
     TextView mass;
 
-
-    @BindView(R.id.nametype)
-    TextView nametype;
 
     @BindView(R.id.recclass)
     TextView recclass;
@@ -75,6 +73,18 @@ public class MeteoriteDetailFragment extends Fragment {
 
         ButterKnife.bind(this, view);
 
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+
+        Toolbar toolbarView = (Toolbar) view.findViewById(R.id.toolbar);
+
+        if (null != toolbarView) {
+            activity.setSupportActionBar(toolbarView);
+
+            activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
+            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+
         final MeteoriteService meteoriteService = MeteoriteServiceFactory.getMeteoriteService(getActivity());
 
         final Cursor cursor = meteoriteService.getMeteoriteById(meteoriteId);
@@ -87,8 +97,6 @@ public class MeteoriteDetailFragment extends Fragment {
 
         final String year = cursor.getString(cursor.getColumnIndex(YEAR));
 
-        final String nametype = cursor.getString(cursor.getColumnIndex(NAMETYPE));
-
         final String recclass = cursor.getString(cursor.getColumnIndex(RECCLASS));
 
         final String mass = cursor.getString(cursor.getColumnIndex(MASS));
@@ -98,7 +106,6 @@ public class MeteoriteDetailFragment extends Fragment {
         this.year.setText(year);
         this.recclass.setText(recclass);
         this.mass.setText(mass);
-        this.nametype.setText(nametype);
 
 
         this.title.setContentDescription(meteoriteName);
@@ -106,7 +113,6 @@ public class MeteoriteDetailFragment extends Fragment {
         this.year.setContentDescription(year);
         this.recclass.setContentDescription(recclass);
         this.mass.setContentDescription(mass);
-        this.nametype.setContentDescription(nametype);
 
         cursor.close();
 
