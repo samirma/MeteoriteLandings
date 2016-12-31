@@ -21,6 +21,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.apache.commons.lang3.StringUtils;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -155,7 +157,10 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
         log = cursor.getDouble(cursor.getColumnIndex(RECLONG));
 
         this.title.setText(meteoriteName);
+
         this.location.setText(address);
+        setLocationText(address, this.location);
+
         this.year.setText(year);
         this.recclass.setText(recclass);
         this.mass.setText(mass);
@@ -173,4 +178,16 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
             setupMap();
         }
     }
+
+    public void setLocationText(final String address, final TextView text) {
+        final int visibility;
+        if (StringUtils.isNotEmpty(address)) {
+            text.setText(address);
+            visibility = View.VISIBLE;
+        } else {
+            visibility = View.GONE;
+        }
+        text.setVisibility(visibility);
+    }
+
 }

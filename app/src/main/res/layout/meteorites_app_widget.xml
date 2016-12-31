@@ -31,7 +31,7 @@
             android:layout_height="match_parent"
             android:fontFamily="sans-serif-condensed"
             android:gravity="center"
-            android:text="@string/no_network"
+            android:text="@string/general_error"
             android:textAppearance="?android:textAppearanceLarge" />
     </FrameLayout>
 

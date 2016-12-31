@@ -7,8 +7,8 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -39,11 +39,10 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     //@BindView(R.id.message)
     TextView message;
 
-    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     private MeteoriteListPresenter presenter;
-    private StaggeredGridLayoutManager sglm;
+    private GridLayoutManager sglm;
     private MeteoriteAdapter meteoriteAdapter;
     private String selectedMeteorite;
 
@@ -58,7 +57,12 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
         ButterKnife.bind(this);
 
-        setSupportActionBar(toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        if (null != toolbar) {
+            setSupportActionBar(toolbar);
+        }
+
 
         final boolean isLandscape = getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE;
 
@@ -73,7 +77,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         int columnCount = getResources().getInteger(R.integer.list_column_count);
 
         sglm =
-                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL);
+                new GridLayoutManager(this, columnCount);
         mRecyclerView.setLayoutManager(sglm);
 
         presenter = new MeteoriteListPresenter(this);
@@ -194,7 +198,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
         if (selectedMeteorite == null) {
             frameLayout.setVisibility(View.VISIBLE);
-            sglm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+            sglm = new GridLayoutManager(this, 1);
             mRecyclerView.setLayoutManager(sglm);
 
             final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();

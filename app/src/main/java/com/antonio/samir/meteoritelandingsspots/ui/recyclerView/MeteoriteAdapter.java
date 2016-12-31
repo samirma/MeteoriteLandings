@@ -15,6 +15,8 @@ import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteProv
 import com.antonio.samir.meteoritelandingsspots.service.server.AddressService;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelector;
 
+import org.apache.commons.lang3.StringUtils;
+
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.ID;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.NAME;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.YEAR;
@@ -101,15 +103,26 @@ public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteor
             public void onChange(boolean selfChange) {
                 super.onChange(selfChange);
                 final String address = addressService.getAddressFromId(idString);
-                viewHolder.location.setText(address);
+                setLocationText(address, viewHolder);
             }
         };
 
-        viewHolder.location.setText(address);
+        setLocationText(address, viewHolder);
         viewHolder.location.setContentDescription(address);
 
         contentResolver.registerContentObserver(uri, true, viewHolder.observer);
 
+    }
+
+    public void setLocationText(final String address, final ViewHolderMeteorite viewHolder) {
+        final int visibility;
+        if (StringUtils.isNotEmpty(address)) {
+            viewHolder.location.setText(address);
+            visibility = View.VISIBLE;
+        } else {
+            visibility = View.GONE;
+        }
+        viewHolder.location.setVisibility(visibility);
     }
 
     @Override
