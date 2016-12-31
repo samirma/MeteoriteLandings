@@ -25,6 +25,7 @@ public final class GPSTracker implements LocationListener {
     private static final long MIN_TIME_BW_UPDATES = 1; // 1 minute
     private static final String TAG = GPSTracker.class.getSimpleName();
     private static boolean permissionRequested = false;
+    private static Location location; // location
     private final Context mContext;
     // flag for GPS status
     public boolean isGPSEnabled = false;
@@ -34,7 +35,6 @@ public final class GPSTracker implements LocationListener {
     boolean isNetworkEnabled = false;
     // flag for GPS status
     boolean canGetLocation = false;
-    Location location; // location
     double latitude; // latitude
     double longitude; // longitude
 
@@ -49,7 +49,11 @@ public final class GPSTracker implements LocationListener {
      * @return
      */
     public Location getLocation() {
-        enableGPS();
+        try {
+            enableGPS();
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
         return location;
     }
 
@@ -219,7 +223,7 @@ public final class GPSTracker implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        this.location = location;
+        GPSTracker.location = location;
     }
 
     @Override

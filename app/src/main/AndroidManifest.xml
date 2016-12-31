@@ -45,6 +45,11 @@
                 android:resource="@xml/meteorites_app_widget_info" />
         </receiver>
 
+        <service
+            android:name=".ui.widget.DetailWidgetRemoteViewsService"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

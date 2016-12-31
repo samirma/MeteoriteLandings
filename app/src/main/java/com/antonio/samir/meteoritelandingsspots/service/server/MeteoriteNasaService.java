@@ -27,8 +27,10 @@ import static com.antonio.samir.meteoritelandingsspots.service.repository.Meteor
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.YEAR;
 
 class MeteoriteNasaService implements MeteoriteService, android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor> {
+    public static final String[] PROJECTION = {ID, NAME, YEAR
+            , RECLONG
+            , RECLAT};
     private static final int CURSOR_LOADER_ID = 1;
-
     private static final String TAG = MeteoriteNasaService.class.getSimpleName();
     private final NasaService nasaService;
     private final GPSTracker gpsTracker;
@@ -130,6 +132,17 @@ class MeteoriteNasaService implements MeteoriteService, android.support.v4.app.L
     @NonNull
     @Override
     public CursorLoader getMeteoriteListCursorLoader() {
+
+        String sortOrder = getOrderString();
+
+        return new CursorLoader(mContext, MeteoriteProvider.Meteorites.LISTS,
+                PROJECTION,
+                null,
+                null,
+                sortOrder);
+    }
+
+    public String getOrderString() {
         String sortOrder = null;
 
         final boolean gpsEnabled = gpsTracker.isGPSEnabled();
@@ -139,14 +152,12 @@ class MeteoriteNasaService implements MeteoriteService, android.support.v4.app.L
             final double longitude = gpsTracker.getLongitude();
             sortOrder = String.format("ABS(reclat - %s ) + ABS(reclong - %s) ASC", latitude, longitude);
         }
+        return sortOrder;
+    }
 
-        return new CursorLoader(mContext, MeteoriteProvider.Meteorites.LISTS,
-                new String[]{ID, NAME, YEAR
-                        , RECLONG
-                        , RECLAT},
-                null,
-                null,
-                sortOrder);
+    @Override
+    public String[] getProjection() {
+        return PROJECTION;
     }
 
     @Override

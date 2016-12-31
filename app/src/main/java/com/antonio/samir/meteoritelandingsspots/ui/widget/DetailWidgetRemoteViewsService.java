@@ -11,6 +11,7 @@ import android.widget.RemoteViewsService;
 
 import com.antonio.samir.meteoritelandingsspots.R;
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns;
+import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteProvider;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceFactory;
 import com.antonio.samir.meteoritelandingsspots.ui.activity.MeteoriteDetailActivity;
@@ -47,7 +48,11 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
 
                 final MeteoriteService meteoriteService = MeteoriteServiceFactory.getMeteoriteService(getBaseContext());
 
-                this.cursor = meteoriteService.getMeteoriteListCursorLoader().loadInBackground();
+                cursor = getContentResolver().query(MeteoriteProvider.Meteorites.LISTS,
+                        meteoriteService.getProjection(),
+                        null,
+                        null,
+                        meteoriteService.getOrderString());
 
                 Binder.restoreCallingIdentity(identityToken);
             }
