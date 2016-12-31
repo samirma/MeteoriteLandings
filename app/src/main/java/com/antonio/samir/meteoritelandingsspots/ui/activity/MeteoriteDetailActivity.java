@@ -5,31 +5,21 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import com.antonio.samir.meteoritelandingsspots.R;
 import com.antonio.samir.meteoritelandingsspots.ui.fragments.MeteoriteDetailFragment;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 import static com.antonio.samir.meteoritelandingsspots.ui.activity.MeteoriteListMainActivity.ITEM_SELECTED;
 
 public class MeteoriteDetailActivity extends AppCompatActivity {
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
     private String selectedMeteorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meteorite_detail);
-
-        ButterKnife.bind(this);
-
-        setSupportActionBar(toolbar);
 
         final boolean isLandscape = getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE;
 
