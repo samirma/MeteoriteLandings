@@ -34,11 +34,12 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         MeteoriteSelectorView {
 
     public static final String ITEM_SELECTED = "ITEM_SELECTED";
+    public static final String SCROLL_POSITION = "SCROLL_POSITION";
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
-    //@BindView(R.id.message)
+    @BindView(R.id.message)
     TextView message;
 
     Toolbar toolbar;
@@ -51,6 +52,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     private ProgressDialog fetchingDialog;
     private FrameLayout frameLayout;
     private MeteoriteDetailFragment meteoriteDetailFragment;
+    private Bundle savedInstanceState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,12 +92,16 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
             meteoriteSelector.selectItemId(selectedMeteorite);
         }
 
+        this.savedInstanceState = savedInstanceState;
+
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         presenter.startToRecoverMeteorites();
+
     }
 
     private String getPreviousSelectedMeteorite(Bundle savedInstanceState) {
@@ -141,9 +147,16 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     @Override
     public void setMeteorites(Cursor meteorites) {
         mRecyclerView.setVisibility(View.VISIBLE);
-        //message.setVisibility(View.GONE);
+        message.setVisibility(View.GONE);
         meteoriteAdapter.swapCursor(meteorites);
         dismissDialog();
+
+        if (savedInstanceState != null) {
+            final int anInt = savedInstanceState.getInt(SCROLL_POSITION, -1);
+            if (anInt > 0) {
+                sglm.scrollToPosition(anInt);
+            }
+        }
     }
 
 
@@ -231,8 +244,17 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
             savedInstanceState.putString(ITEM_SELECTED, selectedMeteorite);
         }
 
+        int lastFirstVisiblePosition = sglm.findFirstCompletelyVisibleItemPosition();
+        savedInstanceState.putInt(SCROLL_POSITION, lastFirstVisiblePosition);
+
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        this.savedInstanceState = savedInstanceState;
     }
 
     @Override
