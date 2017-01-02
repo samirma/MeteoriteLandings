@@ -12,9 +12,12 @@ import android.widget.RemoteViewsService;
 import com.antonio.samir.meteoritelandingsspots.R;
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns;
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteProvider;
+import com.antonio.samir.meteoritelandingsspots.service.server.AddressService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceFactory;
 import com.antonio.samir.meteoritelandingsspots.ui.activity.MeteoriteDetailActivity;
+
+import org.apache.commons.lang3.StringUtils;
 
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.NAME;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.YEAR;
@@ -27,6 +30,7 @@ import static com.antonio.samir.meteoritelandingsspots.ui.activity.MeteoriteList
 public class DetailWidgetRemoteViewsService extends RemoteViewsService {
     private static final int ID = 0;
     public final String LOG_TAG = DetailWidgetRemoteViewsService.class.getSimpleName();
+    private AddressService addressService;
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
@@ -35,6 +39,8 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
 
             @Override
             public void onCreate() {
+
+                addressService = new AddressService(getContentResolver());
 
             }
 
@@ -77,7 +83,7 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                     return null;
                 }
                 RemoteViews views = new RemoteViews(getPackageName(),
-                        R.layout.list_item_meteorite);
+                        R.layout.meteorite_detail_item);
 
                 final String meteoriteName = cursor.getString(cursor.getColumnIndex(NAME));
                 final String year = cursor.getString(cursor.getColumnIndex(YEAR));
@@ -87,8 +93,7 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
 
                 views.setTextViewText(R.id.title, meteoriteName);
                 views.setTextViewText(R.id.year, year);
-                views.setTextViewText(R.id.location, "");
-
+                setLocationText(addressService.getAddressFromId(idString), views);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
                     setRemoteContentDescription(views, meteoriteName);
@@ -109,7 +114,7 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
 
             @Override
             public RemoteViews getLoadingView() {
-                return new RemoteViews(getPackageName(), R.layout.list_item_meteorite);
+                return new RemoteViews(getPackageName(), R.layout.meteorite_detail_item);
             }
 
             @Override
@@ -130,4 +135,16 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
             }
         };
     }
+
+    public void setLocationText(final String address, RemoteViews views) {
+        String text = "";
+        if (StringUtils.isNotEmpty(address)) {
+            text = address;
+        } else {
+            text = "";
+        }
+        views.setTextViewText(R.id.location, text);
+
+    }
+
 }
