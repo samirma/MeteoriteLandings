@@ -162,29 +162,27 @@ class MeteoriteNasaService implements MeteoriteService, android.support.v4.app.L
 
     @Override
     public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
-        {
-            if (data == null || data.getCount() < 1) {
-                Log.i(TAG, "No data found starting to recovery service");
-                if (firstAttempt) {
-                    final MeteoriteNasaAsyncTaskService taskService = new MeteoriteNasaAsyncTaskService(nasaService, mContext) {
-                        @Override
-                        protected void onPostExecute(MeteoriteServerResult result) {
-                            super.onPostExecute(result);
-                            Log.i(TAG, "Recovery service done");
-                            //Reloading LoaderManager in order to get the data from data base
-                            mLoaderManager.restartLoader(CURSOR_LOADER_ID, null, MeteoriteNasaService.this);
-                        }
-                    };
-                    firstAttempt = false;
-                    taskService.execute();
-                } else {
-                    mDelegate.unableToFetch();
-                }
-            } else {
-                Log.i(TAG, String.format("Data count %s", data.getCount()));
-                mDelegate.setCursor(data);
+
+        if (data == null || data.getCount() < 1) {
+            Log.i(TAG, "No data found starting to recovery service");
+            if (firstAttempt) {
+                final MeteoriteNasaAsyncTaskService taskService = new MeteoriteNasaAsyncTaskService(nasaService, mContext) {
+                    @Override
+                    protected void onPostExecute(MeteoriteServerResult result) {
+                        super.onPostExecute(result);
+                        Log.i(TAG, "Recovery service done");
+                        //Reloading LoaderManager in order to get the data from data base
+                        mLoaderManager.restartLoader(CURSOR_LOADER_ID, null, MeteoriteNasaService.this);
+                    }
+                };
+                firstAttempt = false;
+                taskService.execute();
             }
+        } else {
+            Log.i(TAG, String.format("Data count %s", data.getCount()));
+            mDelegate.setCursor(data);
         }
+
     }
 
     @Override
