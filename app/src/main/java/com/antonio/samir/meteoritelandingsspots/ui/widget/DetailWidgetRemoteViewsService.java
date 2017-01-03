@@ -16,6 +16,7 @@ import com.antonio.samir.meteoritelandingsspots.service.server.AddressService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceFactory;
 import com.antonio.samir.meteoritelandingsspots.ui.activity.MeteoriteDetailActivity;
+import com.antonio.samir.meteoritelandingsspots.util.analytics.AnalyticsUtil;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -39,6 +40,8 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
 
             @Override
             public void onCreate() {
+
+                AnalyticsUtil.logEvent("Widget", "Widget started");
 
                 addressService = new AddressService(getContentResolver());
 
