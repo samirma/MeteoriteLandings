@@ -159,12 +159,6 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         }
     }
 
-
-    @Override
-    public void errorFeitch() {
-        error(getString(R.string.general_error));
-    }
-
     @Override
     public void unableToFetch() {
         error(getString(R.string.no_network));
@@ -183,24 +177,15 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         meteoriteAdapter.resetData();
     }
 
-    @Override
-    public void showDatedMessage() {
-
-    }
-
-    @Override
-    public void hideDatedMessage() {
-
-    }
 
     @Override
     public void showList() {
-
+        mRecyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideList() {
-
+        mRecyclerView.setVisibility(View.GONE);
     }
 
 

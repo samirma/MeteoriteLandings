@@ -9,8 +9,6 @@ public interface MeteoriteService {
 
     void getMeteorites(MeteoriteServiceDelegate delegate, AppCompatActivity mActivity);
 
-    boolean isDated();
-
     void remove();
 
     Cursor getMeteoriteById(String meteoriteId);

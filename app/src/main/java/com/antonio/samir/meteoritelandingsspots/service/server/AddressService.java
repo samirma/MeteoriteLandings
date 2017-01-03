@@ -21,9 +21,6 @@ import java.util.concurrent.TimeUnit;
 
 import static com.antonio.samir.meteoritelandingsspots.service.repository.AddressColumns.ADDRESS;
 
-/**
- * Created by samir on 12/23/16.
- */
 
 public class AddressService {
 
