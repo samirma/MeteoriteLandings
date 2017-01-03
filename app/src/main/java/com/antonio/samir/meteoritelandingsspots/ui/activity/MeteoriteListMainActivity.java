@@ -63,7 +63,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        if (null != toolbar) {
+        if (toolbar != null) {
             setSupportActionBar(toolbar);
         }
 
