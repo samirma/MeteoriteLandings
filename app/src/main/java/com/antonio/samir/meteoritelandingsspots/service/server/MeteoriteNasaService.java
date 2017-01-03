@@ -81,10 +81,6 @@ class MeteoriteNasaService implements MeteoriteService, android.support.v4.app.L
 
     }
 
-    @Override
-    public boolean isDated() {
-        return false;
-    }
 
     @Override
     public void remove() {

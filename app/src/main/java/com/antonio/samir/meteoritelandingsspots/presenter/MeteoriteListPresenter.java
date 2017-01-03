@@ -80,15 +80,8 @@ public class MeteoriteListPresenter implements MeteoriteServiceDelegate {
         if (isNotEmpty) {
             mView.setMeteorites(data);
             mView.showList();
-            final boolean dated = meteoriteFetchService.isDated();
-            if (dated) {
-                mView.showDatedMessage();
-            } else {
-                mView.hideDatedMessage();
-            }
         } else {
             mView.hideList();
-            mView.hideDatedMessage();
         }
 
         if (!NetworkUtil.hasConnectivity(mContext)) {
