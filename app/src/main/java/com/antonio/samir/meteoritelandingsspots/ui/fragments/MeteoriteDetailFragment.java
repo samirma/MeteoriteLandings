@@ -14,6 +14,7 @@ import com.antonio.samir.meteoritelandingsspots.R;
 import com.antonio.samir.meteoritelandingsspots.service.server.AddressService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceFactory;
+import com.antonio.samir.meteoritelandingsspots.util.analytics.AnalyticsUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -177,6 +178,10 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
         if (map != null) {
             setupMap();
         }
+
+        AnalyticsUtil.logEvent("Detail", String.format("%s detail", meteoriteName));
+
+
     }
 
     public void setLocationText(final String address, final TextView text) {
