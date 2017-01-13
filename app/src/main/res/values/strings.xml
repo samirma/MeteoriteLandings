@@ -8,7 +8,7 @@
     <string name="appwidget_text">EXAMPLE</string>
 
     <string name="action_share">Share</string>
-    <string name="mass">Mass</string>
+    <string name="mass">Mass (g)</string>
     <string name="nametype">Name Type</string>
     <string name="recclass">Rec Class</string>
     <string name="year">Year</string>
