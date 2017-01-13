@@ -94,13 +94,8 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
         this.savedInstanceState = savedInstanceState;
 
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         presenter.startToRecoverMeteorites();
+
 
     }
 
@@ -242,10 +237,4 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         this.savedInstanceState = savedInstanceState;
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        final MeteoriteListView view = this;
-        presenter.removeView(view);
-    }
 }
