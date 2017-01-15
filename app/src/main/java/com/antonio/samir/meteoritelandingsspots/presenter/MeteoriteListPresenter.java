@@ -18,12 +18,12 @@ import com.antonio.samir.meteoritelandingsspots.util.NetworkUtil;
 public class MeteoriteListPresenter implements MeteoriteServiceDelegate {
 
     private static final String TAG = MeteoriteListPresenter.class.getSimpleName();
+    private static MeteoriteListView mView;
     private final Context mContext;
     private final MeteoriteService meteoriteFetchService;
-    private MeteoriteListView mView;
 
     public MeteoriteListPresenter(MeteoriteListView view) {
-        this.mView = view;
+        mView = view;
 
         mContext = view.getContext();
 
