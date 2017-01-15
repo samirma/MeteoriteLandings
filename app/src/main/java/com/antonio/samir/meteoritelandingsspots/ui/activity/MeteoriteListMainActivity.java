@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -35,6 +36,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
     public static final String ITEM_SELECTED = "ITEM_SELECTED";
     public static final String SCROLL_POSITION = "SCROLL_POSITION";
+    public static final String TAG = MeteoriteListMainActivity.class.getSimpleName();
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
@@ -118,9 +120,13 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
 
     private void dismissDialog() {
-        if (fetchingDialog != null) {
-            fetchingDialog.dismiss();
-            fetchingDialog = null;
+        try {
+            if (fetchingDialog != null && fetchingDialog.isShowing()) {
+                fetchingDialog.dismiss();
+                fetchingDialog = null;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
         }
     }
 
@@ -134,8 +140,12 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
     @Override
     public void onPreExecute() {
-        if (fetchingDialog == null) {
-            fetchingDialog = ProgressDialog.show(this, "", getString(R.string.load), true);
+        try {
+            if (fetchingDialog == null) {
+                fetchingDialog = ProgressDialog.show(this, "", getString(R.string.load), true);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
         }
     }
 
@@ -237,4 +247,8 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         this.savedInstanceState = savedInstanceState;
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
 }

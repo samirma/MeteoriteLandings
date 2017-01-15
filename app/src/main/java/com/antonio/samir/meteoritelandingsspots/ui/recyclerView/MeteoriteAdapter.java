@@ -19,6 +19,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.ID;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.NAME;
+import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.RECLAT;
+import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.RECLONG;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.YEAR;
 
 /**
@@ -74,6 +76,10 @@ public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteor
         final String meteoriteName = cursor.getString(cursor.getColumnIndex(NAME));
         final String year = cursor.getString(cursor.getColumnIndex(YEAR));
 
+        final String reclat = cursor.getString(cursor.getColumnIndex(RECLAT));
+        final String reclong = cursor.getString(cursor.getColumnIndex(RECLONG));
+
+
         final int id = cursor.getColumnIndex(ID);
         final String idString = cursor.getString(id);
 
@@ -83,12 +89,12 @@ public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteor
         viewHolder.name.setContentDescription(meteoriteName);
         viewHolder.year.setContentDescription(year);
 
-        recoverAddress(viewHolder, idString);
+        recoverAddress(viewHolder, idString, reclat, reclong);
 
         viewHolder.setId(idString);
     }
 
-    private void recoverAddress(final ViewHolderMeteorite viewHolder, final String idString) {
+    private void recoverAddress(final ViewHolderMeteorite viewHolder, final String idString, String reclat, String reclong) {
 
         final ContentResolver contentResolver = mContext.getContentResolver();
 
@@ -96,21 +102,26 @@ public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteor
 
         String address = addressService.getAddressFromId(idString);
 
-        final Uri uri = MeteoriteProvider.Addresses.withId(idString);
-
-        viewHolder.observer = new ContentObserver(new Handler()) {
-            @Override
-            public void onChange(boolean selfChange) {
-                super.onChange(selfChange);
-                final String address = addressService.getAddressFromId(idString);
-                setLocationText(address, viewHolder);
+        if (StringUtils.isEmpty(address)) {
+            final Uri uri = MeteoriteProvider.Addresses.withId(idString);
+            viewHolder.observer = new ContentObserver(new Handler()) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    super.onChange(selfChange);
+                    final String address = addressService.getAddressFromId(idString);
+                    setLocationText(address, viewHolder);
+                }
+            };
+            contentResolver.registerContentObserver(uri, true, viewHolder.observer);
+        } else {
+            if (viewHolder.observer != null) {
+                contentResolver.unregisterContentObserver(viewHolder.observer);
             }
-        };
+        }
 
         setLocationText(address, viewHolder);
         viewHolder.location.setContentDescription(address);
 
-        contentResolver.registerContentObserver(uri, true, viewHolder.observer);
 
     }
 
