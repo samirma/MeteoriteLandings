@@ -6,12 +6,25 @@ def compatVersion = "25.0.1"
 
 android {
 
+    Properties properties = new Properties()
+    def assinatura = file('production.properties')
+    properties.load(assinatura.newDataInputStream())
+    def prop_keyAlias = new String(properties.getProperty('keyAlias'))
+    def prop_keyPassword = new String(properties.getProperty('keyStorePassword'))
+    def prop_storeFile = file(new String(properties.getProperty('keyStore')))
+
     signingConfigs {
         config {
             keyAlias 'dev_key'
             keyPassword 'dev_key'
             storeFile file('dev_key.jks')
             storePassword 'dev_key'
+        }
+        release {
+            keyAlias prop_keyAlias
+            keyPassword prop_keyPassword
+            storeFile prop_storeFile
+            storePassword prop_keyPassword
         }
     }
 
@@ -29,7 +42,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
+            signingConfig signingConfigs.release
         }
         debug {
             signingConfig signingConfigs.config
