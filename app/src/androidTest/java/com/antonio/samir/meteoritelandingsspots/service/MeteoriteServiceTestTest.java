@@ -30,13 +30,13 @@ public class MeteoriteServiceTestTest {
 
     @Rule
     public ActivityTestRule<MeteoriteDetailActivity> mActivityTestRule = new ActivityTestRule<>(MeteoriteDetailActivity.class);
-    private MeteoriteDetailActivity activity;
+    private MeteoriteDetailActivity mActivity;
 
 
     @Before
     public void init() {
         meteorite = new MeteoriteServiceTest();
-        activity = mActivityTestRule.getActivity();
+        mActivity = mActivityTestRule.getActivity();
         NasaServiceFactory.setNasaService(meteorite);
     }
 
@@ -56,7 +56,7 @@ public class MeteoriteServiceTestTest {
 
         final MeteoriteTestDelegate meteoriteTestDelegate = new MeteoriteTestDelegate(onPreExecuted, onPostExecute, unableToFetch, fail, signal);
 
-        final MeteoriteService MeteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(activity);
+        final MeteoriteService MeteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(mActivity);
 
         MeteoriteFetchService.getMeteorites(meteoriteTestDelegate, mActivity);
 
@@ -81,7 +81,7 @@ public class MeteoriteServiceTestTest {
 
 
         final MeteoriteTestDelegate meteoriteTestDelegate = new MeteoriteTestDelegate(onPreExecuted, onPostExecute, unableToFetch, fail, signal);
-        final MeteoriteService MeteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(activity);
+        final MeteoriteService MeteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(mActivity);
         MeteoriteFetchService.getMeteorites(meteoriteTestDelegate, mActivity);
 
         signal.await(TIMEOUT, TimeUnit.SECONDS);
@@ -104,7 +104,7 @@ public class MeteoriteServiceTestTest {
         NetworkUtil.setConnectivity(true);
 
         final MeteoriteTestDelegate meteoriteTestDelegate = new MeteoriteTestDelegate(onPreExecuted, onPostExecute, unableToFetch, fail, signal);
-        final MeteoriteService MeteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(activity);
+        final MeteoriteService MeteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(mActivity);
         MeteoriteFetchService.getMeteorites(meteoriteTestDelegate, mActivity);
 
         signal.await(TIMEOUT, TimeUnit.SECONDS);
