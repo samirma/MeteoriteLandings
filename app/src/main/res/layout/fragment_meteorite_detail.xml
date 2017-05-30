@@ -33,9 +33,8 @@
             android:fontFamily="sans-serif-condensed"
             android:lineSpacingMultiplier="0.9"
             android:paddingBottom="@dimen/detail_metabar_title_bottom_padding"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/detail_title_text_size"
-            android:textStyle="bold" />
+            android:textColor="@color/title_color"
+            android:textSize="@dimen/detail_title_text_size" />
 
         <TextView
             android:id="@+id/location"
