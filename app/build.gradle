@@ -2,17 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 apply plugin: 'com.neenbedankt.android-apt'
 
-def compatVersion = "25.0.1"
 
 android {
-
     Properties properties = new Properties()
     def assinatura = file('production.properties')
     properties.load(assinatura.newDataInputStream())
     def prop_keyAlias = new String(properties.getProperty('keyAlias'))
     def prop_keyPassword = new String(properties.getProperty('keyStorePassword'))
     def prop_storeFile = file(new String(properties.getProperty('keyStore')))
-
     signingConfigs {
         config {
             keyAlias 'dev_key'
@@ -27,13 +24,12 @@ android {
             storePassword prop_keyPassword
         }
     }
-
     compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    buildToolsVersion '25.0.2'
     defaultConfig {
         applicationId "com.antonio.samir.meteoritelandingsspots"
         minSdkVersion 17
-        targetSdkVersion 25
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -49,55 +45,45 @@ android {
             versionNameSuffix '-dev'
         }
     }
+    productFlavors {
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
     compile 'com.google.code.gson:gson:2.8.0'
-
-    compile "com.android.support:design:${compatVersion}"
-    compile "com.android.support:support-v4:${compatVersion}"
-    compile "com.android.support:appcompat-v7:${compatVersion}"
-    compile "com.android.support:recyclerview-v7:${compatVersion}"
-    compile "com.android.support:cardview-v7:${compatVersion}"
-    compile "com.android.support:gridlayout-v7:${compatVersion}"
-
-
-    compile "com.google.android.gms:play-services-analytics:10.0.1"
-    compile "com.google.android.gms:play-services-location:10.0.1"
-    compile "com.google.android.gms:play-services-maps:10.0.1"
-    compile 'com.google.android.gms:play-services-analytics:10.0.1'
-
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:recyclerview-v7:25.3.1'
+    compile 'com.android.support:cardview-v7:25.3.1'
+    compile 'com.android.support:gridlayout-v7:25.3.1'
+    compile 'com.google.android.gms:play-services-analytics:10.2.6'
+    compile 'com.google.android.gms:play-services-location:10.2.6'
+    compile 'com.google.android.gms:play-services-maps:10.2.6'
+    compile 'com.google.android.gms:play-services-analytics:10.2.6'
     apt 'net.simonvt.schematic:schematic-compiler:0.7.0'
     compile 'net.simonvt.schematic:schematic:0.7.0'
-
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
-
+    compile 'org.apache.commons:commons-lang3:3.5'
     compile 'com.jakewharton:butterknife:8.4.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     testCompile 'junit:junit:4.12'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
-
     androidTestCompile 'com.android.support.test.espresso:espresso-contrib:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-v4'
         exclude group: 'com.android.support', module: 'design'
         exclude group: 'com.android.support', module: 'recyclerview-v7'
     }
-
-    androidTestCompile "org.mockito:mockito-core:2.+"
-
+    androidTestCompile 'org.mockito:mockito-core:2.+'
     debugCompile 'com.facebook.stetho:stetho:1.4.2'
     debugCompile 'com.facebook.stetho:stetho-okhttp:1.4.2'
     debugCompile 'com.facebook.stetho:stetho-urlconnection:1.4.2'
-
-
 }
 
 apply plugin: 'com.google.gms.google-services'
