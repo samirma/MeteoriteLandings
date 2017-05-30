@@ -9,9 +9,9 @@
     android:layout_marginTop="@dimen/cardMargin"
     android:clickable="true"
     android:focusable="true"
-    app:cardBackgroundColor="#fff"
+    app:cardBackgroundColor="@color/unselected_item_color"
     app:cardCornerRadius="2dp"
-    app:cardElevation="4dp">
+    app:cardElevation="@dimen/unselected_item_elevation">
 
     <include layout="@layout/meteorite_detail_item" />
 

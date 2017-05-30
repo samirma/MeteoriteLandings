@@ -29,6 +29,8 @@ import static com.antonio.samir.meteoritelandingsspots.service.repository.Meteor
 public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteorite> {
     private final MeteoriteSelector meteoriteSelector;
     private Context mContext;
+    private String mSelectedMeteorite;
+    private int mSelectedPosition;
 
     public MeteoriteAdapter(Context context, Cursor cursor, final MeteoriteSelector meteoriteSelector) {
         super(context, cursor);
@@ -46,6 +48,7 @@ public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteor
             @Override
             public void onClick(View view) {
                 meteoriteSelector.selectItemId(vh.getId());
+                mSelectedPosition = vh.getAdapterPosition();
             }
         });
         return vh;
@@ -92,7 +95,22 @@ public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteor
         recoverAddress(viewHolder, idString, reclat, reclong);
 
         viewHolder.setId(idString);
+
+
+        int color = R.color.unselected_item_color;
+        int elevation = R.dimen.unselected_item_elevation;
+
+        if (StringUtils.equals(idString, mSelectedMeteorite)) {
+            color = R.color.selected_item_color;
+            elevation = R.dimen.selected_item_elevation;
+        }
+
+        viewHolder.cardView.setCardBackgroundColor(mContext.getResources().getColor(color));
+        viewHolder.cardView.setCardElevation(mContext.getResources().getDimensionPixelSize(elevation));
+
     }
+
+
 
     private void recoverAddress(final ViewHolderMeteorite viewHolder, final String idString, String reclat, String reclong) {
 
@@ -145,4 +163,8 @@ public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteor
     }
 
 
+    public void setSelectedMeteorite(final String selectedMeteorite) {
+        notifyDataSetChanged();
+        this.mSelectedMeteorite = selectedMeteorite;
+    }
 }
