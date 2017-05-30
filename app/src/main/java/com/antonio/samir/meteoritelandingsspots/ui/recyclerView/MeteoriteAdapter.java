@@ -128,19 +128,25 @@ public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteor
                     super.onChange(selfChange);
                     final String address = addressService.getAddressFromId(idString);
                     setLocationText(address, viewHolder);
+                    unregisterObserver(viewHolder, contentResolver);
                 }
             };
             contentResolver.registerContentObserver(uri, true, viewHolder.observer);
         } else {
-            if (viewHolder.observer != null) {
-                contentResolver.unregisterContentObserver(viewHolder.observer);
-            }
+            unregisterObserver(viewHolder, contentResolver);
         }
 
         setLocationText(address, viewHolder);
         viewHolder.location.setContentDescription(address);
 
 
+    }
+
+    private void unregisterObserver(ViewHolderMeteorite viewHolder, ContentResolver contentResolver) {
+        if (viewHolder.observer != null) {
+            contentResolver.unregisterContentObserver(viewHolder.observer);
+            viewHolder.observer = null;
+        }
     }
 
     public void setLocationText(final String address, final ViewHolderMeteorite viewHolder) {

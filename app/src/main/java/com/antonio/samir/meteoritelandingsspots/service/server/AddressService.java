@@ -25,7 +25,7 @@ import static com.antonio.samir.meteoritelandingsspots.service.repository.Addres
 public class AddressService {
 
     public static final String TAG = AddressService.class.getSimpleName();
-    final static ThreadPoolExecutor executor = new ThreadPoolExecutor(0, 1000,
+    final static ThreadPoolExecutor executor = new ThreadPoolExecutor(0, 3,
             1L, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>());
     private final ContentResolver mContentResolver;
