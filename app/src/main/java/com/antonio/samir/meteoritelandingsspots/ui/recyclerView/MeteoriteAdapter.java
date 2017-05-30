@@ -30,7 +30,7 @@ public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteor
     private final MeteoriteSelector meteoriteSelector;
     private Context mContext;
     private String mSelectedMeteorite;
-    private int mSelectedPosition;
+    private ViewHolderMeteorite mViewHolderMeteorite;
 
     public MeteoriteAdapter(Context context, Cursor cursor, final MeteoriteSelector meteoriteSelector) {
         super(context, cursor);
@@ -47,8 +47,8 @@ public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteor
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mViewHolderMeteorite = vh;
                 meteoriteSelector.selectItemId(vh.getId());
-                mSelectedPosition = vh.getAdapterPosition();
             }
         });
         return vh;
@@ -172,5 +172,9 @@ public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteor
     public void setSelectedMeteorite(final String selectedMeteorite) {
         notifyDataSetChanged();
         this.mSelectedMeteorite = selectedMeteorite;
+    }
+
+    public ViewHolderMeteorite getmViewHolderMeteorite() {
+        return mViewHolderMeteorite;
     }
 }
