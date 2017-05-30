@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +22,7 @@ import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListPresenter
 import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListView;
 import com.antonio.samir.meteoritelandingsspots.ui.fragments.MeteoriteDetailFragment;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.MeteoriteAdapter;
+import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.ViewHolderMeteorite;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelector;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelectorFactory;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelectorView;
@@ -225,7 +228,15 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         selectedMeteorite = meteorite;
         final Intent intent = new Intent(this, MeteoriteDetailActivity.class);
         intent.putExtra(ITEM_SELECTED, meteorite);
-        startActivity(intent);
+
+        final ViewHolderMeteorite viewHolderMeteorite = meteoriteAdapter.getmViewHolderMeteorite();
+        Pair<View, String> p1 = Pair.create((View)viewHolderMeteorite.name, "title");
+        Pair<View, String> p2 = Pair.create((View)viewHolderMeteorite.location, "location");
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, p1, p2);
+
+        startActivity(intent, options.toBundle());
     }
 
 

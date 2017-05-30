@@ -25,6 +25,7 @@
 
         <TextView
             android:id="@+id/title"
+            android:transitionName="title"
             style="?android:attr/textAppearanceLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -37,6 +38,7 @@
 
         <TextView
             android:id="@+id/location"
+            android:transitionName="location"
             style="?android:attr/textAppearanceSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
