@@ -58,6 +58,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     private FrameLayout frameLayout;
     private MeteoriteDetailFragment meteoriteDetailFragment;
     private Bundle savedInstanceState;
+    private boolean mIsLandscape;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +74,9 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         }
 
 
-        final boolean isLandscape = getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE;
+        mIsLandscape = getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE;
 
-        final MeteoriteSelector meteoriteSelector = MeteoriteSelectorFactory.getMeteoriteSelector(isLandscape, this);
+        final MeteoriteSelector meteoriteSelector = MeteoriteSelectorFactory.getMeteoriteSelector(mIsLandscape, this);
 
         meteoriteAdapter = new MeteoriteAdapter(this, null, meteoriteSelector);
         meteoriteAdapter.setHasStableIds(true);
@@ -83,11 +84,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
         frameLayout = (FrameLayout) findViewById(R.id.fragment);
 
-        int columnCount = getResources().getInteger(R.integer.list_column_count);
-
-        sglm =
-                new GridLayoutManager(this, columnCount);
-        mRecyclerView.setLayoutManager(sglm);
+        setupGridLayout();
 
         presenter = new MeteoriteListPresenter(this);
 
@@ -102,6 +99,14 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         presenter.startToRecoverMeteorites();
 
 
+    }
+
+    private void setupGridLayout() {
+        int columnCount = getResources().getInteger(R.integer.list_column_count);
+
+        sglm =
+                new GridLayoutManager(this, columnCount);
+        mRecyclerView.setLayoutManager(sglm);
     }
 
     private String getPreviousSelectedMeteorite(Bundle savedInstanceState) {
@@ -234,11 +239,9 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
             final Pair<View, String> container = Pair.create((View) viewHolderMeteorite.cardView, "cardView");
             Pair<View, String> p1 = Pair.create((View)viewHolderMeteorite.name, "title");
-            Pair<View, String> p2 = Pair.create((View)viewHolderMeteorite.year, "year");
-
 
             final ActivityOptionsCompat options = ActivityOptionsCompat.
-                    makeSceneTransitionAnimation(this, container, p2);
+                    makeSceneTransitionAnimation(this, container);
 
             startActivity(intent, options.toBundle());
 
@@ -271,7 +274,14 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    public void onBackPressed() {
+        if (selectedMeteorite != null && mIsLandscape) {
+            selectedMeteorite = null;
+            meteoriteAdapter.setSelectedMeteorite(selectedMeteorite);
+            setupGridLayout();
+            frameLayout.setVisibility(View.GONE);
+        } else {
+            super.onBackPressed();
+        }
     }
 }
