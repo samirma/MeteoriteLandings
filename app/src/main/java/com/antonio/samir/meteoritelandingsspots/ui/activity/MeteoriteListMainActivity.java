@@ -215,6 +215,9 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         }
 
         selectedMeteorite = meteorite;
+
+        meteoriteAdapter.setSelectedMeteorite(selectedMeteorite);
+
     }
 
     @Override
