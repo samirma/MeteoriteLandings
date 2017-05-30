@@ -44,7 +44,6 @@
         app:layout_rowWeight="1" />
 
 
-
     <TextView
         android:id="@+id/recclass"
         android:gravity="center_vertical"
