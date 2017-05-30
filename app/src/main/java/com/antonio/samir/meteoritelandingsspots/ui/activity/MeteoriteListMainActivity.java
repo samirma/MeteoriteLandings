@@ -230,15 +230,19 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         intent.putExtra(ITEM_SELECTED, meteorite);
 
         final ViewHolderMeteorite viewHolderMeteorite = meteoriteAdapter.getmViewHolderMeteorite();
-        Pair<View, String> p1 = Pair.create((View)viewHolderMeteorite.name, "title");
-        Pair<View, String> p2 = Pair.create((View)viewHolderMeteorite.location, "location");
-        Pair<View, String> container = Pair.create((View)viewHolderMeteorite.cardView, "cardView");
+        if (viewHolderMeteorite != null) {
 
+            final Pair<View, String> container = Pair.create((View) viewHolderMeteorite.cardView, "cardView");
 
-        ActivityOptionsCompat options = ActivityOptionsCompat.
-                makeSceneTransitionAnimation(this, container);
+            ActivityOptionsCompat options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation(this, container);
 
-        startActivity(intent, options.toBundle());
+            startActivity(intent, options.toBundle());
+
+        } else {
+            startActivity(intent);
+        }
+
     }
 
 
