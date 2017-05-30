@@ -98,15 +98,18 @@ public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteor
 
 
         int color = R.color.unselected_item_color;
+        int title_color = R.color.title_color;
         int elevation = R.dimen.unselected_item_elevation;
 
         if (StringUtils.equals(idString, mSelectedMeteorite)) {
             color = R.color.selected_item_color;
+            title_color = R.color.selected_title_color;
             elevation = R.dimen.selected_item_elevation;
         }
 
         viewHolder.cardView.setCardBackgroundColor(mContext.getResources().getColor(color));
         viewHolder.cardView.setCardElevation(mContext.getResources().getDimensionPixelSize(elevation));
+        viewHolder.name.setTextColor(mContext.getResources().getColor(title_color));
 
     }
 

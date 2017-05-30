@@ -23,13 +23,13 @@
         android:id="@+id/year"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/secondary_text" />
+        android:textColor="@color/detail_accent_label" />
 
     <TextView
         android:id="@+id/location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/secondary_text" />
+        android:textColor="@color/detail_accent_label" />
 
 
 </LinearLayout>
