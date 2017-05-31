@@ -221,9 +221,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         }
         fragmentTransaction = fragmentTransaction.setCustomAnimations(
                 R.anim.fragment_slide_left_enter,
-                R.anim.fragment_slide_left_exit,
-                R.anim.fragment_slide_right_enter,
-                R.anim.fragment_slide_right_exit);
+                R.anim.fragment_slide_left_exit);
 
         meteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteorite);
         fragmentTransaction.replace(R.id.fragment, meteoriteDetailFragment);
