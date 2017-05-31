@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="list_column_count">1</integer>
+    <integer name="card_flip_time_full">1</integer>
+    <integer name="card_flip_time_half">1</integer>
 </resources>
