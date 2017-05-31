@@ -121,10 +121,14 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
             meteorite = savedInstanceState.getString(ITEM_SELECTED);
         }
 
-        final Bundle extras = getIntent().getExtras();
-        if (meteorite == null && extras != null) {
+        final Intent intent = getIntent();
+        final Bundle extras = intent.getExtras();
+        boolean isRedeliver = savedInstanceState != null || (intent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) != 0;
+        if (meteorite == null && extras != null && !isRedeliver) {
             meteorite = extras.getString(ITEM_SELECTED);
         }
+
+        Log.i(TAG, "isRedeliver: " + isRedeliver);
 
         return meteorite;
     }
@@ -312,11 +316,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        this.savedInstanceState = savedInstanceState;
-    }
+
 
     @Override
     public void onBackPressed() {
