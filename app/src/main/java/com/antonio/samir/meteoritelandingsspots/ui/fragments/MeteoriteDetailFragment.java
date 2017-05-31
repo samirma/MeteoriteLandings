@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.ui.fragments;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -108,11 +109,14 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
 
         meteoriteService = MeteoriteServiceFactory.getMeteoriteService(getActivity());
 
-        setMeteorite(meteoriteId);
-
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        setMeteorite(meteoriteId);
+    }
 
     @Override
     public void onMapReady(GoogleMap map) {

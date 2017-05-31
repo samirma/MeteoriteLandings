@@ -5,21 +5,27 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.Pair;
+import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewPropertyAnimator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.antonio.samir.meteoritelandingsspots.R;
 import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListPresenter;
 import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListView;
+import com.antonio.samir.meteoritelandingsspots.ui.animator.AnimateParam;
+import com.antonio.samir.meteoritelandingsspots.ui.animator.AnimatePhotoChanger;
 import com.antonio.samir.meteoritelandingsspots.ui.fragments.MeteoriteDetailFragment;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.MeteoriteAdapter;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.ViewHolderMeteorite;
@@ -208,19 +214,17 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     @Override
     public void selectLandscape(final String meteorite) {
 
-        if (selectedMeteorite == null) {
-            frameLayout.setVisibility(View.VISIBLE);
-            sglm = new GridLayoutManager(this, 1);
-            mRecyclerView.setLayoutManager(sglm);
+        final FastOutLinearInInterpolator interpolator = new FastOutLinearInInterpolator();
 
-            final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            meteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteorite);
-            fragmentTransaction.add(R.id.fragment, meteoriteDetailFragment);
-            fragmentTransaction.commit();
+        final AnimatePhotoChanger animatePhotoChanger;
+        final AnimateParam animateParam = new AnimateParam();
+        animateParam.context = this;
+        animateParam.interpolator = interpolator;
 
-        } else {
-            meteoriteDetailFragment.setMeteorite(meteorite);
-        }
+        final MeteoriteDetailFragment photoDetailFragment = MeteoriteDetailFragment.newInstance(meteorite);
+        animatePhotoChanger = getAnimateAction(animateParam, photoDetailFragment);
+
+        animatePhotoChanger.start();
 
         selectedMeteorite = meteorite;
 
@@ -251,6 +255,49 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
     }
 
+
+    @NonNull
+    private AnimatePhotoChanger getAnimateAction(final AnimateParam animateParam, final MeteoriteDetailFragment fragment) {
+        AnimatePhotoChanger animatePhotoChanger;
+        if (selectedMeteorite == null) {
+            final ViewPropertyAnimator animate = mRecyclerView.animate();
+            animateParam.width = mRecyclerView.getWidth();
+            animateParam.endAnimate = animate;
+            animateParam.startAnimate = mRecyclerView.animate();
+
+            animatePhotoChanger = new AnimatePhotoChanger(animateParam, fragment) {
+                @Override
+                protected void beforeSecondAnimation() {
+                    frameLayout.setVisibility(View.VISIBLE);
+                    sglm = new GridLayoutManager(MeteoriteListMainActivity.this, 1);
+                    mRecyclerView.setLayoutManager(sglm);
+                    mRecyclerView.getLayoutParams().width = 0;
+                }
+            };
+
+        } else {
+            final View view = findViewById(R.id.fragment);
+            final ViewPropertyAnimator animate = view.animate();
+            final int width = view.getWidth();
+
+            animateParam.width = width;
+            animateParam.endAnimate = animate;
+            animateParam.startAnimate = animate;
+
+            animatePhotoChanger = new AnimatePhotoChanger(animateParam, fragment) {
+                @Override
+                protected void beforeSecondAnimation() {
+
+                }
+
+                @Override
+                protected void secondAnimationStart() {
+                    replace();
+                }
+            };
+        }
+        return animatePhotoChanger;
+    }
 
 
     @Override
