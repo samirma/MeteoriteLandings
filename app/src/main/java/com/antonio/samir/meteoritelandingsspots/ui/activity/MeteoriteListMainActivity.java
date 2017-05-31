@@ -236,7 +236,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
     @Override
     public void selectPortrait(final String meteorite) {
-        selectedMeteorite = meteorite;
+
         final Intent intent = new Intent(this, MeteoriteDetailActivity.class);
         intent.putExtra(ITEM_SELECTED, meteorite);
 
