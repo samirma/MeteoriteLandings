@@ -7,13 +7,11 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.Pair;
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -25,7 +23,7 @@ import com.antonio.samir.meteoritelandingsspots.R;
 import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListPresenter;
 import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListView;
 import com.antonio.samir.meteoritelandingsspots.ui.animator.AnimateParam;
-import com.antonio.samir.meteoritelandingsspots.ui.animator.AnimatePhotoChanger;
+import com.antonio.samir.meteoritelandingsspots.ui.animator.AnimateFragmentChanger;
 import com.antonio.samir.meteoritelandingsspots.ui.fragments.MeteoriteDetailFragment;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.MeteoriteAdapter;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.ViewHolderMeteorite;
@@ -216,7 +214,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
         final FastOutLinearInInterpolator interpolator = new FastOutLinearInInterpolator();
 
-        final AnimatePhotoChanger animatePhotoChanger;
+        final AnimateFragmentChanger animatePhotoChanger;
         final AnimateParam animateParam = new AnimateParam();
         animateParam.context = this;
         animateParam.interpolator = interpolator;
@@ -257,15 +255,15 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
 
     @NonNull
-    private AnimatePhotoChanger getAnimateAction(final AnimateParam animateParam, final MeteoriteDetailFragment fragment) {
-        AnimatePhotoChanger animatePhotoChanger;
+    private AnimateFragmentChanger getAnimateAction(final AnimateParam animateParam, final MeteoriteDetailFragment fragment) {
+        AnimateFragmentChanger animatePhotoChanger;
         if (selectedMeteorite == null) {
             final ViewPropertyAnimator animate = mRecyclerView.animate();
             animateParam.width = mRecyclerView.getWidth();
             animateParam.endAnimate = animate;
             animateParam.startAnimate = mRecyclerView.animate();
 
-            animatePhotoChanger = new AnimatePhotoChanger(animateParam, fragment) {
+            animatePhotoChanger = new AnimateFragmentChanger(animateParam, fragment) {
                 @Override
                 protected void beforeSecondAnimation() {
                     frameLayout.setVisibility(View.VISIBLE);
@@ -284,7 +282,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
             animateParam.endAnimate = animate;
             animateParam.startAnimate = animate;
 
-            animatePhotoChanger = new AnimatePhotoChanger(animateParam, fragment) {
+            animatePhotoChanger = new AnimateFragmentChanger(animateParam, fragment) {
                 @Override
                 protected void beforeSecondAnimation() {
 

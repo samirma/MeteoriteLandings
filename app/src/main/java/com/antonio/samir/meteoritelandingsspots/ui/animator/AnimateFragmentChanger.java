@@ -7,13 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import com.antonio.samir.meteoritelandingsspots.R;
 import com.antonio.samir.meteoritelandingsspots.ui.fragments.MeteoriteDetailFragment;
 
-public abstract class AnimatePhotoChanger {
+public abstract class AnimateFragmentChanger {
 
     private static final int DURATION = 500;
     protected final AnimateParam animateParam;
     private MeteoriteDetailFragment newInstance;
 
-    public AnimatePhotoChanger(AnimateParam animateParam, MeteoriteDetailFragment newInstance) {
+    public AnimateFragmentChanger(AnimateParam animateParam, MeteoriteDetailFragment newInstance) {
         this.animateParam = animateParam;
         this.newInstance = newInstance;
     }
@@ -77,9 +77,7 @@ public abstract class AnimatePhotoChanger {
     protected abstract void beforeSecondAnimation();
 
     protected void secondAnimationStart() {
-        final FragmentTransaction fragmentTransaction = ((AppCompatActivity)animateParam.context).getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.fragment, newInstance);
-        fragmentTransaction.commit();
+        replace();
     }
 
     public void replace(){
