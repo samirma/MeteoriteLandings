@@ -8,7 +8,6 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
-import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteProvider;
 import com.antonio.samir.meteoritelandingsspots.service.repository.ResultUtil;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServerException;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServerResult;

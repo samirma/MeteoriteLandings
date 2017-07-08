@@ -73,8 +73,11 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:10.2.6'
     compile 'com.google.android.gms:play-services-maps:10.2.6'
     compile 'com.google.android.gms:play-services-analytics:10.2.6'
+
+
     apt 'net.simonvt.schematic:schematic-compiler:0.7.0'
     compile 'net.simonvt.schematic:schematic:0.7.0'
+
     compile 'org.apache.commons:commons-lang3:3.5'
     compile 'com.jakewharton:butterknife:8.4.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
@@ -89,9 +92,9 @@ dependencies {
         exclude group: 'com.android.support', module: 'recyclerview-v7'
     }
     androidTestCompile 'org.mockito:mockito-core:2.+'
-    debugCompile 'com.facebook.stetho:stetho:1.4.2'
-    debugCompile 'com.facebook.stetho:stetho-okhttp:1.4.2'
-    debugCompile 'com.facebook.stetho:stetho-urlconnection:1.4.2'
+    debugCompile 'com.facebook.stetho:stetho:1.5.0'
+    debugCompile 'com.facebook.stetho:stetho-okhttp:1.5.0'
+    debugCompile 'com.facebook.stetho:stetho-urlconnection:1.5.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

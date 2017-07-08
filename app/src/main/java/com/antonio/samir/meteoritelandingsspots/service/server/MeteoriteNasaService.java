@@ -10,7 +10,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteProvider;
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.MeteoriteNasaAsyncTaskService;
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaService;
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaServiceFactory;
