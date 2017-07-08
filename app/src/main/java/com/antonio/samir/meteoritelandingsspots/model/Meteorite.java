@@ -1,8 +1,11 @@
 package com.antonio.samir.meteoritelandingsspots.model;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+@Entity(tableName = "meteorites")
 public class Meteorite implements Parcelable {
     public static final Parcelable.Creator<Meteorite> CREATOR = new Parcelable.Creator<Meteorite>() {
         @Override
@@ -15,7 +18,9 @@ public class Meteorite implements Parcelable {
             return new Meteorite[size];
         }
     };
-    private String id;
+
+    @PrimaryKey
+    private String _id;
     private String mass;
     private String nametype;
     private String recclass;
@@ -30,7 +35,7 @@ public class Meteorite implements Parcelable {
 
     protected Meteorite(Parcel in) {
         this.mass = in.readString();
-        this.id = in.readString();
+        this._id = in.readString();
         this.nametype = in.readString();
         this.recclass = in.readString();
         this.name = in.readString();
@@ -52,12 +57,12 @@ public class Meteorite implements Parcelable {
 
     public String getId ()
     {
-        return id;
+        return _id;
     }
 
     public void setId (String id)
     {
-        this.id = id;
+        this._id = id;
     }
 
     public String getNametype ()
@@ -138,7 +143,7 @@ public class Meteorite implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.mass);
-        dest.writeString(this.id);
+        dest.writeString(this._id);
         dest.writeString(this.nametype);
         dest.writeString(this.recclass);
         dest.writeString(this.name);

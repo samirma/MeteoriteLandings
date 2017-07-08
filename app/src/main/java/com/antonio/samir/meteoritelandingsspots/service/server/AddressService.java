@@ -8,8 +8,6 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.antonio.samir.meteoritelandingsspots.Application;
-import com.antonio.samir.meteoritelandingsspots.service.repository.AddressColumns;
-import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteProvider;
 
 import org.apache.commons.lang3.StringUtils;
 
