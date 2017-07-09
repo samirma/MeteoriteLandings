@@ -1,7 +1,5 @@
 package com.antonio.samir.meteoritelandingsspots.ui.fragments;
 
-import android.content.Context;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +13,6 @@ import com.antonio.samir.meteoritelandingsspots.R;
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepository;
 import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao;
-import com.antonio.samir.meteoritelandingsspots.service.server.AddressService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceFactory;
 import com.antonio.samir.meteoritelandingsspots.util.analytics.AnalyticsUtil;
@@ -31,17 +28,10 @@ import org.apache.commons.lang3.StringUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.MASS;
-import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.NAME;
-import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.RECCLASS;
-import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.RECLAT;
-import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.RECLONG;
-import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.YEAR;
-
 public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallback {
 
     public static final String METEORITE = "METEORITE";
-    public static final String TAG = MeteoriteDetailFragment.class.getSimpleName();
+
     @BindView(R.id.title)
     TextView title;
     @BindView(R.id.location)
@@ -49,18 +39,14 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
     @BindView(R.id.year)
     TextView year;
 
-
     @BindView(R.id.mass)
     TextView mass;
-
 
     @BindView(R.id.recclass)
     TextView recclass;
 
     private String meteoriteId;
-    private double lat;
-    private double log;
-    private String meteoriteName;
+
     private MeteoriteService meteoriteService;
     private GoogleMap map;
 
@@ -93,10 +79,8 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
 
         ButterKnife.bind(this, view);
 
-
         SupportMapFragment mapFragment = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map));
         mapFragment.getMapAsync(this);
-
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
 
@@ -108,7 +92,6 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
             activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
             activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
 
         meteoriteService = MeteoriteServiceFactory.getMeteoriteService(getActivity());
 
@@ -125,11 +108,11 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
     public void onMapReady(GoogleMap map) {
         this.map = map;
 
-        setupMap();
+        //setupMap();
 
     }
 
-    public void setupMap() {
+    public void setupMap(String meteoriteName, double lat,double  log) {
         map.clear();
 
         final LatLng latLng = new LatLng(lat, log);
@@ -148,26 +131,31 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
 
         final MeteoriteDao meteoriteDao = new MeteoriteRepository(this.getContext()).getAppDatabase().meteoriteDao();
 
-        final Meteorite meteorite = meteoriteDao.get
+        final Meteorite meteorite = meteoriteDao.getMeteorite(meteoriteId);
 
+        final String meteoriteName = meteorite.getName();
         this.title.setText(meteoriteName);
-
-        this.location.setText(address);
-        setLocationText(address, this.location);
-
-        this.year.setText(year);
-        this.recclass.setText(recclass);
-        this.mass.setText(mass);
-
-
         this.title.setContentDescription(meteoriteName);
-        this.location.setContentDescription(address);
-        this.year.setContentDescription(year);
+
+        setLocationText(meteorite.getAddress(), this.location);
+
+        final String yearString = meteorite.getYearString();
+        this.year.setText(yearString);
+        this.year.setContentDescription(yearString);
+
+        final String recclass = meteorite.getRecclass();
+        this.recclass.setText(recclass);
         this.recclass.setContentDescription(recclass);
+
+
+        final String mass = meteorite.getMass();
+        this.mass.setText(mass);
         this.mass.setContentDescription(mass);
 
         if (map != null) {
-            setupMap();
+            final Double lat = Double.valueOf(meteorite.getReclat());
+            final Double log = Double.valueOf(meteorite.getReclong());
+            setupMap(meteoriteName, lat, log);
         }
 
         AnalyticsUtil.logEvent("Detail", String.format("%s detail", meteoriteName));
@@ -179,6 +167,7 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
         final int visibility;
         if (StringUtils.isNotEmpty(address)) {
             text.setText(address);
+            text.setContentDescription(address);
             visibility = View.VISIBLE;
         } else {
             visibility = View.GONE;

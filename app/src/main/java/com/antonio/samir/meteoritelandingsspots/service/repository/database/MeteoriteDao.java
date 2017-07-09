@@ -19,4 +19,6 @@ public interface MeteoriteDao {
 
     @Update
     void update(Meteorite meteorite);
+
+    Meteorite getMeteorite(String meteoriteId);
 }
