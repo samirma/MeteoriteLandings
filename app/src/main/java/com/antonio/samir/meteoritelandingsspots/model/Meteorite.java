@@ -5,7 +5,6 @@ import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -36,8 +35,7 @@ public class Meteorite implements Parcelable {
     public Meteorite() {
     }
 
-    @NonNull
-    private static String getYearString(String year) {
+    public String getYearString() {
         String value = year;
         String yearParsed = value;
         if (!TextUtils.isEmpty(value)) {

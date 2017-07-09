@@ -1,11 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.ui.recyclerView;
 
-import android.content.ContentResolver;
 import android.content.Context;
-import android.database.ContentObserver;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,19 +8,11 @@ import android.view.ViewGroup;
 
 import com.antonio.samir.meteoritelandingsspots.R;
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
-import com.antonio.samir.meteoritelandingsspots.service.repository.generated.MeteoriteProvider;
-import com.antonio.samir.meteoritelandingsspots.service.server.AddressService;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelector;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
-
-import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.ID;
-import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.NAME;
-import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.RECLAT;
-import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.RECLONG;
-import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.YEAR;
 
 /**
  * Custom RecyclerView.Adapter to deal with meteorites cursor
@@ -80,17 +67,14 @@ public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> 
     }
 
     @Override
-    public void onBindViewHolder(ViewHolderMeteorite holder, int position) {
+    public void onBindViewHolder(ViewHolderMeteorite viewHolder, int position) {
+        final Meteorite meteorite = mMeteorites.get(position);
 
-        final String meteoriteName = cursor.getString(cursor.getColumnIndex(NAME));
-        final String year = cursor.getString(cursor.getColumnIndex(YEAR));
-
-        final String reclat = cursor.getString(cursor.getColumnIndex(RECLAT));
-        final String reclong = cursor.getString(cursor.getColumnIndex(RECLONG));
+        final String meteoriteName = meteorite.getName();
+        final String year = meteorite.getYearString();
 
 
-        final int id = cursor.getColumnIndex(ID);
-        final String idString = cursor.getString(id);
+        final String idString = meteorite.getId();
 
         viewHolder.name.setText(meteoriteName);
         viewHolder.year.setText(year);
@@ -98,7 +82,7 @@ public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> 
         viewHolder.name.setContentDescription(meteoriteName);
         viewHolder.year.setContentDescription(year);
 
-        recoverAddress(viewHolder, idString, reclat, reclong);
+        setLocationText(meteorite.getAddress(), viewHolder);
 
         viewHolder.setId(idString);
 
@@ -119,44 +103,6 @@ public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> 
 
     }
 
-
-
-    private void recoverAddress(final ViewHolderMeteorite viewHolder, final String idString, String reclat, String reclong) {
-
-        final ContentResolver contentResolver = mContext.getContentResolver();
-
-        final AddressService addressService = new AddressService(contentResolver);
-
-        String address = addressService.getAddressFromId(idString);
-
-        if (StringUtils.isEmpty(address)) {
-            final Uri uri = MeteoriteProvider.Addresses.withId(idString);
-            viewHolder.observer = new ContentObserver(new Handler()) {
-                @Override
-                public void onChange(boolean selfChange) {
-                    super.onChange(selfChange);
-                    final String address = addressService.getAddressFromId(idString);
-                    setLocationText(address, viewHolder);
-                    unregisterObserver(viewHolder, contentResolver);
-                }
-            };
-            contentResolver.registerContentObserver(uri, true, viewHolder.observer);
-        } else {
-            unregisterObserver(viewHolder, contentResolver);
-        }
-
-        setLocationText(address, viewHolder);
-        viewHolder.location.setContentDescription(address);
-
-
-    }
-
-    private void unregisterObserver(ViewHolderMeteorite viewHolder, ContentResolver contentResolver) {
-        if (viewHolder.observer != null) {
-            contentResolver.unregisterContentObserver(viewHolder.observer);
-            viewHolder.observer = null;
-        }
-    }
 
     public void setLocationText(final String address, final ViewHolderMeteorite viewHolder) {
         final int visibility;
