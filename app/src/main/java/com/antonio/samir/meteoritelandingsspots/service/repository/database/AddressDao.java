@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.service.repository;
+package com.antonio.samir.meteoritelandingsspots.service.repository.database;
 
 import android.arch.persistence.room.Dao;
 

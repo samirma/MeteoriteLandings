@@ -1,23 +1,25 @@
 package com.antonio.samir.meteoritelandingsspots.model;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import android.util.Log;
 
-@Entity(tableName = "meteorites")
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+@Entity(tableName = "meteorites", indices = {@Index("_id")})
 public class Meteorite implements Parcelable {
-    public static final Parcelable.Creator<Meteorite> CREATOR = new Parcelable.Creator<Meteorite>() {
-        @Override
-        public Meteorite createFromParcel(Parcel source) {
-            return new Meteorite(source);
-        }
 
-        @Override
-        public Meteorite[] newArray(int size) {
-            return new Meteorite[size];
-        }
-    };
+    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+    public static final String TAG = Meteorite.class.getSimpleName();
 
     @PrimaryKey
     private String _id;
@@ -29,20 +31,28 @@ public class Meteorite implements Parcelable {
     private String year;
     private String reclong;
     private String reclat;
+    private String address;
 
     public Meteorite() {
     }
 
-    protected Meteorite(Parcel in) {
-        this.mass = in.readString();
-        this._id = in.readString();
-        this.nametype = in.readString();
-        this.recclass = in.readString();
-        this.name = in.readString();
-        this.fall = in.readString();
-        this.year = in.readString();
-        this.reclong = in.readString();
-        this.reclat = in.readString();
+    @NonNull
+    private static String getYearString(String year) {
+        String value = year;
+        String yearParsed = value;
+        if (!TextUtils.isEmpty(value)) {
+            try {
+                final Date date = SIMPLE_DATE_FORMAT.parse(year.trim());
+
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+                yearParsed = String.valueOf(cal.get(Calendar.YEAR));
+
+            } catch (ParseException e) {
+                Log.e(TAG, e.getMessage(), e);
+            }
+        }
+        return yearParsed;
     }
 
     public String getMass ()
@@ -135,6 +145,14 @@ public class Meteorite implements Parcelable {
         this.reclat = reclat;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -142,8 +160,8 @@ public class Meteorite implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.mass);
         dest.writeString(this._id);
+        dest.writeString(this.mass);
         dest.writeString(this.nametype);
         dest.writeString(this.recclass);
         dest.writeString(this.name);
@@ -151,5 +169,31 @@ public class Meteorite implements Parcelable {
         dest.writeString(this.year);
         dest.writeString(this.reclong);
         dest.writeString(this.reclat);
+        dest.writeString(this.address);
     }
+
+    protected Meteorite(Parcel in) {
+        this._id = in.readString();
+        this.mass = in.readString();
+        this.nametype = in.readString();
+        this.recclass = in.readString();
+        this.name = in.readString();
+        this.fall = in.readString();
+        this.year = in.readString();
+        this.reclong = in.readString();
+        this.reclat = in.readString();
+        this.address = in.readString();
+    }
+
+    public static final Creator<Meteorite> CREATOR = new Creator<Meteorite>() {
+        @Override
+        public Meteorite createFromParcel(Parcel source) {
+            return new Meteorite(source);
+        }
+
+        @Override
+        public Meteorite[] newArray(int size) {
+            return new Meteorite[size];
+        }
+    };
 }

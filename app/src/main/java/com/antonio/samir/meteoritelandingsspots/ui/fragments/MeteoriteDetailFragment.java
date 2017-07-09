@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.antonio.samir.meteoritelandingsspots.R;
+import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
+import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepository;
+import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao;
 import com.antonio.samir.meteoritelandingsspots.service.server.AddressService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceFactory;
@@ -143,23 +146,9 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
     public void setMeteorite(String meteoriteId) {
         this.meteoriteId = meteoriteId;
 
-        final Cursor cursor = meteoriteService.getMeteoriteById(meteoriteId);
+        final MeteoriteDao meteoriteDao = new MeteoriteRepository(this.getContext()).getAppDatabase().meteoriteDao();
 
-        meteoriteName = cursor.getString(cursor.getColumnIndex(NAME));
-
-        final AddressService addressService = new AddressService(getActivity().getContentResolver());
-
-        final String address = addressService.getAddressFromId(meteoriteId);
-
-        final String year = cursor.getString(cursor.getColumnIndex(YEAR));
-
-        final String recclass = cursor.getString(cursor.getColumnIndex(RECCLASS));
-
-        final String mass = cursor.getString(cursor.getColumnIndex(MASS));
-
-        lat = cursor.getDouble(cursor.getColumnIndex(RECLAT));
-
-        log = cursor.getDouble(cursor.getColumnIndex(RECLONG));
+        final Meteorite meteorite = meteoriteDao.get
 
         this.title.setText(meteoriteName);
 
@@ -176,8 +165,6 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
         this.year.setContentDescription(year);
         this.recclass.setContentDescription(recclass);
         this.mass.setContentDescription(mass);
-
-        cursor.close();
 
         if (map != null) {
             setupMap();

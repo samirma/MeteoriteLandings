@@ -1,11 +1,11 @@
 package com.antonio.samir.meteoritelandingsspots.service;
 
 
-import android.database.Cursor;
-
+import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServerException;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceDelegate;
 
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -31,7 +31,7 @@ public class MeteoriteTestDelegate implements MeteoriteServiceDelegate {
     }
 
     @Override
-    public void setCursor(Cursor result) {
+    public void setCursor(List<Meteorite> result) {
         onPostExecute.set(true);
         signal.countDown();
     }

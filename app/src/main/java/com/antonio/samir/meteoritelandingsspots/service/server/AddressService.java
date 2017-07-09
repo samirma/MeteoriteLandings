@@ -8,6 +8,11 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.antonio.samir.meteoritelandingsspots.Application;
+import com.antonio.samir.meteoritelandingsspots.ApplicationDebug;
+import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
+import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepository;
+import com.antonio.samir.meteoritelandingsspots.service.repository.database.AddressDao;
+import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,8 +22,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import static com.antonio.samir.meteoritelandingsspots.service.repository.AddressColumns.ADDRESS;
-
 
 public class AddressService {
 
@@ -26,24 +29,22 @@ public class AddressService {
     final static ThreadPoolExecutor executor = new ThreadPoolExecutor(0, 3,
             1L, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>());
-    private final ContentResolver mContentResolver;
 
-    public AddressService(ContentResolver contentResolver) {
-        this.mContentResolver = contentResolver;
+    private final MeteoriteDao mMeteoriteDao;
+
+    public AddressService() {
+        mMeteoriteDao = new MeteoriteRepository(ApplicationDebug.getContext()).getAppDatabase().meteoriteDao();
     }
 
-
-    public void recoverAddress(final String id, final String recLat, final String recLong) {
+    public void recoverAddress(final Meteorite meteorite, final String recLat, final String recLong) {
 
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 final String address = getAddress(recLat, recLong);
-                final ContentValues mNewValues = new ContentValues();
-                mNewValues.put(AddressColumns.ID, id);
-                mNewValues.put(AddressColumns.ADDRESS, address);
-                mContentResolver.insert(MeteoriteProvider.Addresses.LISTS, mNewValues);
-                Log.i(TAG, String.format("Address for id %s recovered", id));
+                meteorite.setAddress(address);
+                mMeteoriteDao.update(meteorite);
+                Log.i(TAG, String.format("Address for id %s recovered", meteorite.getId()));
             }
         });
 
@@ -76,25 +77,5 @@ public class AddressService {
         }
 
         return addressString;
-    }
-
-    public String getAddressFromId(String idString) {
-        final Uri uri = MeteoriteProvider.Addresses.withId(idString);
-        final Cursor cursor = mContentResolver.query(uri,
-                new String[]{ADDRESS},
-                null,
-                null,
-                null);
-
-        if (cursor != null) {
-            cursor.moveToFirst();
-        }
-
-        String address = "";
-        if (cursor.getCount() == 1) {
-            address = cursor.getString(cursor.getColumnIndex(ADDRESS));
-        }
-        cursor.close();
-        return address;
     }
 }

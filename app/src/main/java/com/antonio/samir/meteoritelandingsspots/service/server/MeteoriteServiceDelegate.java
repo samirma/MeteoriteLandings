@@ -1,6 +1,8 @@
 package com.antonio.samir.meteoritelandingsspots.service.server;
 
-import android.database.Cursor;
+import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
+
+import java.util.List;
 
 
 /**
@@ -9,7 +11,7 @@ import android.database.Cursor;
 public interface MeteoriteServiceDelegate {
     void onPreExecute();
 
-    void setCursor(Cursor result);
+    void setCursor(List<Meteorite> result);
 
     void fail(MeteoriteServerException e);
 
