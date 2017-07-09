@@ -3,7 +3,6 @@ package com.antonio.samir.meteoritelandingsspots.ui.activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentTransaction;
@@ -18,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.antonio.samir.meteoritelandingsspots.R;
+import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListPresenter;
 import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListView;
 import com.antonio.samir.meteoritelandingsspots.ui.fragments.MeteoriteDetailFragment;
@@ -28,6 +28,8 @@ import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.Meteori
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelectorView;
 
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,7 +80,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
         final MeteoriteSelector meteoriteSelector = MeteoriteSelectorFactory.getMeteoriteSelector(mIsLandscape, this);
 
-        meteoriteAdapter = new MeteoriteAdapter(this, null, meteoriteSelector);
+        meteoriteAdapter = new MeteoriteAdapter(this, meteoriteSelector);
         meteoriteAdapter.setHasStableIds(true);
         mRecyclerView.setAdapter(meteoriteAdapter);
 
@@ -162,10 +164,10 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     }
 
     @Override
-    public void setMeteorites(Cursor meteorites) {
+    public void setMeteorites(List<Meteorite> meteorites) {
         mRecyclerView.setVisibility(View.VISIBLE);
         message.setVisibility(View.GONE);
-        meteoriteAdapter.swapCursor(meteorites);
+        meteoriteAdapter.setData(meteorites);
         dismissDialog();
 
         if (savedInstanceState != null) {

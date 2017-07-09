@@ -2,15 +2,16 @@ package com.antonio.samir.meteoritelandingsspots.presenter;
 
 
 import android.content.Context;
-import android.database.Cursor;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServerException;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceDelegate;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceFactory;
 import com.antonio.samir.meteoritelandingsspots.util.NetworkUtil;
+
+import java.util.List;
 
 /**
  * Presenter layer responsible for manage the interactions between the activity and the services
@@ -61,7 +62,7 @@ public class MeteoriteListPresenter implements MeteoriteServiceDelegate {
     }
 
     private void recoverMeteorites() {
-        meteoriteFetchService.getMeteorites(this, (AppCompatActivity) mView.getContext());
+        meteoriteFetchService.getMeteorites(this);
     }
 
     public void removeView(final MeteoriteListView view) {
@@ -75,10 +76,10 @@ public class MeteoriteListPresenter implements MeteoriteServiceDelegate {
     }
 
     @Override
-    public void setCursor(Cursor data) {
-        final boolean isNotEmpty = (data != null && (data.getCount() > 0));
+    public void setCursor(final List<Meteorite> meteorites) {
+        final boolean isNotEmpty = (meteorites != null && (meteorites.size() > 0));
         if (isNotEmpty) {
-            mView.setMeteorites(data);
+            mView.setMeteorites(meteorites);
             mView.showList();
         } else {
             mView.hideList();

@@ -1,18 +1,16 @@
 package com.antonio.samir.meteoritelandingsspots.service.server.nasa;
 
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.OperationApplicationException;
 import android.os.AsyncTask;
-import android.os.RemoteException;
 import android.util.Log;
 
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
-import com.antonio.samir.meteoritelandingsspots.service.repository.ResultUtil;
+import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepository;
+import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao;
+import com.antonio.samir.meteoritelandingsspots.service.server.AddressService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServerException;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServerResult;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MeteoriteNasaAsyncTaskService extends AsyncTask<Void, Void, MeteoriteServerResult> {
@@ -52,11 +50,18 @@ public class MeteoriteNasaAsyncTaskService extends AsyncTask<Void, Void, Meteori
     private void saveMeteorites(MeteoriteServerResult result) {
         try {
             final List<Meteorite> meteorites = result.getMeteorites();
-            final ContentResolver contentResolver = mContext.getContentResolver();
-            final ArrayList operations = ResultUtil.quoteJsonToContentVals(meteorites, contentResolver);
-            contentResolver.delete(MeteoriteProvider.Meteorites.LISTS, null, null);
-            contentResolver.applyBatch(MeteoriteProvider.AUTHORITY, operations);
-        } catch (MeteoriteServerException | RemoteException | OperationApplicationException e) {
+
+            final MeteoriteDao meteoriteDao = new MeteoriteRepository(mContext).getAppDatabase().meteoriteDao();
+
+            meteoriteDao.insertAll(meteorites);
+
+            AddressService addressService = new AddressService();
+
+            for (Meteorite met: meteorites) {
+                addressService.recoverAddress(met, met.getReclat(), met.getReclong());
+            }
+
+        } catch (MeteoriteServerException e) {
             Log.e(MeteoriteNasaAsyncTaskService.class.getSimpleName(), e.getMessage(), e);
         }
     }

@@ -6,15 +6,20 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.antonio.samir.meteoritelandingsspots.R;
+import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
+import com.antonio.samir.meteoritelandingsspots.service.repository.generated.MeteoriteProvider;
 import com.antonio.samir.meteoritelandingsspots.service.server.AddressService;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelector;
 
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
 
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.ID;
 import static com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteColumns.NAME;
@@ -25,14 +30,14 @@ import static com.antonio.samir.meteoritelandingsspots.service.repository.Meteor
 /**
  * Custom RecyclerView.Adapter to deal with meteorites cursor
  */
-public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteorite> {
+public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> {
     private final MeteoriteSelector meteoriteSelector;
     private Context mContext;
     private String mSelectedMeteorite;
     private ViewHolderMeteorite mViewHolderMeteorite;
+    private List<Meteorite> mMeteorites;
 
-    public MeteoriteAdapter(Context context, Cursor cursor, final MeteoriteSelector meteoriteSelector) {
-        super(context, cursor);
+    public MeteoriteAdapter(Context context, final MeteoriteSelector meteoriteSelector) {
         this.mContext = context;
         this.meteoriteSelector = meteoriteSelector;
     }
@@ -53,18 +58,20 @@ public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteor
         return vh;
     }
 
+
+
     @Override
     public int getItemCount() {
-        final int itemCount = super.getItemCount();
+        final int itemCount = (mMeteorites != null)? mMeteorites.size():0;
         return itemCount;
     }
 
     public void resetData() {
-        swapCursor(null);
+        setData(null);
     }
 
-    public void setData(Cursor data) {
-        swapCursor(data);
+    public void setData(final List<Meteorite> data) {
+        mMeteorites = data;
     }
 
     @Override
@@ -73,7 +80,7 @@ public class MeteoriteAdapter extends CursorRecyclerViewAdapter<ViewHolderMeteor
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolderMeteorite viewHolder, final Cursor cursor) {
+    public void onBindViewHolder(ViewHolderMeteorite holder, int position) {
 
         final String meteoriteName = cursor.getString(cursor.getColumnIndex(NAME));
         final String year = cursor.getString(cursor.getColumnIndex(YEAR));

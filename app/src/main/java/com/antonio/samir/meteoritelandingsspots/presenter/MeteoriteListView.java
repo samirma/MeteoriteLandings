@@ -2,14 +2,17 @@ package com.antonio.samir.meteoritelandingsspots.presenter;
 
 
 import android.content.Context;
-import android.database.Cursor;
+
+import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
+
+import java.util.List;
 
 public interface MeteoriteListView {
     Context getContext();
 
     void onPreExecute();
 
-    void setMeteorites(Cursor result);
+    void setMeteorites(List<Meteorite> result);
 
     void unableToFetch();
 

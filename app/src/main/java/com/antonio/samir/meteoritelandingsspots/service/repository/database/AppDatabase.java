@@ -1,9 +1,8 @@
-package com.antonio.samir.meteoritelandingsspots.service.repository;
+package com.antonio.samir.meteoritelandingsspots.service.repository.database;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
 
-import com.antonio.samir.meteoritelandingsspots.model.Address;
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 
 @Database(entities = {Meteorite.class, Address.class}, version = 1)
