@@ -1,13 +1,12 @@
 package com.antonio.samir.meteoritelandingsspots.service.repository.database;
 
+import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
+
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
 
-import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
-
-@Database(entities = {Meteorite.class, Address.class}, version = 1)
+@Database(entities = {Meteorite.class}, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
-    public abstract AddressDao addressDao();
 
     public abstract MeteoriteDao meteoriteDao();
 
