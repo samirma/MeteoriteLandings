@@ -1,5 +1,18 @@
 package com.antonio.samir.meteoritelandingsspots.ui.activity;
 
+import com.antonio.samir.meteoritelandingsspots.R;
+import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
+import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListPresenter;
+import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListView;
+import com.antonio.samir.meteoritelandingsspots.ui.fragments.MeteoriteDetailFragment;
+import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.MeteoriteAdapter;
+import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.ViewHolderMeteorite;
+import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelector;
+import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelectorFactory;
+import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelectorView;
+
+import org.apache.commons.lang3.StringUtils;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -15,19 +28,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
-import com.antonio.samir.meteoritelandingsspots.R;
-import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
-import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListPresenter;
-import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListView;
-import com.antonio.samir.meteoritelandingsspots.ui.fragments.MeteoriteDetailFragment;
-import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.MeteoriteAdapter;
-import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.ViewHolderMeteorite;
-import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelector;
-import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelectorFactory;
-import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelectorView;
-
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -47,19 +47,19 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     RecyclerView mRecyclerView;
 
     @BindView(R.id.message)
-    TextView message;
+    TextView mMessage;
 
-    Toolbar toolbar;
+    Toolbar mToolbar;
 
-    private MeteoriteListPresenter presenter;
-    private GridLayoutManager sglm;
-    private MeteoriteAdapter meteoriteAdapter;
-    private String selectedMeteorite;
+    private MeteoriteListPresenter mPresenter;
+    private GridLayoutManager mSglm;
+    private MeteoriteAdapter mMeteoriteAdapter;
+    private String mSelectedMeteorite;
 
-    private ProgressDialog fetchingDialog;
-    private FrameLayout frameLayout;
-    private MeteoriteDetailFragment meteoriteDetailFragment;
-    private Bundle savedInstanceState;
+    private ProgressDialog mProgressDialog;
+    private FrameLayout mFrameLayout;
+    private MeteoriteDetailFragment mMeteoriteDetailFragment;
+    private Bundle mSavedInstanceState;
     private boolean mIsLandscape;
 
     @Override
@@ -69,10 +69,10 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
         ButterKnife.bind(this);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
+        if (mToolbar != null) {
+            setSupportActionBar(mToolbar);
         }
 
 
@@ -80,15 +80,15 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
         final MeteoriteSelector meteoriteSelector = MeteoriteSelectorFactory.getMeteoriteSelector(mIsLandscape, this);
 
-        meteoriteAdapter = new MeteoriteAdapter(this, meteoriteSelector);
-        meteoriteAdapter.setHasStableIds(true);
-        mRecyclerView.setAdapter(meteoriteAdapter);
+        mMeteoriteAdapter = new MeteoriteAdapter(this, meteoriteSelector);
+        mMeteoriteAdapter.setHasStableIds(true);
+        mRecyclerView.setAdapter(mMeteoriteAdapter);
 
-        frameLayout = (FrameLayout) findViewById(R.id.fragment);
+        mFrameLayout = (FrameLayout) findViewById(R.id.fragment);
 
         setupGridLayout();
 
-        presenter = new MeteoriteListPresenter(this);
+        mPresenter = new MeteoriteListPresenter(this);
 
         final String selectedMeteorite = getPreviousSelectedMeteorite(savedInstanceState);
 
@@ -96,19 +96,157 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
             meteoriteSelector.selectItemId(selectedMeteorite);
         }
 
-        this.savedInstanceState = savedInstanceState;
+        this.mSavedInstanceState = savedInstanceState;
 
-        presenter.startToRecoverMeteorites();
+        mPresenter.startToRecoverMeteorites();
 
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
+        if (mSelectedMeteorite != null) {
+            savedInstanceState.putString(ITEM_SELECTED, mSelectedMeteorite);
+        }
+
+        int lastFirstVisiblePosition = mSglm.findFirstCompletelyVisibleItemPosition();
+        savedInstanceState.putInt(SCROLL_POSITION, lastFirstVisiblePosition);
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    /*
+    MeteoriteListView
+     */
+    @Override
+    public Context getContext() {
+        return this;
+    }
+
+    @Override
+    public void onPreExecute() {
+        try {
+            if (mProgressDialog == null) {
+                mProgressDialog = ProgressDialog.show(this, "", getString(R.string.load), true);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void setMeteorites(List<Meteorite> meteorites) {
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mMessage.setVisibility(View.GONE);
+        mMeteoriteAdapter.setData(meteorites);
+        dismissDialog();
+
+        if (mSavedInstanceState != null) {
+            final int anInt = mSavedInstanceState.getInt(SCROLL_POSITION, -1);
+            if (anInt > 0) {
+                mSglm.scrollToPosition(anInt);
+            }
+        }
+    }
+
+    @Override
+    public void unableToFetch() {
+        error(getString(R.string.no_network));
+    }
+
+    @Override
+    public void error(final String messageString) {
+        mRecyclerView.setVisibility(View.GONE);
+        mMessage.setVisibility(View.VISIBLE);
+        mMessage.setText(messageString);
+        dismissDialog();
+    }
+
+    @Override
+    public void clearList() {
+        mMeteoriteAdapter.resetData();
+    }
+
+    @Override
+    public void showList() {
+        mRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideList() {
+        mRecyclerView.setVisibility(View.GONE);
+    }
+
+    /*
+    MeteoriteSelectorView
+     */
+    @Override
+    public void selectLandscape(final String meteorite) {
+
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
+        if (mSelectedMeteorite == null) {
+            mFrameLayout.setVisibility(View.VISIBLE);
+            mSglm = new GridLayoutManager(this, 1);
+            mRecyclerView.setLayoutManager(mSglm);
+        }
+        fragmentTransaction = fragmentTransaction.setCustomAnimations(
+                R.anim.fragment_slide_left_enter,
+                R.anim.fragment_slide_left_exit);
+
+        mMeteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteorite);
+        fragmentTransaction.replace(R.id.fragment, mMeteoriteDetailFragment);
+        fragmentTransaction.commit();
+
+        mSelectedMeteorite = meteorite;
+
+        mMeteoriteAdapter.setSelectedMeteorite(mSelectedMeteorite);
+
+    }
+
+    @Override
+    public void selectPortrait(final String meteorite) {
+
+        final Intent intent = new Intent(this, MeteoriteDetailActivity.class);
+        intent.putExtra(ITEM_SELECTED, meteorite);
+
+        final ViewHolderMeteorite viewHolderMeteorite = mMeteoriteAdapter.getmViewHolderMeteorite();
+        if (viewHolderMeteorite != null) {
+
+            final Pair<View, String> container = Pair.create((View) viewHolderMeteorite.cardView, "cardView");
+            //Pair<View, String> p1 = Pair.create((View) viewHolderMeteorite.name, "title");
+
+            final ActivityOptionsCompat options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation(this, container);
+
+            startActivity(intent, options.toBundle());
+
+        } else {
+            startActivity(intent);
+        }
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mSelectedMeteorite != null && mIsLandscape) {
+            mSelectedMeteorite = null;
+            mMeteoriteAdapter.setSelectedMeteorite(null);
+            setupGridLayout();
+            mFrameLayout.setVisibility(View.GONE);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void setupGridLayout() {
         int columnCount = getResources().getInteger(R.integer.list_column_count);
 
-        sglm =
+        mSglm =
                 new GridLayoutManager(this, columnCount);
-        mRecyclerView.setLayoutManager(sglm);
+        mRecyclerView.setLayoutManager(mSglm);
     }
 
     private String getPreviousSelectedMeteorite(Bundle savedInstanceState) {
@@ -131,159 +269,14 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         return meteorite;
     }
 
-
-
     private void dismissDialog() {
         try {
-            if (fetchingDialog != null && fetchingDialog.isShowing()) {
-                fetchingDialog.dismiss();
-                fetchingDialog = null;
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+                mProgressDialog = null;
             }
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
-        }
-    }
-
-    /*
-    MeteoriteListView
-     */
-    @Override
-    public Context getContext() {
-        return this;
-    }
-
-    @Override
-    public void onPreExecute() {
-        try {
-            if (fetchingDialog == null) {
-                fetchingDialog = ProgressDialog.show(this, "", getString(R.string.load), true);
-            }
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void setMeteorites(List<Meteorite> meteorites) {
-        mRecyclerView.setVisibility(View.VISIBLE);
-        message.setVisibility(View.GONE);
-        meteoriteAdapter.setData(meteorites);
-        dismissDialog();
-
-        if (savedInstanceState != null) {
-            final int anInt = savedInstanceState.getInt(SCROLL_POSITION, -1);
-            if (anInt > 0) {
-                sglm.scrollToPosition(anInt);
-            }
-        }
-    }
-
-    @Override
-    public void unableToFetch() {
-        error(getString(R.string.no_network));
-    }
-
-    @Override
-    public void error(final String messageString) {
-        mRecyclerView.setVisibility(View.GONE);
-        message.setVisibility(View.VISIBLE);
-        message.setText(messageString);
-        dismissDialog();
-    }
-
-    @Override
-    public void clearList() {
-        meteoriteAdapter.resetData();
-    }
-
-
-    @Override
-    public void showList() {
-        mRecyclerView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideList() {
-        mRecyclerView.setVisibility(View.GONE);
-    }
-
-
-    /*
-    MeteoriteSelectorView
-     */
-    @Override
-    public void selectLandscape(final String meteorite) {
-
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-
-        if (selectedMeteorite == null) {
-            frameLayout.setVisibility(View.VISIBLE);
-            sglm = new GridLayoutManager(this, 1);
-            mRecyclerView.setLayoutManager(sglm);
-        }
-        fragmentTransaction = fragmentTransaction.setCustomAnimations(
-                R.anim.fragment_slide_left_enter,
-                R.anim.fragment_slide_left_exit);
-
-        meteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteorite);
-        fragmentTransaction.replace(R.id.fragment, meteoriteDetailFragment);
-        fragmentTransaction.commit();
-
-        selectedMeteorite = meteorite;
-
-        meteoriteAdapter.setSelectedMeteorite(selectedMeteorite);
-
-    }
-
-    @Override
-    public void selectPortrait(final String meteorite) {
-
-        final Intent intent = new Intent(this, MeteoriteDetailActivity.class);
-        intent.putExtra(ITEM_SELECTED, meteorite);
-
-        final ViewHolderMeteorite viewHolderMeteorite = meteoriteAdapter.getmViewHolderMeteorite();
-        if (viewHolderMeteorite != null) {
-
-            final Pair<View, String> container = Pair.create((View) viewHolderMeteorite.cardView, "cardView");
-            Pair<View, String> p1 = Pair.create((View)viewHolderMeteorite.name, "title");
-
-            final ActivityOptionsCompat options = ActivityOptionsCompat.
-                    makeSceneTransitionAnimation(this, container);
-
-            startActivity(intent, options.toBundle());
-
-        } else {
-            startActivity(intent);
-        }
-
-    }
-
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-
-        if (selectedMeteorite != null) {
-            savedInstanceState.putString(ITEM_SELECTED, selectedMeteorite);
-        }
-
-        int lastFirstVisiblePosition = sglm.findFirstCompletelyVisibleItemPosition();
-        savedInstanceState.putInt(SCROLL_POSITION, lastFirstVisiblePosition);
-
-        // Always call the superclass so it can save the view hierarchy state
-        super.onSaveInstanceState(savedInstanceState);
-    }
-
-
-
-    @Override
-    public void onBackPressed() {
-        if (selectedMeteorite != null && mIsLandscape) {
-            selectedMeteorite = null;
-            meteoriteAdapter.setSelectedMeteorite(selectedMeteorite);
-            setupGridLayout();
-            frameLayout.setVisibility(View.GONE);
-        } else {
-            super.onBackPressed();
         }
     }
 }
