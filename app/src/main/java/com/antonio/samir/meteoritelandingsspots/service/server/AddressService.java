@@ -1,17 +1,12 @@
 package com.antonio.samir.meteoritelandingsspots.service.server;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.database.Cursor;
 import android.location.Address;
-import android.net.Uri;
 import android.util.Log;
 
 import com.antonio.samir.meteoritelandingsspots.Application;
 import com.antonio.samir.meteoritelandingsspots.ApplicationDebug;
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepository;
-import com.antonio.samir.meteoritelandingsspots.service.repository.database.AddressDao;
 import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao;
 
 import org.apache.commons.lang3.StringUtils;
