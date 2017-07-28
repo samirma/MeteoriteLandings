@@ -55,7 +55,7 @@ class MeteoriteNasaService implements MeteoriteService {
                 if (mHasNetWork) {
                     //Return meteories
                     final MeteoriteDao meteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(mContext);
-                    list = meteoriteDao.retrive(getOrderString());
+                    list = meteoriteDao.retrieve(getOrderString());
 
                 } else {
                     list = null;
