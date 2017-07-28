@@ -30,11 +30,6 @@
             android:parentActivityName=".ui.activity.MeteoriteListMainActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
-        <provider
-            android:name=".service.repository.generated.MeteoriteProvider"
-            android:authorities="com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteProvider"
-            android:exported="true" />
-
         <!--Widget-->
         <receiver android:name=".ui.widget.MeteoritesAppWidget">
             <intent-filter>
