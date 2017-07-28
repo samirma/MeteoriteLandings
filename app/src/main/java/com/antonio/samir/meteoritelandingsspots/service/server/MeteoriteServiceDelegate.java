@@ -11,7 +11,7 @@ import java.util.List;
 public interface MeteoriteServiceDelegate {
     void onPreExecute();
 
-    void setCursor(List<Meteorite> result);
+    void setMeteorites(List<Meteorite> result);
 
     void fail(MeteoriteServerException e);
 

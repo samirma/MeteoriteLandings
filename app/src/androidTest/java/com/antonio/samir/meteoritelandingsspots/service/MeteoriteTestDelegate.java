@@ -31,7 +31,7 @@ public class MeteoriteTestDelegate implements MeteoriteServiceDelegate {
     }
 
     @Override
-    public void setCursor(List<Meteorite> result) {
+    public void setMeteorites(List<Meteorite> result) {
         onPostExecute.set(true);
         signal.countDown();
     }

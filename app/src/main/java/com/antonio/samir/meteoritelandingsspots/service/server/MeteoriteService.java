@@ -4,8 +4,6 @@ public interface MeteoriteService {
 
     void getMeteorites(MeteoriteServiceDelegate delegate);
 
-    void remove();
-
     String getOrderString();
 
 }

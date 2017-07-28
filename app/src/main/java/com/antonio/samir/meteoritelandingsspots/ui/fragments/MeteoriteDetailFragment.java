@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.antonio.samir.meteoritelandingsspots.R;
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
-import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepository;
+import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryFactory;
 import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceFactory;
@@ -129,7 +129,7 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
     public void setMeteorite(String meteoriteId) {
         this.meteoriteId = meteoriteId;
 
-        final MeteoriteDao meteoriteDao = new MeteoriteRepository(this.getContext()).getAppDatabase().meteoriteDao();
+        final MeteoriteDao meteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(getContext());
 
         final Meteorite meteorite = meteoriteDao.getMeteorite(meteoriteId);
 
