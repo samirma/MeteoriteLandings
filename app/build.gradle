@@ -58,9 +58,10 @@ dependencies {
     // Architecture Components
     compile "android.arch.lifecycle:runtime:1.0.0-alpha3"
     compile "android.arch.lifecycle:extensions:1.0.0-alpha3"
-    annotationProcessor "android.arch.lifecycle:compiler:1.0.0-alpha3"
+    apt "android.arch.lifecycle:compiler:1.0.0-alpha3"
     compile "android.arch.persistence.room:runtime:1.0.0-alpha3"
-    annotationProcessor "android.arch.persistence.room:compiler:1.0.0-alpha3"
+    //annotationProcessor "android.arch.persistence.room:compiler:1.0.0-alpha3"
+    apt "android.arch.persistence.room:compiler:1.0.0-alpha3"
 
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.android.support:design:25.3.1'
@@ -74,9 +75,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:10.2.6'
     compile 'com.google.android.gms:play-services-analytics:10.2.6'
 
-
-    apt 'net.simonvt.schematic:schematic-compiler:0.7.0'
-    compile 'net.simonvt.schematic:schematic:0.7.0'
 
     compile 'org.apache.commons:commons-lang3:3.5'
     compile 'com.jakewharton:butterknife:8.4.0'

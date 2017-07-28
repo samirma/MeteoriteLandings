@@ -1,9 +1,12 @@
 package com.antonio.samir.meteoritelandingsspots.service.server;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
+import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryFactory;
+import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao;
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.MeteoriteNasaAsyncTaskService;
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaService;
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaServiceFactory;
@@ -14,11 +17,9 @@ import java.util.List;
 
 class MeteoriteNasaService implements MeteoriteService {
 
-    private static final int CURSOR_LOADER_ID = 1;
     private static final String TAG = MeteoriteNasaService.class.getSimpleName();
     private final NasaService nasaService;
     private final GPSTracker gpsTracker;
-    private android.support.v4.app.LoaderManager mLoaderManager;
     private Context mContext;
     private MeteoriteServiceDelegate mDelegate;
     private boolean firstAttempt;
@@ -35,24 +36,46 @@ class MeteoriteNasaService implements MeteoriteService {
     }
 
     @Override
-    public void getMeteorites(MeteoriteServiceDelegate delegate) {
+    public void getMeteorites(final MeteoriteServiceDelegate delegate) {
         mDelegate = delegate;
 
-        final boolean hasNetWork = NetworkUtil.hasConnectivity(mContext);
-        if (hasNetWork) {
-            //Return meteories
-        } else {
-            delegate.unableToFetch();
-        }
+        new AsyncTask<Void, Void, List<Meteorite>>() {
+            private boolean mHasNetWork;
+
+            @Override
+            protected void onPreExecute() {
+                mHasNetWork = NetworkUtil.hasConnectivity(mContext);
+            }
+
+            @Override
+            protected List<Meteorite> doInBackground(final Void... voids) {
+
+                List<Meteorite> list;
+
+                if (mHasNetWork) {
+                    //Return meteories
+                    final MeteoriteDao meteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(mContext);
+                    list = meteoriteDao.retrive(getOrderString());
+
+                } else {
+                    list = null;
+                }
+
+                return list;
+            }
+
+            @Override
+            protected void onPostExecute(final List<Meteorite> meteorites) {
+                super.onPostExecute(meteorites);
+                if (meteorites == null && !mHasNetWork) {
+                    delegate.unableToFetch();
+                } else {
+                    onMeteoritesLoaded(meteorites);
+                }
+            }
+        }.execute();
 
     }
-
-
-    @Override
-    public void remove() {
-        mLoaderManager.destroyLoader(CURSOR_LOADER_ID);
-    }
-
 
     public String getOrderString() {
         String sortOrder = null;
@@ -85,7 +108,7 @@ class MeteoriteNasaService implements MeteoriteService {
             }
         } else {
             Log.i(TAG, String.format("Data count %s", meteorites.size()));
-            mDelegate.setCursor(meteorites);
+            mDelegate.setMeteorites(meteorites);
         }
 
     }

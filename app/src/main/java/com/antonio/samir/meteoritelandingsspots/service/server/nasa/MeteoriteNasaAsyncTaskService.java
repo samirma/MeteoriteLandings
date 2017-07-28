@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
-import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepository;
+import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryFactory;
 import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao;
 import com.antonio.samir.meteoritelandingsspots.service.server.AddressService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServerException;
@@ -51,7 +51,7 @@ public class MeteoriteNasaAsyncTaskService extends AsyncTask<Void, Void, Meteori
         try {
             final List<Meteorite> meteorites = result.getMeteorites();
 
-            final MeteoriteDao meteoriteDao = new MeteoriteRepository(mContext).getAppDatabase().meteoriteDao();
+            final MeteoriteDao meteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(mContext);
 
             meteoriteDao.insertAll(meteorites);
 

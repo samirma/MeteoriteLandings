@@ -1,15 +1,18 @@
 package com.antonio.samir.meteoritelandingsspots.service.repository;
 
 import com.antonio.samir.meteoritelandingsspots.service.repository.database.AppDatabase;
+import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao;
 
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
 
-public class MeteoriteRepository {
+public class MeteoriteRepositoryFactory {
 
-    static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+    private static AppDatabase appDatabase;
+
+    private static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL("ALTER TABLE meteorites "
@@ -19,15 +22,16 @@ public class MeteoriteRepository {
 
         }
     };
-    private final AppDatabase appDatabase;
 
-    public MeteoriteRepository(Context context) {
-        appDatabase = Room.databaseBuilder(context,
-                AppDatabase.class, "meteorites").addMigrations(MIGRATION_1_2).build();
-
+    public static MeteoriteDao getMeteoriteDao(final Context context) {
+        if (appDatabase == null) {
+            appDatabase = getAppDatabase(context);
+        }
+        return appDatabase.meteoriteDao();
     }
 
-    public AppDatabase getAppDatabase() {
-        return appDatabase;
+    private static AppDatabase getAppDatabase(final Context context) {
+        return Room.databaseBuilder(context,
+                AppDatabase.class, "meteorites").addMigrations(MIGRATION_1_2).build();
     }
 }

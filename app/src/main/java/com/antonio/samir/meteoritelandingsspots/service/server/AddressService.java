@@ -6,7 +6,7 @@ import android.util.Log;
 import com.antonio.samir.meteoritelandingsspots.Application;
 import com.antonio.samir.meteoritelandingsspots.ApplicationDebug;
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
-import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepository;
+import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryFactory;
 import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao;
 
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +28,7 @@ public class AddressService {
     private final MeteoriteDao mMeteoriteDao;
 
     public AddressService() {
-        mMeteoriteDao = new MeteoriteRepository(ApplicationDebug.getContext()).getAppDatabase().meteoriteDao();
+        mMeteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(ApplicationDebug.getContext());
     }
 
     public void recoverAddress(final Meteorite meteorite, final String recLat, final String recLong) {
