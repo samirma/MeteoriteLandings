@@ -1,6 +1,5 @@
 package com.antonio.samir.meteoritelandingsspots.ui.recyclerView;
 
-import android.database.ContentObserver;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -14,18 +13,18 @@ import butterknife.ButterKnife;
 public class ViewHolderMeteorite extends RecyclerView.ViewHolder {
 
     @BindView(R.id.title)
-    public TextView name;
+    public TextView mName;
 
     @BindView(R.id.location)
-    public TextView location;
+    public TextView mLocation;
 
     @BindView(R.id.cardview)
-    public CardView cardView;
+    public CardView mCardview;
 
     @BindView(R.id.year)
-    public TextView year;
-    public ContentObserver observer;
-    private String id;
+    public TextView mYear;
+
+    private String mId;
 
     public ViewHolderMeteorite(View view) {
         super(view);
@@ -33,11 +32,11 @@ public class ViewHolderMeteorite extends RecyclerView.ViewHolder {
     }
 
     public String getId() {
-        return id;
+        return mId;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.mId = id;
     }
 
 

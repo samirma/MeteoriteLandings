@@ -75,11 +75,11 @@ public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> 
 
         final String idString = meteorite.getId();
 
-        viewHolder.name.setText(meteoriteName);
-        viewHolder.year.setText(year);
+        viewHolder.mName.setText(meteoriteName);
+        viewHolder.mYear.setText(year);
 
-        viewHolder.name.setContentDescription(meteoriteName);
-        viewHolder.year.setContentDescription(year);
+        viewHolder.mName.setContentDescription(meteoriteName);
+        viewHolder.mYear.setContentDescription(year);
 
         setLocationText(meteorite.getAddress(), viewHolder);
 
@@ -96,9 +96,9 @@ public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> 
             elevation = R.dimen.selected_item_elevation;
         }
 
-        viewHolder.cardView.setCardBackgroundColor(mContext.getResources().getColor(color));
-        viewHolder.cardView.setCardElevation(mContext.getResources().getDimensionPixelSize(elevation));
-        viewHolder.name.setTextColor(mContext.getResources().getColor(title_color));
+        viewHolder.mCardview.setCardBackgroundColor(mContext.getResources().getColor(color));
+        viewHolder.mCardview.setCardElevation(mContext.getResources().getDimensionPixelSize(elevation));
+        viewHolder.mName.setTextColor(mContext.getResources().getColor(title_color));
 
     }
 
@@ -106,22 +106,13 @@ public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> 
     public void setLocationText(final String address, final ViewHolderMeteorite viewHolder) {
         final int visibility;
         if (StringUtils.isNotEmpty(address)) {
-            viewHolder.location.setText(address);
+            viewHolder.mLocation.setText(address);
             visibility = View.VISIBLE;
         } else {
             visibility = View.GONE;
         }
-        viewHolder.location.setVisibility(visibility);
+        viewHolder.mLocation.setVisibility(visibility);
     }
-
-    @Override
-    public void onViewDetachedFromWindow(ViewHolderMeteorite holder) {
-        super.onViewDetachedFromWindow(holder);
-        if (holder.observer != null) {
-            mContext.getContentResolver().unregisterContentObserver(holder.observer);
-        }
-    }
-
 
     public void setSelectedMeteorite(final String selectedMeteorite) {
         notifyDataSetChanged();
