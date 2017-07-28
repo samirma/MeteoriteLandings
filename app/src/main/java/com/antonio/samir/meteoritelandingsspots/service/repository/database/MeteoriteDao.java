@@ -24,6 +24,6 @@ public interface MeteoriteDao {
     @Query("SELECT * from meteorites ORDER BY :orderBy")
     List<Meteorite> retrive(String orderBy);
 
-    @Query("SELECT * from meteorites where _id = :meteoriteId LIMIT 1")
+    @Query("SELECT * from meteorites where id = :meteoriteId LIMIT 1")
     Meteorite getMeteorite(String meteoriteId);
 }

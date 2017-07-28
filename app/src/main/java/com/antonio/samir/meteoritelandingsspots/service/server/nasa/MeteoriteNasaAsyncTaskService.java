@@ -15,6 +15,7 @@ import java.util.List;
 
 public class MeteoriteNasaAsyncTaskService extends AsyncTask<Void, Void, MeteoriteServerResult> {
 
+    public static final String TAG = MeteoriteNasaAsyncTaskService.class.getSimpleName();
     private final Context mContext;
     private NasaService mNasaService;
 
@@ -55,14 +56,23 @@ public class MeteoriteNasaAsyncTaskService extends AsyncTask<Void, Void, Meteori
 
             meteoriteDao.insertAll(meteorites);
 
-            AddressService addressService = new AddressService();
+            final AddressService addressService = new AddressService();
 
-            for (Meteorite met: meteorites) {
-                addressService.recoverAddress(met, met.getReclat(), met.getReclong());
-            }
+            new Thread("AddressService") {
+                @Override
+                public void run() {
+                    try {
+                        for (Meteorite met: meteorites) {
+                            addressService.recoverAddress(met, met.getReclat(), met.getReclong());
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Fail to retrive addresss", e);
+                    }
+                }
+            }.start();
 
         } catch (MeteoriteServerException e) {
-            Log.e(MeteoriteNasaAsyncTaskService.class.getSimpleName(), e.getMessage(), e);
+            Log.e(TAG, e.getMessage(), e);
         }
     }
 
