@@ -1,5 +1,7 @@
 package com.antonio.samir.meteoritelandingsspots.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
@@ -13,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-@Entity(tableName = "meteorites", indices = {@Index("_id")})
+@Entity(tableName = "meteorites", indices = {@Index("id")})
 public class Meteorite implements Parcelable {
 
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -21,7 +23,8 @@ public class Meteorite implements Parcelable {
     public static final String TAG = Meteorite.class.getSimpleName();
 
     @PrimaryKey
-    private String _id;
+    @SerializedName("id")
+    private String id;
     private String mass;
     private String nametype;
     private String recclass;
@@ -65,12 +68,12 @@ public class Meteorite implements Parcelable {
 
     public String getId ()
     {
-        return _id;
+        return id;
     }
 
     public void setId (String id)
     {
-        this._id = id;
+        this.id = id;
     }
 
     public String getNametype ()
@@ -158,7 +161,7 @@ public class Meteorite implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this._id);
+        dest.writeString(this.id);
         dest.writeString(this.mass);
         dest.writeString(this.nametype);
         dest.writeString(this.recclass);
@@ -171,7 +174,7 @@ public class Meteorite implements Parcelable {
     }
 
     protected Meteorite(Parcel in) {
-        this._id = in.readString();
+        this.id = in.readString();
         this.mass = in.readString();
         this.nametype = in.readString();
         this.recclass = in.readString();

@@ -137,10 +137,11 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     }
 
     @Override
-    public void setMeteorites(List<Meteorite> meteorites) {
+    public void setMeteorites(final List<Meteorite> meteorites) {
         mRecyclerView.setVisibility(View.VISIBLE);
         mMessage.setVisibility(View.GONE);
         mMeteoriteAdapter.setData(meteorites);
+        mMeteoriteAdapter.notifyDataSetChanged();
         dismissDialog();
 
         if (mSavedInstanceState != null) {
