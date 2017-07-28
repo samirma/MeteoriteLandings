@@ -66,7 +66,7 @@ public class MeteoriteNasaAsyncTaskService extends AsyncTask<Void, Void, Meteori
                             addressService.recoverAddress(met, met.getReclat(), met.getReclong());
                         }
                     } catch (Exception e) {
-                        Log.e(TAG, "Fail to retrive addresss", e);
+                        Log.e(TAG, "Fail to retrieve addresss", e);
                     }
                 }
             }.start();

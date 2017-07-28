@@ -1,9 +1,13 @@
 package com.antonio.samir.meteoritelandingsspots.ui.fragments;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -131,26 +135,33 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
 
         final MeteoriteDao meteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(getContext());
 
-        final Meteorite meteorite = meteoriteDao.getMeteorite(meteoriteId);
+        final LiveData<Meteorite> meteoriteLiveData = meteoriteDao.getMeteorite(meteoriteId);
 
+        meteoriteLiveData.observeForever(new Observer<Meteorite>() {
+            @Override
+            public void onChanged(@Nullable final Meteorite meteorite) {
+                meteoriteLiveData.removeObserver(this);
+                initView(meteoriteLiveData, meteorite);
+            }
+        });
+
+    }
+
+    private void initView(final LiveData<Meteorite> meteoriteLiveData, final Meteorite meteorite) {
         final String meteoriteName = meteorite.getName();
-        this.title.setText(meteoriteName);
-        this.title.setContentDescription(meteoriteName);
+        setText(this.title, meteoriteName);
 
-        setLocationText(meteorite.getAddress(), this.location);
+        setLocationText(meteoriteLiveData, this.location);
 
         final String yearString = meteorite.getYearString();
-        this.year.setText(yearString);
-        this.year.setContentDescription(yearString);
+        setText(this.year, yearString);
 
         final String recclass = meteorite.getRecclass();
-        this.recclass.setText(recclass);
-        this.recclass.setContentDescription(recclass);
+        setText(this.recclass, recclass);
 
 
         final String mass = meteorite.getMass();
-        this.mass.setText(mass);
-        this.mass.setContentDescription(mass);
+        setText(this.mass, mass);
 
         if (map != null) {
             final Double lat = Double.valueOf(meteorite.getReclat());
@@ -159,20 +170,34 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
         }
 
         AnalyticsUtil.logEvent("Detail", String.format("%s detail", meteoriteName));
+    }
 
+    public void setLocationText(final LiveData<Meteorite> meteoriteLiveData, final TextView text) {
+        final String address = meteoriteLiveData.getValue().getAddress();
+        if (StringUtils.isNotEmpty(address)) {
+            setText(text, address);
+            text.setVisibility(View.VISIBLE);
+        } else {
+            // Set observer in order to update the screen if the address is recovered
+            text.setVisibility(View.GONE);
+            meteoriteLiveData.observeForever(new Observer<Meteorite>() {
+                @Override
+                public void onChanged(@Nullable final Meteorite meteorite) {
+                    final String meteoriteAddress = meteorite.getAddress();
+                    if (!TextUtils.isEmpty(meteoriteAddress)) {
+                        setText(text, meteoriteAddress);
+                        text.setVisibility(View.VISIBLE);
+                        meteoriteLiveData.removeObserver(this);
+                    }
+                }
+            });
+        }
 
     }
 
-    public void setLocationText(final String address, final TextView text) {
-        final int visibility;
-        if (StringUtils.isNotEmpty(address)) {
-            text.setText(address);
-            text.setContentDescription(address);
-            visibility = View.VISIBLE;
-        } else {
-            visibility = View.GONE;
-        }
-        text.setVisibility(visibility);
+    private void setText(final TextView text, final String address) {
+        text.setText(address);
+        text.setContentDescription(address);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.service.repository.database;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
@@ -22,8 +23,8 @@ public interface MeteoriteDao {
     void update(Meteorite meteorite);
 
     @Query("SELECT * from meteorites ORDER BY :orderBy")
-    List<Meteorite> retrive(String orderBy);
+    List<Meteorite> retrieve(String orderBy);
 
     @Query("SELECT * from meteorites where id = :meteoriteId LIMIT 1")
-    Meteorite getMeteorite(String meteoriteId);
+    LiveData<Meteorite> getMeteorite(String meteoriteId);
 }
