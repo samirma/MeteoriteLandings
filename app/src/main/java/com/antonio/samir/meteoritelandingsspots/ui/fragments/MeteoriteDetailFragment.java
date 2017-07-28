@@ -51,8 +51,8 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
 
     private String meteoriteId;
 
-    private MeteoriteService meteoriteService;
-    private GoogleMap map;
+    private MeteoriteService mMeteoriteService;
+    private GoogleMap mMap;
 
     /**
      * Create a MeteoriteDetailFragment to show the meteorite param
@@ -60,8 +60,8 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
      * @return
      */
     public static MeteoriteDetailFragment newInstance(final String meteorite) {
-        MeteoriteDetailFragment fragment = new MeteoriteDetailFragment();
-        Bundle args = new Bundle();
+        final MeteoriteDetailFragment fragment = new MeteoriteDetailFragment();
+        final Bundle args = new Bundle();
         args.putString(METEORITE, meteorite);
         fragment.setArguments(args);
         return fragment;
@@ -79,16 +79,16 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         final View view = inflater.inflate(R.layout.fragment_meteorite_detail, container, false);
 
         ButterKnife.bind(this, view);
 
-        SupportMapFragment mapFragment = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map));
-        mapFragment.getMapAsync(this);
+        ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
 
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        final AppCompatActivity activity = (AppCompatActivity) getActivity();
 
-        Toolbar toolbarView = (Toolbar) view.findViewById(R.id.toolbar);
+        final Toolbar toolbarView = (Toolbar) view.findViewById(R.id.toolbar);
 
         if (null != toolbarView) {
             activity.setSupportActionBar(toolbarView);
@@ -97,7 +97,7 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
             activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        meteoriteService = MeteoriteServiceFactory.getMeteoriteService(getActivity());
+        mMeteoriteService = MeteoriteServiceFactory.getMeteoriteService(getActivity());
 
         return view;
     }
@@ -110,24 +110,21 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
 
     @Override
     public void onMapReady(GoogleMap map) {
-        this.map = map;
-
-        //setupMap();
-
+        this.mMap = map;
     }
 
     public void setupMap(String meteoriteName, double lat,double  log) {
-        map.clear();
+        mMap.clear();
 
         final LatLng latLng = new LatLng(lat, log);
 
-        map.addMarker(new MarkerOptions().position(
+        mMap.addMarker(new MarkerOptions().position(
                 latLng).title(meteoriteName));
 
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 30));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 30));
 
         // Zoom in, animating the camera.
-        map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
     }
 
     public void setMeteorite(String meteoriteId) {
@@ -163,7 +160,7 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
         final String mass = meteorite.getMass();
         setText(this.mass, mass);
 
-        if (map != null) {
+        if (mMap != null) {
             final Double lat = Double.valueOf(meteorite.getReclat());
             final Double log = Double.valueOf(meteorite.getReclong());
             setupMap(meteoriteName, lat, log);
