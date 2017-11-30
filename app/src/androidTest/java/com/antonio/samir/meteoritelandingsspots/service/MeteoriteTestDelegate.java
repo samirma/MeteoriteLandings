@@ -42,10 +42,6 @@ public class MeteoriteTestDelegate implements MeteoriteServiceDelegate {
         signal.countDown();
     }
 
-    @Override
-    public void reReseted() {
-
-    }
 
     @Override
     public void unableToFetch() {

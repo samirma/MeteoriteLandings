@@ -73,7 +73,7 @@ public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> 
         final String meteoriteName = meteorite.getName();
         final String year = meteorite.getYearString();
 
-        final String idString = meteorite.getId();
+        final String idString = String.valueOf(meteorite.getId());
 
         viewHolder.mName.setText(meteoriteName);
         viewHolder.mYear.setText(year);

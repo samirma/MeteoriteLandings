@@ -69,7 +69,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
         ButterKnife.bind(this);
 
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = findViewById(R.id.toolbar);
 
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
@@ -84,7 +84,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         mMeteoriteAdapter.setHasStableIds(true);
         mRecyclerView.setAdapter(mMeteoriteAdapter);
 
-        mFrameLayout = (FrameLayout) findViewById(R.id.fragment);
+        mFrameLayout = findViewById(R.id.fragment);
 
         setupGridLayout();
 

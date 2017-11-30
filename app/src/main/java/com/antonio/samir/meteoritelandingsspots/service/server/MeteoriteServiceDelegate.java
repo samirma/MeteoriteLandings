@@ -15,7 +15,5 @@ public interface MeteoriteServiceDelegate {
 
     void fail(MeteoriteServerException e);
 
-    void reReseted();
-
     void unableToFetch();
 }

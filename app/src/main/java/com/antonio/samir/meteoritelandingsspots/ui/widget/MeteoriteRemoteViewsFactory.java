@@ -76,7 +76,7 @@ public class MeteoriteRemoteViewsFactory implements RemoteViewsService.RemoteVie
         final String meteoriteName = meteorite.getName();
         final String year = meteorite.getYearString();
 
-        final String idString = meteorite.getId();
+        final String idString = String.valueOf(meteorite.getId());
 
         views.setTextViewText(R.id.title, meteoriteName);
         views.setTextViewText(R.id.year, year);
@@ -106,7 +106,7 @@ public class MeteoriteRemoteViewsFactory implements RemoteViewsService.RemoteVie
 
     @Override
     public long getItemId(int position) {
-        return Long.parseLong(mMeteorites.get(position).getId());
+        return mMeteorites.get(position).getId();
     }
 
     @Override
