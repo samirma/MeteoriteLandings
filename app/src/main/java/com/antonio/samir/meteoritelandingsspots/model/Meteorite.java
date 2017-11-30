@@ -24,7 +24,7 @@ public class Meteorite implements Parcelable {
 
     @PrimaryKey
     @SerializedName("id")
-    private String id;
+    protected int id;
     private String mass;
     private String nametype;
     private String recclass;
@@ -66,13 +66,11 @@ public class Meteorite implements Parcelable {
         this.mass = mass;
     }
 
-    public String getId ()
-    {
+    public int getId() {
         return id;
     }
 
-    public void setId (String id)
-    {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -161,7 +159,7 @@ public class Meteorite implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
+        dest.writeInt(this.id);
         dest.writeString(this.mass);
         dest.writeString(this.nametype);
         dest.writeString(this.recclass);
@@ -174,7 +172,7 @@ public class Meteorite implements Parcelable {
     }
 
     protected Meteorite(Parcel in) {
-        this.id = in.readString();
+        this.id = in.readInt();
         this.mass = in.readString();
         this.nametype = in.readString();
         this.recclass = in.readString();
