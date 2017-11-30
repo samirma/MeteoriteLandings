@@ -82,10 +82,14 @@ class MeteoriteNasaService implements MeteoriteService {
 
         final boolean gpsEnabled = gpsTracker.isGPSEnabled();
 
-        if (gpsEnabled && gpsTracker.getLocation() != null) {
-            final double latitude = gpsTracker.getLatitude();
-            final double longitude = gpsTracker.getLongitude();
-            sortOrder = String.format("ABS(reclat - %s ) + ABS(reclong - %s) ASC", latitude, longitude);
+        try {
+            if (gpsEnabled && gpsTracker.getLocation() != null) {
+                final double latitude = gpsTracker.getLatitude();
+                final double longitude = gpsTracker.getLongitude();
+                sortOrder = String.format("ABS(reclat - %s ) + ABS(reclong - %s) ASC", latitude, longitude);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "GPS failed", e);
         }
         return sortOrder;
     }
