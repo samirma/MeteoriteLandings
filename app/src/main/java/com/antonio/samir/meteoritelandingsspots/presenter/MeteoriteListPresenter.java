@@ -93,11 +93,6 @@ public class MeteoriteListPresenter implements MeteoriteServiceDelegate {
     }
 
     @Override
-    public void reReseted() {
-        mView.clearList();
-    }
-
-    @Override
     public void unableToFetch() {
         mView.unableToFetch();
     }
