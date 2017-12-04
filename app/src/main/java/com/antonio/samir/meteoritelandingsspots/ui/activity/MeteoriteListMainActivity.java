@@ -3,14 +3,12 @@ package com.antonio.samir.meteoritelandingsspots.ui.activity;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentTransaction;
@@ -142,21 +140,18 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
     public void getMeteorites() {
 
-        final LiveData<List<Meteorite>> meteorites = mPresenter.getMeteorites();
+        final LiveData<List<Meteorite>> meteorites = mMeteoritViewModel.getMeteorites();
 
-        meteorites.observe(this, new Observer<List<Meteorite>>() {
-            @Override
-            public void onChanged(@Nullable List<Meteorite> meteorites) {
-                if (meteorites != null && !meteorites.isEmpty()) {
-                    mMeteoriteAdapter.setData(meteorites);
-                    mMeteoriteAdapter.notifyDataSetChanged();
-                    dismissDialog();
+        meteorites.observe(this, meteorites1 -> {
+            if (meteorites1 != null && !meteorites1.isEmpty()) {
+                mMeteoriteAdapter.setData(meteorites1);
+                mMeteoriteAdapter.notifyDataSetChanged();
+                dismissDialog();
 
-                    if (mSavedInstanceState != null) {
-                        final int anInt = mSavedInstanceState.getInt(SCROLL_POSITION, -1);
-                        if (anInt > 0) {
-                            mSglm.scrollToPosition(anInt);
-                        }
+                if (mSavedInstanceState != null) {
+                    final int anInt = mSavedInstanceState.getInt(SCROLL_POSITION, -1);
+                    if (anInt > 0) {
+                        mSglm.scrollToPosition(anInt);
                     }
                 }
             }

@@ -33,14 +33,11 @@ public class AddressService {
 
     public void recoverAddress(final Meteorite meteorite, final String recLat, final String recLong) {
 
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                final String address = getAddress(recLat, recLong);
-                meteorite.setAddress(address);
-                mMeteoriteDao.update(meteorite);
-                Log.i(TAG, String.format("Address for id %s recovered", meteorite.getId()));
-            }
+        executor.execute(() -> {
+            final String address = getAddress(recLat, recLong);
+            meteorite.setAddress(address);
+            mMeteoriteDao.update(meteorite);
+            Log.i(TAG, String.format("Address for id %s recovered", meteorite.getId()));
         });
 
     }
