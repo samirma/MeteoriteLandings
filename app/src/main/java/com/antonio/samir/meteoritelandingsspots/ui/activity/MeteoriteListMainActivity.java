@@ -225,7 +225,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         final Intent intent = new Intent(this, MeteoriteDetailActivity.class);
         intent.putExtra(ITEM_SELECTED, meteorite);
 
-        final ViewHolderMeteorite viewHolderMeteorite = mMeteoriteAdapter.getmViewHolderMeteorite();
+        final ViewHolderMeteorite viewHolderMeteorite = mMeteoriteAdapter.getmVieHolderMeteorite();
         if (viewHolderMeteorite != null) {
 
             final Pair<View, String> container = Pair.create((View) viewHolderMeteorite.mCardview, "mCardview");

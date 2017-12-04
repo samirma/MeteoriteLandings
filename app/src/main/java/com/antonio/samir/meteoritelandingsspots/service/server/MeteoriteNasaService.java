@@ -44,13 +44,13 @@ class MeteoriteNasaService implements MeteoriteService {
             final MutableLiveData<Location> mGpsTrackerLocation = mGpsTracker.getLocation();
             mGpsTrackerLocation.observeForever(new Observer<Location>() {
                 @Override
-                public void onChanged(@Nullable Location location) {
+                public void onChanged(@Nullable final Location location) {
                     if (location != null) {
                         try {
                             final double latitude = location.getLatitude();
                             final double longitude = location.getLongitude();
                             String sortOrder = String.format("ABS(reclat - %s ) + ABS(reclong - %s) ASC", latitude, longitude);
-                            final LiveData<List<Meteorite>> liveData = meteoriteDao.getMeteoriteOrdened(sortOrder);
+                            final LiveData<List<Meteorite>> liveData = meteoriteDao.getMeteoriteOrdened("1 ORDER BY " + sortOrder);
                             liveData.observeForever(new Observer<List<Meteorite>>() {
                                 @Override
                                 public void onChanged(@Nullable List<Meteorite> meteorites) {
