@@ -127,7 +127,7 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
 
         final MeteoriteDao meteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(getContext());
 
-        final LiveData<Meteorite> meteoriteLiveData = meteoriteDao.getMeteorite(meteoriteId);
+        final LiveData<Meteorite> meteoriteLiveData = meteoriteDao.getMeteoriteById(meteoriteId);
 
         meteoriteLiveData.observeForever(new Observer<Meteorite>() {
             @Override
