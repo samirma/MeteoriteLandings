@@ -33,7 +33,7 @@ class MeteoriteNasaService implements MeteoriteService {
     @Override
     public LiveData<List<Meteorite>> getMeteorites() {
 
-        //Return meteories
+        //Return meteorites
         final MeteoriteDao meteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(mContext);
 
         final boolean gpsEnabled = mGpsTracker.isGPSEnabled();
@@ -50,7 +50,7 @@ class MeteoriteNasaService implements MeteoriteService {
                             final double latitude = location.getLatitude();
                             final double longitude = location.getLongitude();
                             String sortOrder = String.format("ABS(reclat - %s ) + ABS(reclong - %s) ASC", latitude, longitude);
-                            final LiveData<List<Meteorite>> liveData = meteoriteDao.getMeteoriteSync(sortOrder);
+                            final LiveData<List<Meteorite>> liveData = meteoriteDao.getMeteoriteOrdened(sortOrder);
                             liveData.observeForever(new Observer<List<Meteorite>>() {
                                 @Override
                                 public void onChanged(@Nullable List<Meteorite> meteorites) {
@@ -67,24 +67,23 @@ class MeteoriteNasaService implements MeteoriteService {
                 }
             });
 
-        } else {
-
-            final LiveData<List<Meteorite>> liveData = meteoriteDao.getMeteoriteSync(null);
-
-            liveData.observeForever(new Observer<List<Meteorite>>() {
-                @Override
-                public void onChanged(@Nullable List<Meteorite> meteorites) {
-                    if (meteorites.isEmpty()) {
-                        //If it is empty so load the data from internet
-                        final NasaService nasaService = NasaServiceFactory.getNasaService(mContext);
-                        new MeteoriteNasaAsyncTaskService(nasaService, meteoriteDao).execute();
-                    } else {
-                        list.setValue(meteorites);
-                        liveData.removeObserver(this);
-                    }
-                }
-            });
         }
+
+        final LiveData<List<Meteorite>> liveData = meteoriteDao.getMeteoriteOrdened(null);
+
+        liveData.observeForever(new Observer<List<Meteorite>>() {
+            @Override
+            public void onChanged(@Nullable List<Meteorite> meteorites) {
+                if (meteorites.isEmpty()) {
+                    //If it is empty so load the data from internet
+                    final NasaService nasaService = NasaServiceFactory.getNasaService(mContext);
+                    new MeteoriteNasaAsyncTaskService(nasaService, meteoriteDao).execute();
+                } else {
+                    list.setValue(meteorites);
+                    liveData.removeObserver(this);
+                }
+            }
+        });
 
         return list;
 

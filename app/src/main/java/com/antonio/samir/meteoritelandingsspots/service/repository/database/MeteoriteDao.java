@@ -23,8 +23,8 @@ public interface MeteoriteDao {
     void update(Meteorite meteorite);
 
     @Query("SELECT * from meteorites ORDER BY :orderBy")
-    LiveData<List<Meteorite>> getMeteoriteSync(String orderBy);
+    LiveData<List<Meteorite>> getMeteoriteOrdened(String orderBy);
 
     @Query("SELECT * from meteorites where id = :meteoriteId LIMIT 1")
-    LiveData<Meteorite> getMeteorite(String meteoriteId);
+    LiveData<Meteorite> getMeteoriteById(String meteoriteId);
 }
