@@ -45,31 +45,38 @@ class MeteoriteNasaService implements MeteoriteService {
 
         if (gpsEnabled) {
             final MutableLiveData<Location> mGpsTrackerLocation = mGpsTracker.getLocation();
-            mGpsTrackerLocation.observeForever(location -> {
-                if (location != null) {
-                    try {
-                        final double latitude = location.getLatitude();
-                        final double longitude = location.getLongitude();
-                        String sortOrder = String.format("ABS(reclat - %s ) + ABS(reclong - %s) ASC", latitude, longitude);
-                        final LiveData<List<Meteorite>> liveData = meteoriteDao.getMeteoriteOrdened("1 ORDER BY " + sortOrder);
-                        liveData.observeForever(meteorites -> {
-                            final List<Meteorite> liveDataValue = liveData.getValue();
+            mGpsTrackerLocation.observeForever(new Observer<Location>() {
+                @Override
+                public void onChanged(@Nullable Location location) {
+                    if (location != null) {
+                        try {
+                            final double latitude = location.getLatitude();
+                            final double longitude = location.getLongitude();
+                            //String sortOrder = String.format("ABS(reclat - %s ) + ABS(reclong - %s) ASC", latitude, longitude);
+                            final LiveData<List<Meteorite>> liveData = meteoriteDao.getMeteoriteOrdened(null);
+                            liveData.observeForever(new Observer<List<Meteorite>>() {
+                                @Override
+                                public void onChanged(@Nullable List<Meteorite> meteorites) {
+                                    final List<Meteorite> liveDataValue = liveData.getValue();
 
-                            SortedSet<Meteorite> sortedSet = new TreeSet<>((m1, m2) -> {
-                                final Double distance1 = ((Meteorite)m1).distance(latitude, longitude);
-                                final Double distance2 = ((Meteorite)m2).distance(latitude, longitude);
-                                return (distance1 > 0 && distance2 > 0)? distance1.compareTo(distance2):0;
+                                    SortedSet<Meteorite> sortedSet = new TreeSet<>((m1, m2) -> {
+                                        final Double distance1 = m1.distance(latitude, longitude);
+                                        final Double distance2 = m2.distance(latitude, longitude);
+                                        return (distance1 > 0 && distance2 > 0) ? distance1.compareTo(distance2) : 0;
+                                    });
+
+                                    sortedSet.addAll(liveDataValue);
+
+                                    list.setValue(new ArrayList<>(sortedSet));
+                                    liveData.removeObserver(this);
+                                }
                             });
 
-                            sortedSet.addAll(liveDataValue);
-
-                            list.setValue(new ArrayList<>(sortedSet));
-                        });
-
-                        //mGpsTrackerLocation.removeObserver(this);
-                        //mGpsTracker.stopUpdates();
-                    } catch (Exception e) {
-                        Log.e(TAG, "GPS failed", e);
+                            mGpsTrackerLocation.removeObserver(this);
+                            mGpsTracker.stopUpdates();
+                        } catch (Exception e) {
+                            Log.e(TAG, "GPS failed", e);
+                        }
                     }
                 }
             });
