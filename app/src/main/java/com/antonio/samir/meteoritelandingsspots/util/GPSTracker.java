@@ -2,7 +2,7 @@ package com.antonio.samir.meteoritelandingsspots.util;
 
 
 import android.Manifest;
-import android.app.Activity;
+import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -11,6 +11,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+
+import com.antonio.samir.meteoritelandingsspots.Application;
 
 
 public final class GPSTracker implements LocationListener {
@@ -21,8 +23,8 @@ public final class GPSTracker implements LocationListener {
     private static final long MIN_TIME_BW_UPDATES = 1; // 1 minute
     private static final String TAG = GPSTracker.class.getSimpleName();
     private static boolean permissionRequested = false;
-    private static Location location; // location
     private final Context mContext;
+    private final GPSTrackerDelegate mDelegate;
     // flag for GPS status
     public boolean isGPSEnabled = false;
     // Declaring a Location Manager
@@ -31,43 +33,53 @@ public final class GPSTracker implements LocationListener {
     boolean isNetworkEnabled = false;
     // flag for GPS status
     boolean canGetLocation = false;
-    double latitude; // latitude
-    double longitude; // longitude
 
-    public GPSTracker(Context context) {
-        this.mContext = context;
+    private MutableLiveData<Location> liveLocation; // liveLocation
 
+    public void stopUpdates() {
+        locationManager.removeUpdates(this);
+    }
+
+    public interface GPSTrackerDelegate {
+        void requestPermission();
+    }
+
+    public GPSTracker(GPSTrackerDelegate delegate) {
+        mDelegate = delegate;
+        liveLocation = new MutableLiveData<>();
+        this.mContext = Application.getContext();
     }
 
     /**
-     * Function to get the user's current location
+     * Function to get the user's current liveLocation
      *
      * @return
      */
-    public Location getLocation() {
+    public MutableLiveData<Location> getLocation() {
         try {
-            enableGPS();
+            startLocationService();
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
         }
-        return location;
+        return liveLocation;
     }
 
-    private void enableGPS() {
+    public void startLocationService() {
         try {
             final boolean isGPSEnabled = isGPSEnabled();
-            if (!isGPSEnabled) {
-                // no network provider is enabled
-            } else {
+            if (isGPSEnabled) {
 
                 if (!permissionRequested && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions((Activity) mContext, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+                    mDelegate.requestPermission();
                     permissionRequested = true;
                 } else {
 
                     this.canGetLocation = true;
+
+                    Location location = null;
+
                     if (isNetworkEnabled) {
-                        location = null;
+                        liveLocation = null;
 
                         locationManager.requestLocationUpdates(
                                 LocationManager.NETWORK_PROVIDER,
@@ -78,8 +90,7 @@ public final class GPSTracker implements LocationListener {
                             location = locationManager
                                     .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                             if (location != null) {
-                                latitude = location.getLatitude();
-                                longitude = location.getLongitude();
+                                onLocationChanged(location);
                             }
                         }
                     }
@@ -95,10 +106,7 @@ public final class GPSTracker implements LocationListener {
                             if (locationManager != null) {
                                 location = locationManager
                                         .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                                if (location != null) {
-                                    latitude = location.getLatitude();
-                                    longitude = location.getLongitude();
-                                }
+                                onLocationChanged(location);
                             }
                         }
                     }
@@ -130,33 +138,10 @@ public final class GPSTracker implements LocationListener {
         return isGPSEnabled || isNetworkEnabled;
     }
 
-    /**
-     * Function to get latitude
-     */
-    public double getLatitude() {
-        if (location != null) {
-            latitude = location.getLatitude();
-        }
-
-        // return latitude
-        return latitude;
-    }
-
-    /**
-     * Function to get longitude
-     */
-    public double getLongitude() {
-        if (location != null) {
-            longitude = location.getLongitude();
-        }
-
-        // return longitude
-        return longitude;
-    }
 
     @Override
-    public void onLocationChanged(Location location) {
-        GPSTracker.location = location;
+    public void onLocationChanged(final Location location) {
+        liveLocation.setValue(location);
     }
 
     @Override

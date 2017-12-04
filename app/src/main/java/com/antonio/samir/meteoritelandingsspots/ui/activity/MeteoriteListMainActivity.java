@@ -1,22 +1,17 @@
 package com.antonio.samir.meteoritelandingsspots.ui.activity;
 
-import com.antonio.samir.meteoritelandingsspots.R;
-import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
-import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListPresenter;
-import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListView;
-import com.antonio.samir.meteoritelandingsspots.ui.fragments.MeteoriteDetailFragment;
-import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.MeteoriteAdapter;
-import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.ViewHolderMeteorite;
-import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelector;
-import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelectorFactory;
-import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelectorView;
-
-import org.apache.commons.lang3.StringUtils;
-
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.Pair;
@@ -29,6 +24,21 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.antonio.samir.meteoritelandingsspots.R;
+import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
+import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListPresenter;
+import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListView;
+import com.antonio.samir.meteoritelandingsspots.ui.fragments.MeteoriteDetailFragment;
+import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.MeteoriteAdapter;
+import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.ViewHolderMeteorite;
+import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelector;
+import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelectorFactory;
+import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelectorView;
+import com.antonio.samir.meteoritelandingsspots.ui.viewmodel.MeteoriteViewModel;
+import com.antonio.samir.meteoritelandingsspots.util.GPSTracker;
+
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -37,11 +47,12 @@ import butterknife.ButterKnife;
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
 public class MeteoriteListMainActivity extends AppCompatActivity implements MeteoriteListView,
-        MeteoriteSelectorView {
+        MeteoriteSelectorView, GPSTracker.GPSTrackerDelegate {
 
     public static final String ITEM_SELECTED = "ITEM_SELECTED";
     public static final String SCROLL_POSITION = "SCROLL_POSITION";
     public static final String TAG = MeteoriteListMainActivity.class.getSimpleName();
+    public static final int LOCATION_REQUEST_CODE = 11111;
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
@@ -61,6 +72,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     private MeteoriteDetailFragment mMeteoriteDetailFragment;
     private Bundle mSavedInstanceState;
     private boolean mIsLandscape;
+    private MeteoriteViewModel mMeteoritViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,8 +100,6 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
         setupGridLayout();
 
-        mPresenter = new MeteoriteListPresenter(this);
-
         final String selectedMeteorite = getPreviousSelectedMeteorite(savedInstanceState);
 
         if (StringUtils.isNoneBlank(selectedMeteorite)) {
@@ -98,8 +108,13 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
         this.mSavedInstanceState = savedInstanceState;
 
-        mPresenter.startToRecoverMeteorites();
+        mMeteoritViewModel = ViewModelProviders.of(this).get(MeteoriteViewModel.class);
 
+        mPresenter = mMeteoritViewModel.getPresenter();
+
+        mPresenter.attachView(this);
+
+        getMeteorites();
 
     }
 
@@ -125,31 +140,28 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         return this;
     }
 
-    @Override
-    public void onPreExecute() {
-        try {
-            if (mProgressDialog == null) {
-                mProgressDialog = ProgressDialog.show(this, "", getString(R.string.load), true);
-            }
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
-    }
+    public void getMeteorites() {
 
-    @Override
-    public void setMeteorites(final List<Meteorite> meteorites) {
-        mRecyclerView.setVisibility(View.VISIBLE);
-        mMessage.setVisibility(View.GONE);
-        mMeteoriteAdapter.setData(meteorites);
-        mMeteoriteAdapter.notifyDataSetChanged();
-        dismissDialog();
+        final LiveData<List<Meteorite>> meteorites = mPresenter.getMeteorites();
 
-        if (mSavedInstanceState != null) {
-            final int anInt = mSavedInstanceState.getInt(SCROLL_POSITION, -1);
-            if (anInt > 0) {
-                mSglm.scrollToPosition(anInt);
+        meteorites.observe(this, new Observer<List<Meteorite>>() {
+            @Override
+            public void onChanged(@Nullable List<Meteorite> meteorites) {
+                if (meteorites != null && !meteorites.isEmpty()) {
+                    mMeteoriteAdapter.setData(meteorites);
+                    mMeteoriteAdapter.notifyDataSetChanged();
+                    dismissDialog();
+
+                    if (mSavedInstanceState != null) {
+                        final int anInt = mSavedInstanceState.getInt(SCROLL_POSITION, -1);
+                        if (anInt > 0) {
+                            mSglm.scrollToPosition(anInt);
+                        }
+                    }
+                }
             }
-        }
+        });
+
     }
 
     @Override
@@ -166,11 +178,6 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     }
 
     @Override
-    public void clearList() {
-        mMeteoriteAdapter.resetData();
-    }
-
-    @Override
     public void showList() {
         mRecyclerView.setVisibility(View.VISIBLE);
     }
@@ -178,6 +185,11 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     @Override
     public void hideList() {
         mRecyclerView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public GPSTracker.GPSTrackerDelegate getGPSDelegate() {
+        return this;
     }
 
     /*
@@ -278,6 +290,24 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
             }
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void requestPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_REQUEST_CODE) {
+            for (int i = 0; i < grantResults.length; i++) {
+                boolean isPermitted = grantResults[i] == PackageManager.PERMISSION_GRANTED;
+                if (isPermitted){
+                    mPresenter.updateLocation();
+                }
+            }
         }
     }
 }

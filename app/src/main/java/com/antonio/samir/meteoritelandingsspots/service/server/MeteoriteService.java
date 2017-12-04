@@ -1,7 +1,13 @@
 package com.antonio.samir.meteoritelandingsspots.service.server;
 
+import android.arch.lifecycle.LiveData;
+
+import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
+
+import java.util.List;
+
 public interface MeteoriteService {
 
-    void getMeteorites(MeteoriteServiceDelegate delegate);
+    LiveData<List<Meteorite>> getMeteorites();
 
 }
