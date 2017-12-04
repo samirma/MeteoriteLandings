@@ -16,7 +16,10 @@ import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaService;
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaServiceFactory;
 import com.antonio.samir.meteoritelandingsspots.util.GPSTracker;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 class MeteoriteNasaService implements MeteoriteService {
 
@@ -51,11 +54,18 @@ class MeteoriteNasaService implements MeteoriteService {
                             final double longitude = location.getLongitude();
                             String sortOrder = String.format("ABS(reclat - %s ) + ABS(reclong - %s) ASC", latitude, longitude);
                             final LiveData<List<Meteorite>> liveData = meteoriteDao.getMeteoriteOrdened("1 ORDER BY " + sortOrder);
-                            liveData.observeForever(new Observer<List<Meteorite>>() {
-                                @Override
-                                public void onChanged(@Nullable List<Meteorite> meteorites) {
-                                    list.setValue(liveData.getValue());
-                                }
+                            liveData.observeForever(meteorites -> {
+                                final List<Meteorite> liveDataValue = liveData.getValue();
+
+                                SortedSet<Meteorite> sortedSet = new TreeSet<>((m1, m2) -> {
+                                    final Double distance1 = ((Meteorite)m1).distance(latitude, longitude);
+                                    final Double distance2 = ((Meteorite)m2).distance(latitude, longitude);
+                                    return (distance1 > 0 && distance2 > 0)? distance1.compareTo(distance2):0;
+                                });
+
+                                sortedSet.addAll(liveDataValue);
+
+                                list.setValue(new ArrayList<>(sortedSet));
                             });
 
                             //mGpsTrackerLocation.removeObserver(this);

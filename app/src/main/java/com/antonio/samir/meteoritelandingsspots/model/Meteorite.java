@@ -1,7 +1,5 @@
 package com.antonio.samir.meteoritelandingsspots.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
@@ -9,6 +7,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.google.gson.annotations.SerializedName;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -56,13 +58,11 @@ public class Meteorite implements Parcelable {
         return yearParsed;
     }
 
-    public String getMass ()
-    {
+    public String getMass() {
         return mass;
     }
 
-    public void setMass (String mass)
-    {
+    public void setMass(String mass) {
         this.mass = mass;
     }
 
@@ -74,73 +74,59 @@ public class Meteorite implements Parcelable {
         this.id = id;
     }
 
-    public String getNametype ()
-    {
+    public String getNametype() {
         return nametype;
     }
 
-    public void setNametype (String nametype)
-    {
+    public void setNametype(String nametype) {
         this.nametype = nametype;
     }
 
-    public String getRecclass ()
-    {
+    public String getRecclass() {
         return recclass;
     }
 
-    public void setRecclass (String recclass)
-    {
+    public void setRecclass(String recclass) {
         this.recclass = recclass;
     }
 
-    public String getName ()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName (String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getFall ()
-    {
+    public String getFall() {
         return fall;
     }
 
-    public void setFall (String fall)
-    {
+    public void setFall(String fall) {
         this.fall = fall;
     }
 
-    public String getYear ()
-    {
+    public String getYear() {
         return year;
     }
 
-    public void setYear (String year)
-    {
+    public void setYear(String year) {
         this.year = year;
     }
 
-    public String getReclong ()
-    {
+    public String getReclong() {
         return reclong;
     }
 
-    public void setReclong (String reclong)
-    {
+    public void setReclong(String reclong) {
         this.reclong = reclong;
     }
 
-    public String getReclat ()
-    {
+    public String getReclat() {
         return reclat;
     }
 
-    public void setReclat (String reclat)
-    {
+    public void setReclat(String reclat) {
         this.reclat = reclat;
     }
 
@@ -195,4 +181,16 @@ public class Meteorite implements Parcelable {
             return new Meteorite[size];
         }
     };
+
+    public double distance(double latitude, double longitude) {
+        double result = -1;
+        if (StringUtils.isNotEmpty(reclat) && StringUtils.isNotEmpty(reclong)) {
+            try {
+                result = Math.abs(Float.valueOf(reclat) - latitude) + Math.abs(Float.valueOf(reclong) - longitude);
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage(), e);
+            }
+        }
+        return result;
+    }
 }
