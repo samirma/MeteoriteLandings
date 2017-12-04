@@ -135,7 +135,7 @@ public final class GPSTracker implements LocationListener {
 
         Log.v("isNetworkEnabled", "=" + isNetworkEnabled);
 
-        return isGPSEnabled || isNetworkEnabled;
+        return false && isGPSEnabled || isNetworkEnabled;
     }
 
 

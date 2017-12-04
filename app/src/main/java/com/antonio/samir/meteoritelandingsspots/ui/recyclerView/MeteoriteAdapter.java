@@ -106,6 +106,7 @@ public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> 
             visibility = View.VISIBLE;
         } else {
             visibility = View.GONE;
+
         }
         viewHolder.mLocation.setVisibility(visibility);
     }
@@ -115,7 +116,7 @@ public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> 
         this.mSelectedMeteorite = selectedMeteorite;
     }
 
-    public ViewHolderMeteorite getmViewHolderMeteorite() {
+    public ViewHolderMeteorite getmVieHolderMeteorite() {
         return mViewHolderMeteorite;
     }
 }
