@@ -53,10 +53,6 @@ public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> 
         return itemCount;
     }
 
-    public void resetData() {
-        setData(null);
-    }
-
     public void setData(final List<Meteorite> data) {
         mMeteorites = data;
     }

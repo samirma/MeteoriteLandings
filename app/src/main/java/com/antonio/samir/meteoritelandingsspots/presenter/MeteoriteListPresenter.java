@@ -1,99 +1,62 @@
 package com.antonio.samir.meteoritelandingsspots.presenter;
 
 
+import android.arch.lifecycle.LiveData;
 import android.content.Context;
-import android.util.Log;
 
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
-import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServerException;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteService;
-import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceDelegate;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceFactory;
+import com.antonio.samir.meteoritelandingsspots.util.GPSTracker;
 import com.antonio.samir.meteoritelandingsspots.util.NetworkUtil;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
  * Presenter layer responsible for manage the interactions between the activity and the services
  */
-public class MeteoriteListPresenter implements MeteoriteServiceDelegate {
+public class MeteoriteListPresenter {
 
     private static final String TAG = MeteoriteListPresenter.class.getSimpleName();
     private static MeteoriteListView mView;
-    private final Context mContext;
-    private final MeteoriteService meteoriteFetchService;
+    private MeteoriteService meteoriteFetchService;
+    private WeakReference<Context> mContextReference = null;
+    private GPSTracker mGpsTracker;
 
-    public MeteoriteListPresenter(MeteoriteListView view) {
-        mView = view;
-
-        mContext = view.getContext();
-
-        meteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(mContext);
-
+    public MeteoriteListPresenter(Context context) {
+        mContextReference = new WeakReference<>(context);
     }
 
-    /**
-     * Set the initial page and start meteorites fetching
-     */
-    public void startToRecoverMeteorites() {
+    public LiveData<List<Meteorite>> getMeteorites() {
+        final LiveData<List<Meteorite>> data = meteoriteFetchService.getMeteorites();
 
-        mView.clearList();
-
-        recoverPage();
-
-    }
-
-    /**
-     * Fetch the meteorites
-     */
-    private void recoverPage() {
-
-        final boolean hasNetWork = NetworkUtil.hasConnectivity(mContext);
-
-        if (hasNetWork) {
-
-            recoverMeteorites();
-
-        } else {
-            //If the is no Internet view should be notified
-            mView.unableToFetch();
-        }
-
-    }
-
-    private void recoverMeteorites() {
-        meteoriteFetchService.getMeteorites(this);
-    }
-
-    //MeteoriteServiceDelegate Implemendation
-    @Override
-    public void onPreExecute() {
-        mView.onPreExecute();
-    }
-
-    @Override
-    public void setMeteorites(final List<Meteorite> meteorites) {
+        final List<Meteorite> meteorites = data.getValue();
         final boolean isNotEmpty = (meteorites != null && (meteorites.size() > 0));
+
         if (isNotEmpty) {
-            mView.setMeteorites(meteorites);
-            mView.showList();
-        } else {
             mView.hideList();
         }
 
-        if (!NetworkUtil.hasConnectivity(mContext)) {
+        if (mContextReference.get() != null && !NetworkUtil.hasConnectivity(mContextReference.get())) {
             mView.unableToFetch();
+        }
+
+        return data;
+    }
+
+
+    public void attachView(MeteoriteListView meteoriteListView) {
+        mView = meteoriteListView;
+        if (mContextReference.get() != null) {
+            mGpsTracker = new GPSTracker(meteoriteListView.getGPSDelegate());
+            meteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(mContextReference.get(), mGpsTracker);
         }
     }
 
-    @Override
-    public void fail(MeteoriteServerException e) {
-        Log.e(TAG, e.getMessage(), e);
-        mView.error(e.getMessage());
-    }
-
-    @Override
-    public void unableToFetch() {
-        mView.unableToFetch();
+    public void updateLocation() {
+        if (mGpsTracker != null) {
+            mGpsTracker.startLocationService();
+        }
     }
 }

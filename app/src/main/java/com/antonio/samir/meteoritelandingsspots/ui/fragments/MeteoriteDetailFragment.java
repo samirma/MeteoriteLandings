@@ -17,8 +17,6 @@ import com.antonio.samir.meteoritelandingsspots.R;
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryFactory;
 import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao;
-import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteService;
-import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceFactory;
 import com.antonio.samir.meteoritelandingsspots.util.analytics.AnalyticsUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -51,7 +49,6 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
 
     private String meteoriteId;
 
-    private MeteoriteService mMeteoriteService;
     private GoogleMap mMap;
 
     /**
@@ -96,8 +93,6 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
             activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
             activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
-        mMeteoriteService = MeteoriteServiceFactory.getMeteoriteService(getActivity());
 
         return view;
     }

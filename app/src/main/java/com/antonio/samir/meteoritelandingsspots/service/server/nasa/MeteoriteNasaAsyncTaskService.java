@@ -1,11 +1,9 @@
 package com.antonio.samir.meteoritelandingsspots.service.server.nasa;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
-import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryFactory;
 import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao;
 import com.antonio.samir.meteoritelandingsspots.service.server.AddressService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServerException;
@@ -16,12 +14,12 @@ import java.util.List;
 public class MeteoriteNasaAsyncTaskService extends AsyncTask<Void, Void, MeteoriteServerResult> {
 
     public static final String TAG = MeteoriteNasaAsyncTaskService.class.getSimpleName();
-    private final Context mContext;
     private NasaService mNasaService;
+    private MeteoriteDao mMeteoriteDao;
 
-    public MeteoriteNasaAsyncTaskService(NasaService nasaService, Context context) {
+    public MeteoriteNasaAsyncTaskService(NasaService nasaService, MeteoriteDao meteoriteDao) {
         mNasaService = nasaService;
-        mContext = context;
+        mMeteoriteDao = meteoriteDao;
     }
 
     @Override
@@ -52,9 +50,7 @@ public class MeteoriteNasaAsyncTaskService extends AsyncTask<Void, Void, Meteori
         try {
             final List<Meteorite> meteorites = result.getMeteorites();
 
-            final MeteoriteDao meteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(mContext);
-
-            meteoriteDao.insertAll(meteorites);
+            mMeteoriteDao.insertAll(meteorites);
 
             final AddressService addressService = new AddressService();
 

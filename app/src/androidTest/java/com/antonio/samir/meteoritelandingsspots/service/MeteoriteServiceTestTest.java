@@ -56,9 +56,9 @@ public class MeteoriteServiceTestTest {
 
         final MeteoriteTestDelegate meteoriteTestDelegate = new MeteoriteTestDelegate(onPreExecuted, onPostExecute, unableToFetch, fail, signal);
 
-        final MeteoriteService MeteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(mActivity);
+        final MeteoriteService MeteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(mActivity, gpsTracker);
 
-        MeteoriteFetchService.getMeteorites(meteoriteTestDelegate);
+        MeteoriteFetchService.getMeteorites();
 
         signal.await(TIMEOUT, TimeUnit.SECONDS);
 
@@ -81,8 +81,8 @@ public class MeteoriteServiceTestTest {
 
 
         final MeteoriteTestDelegate meteoriteTestDelegate = new MeteoriteTestDelegate(onPreExecuted, onPostExecute, unableToFetch, fail, signal);
-        final MeteoriteService MeteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(mActivity);
-        MeteoriteFetchService.getMeteorites(meteoriteTestDelegate);
+        final MeteoriteService MeteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(mActivity, gpsTracker);
+        MeteoriteFetchService.getMeteorites();
 
         signal.await(TIMEOUT, TimeUnit.SECONDS);
 
@@ -104,8 +104,8 @@ public class MeteoriteServiceTestTest {
         NetworkUtil.setConnectivity(true);
 
         final MeteoriteTestDelegate meteoriteTestDelegate = new MeteoriteTestDelegate(onPreExecuted, onPostExecute, unableToFetch, fail, signal);
-        final MeteoriteService MeteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(mActivity);
-        MeteoriteFetchService.getMeteorites(meteoriteTestDelegate);
+        final MeteoriteService MeteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(mActivity, gpsTracker);
+        MeteoriteFetchService.getMeteorites();
 
         signal.await(TIMEOUT, TimeUnit.SECONDS);
 

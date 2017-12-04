@@ -1,15 +1,5 @@
 package com.antonio.samir.meteoritelandingsspots.ui.widget;
 
-import com.antonio.samir.meteoritelandingsspots.Application;
-import com.antonio.samir.meteoritelandingsspots.R;
-import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
-import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListPresenter;
-import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListView;
-import com.antonio.samir.meteoritelandingsspots.ui.activity.MeteoriteDetailActivity;
-import com.antonio.samir.meteoritelandingsspots.util.analytics.AnalyticsUtil;
-
-import org.apache.commons.lang3.StringUtils;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +7,17 @@ import android.os.Binder;
 import android.os.Build;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+
+import com.antonio.samir.meteoritelandingsspots.Application;
+import com.antonio.samir.meteoritelandingsspots.R;
+import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
+import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListPresenter;
+import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListView;
+import com.antonio.samir.meteoritelandingsspots.ui.activity.MeteoriteDetailActivity;
+import com.antonio.samir.meteoritelandingsspots.util.GPSTracker;
+import com.antonio.samir.meteoritelandingsspots.util.analytics.AnalyticsUtil;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -40,9 +41,8 @@ public class MeteoriteRemoteViewsFactory implements RemoteViewsService.RemoteVie
 
         AnalyticsUtil.logEvent("Widget", "Widget started");
 
-        mPresenter = new MeteoriteListPresenter(this);
+        mPresenter = new MeteoriteListPresenter(this.getContext());
 
-        mPresenter.startToRecoverMeteorites();
 
     }
 
@@ -120,27 +120,12 @@ public class MeteoriteRemoteViewsFactory implements RemoteViewsService.RemoteVie
     }
 
     @Override
-    public void onPreExecute() {
-
-    }
-
-    @Override
-    public void setMeteorites(final List<Meteorite> result) {
-        mMeteorites = result;
-    }
-
-    @Override
     public void unableToFetch() {
 
     }
 
     @Override
     public void error(final String s) {
-
-    }
-
-    @Override
-    public void clearList() {
 
     }
 
@@ -152,6 +137,11 @@ public class MeteoriteRemoteViewsFactory implements RemoteViewsService.RemoteVie
     @Override
     public void hideList() {
 
+    }
+
+    @Override
+    public GPSTracker.GPSTrackerDelegate getGPSDelegate() {
+        return null;
     }
 
     public void setLocationText(final String address, RemoteViews views) {

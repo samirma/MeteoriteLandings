@@ -1,9 +1,10 @@
 package com.antonio.samir.meteoritelandingsspots.service;
 
 
+import android.arch.lifecycle.LiveData;
+
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServerException;
-import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceDelegate;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -31,7 +32,7 @@ public class MeteoriteTestDelegate implements MeteoriteServiceDelegate {
     }
 
     @Override
-    public void setMeteorites(List<Meteorite> result) {
+    public void setMeteorites(LiveData<List<Meteorite>> result) {
         onPostExecute.set(true);
         signal.countDown();
     }
