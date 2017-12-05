@@ -108,13 +108,17 @@ public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> 
     public void setLocationText(final Meteorite meteorite, final ViewHolderMeteorite viewHolder) {
         final String address = meteorite.getAddress();
 
+        //Always remove the previous observer
         if (viewHolder.liveMet != null && viewHolder.addressObserver != null) {
             viewHolder.liveMet.removeObserver(viewHolder.addressObserver);
+            viewHolder.liveMet = null;
+            viewHolder.addressObserver = null;
         }
 
         if (StringUtils.isNotEmpty(address)) {
             showAddress(viewHolder, address);
         } else {
+            //If address is still empty then observe this entity to be aware of any change
             viewHolder.liveMet = mPresenter.getMeteorite(meteorite);
             viewHolder.addressObserver = meteorite1 -> {
                 final String newAddress = meteorite1.getAddress();
