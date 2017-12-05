@@ -86,11 +86,15 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         }
 
 
+        mMeteoritViewModel = ViewModelProviders.of(this).get(MeteoriteViewModel.class);
+
+        mPresenter = mMeteoritViewModel.getPresenter();
+
         mIsLandscape = getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE;
 
         final MeteoriteSelector meteoriteSelector = MeteoriteSelectorFactory.getMeteoriteSelector(mIsLandscape, this);
 
-        mMeteoriteAdapter = new MeteoriteAdapter(this, meteoriteSelector);
+        mMeteoriteAdapter = new MeteoriteAdapter(this, meteoriteSelector, mPresenter);
         mMeteoriteAdapter.setHasStableIds(true);
         mRecyclerView.setAdapter(mMeteoriteAdapter);
 
@@ -105,10 +109,6 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         }
 
         this.mSavedInstanceState = savedInstanceState;
-
-        mMeteoritViewModel = ViewModelProviders.of(this).get(MeteoriteViewModel.class);
-
-        mPresenter = mMeteoritViewModel.getPresenter();
 
         mPresenter.attachView(this);
 

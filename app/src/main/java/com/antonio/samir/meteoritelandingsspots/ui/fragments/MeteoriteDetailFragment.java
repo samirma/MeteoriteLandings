@@ -122,28 +122,27 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
         mMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
     }
 
-    public void setMeteorite(String meteoriteId) {
+    public void setMeteorite(final String meteoriteId) {
         this.meteoriteId = meteoriteId;
 
         final MeteoriteDao meteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(getContext());
 
         final LiveData<Meteorite> meteoriteLiveData = meteoriteDao.getMeteoriteById(meteoriteId);
 
-        meteoriteLiveData.observeForever(new Observer<Meteorite>() {
+        meteoriteLiveData.observe(this, new Observer<Meteorite>() {
             @Override
             public void onChanged(@Nullable final Meteorite meteorite) {
-                meteoriteLiveData.removeObserver(this);
-                initView(meteoriteLiveData, meteorite);
+                initView(meteorite);
             }
         });
 
     }
 
-    private void initView(final LiveData<Meteorite> meteoriteLiveData, final Meteorite meteorite) {
+    private void initView(final Meteorite meteorite) {
         final String meteoriteName = meteorite.getName();
         setText(this.title, meteoriteName);
 
-        setLocationText(meteoriteLiveData, this.location);
+        setLocationText(meteorite.getAddress(), this.location);
 
         final String yearString = meteorite.getYearString();
         setText(this.year, yearString);
@@ -164,27 +163,13 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
         AnalyticsUtil.logEvent("Detail", String.format("%s detail", meteoriteName));
     }
 
-    public void setLocationText(final LiveData<Meteorite> meteoriteLiveData, final TextView text) {
-        final String address = meteoriteLiveData.getValue().getAddress();
+    public void setLocationText(final String address, final TextView text) {
         if (StringUtils.isNotEmpty(address)) {
             setText(text, address);
             text.setVisibility(View.VISIBLE);
         } else {
-            // Set observer in order to update the screen if the address is recovered
             text.setVisibility(View.GONE);
-            meteoriteLiveData.observeForever(new Observer<Meteorite>() {
-                @Override
-                public void onChanged(@Nullable final Meteorite meteorite) {
-                    final String meteoriteAddress = meteorite.getAddress();
-                    if (!TextUtils.isEmpty(meteoriteAddress)) {
-                        setText(text, meteoriteAddress);
-                        text.setVisibility(View.VISIBLE);
-                        meteoriteLiveData.removeObserver(this);
-                    }
-                }
-            });
         }
-
     }
 
     private void setText(final TextView text, final String address) {
