@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +49,8 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
     private String meteoriteId;
 
     private GoogleMap mMap;
+    private LiveData<Meteorite> mMeteoriteLiveData;
+    private boolean isUiDone = false;
 
     /**
      * Create a MeteoriteDetailFragment to show the meteorite param
@@ -127,9 +128,9 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
 
         final MeteoriteDao meteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(getContext());
 
-        final LiveData<Meteorite> meteoriteLiveData = meteoriteDao.getMeteoriteById(meteoriteId);
+        mMeteoriteLiveData = meteoriteDao.getMeteoriteById(meteoriteId);
 
-        meteoriteLiveData.observe(this, new Observer<Meteorite>() {
+        mMeteoriteLiveData.observe(this, new Observer<Meteorite>() {
             @Override
             public void onChanged(@Nullable final Meteorite meteorite) {
                 initView(meteorite);
@@ -139,34 +140,37 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
     }
 
     private void initView(final Meteorite meteorite) {
-        final String meteoriteName = meteorite.getName();
-        setText(this.title, meteoriteName);
-
         setLocationText(meteorite.getAddress(), this.location);
 
-        final String yearString = meteorite.getYearString();
-        setText(this.year, yearString);
+        if (!isUiDone) {
+            isUiDone = true;
+            final String meteoriteName = meteorite.getName();
+            setText(this.title, meteoriteName);
 
-        final String recclass = meteorite.getRecclass();
-        setText(this.recclass, recclass);
+            final String yearString = meteorite.getYearString();
+            setText(this.year, yearString);
 
+            final String recclass = meteorite.getRecclass();
+            setText(this.recclass, recclass);
 
-        final String mass = meteorite.getMass();
-        setText(this.mass, mass);
+            final String mass = meteorite.getMass();
+            setText(this.mass, mass);
 
-        if (mMap != null) {
-            final Double lat = Double.valueOf(meteorite.getReclat());
-            final Double log = Double.valueOf(meteorite.getReclong());
-            setupMap(meteoriteName, lat, log);
+            if (mMap != null) {
+                final Double lat = Double.valueOf(meteorite.getReclat());
+                final Double log = Double.valueOf(meteorite.getReclong());
+                setupMap(meteoriteName, lat, log);
+            }
+
+            AnalyticsUtil.logEvent("Detail", String.format("%s detail", meteoriteName));
         }
-
-        AnalyticsUtil.logEvent("Detail", String.format("%s detail", meteoriteName));
     }
 
     public void setLocationText(final String address, final TextView text) {
         if (StringUtils.isNotEmpty(address)) {
             setText(text, address);
             text.setVisibility(View.VISIBLE);
+            mMeteoriteLiveData.removeObservers(this);
         } else {
             text.setVisibility(View.GONE);
         }
