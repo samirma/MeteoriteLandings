@@ -9,9 +9,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Created by samirantonio on 22/12/16.
- */
 
 public class GeoLocationUtil {
 

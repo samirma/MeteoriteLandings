@@ -3,9 +3,9 @@ package com.antonio.samir.meteoritelandingsspots.service;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServerException;
-import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteService;
-import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceFactory;
+import com.antonio.samir.meteoritelandingsspots.service.local.MeteoriteServerException;
+import com.antonio.samir.meteoritelandingsspots.service.local.MeteoriteService;
+import com.antonio.samir.meteoritelandingsspots.service.local.MeteoriteServiceFactory;
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaServiceFactory;
 import com.antonio.samir.meteoritelandingsspots.ui.activity.MeteoriteDetailActivity;
 import com.antonio.samir.meteoritelandingsspots.util.NetworkUtil;

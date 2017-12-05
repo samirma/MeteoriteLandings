@@ -1,7 +1,7 @@
 package com.antonio.samir.meteoritelandingsspots.service.server.nasa;
 
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
-import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServerException;
+import com.antonio.samir.meteoritelandingsspots.service.local.MeteoriteServerException;
 import com.antonio.samir.meteoritelandingsspots.util.analytics.AnalyticsUtil;
 
 import java.io.IOException;

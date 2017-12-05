@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.service.server;
+package com.antonio.samir.meteoritelandingsspots.service.local;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -34,7 +34,7 @@ class MeteoriteNasaService implements MeteoriteService {
     }
 
     @Override
-    public LiveData<List<Meteorite>> getMeteorites() {
+    public LiveData<List<Meteorite>> getMeteorites(final AddressService.RecoveryAddressDelegate recoveryAddressDelegate) {
 
         //Return meteorites
         final MeteoriteDao meteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(mContext);
@@ -91,7 +91,7 @@ class MeteoriteNasaService implements MeteoriteService {
                 if (meteorites.isEmpty()) {
                     //If it is empty so load the data from internet
                     final NasaService nasaService = NasaServiceFactory.getNasaService(mContext);
-                    new MeteoriteNasaAsyncTaskService(nasaService, meteoriteDao).execute();
+                    new MeteoriteNasaAsyncTaskService(nasaService, meteoriteDao, recoveryAddressDelegate).execute();
                 } else {
                     list.setValue(meteorites);
                     liveData.removeObserver(this);

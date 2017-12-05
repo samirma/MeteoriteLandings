@@ -12,9 +12,11 @@ public interface MeteoriteListView {
 
     void error(String s);
 
-    void showList();
-
     void hideList();
 
     GPSTracker.GPSTrackerDelegate getGPSDelegate();
+
+    void addressRecoveryStarted();
+
+    void addressRecoveryFinished();
 }

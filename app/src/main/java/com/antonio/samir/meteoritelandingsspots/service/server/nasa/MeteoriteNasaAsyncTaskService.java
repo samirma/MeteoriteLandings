@@ -5,21 +5,23 @@ import android.util.Log;
 
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao;
-import com.antonio.samir.meteoritelandingsspots.service.server.AddressService;
-import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServerException;
-import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServerResult;
+import com.antonio.samir.meteoritelandingsspots.service.local.AddressService;
+import com.antonio.samir.meteoritelandingsspots.service.local.MeteoriteServerException;
+import com.antonio.samir.meteoritelandingsspots.service.local.MeteoriteServerResult;
 
 import java.util.List;
 
 public class MeteoriteNasaAsyncTaskService extends AsyncTask<Void, Void, MeteoriteServerResult> {
 
     public static final String TAG = MeteoriteNasaAsyncTaskService.class.getSimpleName();
-    private NasaService mNasaService;
-    private MeteoriteDao mMeteoriteDao;
+    private final NasaService mNasaService;
+    private final MeteoriteDao mMeteoriteDao;
+    private final AddressService.RecoveryAddressDelegate recoveryAddressDelegate;
 
-    public MeteoriteNasaAsyncTaskService(NasaService nasaService, MeteoriteDao meteoriteDao) {
+    public MeteoriteNasaAsyncTaskService(NasaService nasaService, MeteoriteDao meteoriteDao, AddressService.RecoveryAddressDelegate recoveryAddressDelegate) {
         mNasaService = nasaService;
         mMeteoriteDao = meteoriteDao;
+        this.recoveryAddressDelegate = recoveryAddressDelegate;
     }
 
     @Override
@@ -54,18 +56,7 @@ public class MeteoriteNasaAsyncTaskService extends AsyncTask<Void, Void, Meteori
 
             final AddressService addressService = new AddressService();
 
-            new Thread("AddressService") {
-                @Override
-                public void run() {
-                    try {
-                        for (Meteorite met: meteorites) {
-                            addressService.recoverAddress(met, met.getReclat(), met.getReclong());
-                        }
-                    } catch (Exception e) {
-                        Log.e(TAG, "Fail to retrieve address", e);
-                    }
-                }
-            }.start();
+            addressService.recoveryAddress(recoveryAddressDelegate);
 
         } catch (MeteoriteServerException e) {
             Log.e(TAG, e.getMessage(), e);

@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.service.server;
+package com.antonio.samir.meteoritelandingsspots.service.local;
 
 
 import android.content.Context;
