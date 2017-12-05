@@ -1,11 +1,14 @@
 package com.antonio.samir.meteoritelandingsspots.ui.recyclerView;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
 import com.antonio.samir.meteoritelandingsspots.R;
+import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,6 +28,9 @@ public class ViewHolderMeteorite extends RecyclerView.ViewHolder {
     public TextView mYear;
 
     private String mId;
+
+    public Observer<Meteorite> addressObserver;
+    public LiveData<Meteorite> liveMet;
 
     public ViewHolderMeteorite(View view) {
         super(view);

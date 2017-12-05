@@ -1,6 +1,9 @@
 package com.antonio.samir.meteoritelandingsspots.ui.recyclerView;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.antonio.samir.meteoritelandingsspots.R;
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
+import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListPresenter;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelector;
 
 import org.apache.commons.lang3.StringUtils;
@@ -19,14 +23,16 @@ import java.util.List;
  */
 public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> {
     private final MeteoriteSelector meteoriteSelector;
+    private final MeteoriteListPresenter mPresenter;
     private Context mContext;
     private String mSelectedMeteorite;
     private ViewHolderMeteorite mViewHolderMeteorite;
     private List<Meteorite> mMeteorites;
 
-    public MeteoriteAdapter(Context context, final MeteoriteSelector meteoriteSelector) {
+    public MeteoriteAdapter(Context context, final MeteoriteSelector meteoriteSelector, MeteoriteListPresenter presenter) {
         this.mContext = context;
         this.meteoriteSelector = meteoriteSelector;
+        mPresenter = presenter;
     }
 
     @Override
@@ -77,7 +83,7 @@ public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> 
         viewHolder.mName.setContentDescription(meteoriteName);
         viewHolder.mYear.setContentDescription(year);
 
-        setLocationText(meteorite.getAddress(), viewHolder);
+        setLocationText(meteorite, viewHolder);
 
         viewHolder.setId(idString);
 
@@ -99,16 +105,33 @@ public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> 
     }
 
 
-    public void setLocationText(final String address, final ViewHolderMeteorite viewHolder) {
-        final int visibility;
-        if (StringUtils.isNotEmpty(address)) {
-            viewHolder.mLocation.setText(address);
-            visibility = View.VISIBLE;
-        } else {
-            visibility = View.GONE;
+    public void setLocationText(final Meteorite meteorite, final ViewHolderMeteorite viewHolder) {
+        final String address = meteorite.getAddress();
 
+        if (viewHolder.liveMet != null && viewHolder.addressObserver != null) {
+            viewHolder.liveMet.removeObserver(viewHolder.addressObserver);
         }
-        viewHolder.mLocation.setVisibility(visibility);
+
+        if (StringUtils.isNotEmpty(address)) {
+            showAddress(viewHolder, address);
+        } else {
+            viewHolder.liveMet = mPresenter.getMeteorite(meteorite);
+            viewHolder.addressObserver = meteorite1 -> {
+                final String newAddress = meteorite1.getAddress();
+                if (StringUtils.isNotEmpty(newAddress)) {
+                    showAddress(viewHolder, newAddress);
+                    viewHolder.liveMet.removeObserver(viewHolder.addressObserver);
+                }
+            };
+            viewHolder.liveMet.observeForever(viewHolder.addressObserver);
+            viewHolder.mLocation.setVisibility(View.GONE);
+        }
+    }
+
+    private void showAddress(ViewHolderMeteorite viewHolder, String address) {
+        viewHolder.mLocation.setText(address);
+        viewHolder.mLocation.setVisibility(View.VISIBLE);
+
     }
 
     public void setSelectedMeteorite(final String selectedMeteorite) {

@@ -23,7 +23,7 @@ public class AddressService {
     public static final String TAG = AddressService.class.getSimpleName();
     final static ThreadPoolExecutor executor = new ThreadPoolExecutor(0, 3,
             1L, TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<Runnable>());
+            new LinkedBlockingQueue<>());
 
     private final MeteoriteDao mMeteoriteDao;
 

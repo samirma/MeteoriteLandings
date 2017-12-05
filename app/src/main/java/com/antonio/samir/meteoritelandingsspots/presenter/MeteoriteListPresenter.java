@@ -5,6 +5,8 @@ import android.arch.lifecycle.LiveData;
 import android.content.Context;
 
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
+import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryFactory;
+import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteService;
 import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServiceFactory;
 import com.antonio.samir.meteoritelandingsspots.util.GPSTracker;
@@ -58,5 +60,15 @@ public class MeteoriteListPresenter {
         if (mGpsTracker != null) {
             mGpsTracker.startLocationService();
         }
+    }
+
+    public LiveData<Meteorite> getMeteorite(Meteorite meteorite) {
+        final Context context = mContextReference.get();
+        LiveData<Meteorite> meteoriteLiveData = null;
+        if (context != null) {
+            final MeteoriteDao meteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(context);
+            meteoriteLiveData = meteoriteDao.getMeteoriteById(String.valueOf(meteorite.getId()));
+        }
+        return meteoriteLiveData;
     }
 }
