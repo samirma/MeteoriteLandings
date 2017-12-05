@@ -1,10 +1,9 @@
-package com.antonio.samir.meteoritelandingsspots.service.server;
+package com.antonio.samir.meteoritelandingsspots.service.local;
 
 import android.location.Address;
 import android.util.Log;
 
 import com.antonio.samir.meteoritelandingsspots.Application;
-import com.antonio.samir.meteoritelandingsspots.ApplicationDebug;
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryFactory;
 import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao;
@@ -28,7 +27,37 @@ public class AddressService {
     private final MeteoriteDao mMeteoriteDao;
 
     public AddressService() {
-        mMeteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(ApplicationDebug.getContext());
+        mMeteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(Application.getContext());
+    }
+
+    public interface RecoveryAddressDelegate {
+
+        void started();
+
+        void finished();
+    }
+
+    public void recoveryAddress(RecoveryAddressDelegate delegate) {
+        final List<Meteorite> meteorites = mMeteoriteDao.getMeteoritesWithOutAddress();
+
+        try {
+
+            if (!meteorites.isEmpty()) {
+                delegate.started();
+
+                final int size = meteorites.size();
+
+                for (int i = 0; i < size; i++) {
+                    final Meteorite met = meteorites.get(i);
+                    recoverAddress(met, met.getReclat(), met.getReclong());
+                }
+
+                delegate.finished();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Fail to retrieve address", e);
+        }
+
     }
 
     public void recoverAddress(final Meteorite meteorite, final String recLat, final String recLong) {
@@ -45,7 +74,7 @@ public class AddressService {
     private String getAddress(String recLat, String recLong) {
         String addressString = "";
         if (StringUtils.isNoneEmpty(recLat) && StringUtils.isNoneEmpty(recLong)) {
-            final Address address = GeoLocationUtil.getAddress(Double.parseDouble(recLat), Double.parseDouble(recLong), Application.getContext());
+            final Address address = com.antonio.samir.meteoritelandingsspots.service.server.GeoLocationUtil.getAddress(Double.parseDouble(recLat), Double.parseDouble(recLong), Application.getContext());
             if (address != null) {
                 final List<String> finalAddress = new ArrayList<>();
                 final String city = address.getLocality();

@@ -173,11 +173,6 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     }
 
     @Override
-    public void showList() {
-        mRecyclerView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
     public void hideList() {
         mRecyclerView.setVisibility(View.GONE);
     }
@@ -185,6 +180,16 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     @Override
     public GPSTracker.GPSTrackerDelegate getGPSDelegate() {
         return this;
+    }
+
+    @Override
+    public void addressRecoveryStarted() {
+
+    }
+
+    @Override
+    public void addressRecoveryFinished() {
+
     }
 
     /*

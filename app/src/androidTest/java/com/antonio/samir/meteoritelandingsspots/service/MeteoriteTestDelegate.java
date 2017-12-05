@@ -4,7 +4,7 @@ package com.antonio.samir.meteoritelandingsspots.service;
 import android.arch.lifecycle.LiveData;
 
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
-import com.antonio.samir.meteoritelandingsspots.service.server.MeteoriteServerException;
+import com.antonio.samir.meteoritelandingsspots.service.local.MeteoriteServerException;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
