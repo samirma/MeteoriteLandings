@@ -23,13 +23,8 @@ import java.util.List;
 
 import static com.antonio.samir.meteoritelandingsspots.ui.activity.MeteoriteListMainActivity.ITEM_SELECTED;
 
-/**
- * Created by samir.antonio on 12/07/2017.
- */
-
-public class MeteoriteRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory, MeteoriteListView {
+public class MeteoriteRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private List<Meteorite> mMeteorites;
-    private MeteoriteListPresenter mPresenter;
     private String mPackageName;
 
     public MeteoriteRemoteViewsFactory(final String packageName) {
@@ -40,9 +35,6 @@ public class MeteoriteRemoteViewsFactory implements RemoteViewsService.RemoteVie
     public void onCreate() {
 
         AnalyticsUtil.logEvent("Widget", "Widget started");
-
-        mPresenter = new MeteoriteListPresenter(this.getContext());
-
 
     }
 
@@ -86,7 +78,7 @@ public class MeteoriteRemoteViewsFactory implements RemoteViewsService.RemoteVie
             setRemoteContentDescription(views, meteoriteName);
         }
 
-        final Intent intent = new Intent(getContext(), MeteoriteDetailActivity.class);
+        final Intent intent = new Intent(Application.getContext(), MeteoriteDetailActivity.class);
         intent.putExtra(ITEM_SELECTED, idString);
 
         views.setOnClickFillInIntent(R.id.widget_list_item, intent);
@@ -112,36 +104,6 @@ public class MeteoriteRemoteViewsFactory implements RemoteViewsService.RemoteVie
     @Override
     public boolean hasStableIds() {
         return true;
-    }
-
-    @Override
-    public Context getContext() {
-        return Application.getContext();
-    }
-
-    @Override
-    public void unableToFetch() {
-
-    }
-
-    @Override
-    public void error(final String s) {
-
-    }
-
-    @Override
-    public void showList() {
-
-    }
-
-    @Override
-    public void hideList() {
-
-    }
-
-    @Override
-    public GPSTracker.GPSTrackerDelegate getGPSDelegate() {
-        return null;
     }
 
     public void setLocationText(final String address, RemoteViews views) {
