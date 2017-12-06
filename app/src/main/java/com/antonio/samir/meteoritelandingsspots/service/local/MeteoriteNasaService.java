@@ -53,7 +53,7 @@ class MeteoriteNasaService implements MeteoriteService {
                             final double latitude = location.getLatitude();
                             final double longitude = location.getLongitude();
                             //String sortOrder = String.format("ABS(reclat - %s ) + ABS(reclong - %s) ASC", latitude, longitude);
-                            final LiveData<List<Meteorite>> liveData = meteoriteDao.getMeteoriteOrdened(null);
+                            final LiveData<List<Meteorite>> liveData = meteoriteDao.getMeteoriteOrdened();
                             liveData.observeForever(new Observer<List<Meteorite>>() {
                                 @Override
                                 public void onChanged(@Nullable List<Meteorite> meteorites) {
@@ -83,7 +83,7 @@ class MeteoriteNasaService implements MeteoriteService {
 
         }
 
-        final LiveData<List<Meteorite>> liveData = meteoriteDao.getMeteoriteOrdened(null);
+        final LiveData<List<Meteorite>> liveData = meteoriteDao.getMeteoriteOrdened();
 
         liveData.observeForever(new Observer<List<Meteorite>>() {
             @Override
