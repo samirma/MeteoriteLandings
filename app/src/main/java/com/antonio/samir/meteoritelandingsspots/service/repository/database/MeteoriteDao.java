@@ -25,6 +25,9 @@ public interface MeteoriteDao {
     @Query("SELECT * from meteorites ORDER BY name")
     LiveData<List<Meteorite>> getMeteoriteOrdened();
 
+    @Query("SELECT * from meteorites ORDER BY name")
+    List<Meteorite> getMeteoriteOrdenedSync();
+
     @Query("SELECT * from meteorites WHERE address IS NULL ORDER BY id")
     List<Meteorite> getMeteoritesWithOutAddress();
 

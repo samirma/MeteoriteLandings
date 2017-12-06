@@ -1,7 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.ui.widget;
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Build;
@@ -11,10 +10,8 @@ import android.widget.RemoteViewsService;
 import com.antonio.samir.meteoritelandingsspots.Application;
 import com.antonio.samir.meteoritelandingsspots.R;
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
-import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListPresenter;
-import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListView;
+import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryFactory;
 import com.antonio.samir.meteoritelandingsspots.ui.activity.MeteoriteDetailActivity;
-import com.antonio.samir.meteoritelandingsspots.util.GPSTracker;
 import com.antonio.samir.meteoritelandingsspots.util.analytics.AnalyticsUtil;
 
 import org.apache.commons.lang3.StringUtils;
@@ -43,6 +40,7 @@ public class MeteoriteRemoteViewsFactory implements RemoteViewsService.RemoteVie
 
         final long identityToken = Binder.clearCallingIdentity();
 
+        mMeteorites = MeteoriteRepositoryFactory.getMeteoriteDao(Application.getContext()).getMeteoriteOrdenedSync();
 
         Binder.restoreCallingIdentity(identityToken);
     }
@@ -63,7 +61,7 @@ public class MeteoriteRemoteViewsFactory implements RemoteViewsService.RemoteVie
     public RemoteViews getViewAt(int position) {
         RemoteViews views = new RemoteViews(mPackageName, R.layout.meteorite_detail_item);
 
-        final Meteorite meteorite = new Meteorite();
+        final Meteorite meteorite = mMeteorites.get(position);
 
         final String meteoriteName = meteorite.getName();
         final String year = meteorite.getYearString();
