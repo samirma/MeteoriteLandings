@@ -22,8 +22,8 @@ public interface MeteoriteDao {
     @Update
     void update(Meteorite meteorite);
 
-    @Query("SELECT * from meteorites ORDER BY :orderBy")
-    LiveData<List<Meteorite>> getMeteoriteOrdened(String orderBy);
+    @Query("SELECT * from meteorites ORDER BY name")
+    LiveData<List<Meteorite>> getMeteoriteOrdened();
 
     @Query("SELECT * from meteorites WHERE address IS NULL ORDER BY id")
     List<Meteorite> getMeteoritesWithOutAddress();

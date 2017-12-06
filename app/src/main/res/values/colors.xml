@@ -17,5 +17,6 @@
     <color name="unselected_item_color">@color/meta_bar_background_color</color>
     <color name="selected_item_color">#eee</color>
     <color name="selected_title_color">@color/meta_bar_background_color</color>
+    <color name="alert_bg">#FFA500</color>
 
 </resources>
