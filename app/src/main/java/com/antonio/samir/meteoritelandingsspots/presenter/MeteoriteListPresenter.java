@@ -2,6 +2,7 @@ package com.antonio.samir.meteoritelandingsspots.presenter;
 
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
@@ -19,20 +20,22 @@ import java.util.List;
 /**
  * Presenter layer responsible for manage the interactions between the activity and the services
  */
-public class MeteoriteListPresenter implements AddressService.RecoveryAddressDelegate {
+public class MeteoriteListPresenter {
 
     private static final String TAG = MeteoriteListPresenter.class.getSimpleName();
     private static MeteoriteListView mView;
     private MeteoriteService meteoriteFetchService;
     private WeakReference<Context> mContextReference = null;
     private GPSTracker mGpsTracker;
+    private AddressService mAddressService;
+    private MutableLiveData<AddressService.Status> recoveryAddress;
 
     public MeteoriteListPresenter(Context context) {
         mContextReference = new WeakReference<>(context);
     }
 
     public LiveData<List<Meteorite>> getMeteorites() {
-        final LiveData<List<Meteorite>> data = meteoriteFetchService.getMeteorites(this);
+        final LiveData<List<Meteorite>> data = meteoriteFetchService.getMeteorites();
 
         final List<Meteorite> meteorites = data.getValue();
         final boolean isNotEmpty = (meteorites != null && (meteorites.size() > 0));
@@ -54,7 +57,10 @@ public class MeteoriteListPresenter implements AddressService.RecoveryAddressDel
         if (mContextReference.get() != null) {
             mGpsTracker = new GPSTracker(meteoriteListView.getGPSDelegate());
             meteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(mContextReference.get(), mGpsTracker);
-            new AddressService().recoveryAddress(this);
+            if (mAddressService == null) {
+                mAddressService = new AddressService();
+                recoveryAddress = mAddressService.recoveryAddress();
+            }
         }
     }
 
@@ -74,13 +80,7 @@ public class MeteoriteListPresenter implements AddressService.RecoveryAddressDel
         return meteoriteLiveData;
     }
 
-    @Override
-    public void started() {
-        mView.addressRecoveryStarted();
-    }
-
-    @Override
-    public void finished() {
-        mView.addressRecoveryFinished();
+    public MutableLiveData<AddressService.Status> getRecoveryAddress() {
+        return recoveryAddress;
     }
 }

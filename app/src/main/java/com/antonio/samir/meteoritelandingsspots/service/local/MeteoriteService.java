@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface MeteoriteService {
 
-    LiveData<List<Meteorite>> getMeteorites(AddressService.RecoveryAddressDelegate recoveryAddressDelegate);
+    LiveData<List<Meteorite>> getMeteorites();
 
 }

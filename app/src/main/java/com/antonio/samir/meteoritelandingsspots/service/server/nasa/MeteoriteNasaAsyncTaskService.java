@@ -16,12 +16,10 @@ public class MeteoriteNasaAsyncTaskService extends AsyncTask<Void, Void, Meteori
     public static final String TAG = MeteoriteNasaAsyncTaskService.class.getSimpleName();
     private final NasaService mNasaService;
     private final MeteoriteDao mMeteoriteDao;
-    private final AddressService.RecoveryAddressDelegate recoveryAddressDelegate;
 
-    public MeteoriteNasaAsyncTaskService(NasaService nasaService, MeteoriteDao meteoriteDao, AddressService.RecoveryAddressDelegate recoveryAddressDelegate) {
+    public MeteoriteNasaAsyncTaskService(NasaService nasaService, MeteoriteDao meteoriteDao) {
         mNasaService = nasaService;
         mMeteoriteDao = meteoriteDao;
-        this.recoveryAddressDelegate = recoveryAddressDelegate;
     }
 
     @Override
@@ -56,7 +54,7 @@ public class MeteoriteNasaAsyncTaskService extends AsyncTask<Void, Void, Meteori
 
             final AddressService addressService = new AddressService();
 
-            addressService.recoveryAddress(recoveryAddressDelegate);
+            addressService.recoveryAddress();
 
         } catch (MeteoriteServerException e) {
             Log.e(TAG, e.getMessage(), e);

@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.service.local;
 
+import android.arch.lifecycle.MutableLiveData;
 import android.location.Address;
 import android.util.Log;
 
@@ -16,6 +17,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import static com.antonio.samir.meteoritelandingsspots.service.local.AddressService.Status.DONE;
+import static com.antonio.samir.meteoritelandingsspots.service.local.AddressService.Status.LOADING;
+
 
 public class AddressService {
 
@@ -25,38 +29,42 @@ public class AddressService {
             new LinkedBlockingQueue<>());
 
     private final MeteoriteDao mMeteoriteDao;
+    private final MutableLiveData status = new MutableLiveData<>();
+
+    public enum Status {
+        DONE, LOADING
+    }
 
     public AddressService() {
         mMeteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(Application.getContext());
     }
 
-    public interface RecoveryAddressDelegate {
+    public MutableLiveData<Status> recoveryAddress() {
 
-        void started();
+        executor.execute(() -> {
+            if (status.getValue() == null || status.getValue() == DONE) {
+                final List<Meteorite> meteorites = mMeteoriteDao.getMeteoritesWithOutAddress();
+                try {
+                    if (!meteorites.isEmpty()) {
+                        status.postValue(LOADING);
 
-        void finished();
-    }
+                        final int size = meteorites.size();
 
-    public void recoveryAddress(RecoveryAddressDelegate delegate) {
-        final List<Meteorite> meteorites = mMeteoriteDao.getMeteoritesWithOutAddress();
+                        for (int i = 0; i < size; i++) {
+                            final Meteorite met = meteorites.get(i);
+                            recoverAddress(met, met.getReclat(), met.getReclong());
+                        }
 
-        try {
-
-            if (!meteorites.isEmpty()) {
-                delegate.started();
-
-                final int size = meteorites.size();
-
-                for (int i = 0; i < size; i++) {
-                    final Meteorite met = meteorites.get(i);
-                    recoverAddress(met, met.getReclat(), met.getReclong());
+                        status.postValue(DONE);
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Fail to retrieve address", e);
                 }
-
-                delegate.finished();
             }
-        } catch (Exception e) {
-            Log.e(TAG, "Fail to retrieve address", e);
-        }
+
+        });
+
+        return status;
 
     }
 

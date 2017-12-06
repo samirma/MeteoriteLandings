@@ -3,12 +3,14 @@ package com.antonio.samir.meteoritelandingsspots.ui.activity;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentTransaction;
@@ -26,6 +28,7 @@ import com.antonio.samir.meteoritelandingsspots.R;
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListPresenter;
 import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListView;
+import com.antonio.samir.meteoritelandingsspots.service.local.AddressService;
 import com.antonio.samir.meteoritelandingsspots.ui.fragments.MeteoriteDetailFragment;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.MeteoriteAdapter;
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.ViewHolderMeteorite;
@@ -57,6 +60,9 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
     @BindView(R.id.message)
     TextView mMessage;
+
+    @BindView(R.id.status)
+    TextView mStatus;
 
     Toolbar mToolbar;
 
@@ -114,6 +120,25 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
         getMeteorites();
 
+        mPresenter.getRecoveryAddress().observe(this, new Observer<AddressService.Status>() {
+            @Override
+            public void onChanged(@Nullable AddressService.Status status) {
+                if (status == null || status == AddressService.Status.DONE) {
+                    hideAddressLoading();
+                } else if (status == AddressService.Status.LOADING) {
+                    showAddressLoading();
+                }
+            }
+        });
+
+    }
+
+    private void showAddressLoading() {
+        mStatus.setVisibility(View.VISIBLE);
+    }
+
+    private void hideAddressLoading() {
+        mStatus.setVisibility(View.GONE);
     }
 
     @Override
