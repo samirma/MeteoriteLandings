@@ -29,7 +29,7 @@ public class AddressService {
             new LinkedBlockingQueue<>());
 
     private final MeteoriteDao mMeteoriteDao;
-    private final MutableLiveData status = new MutableLiveData<>();
+    private static final MutableLiveData status = new MutableLiveData<>();
 
     public enum Status {
         DONE, LOADING
@@ -70,12 +70,13 @@ public class AddressService {
 
     public void recoverAddress(final Meteorite meteorite, final String recLat, final String recLong) {
 
-        executor.execute(() -> {
-            final String address = getAddress(recLat, recLong);
-            meteorite.setAddress(address);
-            mMeteoriteDao.update(meteorite);
-            Log.i(TAG, String.format("Address for id %s recovered", meteorite.getId()));
-        });
+        final String address = getAddress(recLat, recLong);
+        meteorite.setAddress(address);
+        mMeteoriteDao.update(meteorite);
+        Log.i(TAG, String.format("Address for id %s recovered", meteorite.getId()));
+//        executor.execute(() -> {
+//
+//        });
 
     }
 
