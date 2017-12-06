@@ -41,12 +41,9 @@ public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> 
         final ViewHolderMeteorite vh = new ViewHolderMeteorite(view);
 
         //On view click use MeteoriteSelector to do execute the proper according the current layout
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mViewHolderMeteorite = vh;
-                meteoriteSelector.selectItemId(vh.getId());
-            }
+        view.setOnClickListener(view1 -> {
+            mViewHolderMeteorite = vh;
+            meteoriteSelector.selectItemId(vh.getId());
         });
         return vh;
     }

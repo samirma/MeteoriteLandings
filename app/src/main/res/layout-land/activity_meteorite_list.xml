@@ -4,6 +4,12 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/status"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/loading_addresses" />
 
     <LinearLayout
         android:id="@+id/container"

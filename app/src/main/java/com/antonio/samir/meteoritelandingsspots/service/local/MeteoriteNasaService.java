@@ -34,7 +34,7 @@ class MeteoriteNasaService implements MeteoriteService {
     }
 
     @Override
-    public LiveData<List<Meteorite>> getMeteorites(final AddressService.RecoveryAddressDelegate recoveryAddressDelegate) {
+    public LiveData<List<Meteorite>> getMeteorites() {
 
         //Return meteorites
         final MeteoriteDao meteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(mContext);
@@ -91,7 +91,7 @@ class MeteoriteNasaService implements MeteoriteService {
                 if (meteorites.isEmpty()) {
                     //If it is empty so load the data from internet
                     final NasaService nasaService = NasaServiceFactory.getNasaService(mContext);
-                    new MeteoriteNasaAsyncTaskService(nasaService, meteoriteDao, recoveryAddressDelegate).execute();
+                    new MeteoriteNasaAsyncTaskService(nasaService, meteoriteDao).execute();
                 } else {
                     list.setValue(meteorites);
                     liveData.removeObserver(this);
