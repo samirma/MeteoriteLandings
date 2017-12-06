@@ -118,8 +118,6 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
         mPresenter.attachView(this);
 
-        getMeteorites();
-
         mPresenter.getRecoveryAddress().observe(this, new Observer<AddressService.Status>() {
             @Override
             public void onChanged(@Nullable AddressService.Status status) {
@@ -130,6 +128,9 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
                 }
             }
         });
+
+        getMeteorites();
+
 
     }
 
