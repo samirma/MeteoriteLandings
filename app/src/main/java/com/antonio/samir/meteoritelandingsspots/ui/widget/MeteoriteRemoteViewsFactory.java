@@ -59,7 +59,7 @@ public class MeteoriteRemoteViewsFactory implements RemoteViewsService.RemoteVie
 
     @Override
     public RemoteViews getViewAt(int position) {
-        RemoteViews views = new RemoteViews(mPackageName, R.layout.meteorite_detail_item);
+        RemoteViews views = new RemoteViews(mPackageName, R.layout.meteorite_widget_item);
 
         final Meteorite meteorite = mMeteorites.get(position);
 
@@ -86,7 +86,7 @@ public class MeteoriteRemoteViewsFactory implements RemoteViewsService.RemoteVie
 
     @Override
     public RemoteViews getLoadingView() {
-        return new RemoteViews(mPackageName, R.layout.meteorite_detail_item);
+        return new RemoteViews(mPackageName, R.layout.meteorite_widget_item);
     }
 
     @Override
