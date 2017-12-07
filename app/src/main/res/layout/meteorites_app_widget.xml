@@ -35,7 +35,7 @@
             android:layout_height="match_parent"
             android:divider="@drawable/divider"
             android:dividerHeight="1dp"
-            tools:listitem="@layout/meteorite_detail_item" />
+            tools:listitem="@layout/meteorite_widget_item" />
 
         <TextView
             android:id="@+id/widget_empty"
