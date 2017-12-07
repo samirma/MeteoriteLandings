@@ -41,7 +41,7 @@ public class MeteoritesAppWidget extends AppWidgetProvider {
 
             views.setPendingIntentTemplate(R.id.widget_list, clickPendingIntentTemplate);
 
-            //views.setEmptyView(R.id.widget_list, R.id.widget_empty);
+            views.setEmptyView(R.id.widget_list, R.id.widget_empty);
 
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
