@@ -120,6 +120,7 @@ public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> 
                 final String newAddress = meteorite1.getAddress();
                 if (StringUtils.isNotEmpty(newAddress)) {
                     showAddress(viewHolder, newAddress);
+                    viewHolder.mLocation.startAnimation( AnimationUtils.loadAnimation( mContext, R.anim.view_show) );
                     viewHolder.liveMet.removeObserver(viewHolder.addressObserver);
                 }
             };
@@ -131,8 +132,6 @@ public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> 
     private void showAddress(ViewHolderMeteorite viewHolder, String address) {
         viewHolder.mLocation.setText(address);
         viewHolder.mLocation.setVisibility(View.VISIBLE);
-        viewHolder.mLocation.startAnimation( AnimationUtils.loadAnimation( mContext, R.anim.view_show) );
-
     }
 
     public void setSelectedMeteorite(final String selectedMeteorite) {
