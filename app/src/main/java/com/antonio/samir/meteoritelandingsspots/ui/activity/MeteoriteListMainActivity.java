@@ -3,14 +3,12 @@ package com.antonio.samir.meteoritelandingsspots.ui.activity;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentTransaction;
@@ -91,7 +89,6 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
             setSupportActionBar(mToolbar);
         }
 
-
         mMeteoritViewModel = ViewModelProviders.of(this).get(MeteoriteViewModel.class);
 
         mPresenter = mMeteoritViewModel.getPresenter();
@@ -169,7 +166,6 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
             if (meteorites1 != null && !meteorites1.isEmpty()) {
                 mMeteoriteAdapter.setData(meteorites1);
                 mMeteoriteAdapter.notifyDataSetChanged();
-                dismissDialog();
 
                 if (mSavedInstanceState != null) {
                     final int anInt = mSavedInstanceState.getInt(SCROLL_POSITION, -1);
@@ -192,7 +188,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         mRecyclerView.setVisibility(View.GONE);
         mMessage.setVisibility(View.VISIBLE);
         mMessage.setText(messageString);
-        dismissDialog();
+        meteoriteLoadingStopped();
     }
 
     @Override
@@ -205,15 +201,6 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         return this;
     }
 
-    @Override
-    public void addressRecoveryStarted() {
-
-    }
-
-    @Override
-    public void addressRecoveryFinished() {
-
-    }
 
     /*
     MeteoriteSelectorView
@@ -305,7 +292,19 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         return meteorite;
     }
 
-    private void dismissDialog() {
+    @Override
+    public void meteoriteLoadingStarted() {
+        try {
+            if (mProgressDialog == null) {
+                mProgressDialog = ProgressDialog.show(this, "", getString(R.string.load), true);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void meteoriteLoadingStopped() {
         try {
             if (mProgressDialog != null && mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();
@@ -329,6 +328,8 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
                 boolean isPermitted = grantResults[i] == PackageManager.PERMISSION_GRANTED;
                 if (isPermitted){
                     mPresenter.updateLocation();
+                } else {
+
                 }
             }
         }

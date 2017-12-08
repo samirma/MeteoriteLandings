@@ -7,10 +7,10 @@ import android.content.Context;
 
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 import com.antonio.samir.meteoritelandingsspots.service.local.AddressService;
-import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryFactory;
-import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao;
 import com.antonio.samir.meteoritelandingsspots.service.local.MeteoriteService;
 import com.antonio.samir.meteoritelandingsspots.service.local.MeteoriteServiceFactory;
+import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryFactory;
+import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao;
 import com.antonio.samir.meteoritelandingsspots.util.GPSTracker;
 import com.antonio.samir.meteoritelandingsspots.util.NetworkUtil;
 
@@ -22,7 +22,6 @@ import java.util.List;
  */
 public class MeteoriteListPresenter {
 
-    private static final String TAG = MeteoriteListPresenter.class.getSimpleName();
     private static MeteoriteListView mView;
     private MeteoriteService meteoriteFetchService;
     private WeakReference<Context> mContextReference = null;
@@ -38,9 +37,17 @@ public class MeteoriteListPresenter {
         final LiveData<List<Meteorite>> data = meteoriteFetchService.getMeteorites();
 
         final List<Meteorite> meteorites = data.getValue();
-        final boolean isNotEmpty = (meteorites != null && (meteorites.size() > 0));
+        final boolean isEmpty = (meteorites == null || meteorites.isEmpty());
 
-        if (isNotEmpty) {
+        if (isEmpty) {
+            mView.meteoriteLoadingStarted();
+            data.observeForever(meteorites1 -> {
+                final boolean isNotEmpty = (meteorites1 != null && !meteorites1.isEmpty());
+                if (isNotEmpty) {
+                    mView.meteoriteLoadingStopped();
+                }
+            });
+        } else {
             mView.hideList();
         }
 
