@@ -1,9 +1,7 @@
 package com.antonio.samir.meteoritelandingsspots.ui.fragments;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -130,12 +128,7 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
 
         mMeteoriteLiveData = meteoriteDao.getMeteoriteById(meteoriteId);
 
-        mMeteoriteLiveData.observe(this, new Observer<Meteorite>() {
-            @Override
-            public void onChanged(@Nullable final Meteorite meteorite) {
-                initView(meteorite);
-            }
-        });
+        mMeteoriteLiveData.observe(this, meteorite -> initView(meteorite));
 
     }
 

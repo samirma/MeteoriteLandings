@@ -5,16 +5,10 @@
     <string name="no_network">Please check you network connection!</string>
     <string name="load">Loading Meteorites</string>
     <string name="general_error">Sorry, some kind of error has occurred</string>
-    <string name="appwidget_text">EXAMPLE</string>
 
-    <string name="action_share">Share</string>
     <string name="mass">Mass (g)</string>
     <string name="nametype">Name Type</string>
-    <string name="recclass">Rec Class</string>
     <string name="year">Year</string>
-    <string name="fall">Fall</string>
-    <string name="location">Location</string>
-    <string name="stringNull">null</string>
     <string name="loading_addresses">Loading all meteorites addresses from its geolocation</string>
     <string name="title">%s, %s</string>
 

@@ -324,9 +324,9 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_REQUEST_CODE) {
-            for (int i = 0; i < grantResults.length; i++) {
-                boolean isPermitted = grantResults[i] == PackageManager.PERMISSION_GRANTED;
-                if (isPermitted){
+            for (int grantResult : grantResults) {
+                boolean isPermitted = grantResult == PackageManager.PERMISSION_GRANTED;
+                if (isPermitted) {
                     mPresenter.updateLocation();
                 } else {
 

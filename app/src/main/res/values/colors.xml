@@ -13,7 +13,6 @@
     <!-- our detail accent colors -->
     <color name="detail_accent_pane_background">#455A64</color>
     <color name="detail_accent_label">#90A4AE</color>
-    <color name="secondary_text">#727272</color>
     <color name="unselected_item_color">@color/meta_bar_background_color</color>
     <color name="selected_item_color">#eee</color>
     <color name="selected_title_color">@color/meta_bar_background_color</color>
