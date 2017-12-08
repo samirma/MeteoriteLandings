@@ -1,9 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.ui.recyclerView;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,8 +71,9 @@ public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> 
 
         final String idString = String.valueOf(meteorite.getId());
 
-        viewHolder.mName.setText(meteoriteName);
+        viewHolder.mName.setText(mContext.getString(R.string.title, meteoriteName, year));
         viewHolder.mYear.setText(year);
+        viewHolder.mYear.setVisibility(View.GONE);
 
         viewHolder.mName.setContentDescription(meteoriteName);
         viewHolder.mYear.setContentDescription(year);
