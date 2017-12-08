@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 
 import com.antonio.samir.meteoritelandingsspots.R;
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
@@ -123,13 +124,14 @@ public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> 
                 }
             };
             viewHolder.liveMet.observeForever(viewHolder.addressObserver);
-            viewHolder.mLocation.setVisibility(View.GONE);
+            viewHolder.mLocation.setVisibility(View.INVISIBLE);
         }
     }
 
     private void showAddress(ViewHolderMeteorite viewHolder, String address) {
         viewHolder.mLocation.setText(address);
         viewHolder.mLocation.setVisibility(View.VISIBLE);
+        viewHolder.mLocation.startAnimation( AnimationUtils.loadAnimation( mContext, R.anim.view_show) );
 
     }
 
