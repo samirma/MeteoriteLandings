@@ -15,6 +15,6 @@
     <string name="fall">Fall</string>
     <string name="location">Location</string>
     <string name="stringNull">null</string>
-    <string name="loading_addresses">Loading address from geo location</string>
+    <string name="loading_addresses">Loading all meteorites addresses from its geolocation</string>
 
 </resources>

@@ -16,7 +16,7 @@ public interface MeteoriteListView {
 
     GPSTracker.GPSTrackerDelegate getGPSDelegate();
 
-    void addressRecoveryStarted();
+    void meteoriteLoadingStarted();
 
-    void addressRecoveryFinished();
+    void meteoriteLoadingStopped();
 }
