@@ -16,5 +16,6 @@
     <string name="location">Location</string>
     <string name="stringNull">null</string>
     <string name="loading_addresses">Loading all meteorites addresses from its geolocation</string>
+    <string name="title">%s, %s</string>
 
 </resources>
