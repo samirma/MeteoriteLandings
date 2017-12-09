@@ -16,6 +16,7 @@
 
 
     <TextView
+        android:id="@+id/mass_label"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
         android:gravity="center_vertical"
@@ -34,15 +35,15 @@
         app:layout_gravity="fill" />
 
     <TextView
+        android:id="@+id/recclass_label"
         android:fontFamily="sans-serif"
         android:gravity="center_vertical"
         android:text="@string/nametype"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="@color/detail_accent_label"
+        app:layout_columnWeight="1"
         app:layout_gravity="fill"
         app:layout_rowWeight="1" />
-
-
 
     <TextView
         android:id="@+id/recclass"
@@ -52,11 +53,13 @@
         app:layout_gravity="fill" />
 
     <TextView
+        android:id="@+id/year_label"
         android:fontFamily="sans-serif"
         android:gravity="center_vertical"
         android:text="@string/year"
         android:textColor="@color/detail_accent_label"
         android:textSize="20sp"
+        app:layout_columnWeight="1"
         app:layout_gravity="fill"
         app:layout_rowWeight="1" />
 
@@ -67,9 +70,7 @@
         android:gravity="center_vertical"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
         android:textColor="@android:color/white"
-        app:layout_gravity="fill"
-        tools:text="4km/h NW" />
-
+        app:layout_gravity="fill" />
 
 </android.support.v7.widget.GridLayout>
 

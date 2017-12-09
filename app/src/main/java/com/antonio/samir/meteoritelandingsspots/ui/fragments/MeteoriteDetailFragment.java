@@ -38,12 +38,17 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
     TextView location;
     @BindView(R.id.year)
     TextView year;
-
     @BindView(R.id.mass)
     TextView mass;
-
     @BindView(R.id.recclass)
     TextView recclass;
+
+    @BindView(R.id.year_label)
+    TextView yearLabel;
+    @BindView(R.id.mass_label)
+    TextView massLabel;
+    @BindView(R.id.recclass_label)
+    TextView recclassLabel;
 
     private String meteoriteId;
 
@@ -139,16 +144,16 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
         if (!isUiDone) {
             isUiDone = true;
             final String meteoriteName = meteorite.getName();
-            setText(this.title, meteoriteName);
+            setText(null, this.title, meteoriteName);
 
             final String yearString = meteorite.getYearString();
-            setText(this.year, yearString);
+            setText(yearLabel, this.year, yearString);
 
             final String recclass = meteorite.getRecclass();
-            setText(this.recclass, recclass);
+            setText(recclassLabel, this.recclass, recclass);
 
             final String mass = meteorite.getMass();
-            setText(this.mass, mass);
+            setText(massLabel, this.mass, mass);
 
             if (mMap != null) {
                 final Double lat = Double.valueOf(meteorite.getReclat());
@@ -162,7 +167,7 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
 
     public void setLocationText(final String address, final TextView text) {
         if (StringUtils.isNotEmpty(address)) {
-            setText(text, address);
+            setText(null, text, address);
             text.setVisibility(View.VISIBLE);
             mMeteoriteLiveData.removeObservers(this);
         } else {
@@ -170,9 +175,16 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
         }
     }
 
-    private void setText(final TextView text, final String address) {
-        text.setText(address);
-        text.setContentDescription(address);
+    private void setText(TextView textFieldLabel, final TextView textField, final String text) {
+        if (StringUtils.isEmpty(text)) {
+            if (textFieldLabel != null) {
+                textFieldLabel.setVisibility(View.GONE);
+            }
+            textField.setVisibility(View.GONE);
+        } else {
+            textField.setText(text);
+            textField.setContentDescription(text);
+        }
     }
 
 }
