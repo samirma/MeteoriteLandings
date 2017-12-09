@@ -138,7 +138,7 @@ public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> 
         this.mSelectedMeteorite = selectedMeteorite;
     }
 
-    public ViewHolderMeteorite getmVieHolderMeteorite() {
+    public ViewHolderMeteorite getVieHolderMeteorite() {
         return mViewHolderMeteorite;
     }
 }
