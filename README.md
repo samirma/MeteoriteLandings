@@ -1,12 +1,12 @@
 # Meteorite Landings Spots
 
-This Android app contains information on all of the known meteorite landings according to Nasa,
-allowing you to navigate over it.
+This Android app contains information on all of the known meteorite landings according to Nasa, allowing you to navigate over it.
+
+Try it from [Google Play](https://play.google.com/store/apps/details?id=com.antonio.samir.meteoritelandingsspots).
 
 ## How to use it
 * Import it as gradle project into Android Studio
 * Set your own google-services.json
-
 
 ## Resources
 Icon from:
