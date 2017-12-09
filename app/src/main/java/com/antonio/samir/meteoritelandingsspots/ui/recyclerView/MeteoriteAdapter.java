@@ -22,7 +22,7 @@ import java.util.List;
 public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> {
     private final MeteoriteSelector meteoriteSelector;
     private final MeteoriteListPresenter mPresenter;
-    private Context mContext;
+    private final Context mContext;
     private String mSelectedMeteorite;
     private ViewHolderMeteorite mViewHolderMeteorite;
     private List<Meteorite> mMeteorites;
@@ -50,8 +50,7 @@ public class MeteoriteAdapter extends RecyclerView.Adapter<ViewHolderMeteorite> 
 
     @Override
     public int getItemCount() {
-        final int itemCount = (mMeteorites != null)? mMeteorites.size():0;
-        return itemCount;
+        return (mMeteorites != null)? mMeteorites.size():0;
     }
 
     public void setData(final List<Meteorite> data) {

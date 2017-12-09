@@ -13,9 +13,7 @@ public class MeteoriteServiceFactory {
 
     public static MeteoriteService getMeteoriteService(final Context context, GPSTracker gpsTracker) {
 
-        final MeteoriteService server = new MeteoriteNasaService(context, gpsTracker);
-
-        return server;
+        return new MeteoriteNasaService(context, gpsTracker);
     }
 
 }

@@ -10,8 +10,6 @@ public interface MeteoriteListView {
 
     void unableToFetch();
 
-    void error(String s);
-
     void hideList();
 
     GPSTracker.GPSTrackerDelegate getGPSDelegate();

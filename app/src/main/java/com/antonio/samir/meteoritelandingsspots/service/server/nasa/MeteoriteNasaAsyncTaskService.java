@@ -40,12 +40,6 @@ public class MeteoriteNasaAsyncTaskService extends AsyncTask<Void, Void, Meteori
         return meteoriteServerResult;
     }
 
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-    }
-
-
     private void saveMeteorites(MeteoriteServerResult result) {
         try {
             final List<Meteorite> meteorites = result.getMeteorites();

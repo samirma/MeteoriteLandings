@@ -1,12 +1,13 @@
 package com.antonio.samir.meteoritelandingsspots.service.repository;
 
-import com.antonio.samir.meteoritelandingsspots.service.repository.database.AppDatabase;
-import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao;
-
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
+import android.support.annotation.NonNull;
+
+import com.antonio.samir.meteoritelandingsspots.service.repository.database.AppDatabase;
+import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao;
 
 public class MeteoriteRepositoryFactory {
 
@@ -14,7 +15,7 @@ public class MeteoriteRepositoryFactory {
 
     private static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
-        public void migrate(SupportSQLiteDatabase database) {
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("ALTER TABLE meteorites "
                     + " ADD COLUMN address VARCHAR");
 

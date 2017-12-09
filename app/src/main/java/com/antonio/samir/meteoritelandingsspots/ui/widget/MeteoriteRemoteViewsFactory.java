@@ -22,7 +22,7 @@ import static com.antonio.samir.meteoritelandingsspots.ui.activity.MeteoriteList
 
 public class MeteoriteRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private List<Meteorite> mMeteorites;
-    private String mPackageName;
+    private final String mPackageName;
 
     public MeteoriteRemoteViewsFactory(final String packageName) {
         mPackageName = packageName;
@@ -105,7 +105,7 @@ public class MeteoriteRemoteViewsFactory implements RemoteViewsService.RemoteVie
     }
 
     public void setLocationText(final String address, RemoteViews views) {
-        String text = "";
+        String text;
         if (StringUtils.isNotEmpty(address)) {
             text = address;
         } else {

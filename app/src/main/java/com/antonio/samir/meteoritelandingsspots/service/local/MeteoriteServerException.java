@@ -9,8 +9,4 @@ public class MeteoriteServerException extends Exception {
         super(exception);
     }
 
-    public MeteoriteServerException(final String exception) {
-        super(exception);
-    }
-
 }

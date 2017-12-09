@@ -22,9 +22,8 @@ import java.util.TreeSet;
 
 class MeteoriteNasaService implements MeteoriteService {
 
-    private static final String TAG = MeteoriteNasaService.class.getSimpleName();
     private final GPSTracker mGpsTracker;
-    private Context mContext;
+    private final Context mContext;
 
 
     public MeteoriteNasaService(final Context context, final GPSTracker gpsTracker) {
@@ -51,7 +50,7 @@ class MeteoriteNasaService implements MeteoriteService {
 
                 if (meteorites.isEmpty()) {
                     //If it is empty so load the data from internet
-                    final NasaService nasaService = NasaServiceFactory.getNasaService(mContext);
+                    final NasaService nasaService = NasaServiceFactory.getNasaService();
                     new MeteoriteNasaAsyncTaskService(nasaService, meteoriteDao).execute();
                 } else {
                     //Is not empty so remove the observer

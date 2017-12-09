@@ -28,7 +28,7 @@
         <activity
             android:name=".ui.activity.MeteoriteDetailActivity"
             android:parentActivityName=".ui.activity.MeteoriteListMainActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <!--Widget-->
         <receiver android:name=".ui.widget.MeteoritesAppWidget">

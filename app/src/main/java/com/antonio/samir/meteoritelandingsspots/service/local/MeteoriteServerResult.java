@@ -23,7 +23,4 @@ public class MeteoriteServerResult {
         return meteorites;
     }
 
-    public MeteoriteServerException getException() {
-        return exception;
-    }
 }
