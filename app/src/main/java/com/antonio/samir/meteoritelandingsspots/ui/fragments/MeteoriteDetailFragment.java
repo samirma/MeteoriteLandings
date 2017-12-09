@@ -2,6 +2,7 @@ package com.antonio.samir.meteoritelandingsspots.ui.fragments;
 
 import android.arch.lifecycle.LiveData;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -73,7 +74,7 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         final View view = inflater.inflate(R.layout.fragment_meteorite_detail, container, false);
@@ -84,7 +85,7 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
 
         final AppCompatActivity activity = (AppCompatActivity) getActivity();
 
-        final Toolbar toolbarView = (Toolbar) view.findViewById(R.id.toolbar);
+        final Toolbar toolbarView = view.findViewById(R.id.toolbar);
 
         if (null != toolbarView) {
             activity.setSupportActionBar(toolbarView);
@@ -128,7 +129,7 @@ public class MeteoriteDetailFragment extends Fragment implements OnMapReadyCallb
 
         mMeteoriteLiveData = meteoriteDao.getMeteoriteById(meteoriteId);
 
-        mMeteoriteLiveData.observe(this, meteorite -> initView(meteorite));
+        mMeteoriteLiveData.observe(this, this::initView);
 
     }
 

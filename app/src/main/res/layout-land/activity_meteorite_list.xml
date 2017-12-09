@@ -30,7 +30,7 @@
             android:paddingBottom="28dp"
             android:paddingLeft="@dimen/list_side_margin"
             android:paddingRight="@dimen/list_side_margin"
-            android:scrollbarStyle="outsideOverlay"></android.support.v7.widget.RecyclerView>
+            android:scrollbarStyle="outsideOverlay"/>
 
         <FrameLayout
             android:id="@+id/fragment"

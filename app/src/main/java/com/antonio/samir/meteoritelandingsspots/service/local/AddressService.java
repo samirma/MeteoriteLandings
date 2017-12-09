@@ -8,6 +8,7 @@ import com.antonio.samir.meteoritelandingsspots.Application;
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryFactory;
 import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao;
+import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtil;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -83,7 +84,7 @@ public class AddressService {
     private String getAddress(String recLat, String recLong) {
         String addressString = "";
         if (StringUtils.isNoneEmpty(recLat) && StringUtils.isNoneEmpty(recLong)) {
-            final Address address = com.antonio.samir.meteoritelandingsspots.service.server.GeoLocationUtil.getAddress(Double.parseDouble(recLat), Double.parseDouble(recLong), Application.getContext());
+            final Address address = GeoLocationUtil.getAddress(Double.parseDouble(recLat), Double.parseDouble(recLong), Application.getContext());
             if (address != null) {
                 final List<String> finalAddress = new ArrayList<>();
                 final String city = address.getLocality();

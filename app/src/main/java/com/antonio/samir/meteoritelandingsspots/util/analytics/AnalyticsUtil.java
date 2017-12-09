@@ -2,12 +2,10 @@ package com.antonio.samir.meteoritelandingsspots.util.analytics;
 
 import android.content.Context;
 
-/**
- * Created by samir on 27/02/15.
- */
+
 public class AnalyticsUtil {
 
-    private static Analytics analytics;
+    private static final Analytics analytics;
 
     static {
         analytics = new GoogleAnalyticsUtil();

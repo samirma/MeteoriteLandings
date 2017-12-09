@@ -1,15 +1,9 @@
 package com.antonio.samir.meteoritelandingsspots.service.server.nasa;
 
-import android.content.Context;
-
 public class NasaServiceFactory {
     private static NasaService nasaService;
 
-    public static void setNasaService(NasaService nasaService) {
-        NasaServiceFactory.nasaService = nasaService;
-    }
-
-    public static NasaService getNasaService(Context context) {
+    public static NasaService getNasaService() {
 
         final NasaService service;
 

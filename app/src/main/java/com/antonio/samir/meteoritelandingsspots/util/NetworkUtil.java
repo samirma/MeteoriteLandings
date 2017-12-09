@@ -21,15 +21,7 @@ public class NetworkUtil {
 
         final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        final boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-        return isConnected;
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
-    /**
-     * Method used for tests proposes to set network availability
-     * @param connectivity
-     */
-    public static void setConnectivity(final Boolean connectivity) {
-        hasConnectivity = connectivity;
-    }
 }

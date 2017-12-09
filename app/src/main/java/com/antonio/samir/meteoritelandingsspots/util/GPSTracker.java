@@ -31,8 +31,6 @@ public final class GPSTracker implements LocationListener {
     protected LocationManager locationManager;
     // flag for network status
     boolean isNetworkEnabled = false;
-    // flag for GPS status
-    boolean canGetLocation = false;
 
     private MutableLiveData<Location> liveLocation; // liveLocation
 
@@ -74,9 +72,7 @@ public final class GPSTracker implements LocationListener {
                     permissionRequested = true;
                 } else {
 
-                    this.canGetLocation = true;
-
-                    Location location = null;
+                    Location location;
 
                     if (isNetworkEnabled) {
                         liveLocation = null;

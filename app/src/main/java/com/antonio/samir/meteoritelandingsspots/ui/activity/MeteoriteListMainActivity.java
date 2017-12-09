@@ -71,10 +71,9 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
     private ProgressDialog mProgressDialog;
     private FrameLayout mFrameLayout;
-    private MeteoriteDetailFragment mMeteoriteDetailFragment;
     private Bundle mSavedInstanceState;
     private boolean mIsLandscape;
-    private MeteoriteViewModel mMeteoritViewModel;
+    private MeteoriteViewModel mMeteoriteViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,9 +88,9 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
             setSupportActionBar(mToolbar);
         }
 
-        mMeteoritViewModel = ViewModelProviders.of(this).get(MeteoriteViewModel.class);
+        mMeteoriteViewModel = ViewModelProviders.of(this).get(MeteoriteViewModel.class);
 
-        mPresenter = mMeteoritViewModel.getPresenter();
+        mPresenter = mMeteoriteViewModel.getPresenter();
 
         mIsLandscape = getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE;
 
@@ -160,7 +159,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
     public void getMeteorites() {
 
-        final LiveData<List<Meteorite>> meteorites = mMeteoritViewModel.getMeteorites();
+        final LiveData<List<Meteorite>> meteorites = mMeteoriteViewModel.getMeteorites();
 
         meteorites.observe(this, meteorites1 -> {
             if (meteorites1 != null && !meteorites1.isEmpty()) {
@@ -183,7 +182,6 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         error(getString(R.string.no_network));
     }
 
-    @Override
     public void error(final String messageString) {
         mRecyclerView.setVisibility(View.GONE);
         mMessage.setVisibility(View.VISIBLE);
@@ -219,7 +217,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
                 R.anim.fragment_slide_left_enter,
                 R.anim.fragment_slide_left_exit);
 
-        mMeteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteorite);
+        MeteoriteDetailFragment mMeteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteorite);
         fragmentTransaction.replace(R.id.fragment, mMeteoriteDetailFragment);
         fragmentTransaction.commit();
 
@@ -238,7 +236,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         final ViewHolderMeteorite viewHolderMeteorite = mMeteoriteAdapter.getmVieHolderMeteorite();
         if (viewHolderMeteorite != null) {
 
-            final Pair<View, String> container = Pair.create((View) viewHolderMeteorite.mCardview, "mCardview");
+            final Pair<View, String> container = Pair.create(viewHolderMeteorite.mCardview, "mCardview");
             //Pair<View, String> p1 = Pair.create((View) viewHolderMeteorite.mName, "title");
 
             final ActivityOptionsCompat options = ActivityOptionsCompat.
@@ -328,8 +326,6 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
                 boolean isPermitted = grantResult == PackageManager.PERMISSION_GRANTED;
                 if (isPermitted) {
                     mPresenter.updateLocation();
-                } else {
-
                 }
             }
         }

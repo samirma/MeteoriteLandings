@@ -10,9 +10,7 @@ import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 
 import java.util.List;
 
-/**
- * Created by samirantonio on 08/07/17.
- */
+
 @Dao
 public interface MeteoriteDao {
 
