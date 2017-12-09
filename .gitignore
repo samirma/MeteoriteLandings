@@ -44,3 +44,4 @@ build/
 google-services.json
 /captures/
 release.keystore
+production.properties
