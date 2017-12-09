@@ -37,16 +37,13 @@
     </LinearLayout>
 
     <include
-        layout="@layout/meteorite_detail_map"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3" />
-
-    <include
         layout="@layout/meteorite_detail_grid"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="4" />
+        android:layout_height="wrap_content"/>
 
+    <include
+        layout="@layout/meteorite_detail_map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>
