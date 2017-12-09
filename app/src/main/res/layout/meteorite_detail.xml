@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:showIn="@layout/fragment_meteorite_detail">
+
+
+    <LinearLayout
+        android:transitionName="cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/meta_bar_background_color"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/detail_metabar_vert_padding"
+        android:paddingLeft="@dimen/detail_inner_horiz_margin"
+        android:paddingRight="@dimen/detail_inner_horiz_margin"
+        android:paddingTop="@dimen/detail_metabar_vert_padding">
+
+        <TextView
+            android:id="@+id/title"
+            android:transitionName="title"
+            style="?android:attr/textAppearanceLarge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:lineSpacingMultiplier="0.9"
+            android:paddingBottom="@dimen/detail_metabar_title_bottom_padding"
+            android:textColor="@color/title_color"
+            android:textSize="@dimen/detail_title_text_size" />
+
+        <TextView
+            android:id="@+id/location"
+            android:transitionName="location"
+            style="?android:attr/textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/detail_accent_label" />
+
+    </LinearLayout>
+
+    <include
+        layout="@layout/meteorite_detail_map"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <include
+        layout="@layout/meteorite_detail_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+</merge>
