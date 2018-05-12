@@ -59,10 +59,10 @@ dependencies {
     compile 'android.arch.lifecycle:runtime:1.0.3'
     compile 'android.arch.lifecycle:extensions:1.0.0'
     annotationProcessor "android.arch.lifecycle:compiler:1.0.0"
-    compile 'android.arch.persistence.room:runtime:1.0.0'
+    compile 'android.arch.persistence.room:runtime:1.1.0'
     //annotationProcessor "android.arch.persistence.room:compiler:1.0.0-alpha3"
-    annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
-    compile 'com.google.code.gson:gson:2.8.0'
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.0"
+    compile 'com.google.code.gson:gson:2.8.2'
     compile 'com.android.support:design:27.0.2'
     compile 'com.android.support:support-v4:27.0.2'
     compile 'com.android.support:appcompat-v7:27.0.2'
@@ -74,19 +74,19 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:11.6.2'
     compile 'com.google.android.gms:play-services-analytics:11.6.2'
     compile 'org.apache.commons:commons-lang3:3.5'
-    compile 'com.jakewharton:butterknife:8.4.0'
+    compile 'com.jakewharton:butterknife:8.8.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:retrofit:2.4.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     testCompile 'junit:junit:4.12'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     androidTestCompile 'com.android.support.test.espresso:espresso-contrib:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-v4'
         exclude group: 'com.android.support', module: 'design'
         exclude group: 'com.android.support', module: 'recyclerview-v7'
     }
-    androidTestCompile 'org.mockito:mockito-core:2.13.0'
+    androidTestCompile 'org.mockito:mockito-core:2.16.0'
     debugCompile 'com.facebook.stetho:stetho:1.5.0'
     debugCompile 'com.facebook.stetho:stetho-okhttp:1.5.0'
     debugCompile 'com.facebook.stetho:stetho-urlconnection:1.5.0'
