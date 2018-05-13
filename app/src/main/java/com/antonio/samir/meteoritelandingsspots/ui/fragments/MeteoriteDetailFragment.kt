@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import butterknife.BindView
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryFactory
@@ -21,27 +20,11 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.android.synthetic.main.meteorite_detail.*
+import kotlinx.android.synthetic.main.meteorite_detail_grid.*
 import org.apache.commons.lang3.StringUtils
 
 class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
-
-    @BindView(R.id.title)
-    internal var title: TextView? = null
-    @BindView(R.id.location)
-    internal var location: TextView? = null
-    @BindView(R.id.year)
-    internal var year: TextView? = null
-    @BindView(R.id.mass)
-    internal var mass: TextView? = null
-    @BindView(R.id.recclass)
-    internal var recclass: TextView? = null
-
-    @BindView(R.id.year_label)
-    internal var year_label: TextView? = null
-    @BindView(R.id.mass_label)
-    internal var mass_label: TextView? = null
-    @BindView(R.id.recclass_label)
-    internal var recclass_label: TextView? = null
 
     private var meteoriteId: String? = null
 
@@ -61,8 +44,6 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
                               savedInstanceState: Bundle?): View? {
 
         val view = inflater.inflate(R.layout.fragment_meteorite_detail, container, false)
-
-        //        ButterKnife.bind(this, view);
 
         (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
 
@@ -116,7 +97,7 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun initView(meteorite: Meteorite) {
-        setLocationText(meteorite.address, this.location)
+        setLocationText(meteorite.address, location)
 
         if (!isUiDone) {
             isUiDone = true
