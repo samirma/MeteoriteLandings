@@ -217,7 +217,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
                 R.anim.fragment_slide_left_enter,
                 R.anim.fragment_slide_left_exit);
 
-        MeteoriteDetailFragment mMeteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteorite);
+        MeteoriteDetailFragment mMeteoriteDetailFragment = MeteoriteDetailFragment.Companion.newInstance(meteorite);
         fragmentTransaction.replace(R.id.fragment, mMeteoriteDetailFragment);
         fragmentTransaction.commit();
 
