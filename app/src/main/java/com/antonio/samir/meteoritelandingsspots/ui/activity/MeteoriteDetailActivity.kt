@@ -28,7 +28,7 @@ class MeteoriteDetailActivity : AppCompatActivity() {
                 startActivity(intent)
             } else {
                 //If MeteoriteDetailActivity is created on portrait so load the fragment
-                val meteoriteDetailFragment = MeteoriteDetailFragment.newInstance(selectedMeteorite)
+                val meteoriteDetailFragment = MeteoriteDetailFragment.newInstance(selectedMeteorite!!)
                 val fm = supportFragmentManager
                 val fragmentTransaction = fm.beginTransaction()
                 fragmentTransaction.add(R.id.frag_detail, meteoriteDetailFragment)
