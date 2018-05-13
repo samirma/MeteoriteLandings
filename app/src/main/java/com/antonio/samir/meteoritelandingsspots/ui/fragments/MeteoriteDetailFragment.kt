@@ -70,17 +70,17 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
     }
 
     fun setupMap(meteoriteName: String, lat: Double, log: Double) {
-        mMap!!.clear()
+        mMap?.clear()
 
         val latLng = LatLng(lat, log)
 
-        mMap!!.addMarker(MarkerOptions().position(
+        mMap?.addMarker(MarkerOptions().position(
                 latLng).title(meteoriteName))
 
-        mMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 30f))
+        mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 30f))
 
         // Zoom in, animating the camera.
-        mMap!!.animateCamera(CameraUpdateFactory.zoomTo(10f), 2000, null)
+        mMap?.animateCamera(CameraUpdateFactory.zoomTo(10f), 2000, null)
     }
 
     fun setMeteorite(meteoriteId: String?) {
