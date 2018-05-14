@@ -59,7 +59,7 @@ class MeteoriteListPresenter(context: Context) {
         mView = meteoriteListView
         if (mContextReference!!.get() != null) {
             mGpsTracker = GPSTracker(meteoriteListView.gpsDelegate)
-            meteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(mContextReference!!.get(), mGpsTracker)
+            meteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(mContextReference!!.get()!!, mGpsTracker!!)
             if (mAddressService == null) {
                 mAddressService = AddressService()
                 recoveryAddress = mAddressService!!.recoveryAddress()
