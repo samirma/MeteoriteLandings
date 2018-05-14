@@ -31,7 +31,7 @@ class MeteoriteNasaAsyncTaskService(private val mNasaService: NasaService, priva
         try {
             val meteorites = result.meteorites
 
-            mMeteoriteDao.insertAll(meteorites)
+            meteorites?.let { mMeteoriteDao.insertAll(it) }
 
             val addressService = AddressService()
 
