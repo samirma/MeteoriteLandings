@@ -84,7 +84,7 @@ public class AddressService {
     private String getAddress(String recLat, String recLong) {
         String addressString = "";
         if (StringUtils.isNoneEmpty(recLat) && StringUtils.isNoneEmpty(recLong)) {
-            final Address address = GeoLocationUtil.getAddress(Double.parseDouble(recLat), Double.parseDouble(recLong), Application.getContext());
+            final Address address = GeoLocationUtil.INSTANCE.getAddress(Double.parseDouble(recLat), Double.parseDouble(recLong), Application.getContext());
             if (address != null) {
                 final List<String> finalAddress = new ArrayList<>();
                 final String city = address.getLocality();
