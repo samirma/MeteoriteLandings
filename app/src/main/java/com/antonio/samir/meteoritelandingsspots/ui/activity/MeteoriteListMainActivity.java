@@ -37,6 +37,7 @@ import com.antonio.samir.meteoritelandingsspots.ui.viewmodel.MeteoriteViewModel;
 import com.antonio.samir.meteoritelandingsspots.util.GPSTracker;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -194,12 +195,6 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         mRecyclerView.setVisibility(View.GONE);
     }
 
-    @Override
-    public GPSTracker.GPSTrackerDelegate getGPSDelegate() {
-        return this;
-    }
-
-
     /*
     MeteoriteSelectorView
      */
@@ -328,5 +323,11 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
                 }
             }
         }
+    }
+
+    @NotNull
+    @Override
+    public GPSTracker.GPSTrackerDelegate getGpsDelegate() {
+        return this;
     }
 }
