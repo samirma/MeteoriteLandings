@@ -88,7 +88,7 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
 
         val meteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(context)
 
-        mMeteoriteLiveData = meteoriteDao.getMeteoriteById(meteoriteId)
+        mMeteoriteLiveData = meteoriteId?.let { meteoriteDao.getMeteoriteById(it) }
 
         val observer = Observer<Meteorite> {t: Meteorite? -> t?.let { this.initView(it) } }
 
