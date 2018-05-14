@@ -97,7 +97,7 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun initView(meteorite: Meteorite) {
-        setLocationText(meteorite.address, location)
+        setLocationText(meteorite.address, view?.findViewById(R.id.location))
 
         if (!isUiDone) {
             isUiDone = true
