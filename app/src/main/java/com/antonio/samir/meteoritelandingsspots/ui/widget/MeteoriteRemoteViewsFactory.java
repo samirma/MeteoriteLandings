@@ -31,7 +31,7 @@ public class MeteoriteRemoteViewsFactory implements RemoteViewsService.RemoteVie
     @Override
     public void onCreate() {
 
-        AnalyticsUtil.logEvent("Widget", "Widget started");
+        AnalyticsUtil.INSTANCE.logEvent("Widget", "Widget started");
 
     }
 
