@@ -37,7 +37,7 @@ public class AddressService {
     }
 
     public AddressService() {
-        mMeteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(Application.getContext());
+        mMeteoriteDao = MeteoriteRepositoryFactory.INSTANCE.getMeteoriteDao(Application.getContext());
     }
 
     public MutableLiveData<Status> recoveryAddress() {
