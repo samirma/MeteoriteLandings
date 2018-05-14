@@ -40,7 +40,7 @@ public class MeteoriteRemoteViewsFactory implements RemoteViewsService.RemoteVie
 
         final long identityToken = Binder.clearCallingIdentity();
 
-        mMeteorites = MeteoriteRepositoryFactory.getMeteoriteDao(Application.getContext()).getMeteoriteOrdenedSync();
+        mMeteorites = MeteoriteRepositoryFactory.INSTANCE.getMeteoriteDao(Application.getContext()).getMeteoriteOrdenedSync();
 
         Binder.restoreCallingIdentity(identityToken);
     }
