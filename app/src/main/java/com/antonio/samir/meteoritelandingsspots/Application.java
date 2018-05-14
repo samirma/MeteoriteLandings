@@ -18,7 +18,7 @@ public class Application extends android.app.Application {
 
         applicationContext = getApplicationContext();
 
-        AnalyticsUtil.start(this);
+        AnalyticsUtil.INSTANCE.start(this);
 
     }
 }
