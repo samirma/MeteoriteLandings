@@ -95,7 +95,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
 
         mIsLandscape = getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE;
 
-        final MeteoriteSelector meteoriteSelector = MeteoriteSelectorFactory.getMeteoriteSelector(mIsLandscape, this);
+        final MeteoriteSelector meteoriteSelector = MeteoriteSelectorFactory.INSTANCE.getMeteoriteSelector(mIsLandscape, this);
 
         mMeteoriteAdapter = new MeteoriteAdapter(this, meteoriteSelector, mPresenter);
         mMeteoriteAdapter.setHasStableIds(true);
