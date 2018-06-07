@@ -8,7 +8,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.support.v4.app.TaskStackBuilder
+import androidx.core.app.TaskStackBuilder
 import android.widget.RemoteViews
 
 import com.antonio.samir.meteoritelandingsspots.R

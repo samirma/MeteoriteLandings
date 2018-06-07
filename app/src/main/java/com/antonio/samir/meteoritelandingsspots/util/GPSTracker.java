@@ -2,14 +2,14 @@ package com.antonio.samir.meteoritelandingsspots.util;
 
 
 import android.Manifest;
-import android.arch.lifecycle.MutableLiveData;
+import androidx.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
+import androidx.core.app.ActivityCompat;
 import android.util.Log;
 
 import com.antonio.samir.meteoritelandingsspots.Application;

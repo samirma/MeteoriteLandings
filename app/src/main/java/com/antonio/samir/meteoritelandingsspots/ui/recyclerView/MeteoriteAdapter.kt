@@ -1,8 +1,8 @@
 package com.antonio.samir.meteoritelandingsspots.ui.recyclerView
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils
 /**
  * Custom RecyclerView.Adapter to deal with meteorites cursor
  */
-class MeteoriteAdapter(private val mContext: Context, private val meteoriteSelector: MeteoriteSelector, private val mPresenter: MeteoriteListPresenter) : RecyclerView.Adapter<ViewHolderMeteorite>() {
+class MeteoriteAdapter(private val mContext: Context, private val meteoriteSelector: MeteoriteSelector, private val mPresenter: MeteoriteListPresenter) : androidx.recyclerview.widget.RecyclerView.Adapter<ViewHolderMeteorite>() {
     private var mSelectedMeteorite: String? = null
     var vieHolderMeteorite: ViewHolderMeteorite? = null
         private set

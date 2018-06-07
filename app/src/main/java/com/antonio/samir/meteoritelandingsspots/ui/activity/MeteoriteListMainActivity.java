@@ -2,21 +2,10 @@ package com.antonio.samir.meteoritelandingsspots.ui.activity;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.util.Pair;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -41,8 +30,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.util.Pair;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
@@ -54,13 +52,10 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
     public static final String TAG = MeteoriteListMainActivity.class.getSimpleName();
     public static final int LOCATION_REQUEST_CODE = 11111;
 
-    @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
-    @BindView(R.id.message)
     TextView mMessage;
 
-    @BindView(R.id.status)
     TextView mStatus;
 
     Toolbar mToolbar;
@@ -81,7 +76,11 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meteorite_list);
 
-        ButterKnife.bind(this);
+        mRecyclerView = findViewById(R.id.recycler_view);
+
+        mMessage = findViewById(R.id.message);
+
+        mStatus = findViewById(R.id.status);
 
         mToolbar = findViewById(R.id.toolbar);
 

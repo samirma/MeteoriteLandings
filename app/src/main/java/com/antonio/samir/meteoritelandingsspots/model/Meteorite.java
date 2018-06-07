@@ -1,8 +1,5 @@
 package com.antonio.samir.meteoritelandingsspots.model;
 
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Index;
-import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -17,13 +14,26 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import androidx.room.Entity;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
+
 @Entity(tableName = "meteorites", indices = {@Index("id")})
 public class Meteorite implements Parcelable {
 
-    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-
     public static final String TAG = Meteorite.class.getSimpleName();
+    public static final Creator<Meteorite> CREATOR = new Creator<Meteorite>() {
+        @Override
+        public Meteorite createFromParcel(Parcel source) {
+            return new Meteorite(source);
+        }
 
+        @Override
+        public Meteorite[] newArray(int size) {
+            return new Meteorite[size];
+        }
+    };
+    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     @PrimaryKey
     @SerializedName("id")
     protected int id;
@@ -38,6 +48,19 @@ public class Meteorite implements Parcelable {
     private String address;
 
     public Meteorite() {
+    }
+
+    protected Meteorite(Parcel in) {
+        this.id = in.readInt();
+        this.mass = in.readString();
+        this.nametype = in.readString();
+        this.recclass = in.readString();
+        this.name = in.readString();
+        this.fall = in.readString();
+        this.year = in.readString();
+        this.reclong = in.readString();
+        this.reclat = in.readString();
+        this.address = in.readString();
     }
 
     public String getYearString() {
@@ -156,31 +179,6 @@ public class Meteorite implements Parcelable {
         dest.writeString(this.reclat);
         dest.writeString(this.address);
     }
-
-    protected Meteorite(Parcel in) {
-        this.id = in.readInt();
-        this.mass = in.readString();
-        this.nametype = in.readString();
-        this.recclass = in.readString();
-        this.name = in.readString();
-        this.fall = in.readString();
-        this.year = in.readString();
-        this.reclong = in.readString();
-        this.reclat = in.readString();
-        this.address = in.readString();
-    }
-
-    public static final Creator<Meteorite> CREATOR = new Creator<Meteorite>() {
-        @Override
-        public Meteorite createFromParcel(Parcel source) {
-            return new Meteorite(source);
-        }
-
-        @Override
-        public Meteorite[] newArray(int size) {
-            return new Meteorite[size];
-        }
-    };
 
     public double distance(double latitude, double longitude) {
         double result = -1;
