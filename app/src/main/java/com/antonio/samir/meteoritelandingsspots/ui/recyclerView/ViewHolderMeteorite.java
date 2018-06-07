@@ -1,40 +1,41 @@
 package com.antonio.samir.meteoritelandingsspots.ui.recyclerView;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
 import com.antonio.samir.meteoritelandingsspots.R;
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import androidx.cardview.widget.CardView;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.RecyclerView;
+
 
 public class ViewHolderMeteorite extends RecyclerView.ViewHolder {
 
-    @BindView(R.id.title)
     public TextView mName;
 
-    @BindView(R.id.location)
     public TextView mLocation;
 
-    @BindView(R.id.cardview)
     public CardView mCardview;
 
-    @BindView(R.id.year)
     public TextView mYear;
-
-    private String mId;
-
     public Observer<Meteorite> addressObserver;
     public LiveData<Meteorite> liveMet;
+    private String mId;
 
     public ViewHolderMeteorite(View view) {
         super(view);
-        ButterKnife.bind(this, view);
+
+        mName = view.findViewById(R.id.title);
+
+        mLocation = view.findViewById(R.id.location);
+
+        mCardview = view.findViewById(R.id.cardview);
+
+        mYear = view.findViewById(R.id.year);
+
     }
 
     public String getId() {

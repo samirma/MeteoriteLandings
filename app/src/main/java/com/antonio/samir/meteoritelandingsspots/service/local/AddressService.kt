@@ -1,6 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.service.local
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import android.util.Log
 import com.antonio.samir.meteoritelandingsspots.Application
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite

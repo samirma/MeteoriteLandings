@@ -1,11 +1,11 @@
 package com.antonio.samir.meteoritelandingsspots.ui.fragments
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
+import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.meteorite_detail.*
 import kotlinx.android.synthetic.main.meteorite_detail_grid.*
 import org.apache.commons.lang3.StringUtils
 
-class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
+class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCallback {
 
     private var meteoriteId: String? = null
 
