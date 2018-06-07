@@ -1,9 +1,9 @@
 package com.antonio.samir.meteoritelandingsspots.presenter
 
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import android.content.Context
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.local.AddressService
 import com.antonio.samir.meteoritelandingsspots.service.local.MeteoriteService
@@ -43,7 +43,7 @@ class MeteoriteListPresenter(context: Context) {
                 mView!!.hideList()
             }
 
-            if (mContextReference!!.get() != null && !NetworkUtil.hasConnectivity(mContextReference!!.get())) {
+            if (mContextReference!!.get() != null && !NetworkUtil.hasConnectivity(mContextReference?.get())) {
                 mView!!.unableToFetch()
             }
 
