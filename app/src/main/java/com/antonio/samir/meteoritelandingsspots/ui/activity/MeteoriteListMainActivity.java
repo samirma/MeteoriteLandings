@@ -230,7 +230,7 @@ public class MeteoriteListMainActivity extends AppCompatActivity implements Mete
         final ViewHolderMeteorite viewHolderMeteorite = mMeteoriteAdapter.getVieHolderMeteorite();
         if (viewHolderMeteorite != null) {
 
-            final Pair<View, String> container = Pair.create(viewHolderMeteorite.mCardview, viewHolderMeteorite.mCardview.getTransitionName());
+            final Pair<View, String> container = Pair.create(viewHolderMeteorite.getMCardview(), viewHolderMeteorite.getMCardview().getTransitionName());
 
             final ActivityOptionsCompat options = ActivityOptionsCompat.
                     makeSceneTransitionAnimation(this, container);

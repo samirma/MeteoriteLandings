@@ -1,18 +1,15 @@
 package com.antonio.samir.meteoritelandingsspots.ui.recyclerView
 
-import androidx.lifecycle.Observer
 import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-
+import androidx.lifecycle.Observer
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListPresenter
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelector
-
 import org.apache.commons.lang3.StringUtils
 
 /**
@@ -91,7 +88,7 @@ class MeteoriteAdapter(private val mContext: Context, private val meteoriteSelec
 
         //Always remove the previous observer
         if (viewHolder.liveMet != null && viewHolder.addressObserver != null) {
-            viewHolder.liveMet.removeObserver(viewHolder.addressObserver)
+            viewHolder.liveMet?.removeObserver(viewHolder.addressObserver!!)
             viewHolder.liveMet = null
             viewHolder.addressObserver = null
         }
@@ -107,12 +104,12 @@ class MeteoriteAdapter(private val mContext: Context, private val meteoriteSelec
                 if (StringUtils.isNotEmpty(newAddress)) {
                     showAddress(viewHolder, newAddress!!)
                     viewHolder.mLocation.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.view_show))
-                    viewHolder.liveMet.removeObserver(viewHolder.addressObserver)
+                    viewHolder.liveMet?.removeObserver(viewHolder.addressObserver!!)
                 }
             }
 
             viewHolder.addressObserver = addressObserver
-            viewHolder.liveMet.observeForever(viewHolder.addressObserver)
+            viewHolder.liveMet?.observeForever(viewHolder.addressObserver!!)
             viewHolder.mLocation.visibility = View.INVISIBLE
         }
     }
