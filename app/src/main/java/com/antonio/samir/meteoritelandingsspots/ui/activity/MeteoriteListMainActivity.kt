@@ -177,7 +177,7 @@ class MeteoriteListMainActivity : AppCompatActivity(), MeteoriteListView, Meteor
     /*
     MeteoriteSelectorView
      */
-    override fun selectLandscape(meteorite: String) {
+    override fun selectLandscape(meteorite: String?) {
 
         var fragmentTransaction = supportFragmentManager.beginTransaction()
 
@@ -190,7 +190,7 @@ class MeteoriteListMainActivity : AppCompatActivity(), MeteoriteListView, Meteor
                 R.anim.fragment_slide_left_enter,
                 R.anim.fragment_slide_left_exit)
 
-        val mMeteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteorite)
+        val mMeteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteorite!!)
         fragmentTransaction.replace(R.id.fragment, mMeteoriteDetailFragment)
         fragmentTransaction.commit()
 
@@ -200,7 +200,7 @@ class MeteoriteListMainActivity : AppCompatActivity(), MeteoriteListView, Meteor
 
     }
 
-    override fun selectPortrait(meteorite: String) {
+    override fun selectPortrait(meteorite: String?) {
 
         val intent = Intent(this, MeteoriteDetailActivity::class.java)
         intent.putExtra(ITEM_SELECTED, meteorite)
