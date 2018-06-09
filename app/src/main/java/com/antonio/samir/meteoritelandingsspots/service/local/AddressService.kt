@@ -1,7 +1,7 @@
 package com.antonio.samir.meteoritelandingsspots.service.local
 
-import androidx.lifecycle.MutableLiveData
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.antonio.samir.meteoritelandingsspots.Application
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.local.AddressService.Status.DONE
@@ -33,11 +33,8 @@ class AddressService {
                     if (!meteorites.isEmpty()) {
                         status.postValue(LOADING)
 
-                        val size = meteorites.size
-
-                        for (i in 0 until size) {
-                            val met = meteorites[i]
-                            recoverAddress(met, met.reclat, met.reclong)
+                        meteorites.onEach { meteorite ->
+                            recoverAddress(meteorite)
                         }
 
                         status.postValue(DONE)
@@ -54,7 +51,10 @@ class AddressService {
 
     }
 
-    fun recoverAddress(meteorite: Meteorite, recLat: String, recLong: String) {
+    private fun recoverAddress(meteorite: Meteorite) {
+
+        val recLat = meteorite.reclat
+        val recLong = meteorite.reclong
 
         val address = getAddress(recLat, recLong)
         meteorite.address = address
@@ -64,7 +64,7 @@ class AddressService {
 
     }
 
-    private fun getAddress(recLat: String, recLong: String): String {
+    private fun getAddress(recLat: String?, recLong: String?): String {
         var addressString = ""
         if (StringUtils.isNoneEmpty(recLat) && StringUtils.isNoneEmpty(recLong)) {
             val address = GeoLocationUtil.getAddress(java.lang.Double.parseDouble(recLat), java.lang.Double.parseDouble(recLong), Application.getContext())
