@@ -8,6 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 
 class NasaServiceImpl : NasaService {
+
     private val service: NasaServerEndPoint
 
     init {
@@ -20,22 +21,23 @@ class NasaServiceImpl : NasaService {
 
     }
 
-    @Throws(MeteoriteServerException::class)
-    override fun getMeteorites(): List<Meteorite>? {
 
-        val publicMeteorites = service.publicMeteorites
+    override val meteorites: List<Meteorite>?
+        get() {
 
-        val meteorites: List<Meteorite>?
-        try {
-            meteorites = publicMeteorites.execute().body()
-            AnalyticsUtil.logEvent(NASA_SERVICE, "Meteorites recovered from Nasa server")
-        } catch (e: IOException) {
-            AnalyticsUtil.logEvent(NASA_SERVICE, "Failed to recover data from Nasa server")
-            throw MeteoriteServerException(e)
+            val publicMeteorites = service.publicMeteorites
+
+            val meteorites: List<Meteorite>?
+            try {
+                meteorites = publicMeteorites.execute().body()
+                AnalyticsUtil.logEvent(NASA_SERVICE, "Meteorites recovered from Nasa server")
+            } catch (e: IOException) {
+                AnalyticsUtil.logEvent(NASA_SERVICE, "Failed to recover data from Nasa server")
+                throw MeteoriteServerException(e)
+            }
+
+            return meteorites
         }
-
-        return meteorites
-    }
 
     companion object {
 

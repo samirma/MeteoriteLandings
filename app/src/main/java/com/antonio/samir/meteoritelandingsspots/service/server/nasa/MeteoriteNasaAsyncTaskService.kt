@@ -14,7 +14,7 @@ class MeteoriteNasaAsyncTaskService(private val mNasaService: NasaService, priva
 
         val meteoriteServerResult = MeteoriteServerResult()
 
-        val meteorites: List<Meteorite>
+        val meteorites: List<Meteorite>?
         try {
             meteorites = mNasaService.meteorites
             meteoriteServerResult.meteorites = meteorites
