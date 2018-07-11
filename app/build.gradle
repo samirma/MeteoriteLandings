@@ -59,23 +59,23 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     // Architecture Components
-    implementation 'androidx.lifecycle:lifecycle-runtime:2.0.0-alpha1'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-alpha1'
-    annotationProcessor "androidx.lifecycle:lifecycle-compiler:2.0.0-alpha1"
-    implementation 'androidx.room:room-runtime:2.0.0-alpha1'
+    implementation 'androidx.lifecycle:lifecycle-runtime:2.0.0-beta01'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-beta01'
+    annotationProcessor "androidx.lifecycle:lifecycle-compiler:2.0.0-beta01"
+    implementation 'androidx.room:room-runtime:2.0.0-beta01'
     //annotationProcessor "android.arch.persistence.room:compiler:1.0.0-alpha3"
-    annotationProcessor "androidx.room:room-compiler:2.0.0-alpha1"
+    annotationProcessor "androidx.room:room-compiler:2.0.0-beta01"
     implementation 'com.google.code.gson:gson:2.8.2'
-    implementation 'com.google.android.material:material:1.0.0-alpha1'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0-alpha1'
-    implementation 'androidx.appcompat:appcompat:1.0.0-alpha1'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0-alpha1'
-    implementation 'androidx.cardview:cardview:1.0.0-alpha1'
-    implementation 'androidx.gridlayout:gridlayout:1.0.0-alpha1'
-    implementation 'com.google.android.gms:play-services-analytics:11.6.2'
-    implementation 'com.google.android.gms:play-services-location:11.6.2'
-    implementation 'com.google.android.gms:play-services-maps:11.6.2'
-    implementation 'com.google.android.gms:play-services-analytics:11.6.2'
+    implementation 'com.google.android.material:material:1.0.0-beta01'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
+    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0-beta01'
+    implementation 'androidx.cardview:cardview:1.0.0-beta01'
+    implementation 'androidx.gridlayout:gridlayout:1.0.0-beta01'
+    implementation 'com.google.android.gms:play-services-analytics:16.0.1'
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
+    implementation 'com.google.android.gms:play-services-maps:15.0.1'
+    implementation 'com.google.android.gms:play-services-analytics:16.0.1'
     implementation 'org.apache.commons:commons-lang3:3.5'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
