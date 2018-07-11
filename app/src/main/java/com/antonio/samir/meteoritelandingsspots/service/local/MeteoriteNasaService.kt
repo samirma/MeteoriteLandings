@@ -1,10 +1,10 @@
 package com.antonio.samir.meteoritelandingsspots.service.local
 
+import android.content.Context
+import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import android.content.Context
-import android.location.Location
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryFactory
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.MeteoriteNasaAsyncTaskService
@@ -14,7 +14,7 @@ import java.util.*
 
 internal class MeteoriteNasaService(private val mContext: Context, private val mGpsTracker: GPSTracker) : MeteoriteService {
 
-    override fun getMeteorites(): LiveData<List<Meteorite>> {
+    override fun loadMeteorites(): LiveData<List<Meteorite>> {
 
         //Return meteorites
         val meteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(mContext)
