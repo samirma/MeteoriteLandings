@@ -26,7 +26,7 @@ class MeteoriteListPresenter(context: Context) {
 
     val meteorites: LiveData<List<Meteorite>>
         get() {
-            val data = meteoriteFetchService!!.meteorites
+            val data = meteoriteFetchService!!.loadMeteorites()
 
             val meteorites = data.value
             val isEmpty = meteorites == null || meteorites.isEmpty()
