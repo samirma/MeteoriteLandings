@@ -1,8 +1,7 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     Properties properties = new Properties()
@@ -29,7 +28,7 @@ android {
     defaultConfig {
         applicationId "com.antonio.samir.meteoritelandingsspots"
         minSdkVersion 21
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 5
         versionName "1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -58,28 +57,40 @@ dependencies {
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0-alpha3', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
+    //Compat
+    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
+
     // Architecture Components
     implementation 'androidx.lifecycle:lifecycle-runtime:2.0.0-beta01'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-beta01'
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:2.0.0-beta01"
-    implementation 'androidx.room:room-runtime:2.0.0-beta01'
-    //annotationProcessor "android.arch.persistence.room:compiler:1.0.0-alpha3"
-    annotationProcessor "androidx.room:room-compiler:2.0.0-beta01"
-    implementation 'com.google.code.gson:gson:2.8.2'
-    implementation 'com.google.android.material:material:1.0.0-beta01'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
-    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0-beta01'
-    implementation 'androidx.cardview:cardview:1.0.0-beta01'
-    implementation 'androidx.gridlayout:gridlayout:1.0.0-beta01'
+
+    //Room
+    implementation "androidx.room:room-runtime:2.0.0-beta01"
+    kapt "androidx.room:room-compiler:2.0.0-beta01"
+
+    //Play services
     implementation 'com.google.android.gms:play-services-analytics:16.0.1'
     implementation 'com.google.android.gms:play-services-location:15.0.1'
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
     implementation 'com.google.android.gms:play-services-analytics:16.0.1'
+
+    implementation 'com.google.code.gson:gson:2.8.2'
+
+    implementation 'com.google.android.material:material:1.0.0-beta01'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0-beta01'
+    implementation 'androidx.cardview:cardview:1.0.0-beta01'
+    implementation 'androidx.gridlayout:gridlayout:1.0.0-beta01'
+
     implementation 'org.apache.commons:commons-lang3:3.5'
+
     implementation 'com.squareup.picasso:picasso:2.5.2'
+
+    //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.1.0-alpha3', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -88,9 +99,12 @@ dependencies {
         exclude group: 'com.android.support', module: 'recyclerview-v7'
     }
     androidTestImplementation 'org.mockito:mockito-core:2.16.0'
+
+    //Stetho
     debugImplementation 'com.facebook.stetho:stetho:1.5.0'
     debugImplementation 'com.facebook.stetho:stetho-okhttp:1.5.0'
     debugImplementation 'com.facebook.stetho:stetho-urlconnection:1.5.0'
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 

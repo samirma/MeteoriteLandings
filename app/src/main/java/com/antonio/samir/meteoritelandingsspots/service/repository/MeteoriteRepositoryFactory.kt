@@ -1,16 +1,15 @@
 package com.antonio.samir.meteoritelandingsspots.service.repository
 
-import androidx.sqlite.db.SupportSQLiteDatabase
+import android.content.Context
 import androidx.room.Room
 import androidx.room.migration.Migration
-import android.content.Context
-
-import com.antonio.samir.meteoritelandingsspots.service.repository.database.AppDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
+import com.antonio.samir.meteoritelandingsspots.service.repository.database.AppDataBase
 import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao
 
 object MeteoriteRepositoryFactory {
 
-    private var appDatabase: AppDatabase? = null
+    private var appDatabase: AppDataBase? = null
 
     private val MIGRATION_1_2 = object : Migration(1, 2) {
         override fun migrate(database: SupportSQLiteDatabase) {
@@ -28,8 +27,8 @@ object MeteoriteRepositoryFactory {
         return appDatabase!!.meteoriteDao()
     }
 
-    private fun getAppDatabase(context: Context): AppDatabase {
+    private fun getAppDatabase(context: Context): AppDataBase {
         return Room.databaseBuilder(context,
-                AppDatabase::class.java, "meteorites").addMigrations(MIGRATION_1_2).build()
+                AppDataBase::class.java, "meteorites").addMigrations(MIGRATION_1_2).build()
     }
 }
