@@ -85,8 +85,8 @@ class MeteoriteRemoteViewsFactory(private val mPackageName: String) : RemoteView
         return true
     }
 
-    fun setLocationText(address: String, views: RemoteViews) {
-        val text: String
+    fun setLocationText(address: String?, views: RemoteViews) {
+        val text: String?
         if (StringUtils.isNotEmpty(address)) {
             text = address
         } else {
@@ -97,7 +97,7 @@ class MeteoriteRemoteViewsFactory(private val mPackageName: String) : RemoteView
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
-    private fun setRemoteContentDescription(views: RemoteViews, description: String) {
+    private fun setRemoteContentDescription(views: RemoteViews, description: String?) {
         views.setContentDescription(R.id.widget_list_item, description)
     }
 }

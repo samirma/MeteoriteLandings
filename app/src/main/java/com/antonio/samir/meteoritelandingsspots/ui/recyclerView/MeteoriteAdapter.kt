@@ -100,7 +100,7 @@ class MeteoriteAdapter(private val mContext: Context, private val meteoriteSelec
             viewHolder.liveMet = mPresenter.getMeteorite(meteorite)
 
             var addressObserver = Observer<Meteorite> { meteorite1 ->
-                val newAddress = meteorite1?.getAddress()
+                val newAddress = meteorite1?.address
                 if (StringUtils.isNotEmpty(newAddress)) {
                     showAddress(viewHolder, newAddress!!)
                     viewHolder.mLocation.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.view_show))
@@ -114,7 +114,7 @@ class MeteoriteAdapter(private val mContext: Context, private val meteoriteSelec
         }
     }
 
-    private fun showAddress(viewHolder: ViewHolderMeteorite, address: String) {
+    private fun showAddress(viewHolder: ViewHolderMeteorite, address: String?) {
         viewHolder.mLocation.text = address
         viewHolder.mLocation.visibility = View.VISIBLE
     }

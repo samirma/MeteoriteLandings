@@ -1,15 +1,14 @@
 package com.antonio.samir.meteoritelandingsspots.ui.fragments
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryFactory
@@ -69,7 +68,7 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
         this.mMap = map
     }
 
-    fun setupMap(meteoriteName: String, lat: Double, log: Double) {
+    fun setupMap(meteoriteName: String?, lat: Double, log: Double) {
         mMap?.clear()
 
         val latLng = LatLng(lat, log)
@@ -90,7 +89,7 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
 
         mMeteoriteLiveData = meteoriteId?.let { meteoriteDao.getMeteoriteById(it) }
 
-        val observer = Observer<Meteorite> {t: Meteorite? -> t?.let { this.initView(it) } }
+        val observer = Observer<Meteorite> { t: Meteorite? -> t?.let { this.initView(it) } }
 
         mMeteoriteLiveData!!.observe(this, observer)
 
@@ -123,7 +122,7 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
         }
     }
 
-    fun setLocationText(address: String, text: TextView?) {
+    fun setLocationText(address: String?, text: TextView?) {
         if (StringUtils.isNotEmpty(address)) {
             setText(null, text, address)
             text!!.visibility = View.VISIBLE
