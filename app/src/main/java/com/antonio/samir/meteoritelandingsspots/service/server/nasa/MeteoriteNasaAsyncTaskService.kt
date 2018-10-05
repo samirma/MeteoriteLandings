@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.service.server.nasa
 
+import android.content.Context
 import android.os.AsyncTask
 import android.util.Log
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
@@ -8,7 +9,9 @@ import com.antonio.samir.meteoritelandingsspots.service.local.MeteoriteServerExc
 import com.antonio.samir.meteoritelandingsspots.service.local.MeteoriteServerResult
 import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao
 
-class MeteoriteNasaAsyncTaskService(private val mNasaService: NasaService, private val mMeteoriteDao: MeteoriteDao) : AsyncTask<Void, Void, MeteoriteServerResult>() {
+class MeteoriteNasaAsyncTaskService(private val mNasaService: NasaService,
+                                    private val mMeteoriteDao: MeteoriteDao,
+                                    private val mContext: Context) : AsyncTask<Void, Void, MeteoriteServerResult>() {
 
     override fun doInBackground(vararg params: Void): MeteoriteServerResult {
 
@@ -33,7 +36,7 @@ class MeteoriteNasaAsyncTaskService(private val mNasaService: NasaService, priva
 
             meteorites?.let { mMeteoriteDao.insertAll(it) }
 
-            val addressService = AddressService()
+            val addressService = AddressService(mContext)
 
             addressService.recoveryAddress()
 

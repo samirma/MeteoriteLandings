@@ -11,11 +11,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
-import com.antonio.samir.meteoritelandingsspots.Application
 
 
-class GPSTracker(private val mDelegate: GPSTrackerDelegate) : LocationListener {
-    private val mContext: Context
+class GPSTracker(private val mDelegate: GPSTrackerDelegate, private val mContext: Context) : LocationListener {
     // flag for GPS status
     private var isGPSEnabled = false
     // Declaring a Location Manager
@@ -51,7 +49,6 @@ class GPSTracker(private val mDelegate: GPSTrackerDelegate) : LocationListener {
 
     init {
         liveLocation = MutableLiveData()
-        this.mContext = Application.getContext()
     }
 
     fun startLocationService() {

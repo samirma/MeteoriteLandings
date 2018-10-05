@@ -32,7 +32,7 @@ internal class MeteoriteNasaService(private val mContext: Context, private val m
                 if (meteorites!!.isEmpty()) {
                     //If it is empty so load the data from internet
                     val nasaService = NasaServiceFactory.getNasaService()
-                    MeteoriteNasaAsyncTaskService(nasaService, meteoriteDao).execute()
+                    MeteoriteNasaAsyncTaskService(nasaService, meteoriteDao, mContext).execute()
                 } else {
                     //Is not empty so remove the observer
                     list.value = meteorites
