@@ -1,8 +1,8 @@
 package com.antonio.samir.meteoritelandingsspots.service.local
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.antonio.samir.meteoritelandingsspots.Application
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.local.AddressService.Status.DONE
 import com.antonio.samir.meteoritelandingsspots.service.local.AddressService.Status.LOADING
@@ -16,9 +16,9 @@ import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 
 
-class AddressService {
+class AddressService(val context: Context) {
 
-    private val mMeteoriteDao: MeteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(Application.getContext())
+    private val mMeteoriteDao: MeteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(context)
 
     enum class Status {
         DONE, LOADING
@@ -67,7 +67,7 @@ class AddressService {
     private fun getAddress(recLat: String?, recLong: String?): String {
         var addressString = ""
         if (StringUtils.isNoneEmpty(recLat) && StringUtils.isNoneEmpty(recLong)) {
-            val address = GeoLocationUtil.getAddress(java.lang.Double.parseDouble(recLat), java.lang.Double.parseDouble(recLong), Application.getContext())
+            val address = GeoLocationUtil.getAddress(java.lang.Double.parseDouble(recLat), java.lang.Double.parseDouble(recLong), context)
             if (address != null) {
                 val finalAddress = ArrayList<String>()
                 val city = address.locality

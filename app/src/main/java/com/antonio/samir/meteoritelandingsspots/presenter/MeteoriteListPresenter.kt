@@ -18,9 +18,10 @@ import java.lang.ref.WeakReference
  */
 class MeteoriteListPresenter(context: Context) {
     private var meteoriteFetchService: MeteoriteService? = null
-    private var mContextReference: WeakReference<Context>? = null
+    private var mContextReference: WeakReference<Context>
     private var mGpsTracker: GPSTracker? = null
-    private var mAddressService: AddressService? = null
+    private var mAddressService: AddressService = AddressService(context)
+
     var recoveryAddress: MutableLiveData<AddressService.Status>? = null
         private set
 
@@ -43,7 +44,7 @@ class MeteoriteListPresenter(context: Context) {
                 mView!!.hideList()
             }
 
-            if (mContextReference!!.get() != null && !NetworkUtil.hasConnectivity(mContextReference?.get())) {
+            if (mContextReference.get() != null && !NetworkUtil.hasConnectivity(mContextReference.get())) {
                 mView!!.unableToFetch()
             }
 
@@ -57,13 +58,12 @@ class MeteoriteListPresenter(context: Context) {
 
     fun attachView(meteoriteListView: MeteoriteListView) {
         mView = meteoriteListView
-        if (mContextReference!!.get() != null) {
-            mGpsTracker = GPSTracker(meteoriteListView.gpsDelegate)
-            meteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(mContextReference!!.get()!!, mGpsTracker!!)
-            if (mAddressService == null) {
-                mAddressService = AddressService()
-                recoveryAddress = mAddressService!!.recoveryAddress()
-            }
+        if (mContextReference.get() != null) {
+            mGpsTracker = GPSTracker(meteoriteListView.gpsDelegate, mContextReference.get()!!)
+            meteoriteFetchService = MeteoriteServiceFactory.getMeteoriteService(mContextReference.get()!!, mGpsTracker!!)
+
+            recoveryAddress = mAddressService.recoveryAddress()
+
         }
     }
 
@@ -74,12 +74,14 @@ class MeteoriteListPresenter(context: Context) {
     }
 
     fun getMeteorite(meteorite: Meteorite): LiveData<Meteorite>? {
-        val context = mContextReference!!.get()
+        val context = mContextReference.get()
+
         var meteoriteLiveData: LiveData<Meteorite>? = null
-        if (context != null) {
-            val meteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(context)
+        context?.let {
+            val meteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(it)
             meteoriteLiveData = meteoriteDao.getMeteoriteById(meteorite.id.toString())
         }
+
         return meteoriteLiveData
     }
 
