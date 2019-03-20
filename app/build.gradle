@@ -59,7 +59,7 @@ dependencies {
     })
 
     //Compat
-    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.2'
 
     // Architecture Components
     implementation 'androidx.lifecycle:lifecycle-runtime:2.0.0'
@@ -71,10 +71,10 @@ dependencies {
     kapt "androidx.room:room-compiler:2.0.0"
 
     //Play services
-    implementation 'com.google.android.gms:play-services-analytics:16.0.4'
+    implementation 'com.google.android.gms:play-services-analytics:16.0.7'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
-    implementation 'com.google.android.gms:play-services-maps:16.0.0'
-    implementation 'com.google.android.gms:play-services-analytics:16.0.4'
+    implementation 'com.google.android.gms:play-services-maps:16.1.0'
+    implementation 'com.google.android.gms:play-services-analytics:16.0.7'
 
     implementation 'com.google.code.gson:gson:2.8.2'
 
