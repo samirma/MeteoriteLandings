@@ -5,14 +5,14 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/status"
+        android:id="@+id/statusTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/alert_bg"
-        android:textStyle="bold"
         android:gravity="center_horizontal"
-        android:visibility="gone"
-        android:text="@string/loading_addresses" />
+        android:text="@string/loading_addresses"
+        android:textStyle="bold"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/container"
@@ -22,15 +22,15 @@
         android:orientation="horizontal">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
+            android:id="@+id/meteoriteRV"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:clipToPadding="false"
-            android:paddingBottom="28dp"
             android:paddingLeft="@dimen/list_side_margin"
             android:paddingRight="@dimen/list_side_margin"
-            android:scrollbarStyle="outsideOverlay"/>
+            android:paddingBottom="28dp"
+            android:scrollbarStyle="outsideOverlay" />
 
         <FrameLayout
             android:id="@+id/fragment"
@@ -40,7 +40,7 @@
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/message"
+            android:id="@+id/messageTV"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"

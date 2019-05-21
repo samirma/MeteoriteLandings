@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.antonio.samir.meteoritelandingsspots.R
@@ -19,6 +18,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.android.synthetic.main.fragment_meteorite_detail.*
 import kotlinx.android.synthetic.main.meteorite_detail.*
 import kotlinx.android.synthetic.main.meteorite_detail_grid.*
 import org.apache.commons.lang3.StringUtils
@@ -31,11 +31,30 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
     private var mMeteoriteLiveData: LiveData<Meteorite>? = null
     private var isUiDone = false
 
+    companion object {
+
+        val METEORITE = "METEORITE"
+
+
+        /**
+         * Create a MeteoriteDetailFragment to show the meteorite param
+         * @param meteorite
+         * @return
+         */
+        fun newInstance(meteorite: String): MeteoriteDetailFragment {
+            val fragment = MeteoriteDetailFragment()
+            val args = Bundle()
+            args.putString(METEORITE, meteorite)
+            fragment.arguments = args
+            return fragment
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
             //Recovering the meteorite to work on it
-            meteoriteId = arguments!!.getString(METEORITE)
+            meteoriteId = arguments?.getString(METEORITE)
         }
     }
 
@@ -46,15 +65,9 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
 
         (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
 
-        val activity = activity as AppCompatActivity?
+        val activity = activity as AppCompatActivity
 
-        val toolbarView = view.findViewById<Toolbar>(R.id.toolbar)
-
-        if (null != toolbarView) {
-            activity!!.setSupportActionBar(toolbarView)
-            activity.supportActionBar!!.setDisplayShowTitleEnabled(false)
-            activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        }
+        toolbarTB?.let(activity::setSupportActionBar)
 
         return view
     }
@@ -85,7 +98,7 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
     fun setMeteorite(meteoriteId: String?) {
         this.meteoriteId = meteoriteId
 
-        val meteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(context!!)
+        val meteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(requireContext())
 
         mMeteoriteLiveData = meteoriteId?.let { meteoriteDao.getMeteoriteById(it) }
 
@@ -122,7 +135,7 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
         }
     }
 
-    fun setLocationText(address: String?, text: TextView?) {
+    private fun setLocationText(address: String?, text: TextView?) {
         if (StringUtils.isNotEmpty(address)) {
             setText(null, text, address)
             text!!.visibility = View.VISIBLE
@@ -134,31 +147,11 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
 
     private fun setText(textFieldLabel: TextView?, textField: TextView?, text: String?) {
         if (StringUtils.isEmpty(text)) {
-            if (textFieldLabel != null) {
-                textFieldLabel.visibility = View.GONE
-            }
-            textField!!.visibility = View.GONE
+            textFieldLabel?.visibility = View.GONE
+            textField?.visibility = View.GONE
         } else {
-            textField!!.text = text
-            textField.contentDescription = text
-        }
-    }
-
-    companion object {
-
-        val METEORITE = "METEORITE"
-
-        /**
-         * Create a MeteoriteDetailFragment to show the meteorite param
-         * @param meteorite
-         * @return
-         */
-        fun newInstance(meteorite: String): MeteoriteDetailFragment {
-            val fragment = MeteoriteDetailFragment()
-            val args = Bundle()
-            args.putString(METEORITE, meteorite)
-            fragment.arguments = args
-            return fragment
+            textField?.text = text
+            textField?.contentDescription = text
         }
     }
 

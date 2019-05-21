@@ -1,36 +1,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/toolbarTB"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"/>
+        android:layout_height="?actionBarSize" />
 
     <TextView
-        android:id="@+id/status"
+        android:id="@+id/statusTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/alert_bg"
-        android:textStyle="bold"
         android:gravity="center_horizontal"
-        android:visibility="gone"
-        android:text="@string/loading_addresses" />
+        android:text="@string/loading_addresses"
+        android:textStyle="bold"
+        android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        android:id="@+id/meteoriteRV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
         android:layout_weight="1"
-        tools:listitem="@layout/list_item_meteorite" >
+        android:clipToPadding="false"
+        tools:listitem="@layout/list_item_meteorite">
+
     </androidx.recyclerview.widget.RecyclerView>
 
     <TextView
-        android:id="@+id/message"
+        android:id="@+id/messageTV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
