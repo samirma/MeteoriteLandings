@@ -15,11 +15,18 @@ import org.apache.commons.lang3.StringUtils
 /**
  * Custom RecyclerView.Adapter to deal with meteorites cursor
  */
-class MeteoriteAdapter(private val mContext: Context, private val meteoriteSelector: MeteoriteSelector, private val mPresenter: MeteoriteListPresenter) : androidx.recyclerview.widget.RecyclerView.Adapter<ViewHolderMeteorite>() {
-    private var mSelectedMeteorite: String? = null
+class MeteoriteAdapter(
+        private val mContext: Context,
+        private val meteoriteSelector: MeteoriteSelector,
+        private val mPresenter: MeteoriteListPresenter
+) : androidx.recyclerview.widget.RecyclerView.Adapter<ViewHolderMeteorite>() {
+
+    private var selectedMeteorite: String? = null
+
     var vieHolderMeteorite: ViewHolderMeteorite? = null
         private set
-    private var mMeteorites: List<Meteorite>? = null
+
+    private var meteorites: List<Meteorite>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderMeteorite {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_meteorite, parent, false)
@@ -35,11 +42,11 @@ class MeteoriteAdapter(private val mContext: Context, private val meteoriteSelec
 
 
     override fun getItemCount(): Int {
-        return if (mMeteorites != null) mMeteorites!!.size else 0
+        return if (meteorites != null) meteorites!!.size else 0
     }
 
     fun setData(data: List<Meteorite>) {
-        mMeteorites = data
+        meteorites = data
     }
 
     override fun getItemId(position: Int): Long {
@@ -47,7 +54,7 @@ class MeteoriteAdapter(private val mContext: Context, private val meteoriteSelec
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolderMeteorite, position: Int) {
-        val meteorite = mMeteorites!![position]
+        val meteorite = meteorites!![position]
 
         val meteoriteName = meteorite.name
         val year = meteorite.yearString
@@ -70,7 +77,7 @@ class MeteoriteAdapter(private val mContext: Context, private val meteoriteSelec
         var title_color = R.color.title_color
         var elevation = R.dimen.unselected_item_elevation
 
-        if (StringUtils.equals(idString, mSelectedMeteorite)) {
+        if (StringUtils.equals(idString, selectedMeteorite)) {
             color = R.color.selected_item_color
             title_color = R.color.selected_title_color
             elevation = R.dimen.selected_item_elevation
@@ -99,7 +106,7 @@ class MeteoriteAdapter(private val mContext: Context, private val meteoriteSelec
             //If address is still empty then observe this entity to be aware of any change
             viewHolder.liveMet = mPresenter.getMeteorite(meteorite)
 
-            var addressObserver = Observer<Meteorite> { meteorite1 ->
+            val addressObserver = Observer<Meteorite> { meteorite1 ->
                 val newAddress = meteorite1?.address
                 if (StringUtils.isNotEmpty(newAddress)) {
                     showAddress(viewHolder, newAddress!!)
@@ -121,6 +128,6 @@ class MeteoriteAdapter(private val mContext: Context, private val meteoriteSelec
 
     fun setSelectedMeteorite(selectedMeteorite: String) {
         notifyDataSetChanged()
-        this.mSelectedMeteorite = selectedMeteorite
+        this.selectedMeteorite = selectedMeteorite
     }
 }

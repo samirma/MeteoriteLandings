@@ -10,17 +10,14 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListPresenter
 import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListView
@@ -31,17 +28,10 @@ import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.Meteori
 import com.antonio.samir.meteoritelandingsspots.ui.recyclerView.selector.MeteoriteSelectorView
 import com.antonio.samir.meteoritelandingsspots.ui.viewmodel.MeteoriteViewModel
 import com.antonio.samir.meteoritelandingsspots.util.GPSTracker
+import kotlinx.android.synthetic.main.activity_meteorite_list.*
 import org.apache.commons.lang3.StringUtils
 
 class MeteoriteListMainActivity : AppCompatActivity(), MeteoriteListView, MeteoriteSelectorView, GPSTracker.GPSTrackerDelegate {
-
-    lateinit var mRecyclerView: RecyclerView
-
-    lateinit var mMessage: TextView
-
-    lateinit var mStatus: TextView
-
-    internal var mToolbar: Toolbar? = null
 
     private var mPresenter: MeteoriteListPresenter? = null
     private var mSglm: GridLayoutManager? = null
@@ -53,6 +43,15 @@ class MeteoriteListMainActivity : AppCompatActivity(), MeteoriteListView, Meteor
     private var mSavedInstanceState: Bundle? = null
     private var mIsLandscape: Boolean = false
     private var mMeteoriteViewModel: MeteoriteViewModel? = null
+
+    val TAG = MeteoriteListMainActivity::class.java.simpleName
+
+    val LOCATION_REQUEST_CODE = 11111
+
+    companion object {
+        val ITEM_SELECTED = "ITEM_SELECTED"
+        val SCROLL_POSITION = "SCROLL_POSITION"
+    }
 
     /*
     MeteoriteListView
@@ -67,16 +66,8 @@ class MeteoriteListMainActivity : AppCompatActivity(), MeteoriteListView, Meteor
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_meteorite_list)
 
-        mRecyclerView = findViewById(R.id.recycler_view)
-
-        mMessage = findViewById(R.id.message)
-
-        mStatus = findViewById(R.id.status)
-
-        mToolbar = findViewById(R.id.toolbar)
-
-        if (mToolbar != null) {
-            setSupportActionBar(mToolbar)
+        if (toolbarTB != null) {
+            setSupportActionBar(toolbarTB)
         }
 
         mMeteoriteViewModel = ViewModelProviders.of(this).get(MeteoriteViewModel::class.java)
@@ -89,7 +80,7 @@ class MeteoriteListMainActivity : AppCompatActivity(), MeteoriteListView, Meteor
 
         mMeteoriteAdapter = MeteoriteAdapter(this, meteoriteSelector, mPresenter!!)
         mMeteoriteAdapter!!.setHasStableIds(true)
-        mRecyclerView.adapter = mMeteoriteAdapter
+        meteoriteRV.adapter = mMeteoriteAdapter
 
         mFrameLayout = findViewById(R.id.fragment)
 
@@ -115,15 +106,14 @@ class MeteoriteListMainActivity : AppCompatActivity(), MeteoriteListView, Meteor
 
         getMeteorites()
 
-
     }
 
     private fun showAddressLoading() {
-        mStatus.visibility = View.VISIBLE
+        statusTV.visibility = View.VISIBLE
     }
 
     private fun hideAddressLoading() {
-        mStatus.visibility = View.GONE
+        statusTV.visibility = View.GONE
     }
 
     public override fun onSaveInstanceState(savedInstanceState: Bundle) {
@@ -164,14 +154,14 @@ class MeteoriteListMainActivity : AppCompatActivity(), MeteoriteListView, Meteor
     }
 
     fun error(messageString: String) {
-        mRecyclerView.visibility = View.GONE
-        mMessage.visibility = View.VISIBLE
-        mMessage.text = messageString
+        meteoriteRV.visibility = View.GONE
+        messageTV.visibility = View.VISIBLE
+        messageTV.text = messageString
         meteoriteLoadingStopped()
     }
 
     override fun hideList() {
-        mRecyclerView.visibility = View.GONE
+        meteoriteRV.visibility = View.GONE
     }
 
     /*
@@ -184,7 +174,7 @@ class MeteoriteListMainActivity : AppCompatActivity(), MeteoriteListView, Meteor
         if (mSelectedMeteorite == null) {
             mFrameLayout!!.visibility = View.VISIBLE
             mSglm = GridLayoutManager(this, 1)
-            mRecyclerView.layoutManager = mSglm
+            meteoriteRV.layoutManager = mSglm
         }
         fragmentTransaction = fragmentTransaction.setCustomAnimations(
                 R.anim.fragment_slide_left_enter,
@@ -235,7 +225,7 @@ class MeteoriteListMainActivity : AppCompatActivity(), MeteoriteListView, Meteor
         val columnCount = resources.getInteger(R.integer.list_column_count)
 
         mSglm = GridLayoutManager(this, columnCount)
-        mRecyclerView.layoutManager = mSglm
+        meteoriteRV.layoutManager = mSglm
     }
 
     private fun getPreviousSelectedMeteorite(savedInstanceState: Bundle?): String? {
@@ -297,11 +287,4 @@ class MeteoriteListMainActivity : AppCompatActivity(), MeteoriteListView, Meteor
         }
     }
 
-    companion object {
-
-        val ITEM_SELECTED = "ITEM_SELECTED"
-        val SCROLL_POSITION = "SCROLL_POSITION"
-        val TAG = MeteoriteListMainActivity::class.java.simpleName
-        val LOCATION_REQUEST_CODE = 11111
-    }
 }
