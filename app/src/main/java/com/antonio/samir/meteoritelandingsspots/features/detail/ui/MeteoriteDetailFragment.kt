@@ -5,20 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryFactory
-import com.antonio.samir.meteoritelandingsspots.util.analytics.AnalyticsUtil
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.android.synthetic.main.fragment_meteorite_detail.*
 import kotlinx.android.synthetic.main.meteorite_detail.*
 import kotlinx.android.synthetic.main.meteorite_detail_grid.*
 import org.apache.commons.lang3.StringUtils
@@ -64,10 +61,6 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
         val view = inflater.inflate(R.layout.fragment_meteorite_detail, container, false)
 
         (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
-
-        val activity = activity as AppCompatActivity
-
-        toolbarTB?.let(activity::setSupportActionBar)
 
         return view
     }
@@ -131,7 +124,6 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
                 setupMap(meteoriteName, lat!!, log!!)
             }
 
-            AnalyticsUtil.logEvent("Detail", String.format("%s detail", meteoriteName))
         }
     }
 
