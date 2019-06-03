@@ -13,14 +13,12 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityOptionsCompat
-import androidx.core.util.Pair
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailActivity
+import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailFragment.Companion.METEORITE
 import com.antonio.samir.meteoritelandingsspots.features.list.presenter.MeteoriteListPresenter
 import com.antonio.samir.meteoritelandingsspots.features.list.presenter.MeteoriteListView
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.MeteoriteAdapter
@@ -31,7 +29,7 @@ import com.antonio.samir.meteoritelandingsspots.util.GPSTracker
 import kotlinx.android.synthetic.main.fragment_meteorite_list.*
 import org.apache.commons.lang3.StringUtils
 
-class MeteoriteListFragment : Fragment(), MeteoriteListView, MeteoriteSelectorView, GPSTracker.GPSTrackerDelegate {
+class MeteoriteListFragment : androidx.fragment.app.Fragment(), MeteoriteListView, MeteoriteSelectorView, GPSTracker.GPSTrackerDelegate {
 
     private var mPresenter: MeteoriteListPresenter? = null
     private var mSglm: GridLayoutManager? = null
@@ -110,7 +108,7 @@ class MeteoriteListFragment : Fragment(), MeteoriteListView, MeteoriteSelectorVi
         statusTV?.visibility = View.GONE
     }
 
-    public override fun onSaveInstanceState(savedInstanceState: Bundle) {
+    override fun onSaveInstanceState(savedInstanceState: Bundle) {
 
         if (mSelectedMeteorite != null) {
             savedInstanceState.putString(ITEM_SELECTED, mSelectedMeteorite)
@@ -123,7 +121,7 @@ class MeteoriteListFragment : Fragment(), MeteoriteListView, MeteoriteSelectorVi
         super.onSaveInstanceState(savedInstanceState)
     }
 
-    fun getMeteorites() {
+    private fun getMeteorites() {
 
         val meteorites = mMeteoriteViewModel!!.getMeteorites()
 
@@ -185,22 +183,10 @@ class MeteoriteListFragment : Fragment(), MeteoriteListView, MeteoriteSelectorVi
 //    }
 
     override fun selectPortrait(meteorite: String?) {
-
-        val intent = Intent(requireContext(), MeteoriteDetailActivity::class.java)
-        intent.putExtra(ITEM_SELECTED, meteorite)
-
-        val viewHolderMeteorite = mMeteoriteAdapter!!.vieHolderMeteorite
-        if (viewHolderMeteorite != null) {
-
-            val container = Pair.create<View, String>(viewHolderMeteorite.mCardview, viewHolderMeteorite.mCardview.transitionName)
-
-            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity(), container)
-
-            startActivity(intent, options.toBundle())
-
-        } else {
-            startActivity(intent)
+        val bundle = Bundle().apply {
+            putString(METEORITE, meteorite)
         }
+        findNavController().navigate(R.id.action_meteoriteListFragment_to_meteoriteDetailFragment, bundle)
 
     }
 

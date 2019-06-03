@@ -2,25 +2,19 @@ package com.antonio.samir.meteoritelandingsspots.ui.widget
 
 import android.annotation.TargetApi
 import android.content.Context
-import android.content.Intent
 import android.os.Binder
 import android.os.Build
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailActivity
-import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListMainActivity.Companion.ITEM_SELECTED
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryFactory
-import com.antonio.samir.meteoritelandingsspots.util.analytics.AnalyticsUtil
 import org.apache.commons.lang3.StringUtils
 
 class MeteoriteRemoteViewsFactory(private val mPackageName: String, private val mContext: Context) : RemoteViewsService.RemoteViewsFactory {
     private var mMeteorites: List<Meteorite>? = null
 
     override fun onCreate() {
-
-        AnalyticsUtil.logEvent("Widget", "Widget started")
 
     }
 
@@ -61,10 +55,10 @@ class MeteoriteRemoteViewsFactory(private val mPackageName: String, private val 
             setRemoteContentDescription(views, meteoriteName)
         }
 
-        val intent = Intent(mContext, MeteoriteDetailActivity::class.java)
-        intent.putExtra(ITEM_SELECTED, idString)
-
-        views.setOnClickFillInIntent(R.id.widget_list_item, intent)
+//        val intent = Intent(mContext, MeteoriteDetailActivity::class.java)
+//        intent.putExtra(ITEM_SELECTED, idString)
+//
+//        views.setOnClickFillInIntent(R.id.widget_list_item, intent)
 
         return views
     }
