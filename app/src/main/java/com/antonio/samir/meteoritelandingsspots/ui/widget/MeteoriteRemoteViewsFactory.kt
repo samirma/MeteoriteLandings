@@ -8,10 +8,10 @@ import android.os.Build
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.antonio.samir.meteoritelandingsspots.R
+import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailActivity
+import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListMainActivity.Companion.ITEM_SELECTED
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryFactory
-import com.antonio.samir.meteoritelandingsspots.ui.activity.MeteoriteDetailActivity
-import com.antonio.samir.meteoritelandingsspots.ui.activity.MeteoriteListMainActivity.Companion.ITEM_SELECTED
 import com.antonio.samir.meteoritelandingsspots.util.analytics.AnalyticsUtil
 import org.apache.commons.lang3.StringUtils
 

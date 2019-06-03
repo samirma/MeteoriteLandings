@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_main"
+    app:startDestination="@id/meteoriteListFragment">
+
+    <fragment
+        android:id="@+id/meteoriteListFragment"
+        android:name="com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListFragment"
+        android:label="MeteoriteListFragment">
+        <action
+            android:id="@+id/action_meteoriteListFragment_to_meteoriteDetailFragment"
+            app:destination="@id/meteoriteDetailFragment"
+            app:popUpTo="@+id/meteoriteListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/meteoriteDetailFragment"
+        android:name="com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailFragment"
+        android:label="MeteoriteDetailFragment" />
+</navigation>

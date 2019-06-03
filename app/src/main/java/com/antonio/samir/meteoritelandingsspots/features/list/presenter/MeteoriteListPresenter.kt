@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.presenter
+package com.antonio.samir.meteoritelandingsspots.features.list.presenter
 
 
 import android.content.Context

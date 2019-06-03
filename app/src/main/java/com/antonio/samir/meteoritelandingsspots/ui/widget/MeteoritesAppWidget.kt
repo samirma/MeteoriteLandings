@@ -8,11 +8,10 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.core.app.TaskStackBuilder
 import android.widget.RemoteViews
-
+import androidx.core.app.TaskStackBuilder
 import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.ui.activity.MeteoriteDetailActivity
+import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailActivity
 
 /**
  * Implementation of App Widget functionality.

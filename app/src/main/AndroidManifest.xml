@@ -19,12 +19,8 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <meta-data
-            android:name="google_analytics_adid_collection_enabled"
-            android:value="false" />
-
         <activity
-            android:name=".ui.activity.MeteoriteListMainActivity"
+            android:name="com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListMainActivity"
             android:label="@string/title_activity_main"
             android:launchMode="standard"
             android:theme="@style/AppTheme.NoActionBar">
@@ -35,8 +31,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activity.MeteoriteDetailActivity"
-            android:parentActivityName=".ui.activity.MeteoriteListMainActivity"
+            android:name=".features.detail.ui.MeteoriteDetailActivity"
+            android:parentActivityName=".features.list.ui.MeteoriteListMainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <!--Widget-->

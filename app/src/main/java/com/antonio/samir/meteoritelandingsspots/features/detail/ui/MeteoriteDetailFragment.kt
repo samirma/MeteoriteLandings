@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.ui.fragments
+package com.antonio.samir.meteoritelandingsspots.features.detail.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
