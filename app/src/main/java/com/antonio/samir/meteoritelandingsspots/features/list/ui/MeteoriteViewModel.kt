@@ -1,10 +1,10 @@
-package com.antonio.samir.meteoritelandingsspots.ui.viewmodel
+package com.antonio.samir.meteoritelandingsspots.features.list.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import com.antonio.samir.meteoritelandingsspots.features.list.presenter.MeteoriteListPresenter
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.presenter.MeteoriteListPresenter
 
 
 class MeteoriteViewModel(application: Application) : AndroidViewModel(application) {

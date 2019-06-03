@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.ui.recyclerView
+package com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView
 
 import android.view.View
 import android.widget.TextView

@@ -1,12 +1,12 @@
-package com.antonio.samir.meteoritelandingsspots.ui.activity
+package com.antonio.samir.meteoritelandingsspots.features.detail.ui
 
 import android.content.Intent
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.ui.activity.MeteoriteListMainActivity.Companion.ITEM_SELECTED
-import com.antonio.samir.meteoritelandingsspots.ui.fragments.MeteoriteDetailFragment
+import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListMainActivity
+import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListMainActivity.Companion.ITEM_SELECTED
 
 class MeteoriteDetailActivity : AppCompatActivity() {
 
