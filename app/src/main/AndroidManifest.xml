@@ -30,10 +30,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".features.detail.ui.MeteoriteDetailActivity"
-            android:parentActivityName=".features.list.ui.MeteoriteListMainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
 
         <!--Widget-->
         <receiver android:name=".ui.widget.MeteoritesAppWidget">
@@ -52,9 +48,7 @@
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCb6kGf5ZKQFTtay2tyMYdwQNW_Q0iM0M4" />
+
     </application>
 
 </manifest>

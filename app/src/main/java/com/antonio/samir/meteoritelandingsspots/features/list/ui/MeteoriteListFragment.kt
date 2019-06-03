@@ -10,7 +10,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
@@ -20,7 +19,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailFragment.Companion.METEORITE
 import com.antonio.samir.meteoritelandingsspots.features.list.presenter.MeteoriteListPresenter
-import com.antonio.samir.meteoritelandingsspots.features.list.presenter.MeteoriteListView
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.MeteoriteAdapter
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelectorFactory
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelectorView
@@ -29,18 +27,20 @@ import com.antonio.samir.meteoritelandingsspots.util.GPSTracker
 import kotlinx.android.synthetic.main.fragment_meteorite_list.*
 import org.apache.commons.lang3.StringUtils
 
-class MeteoriteListFragment : androidx.fragment.app.Fragment(), MeteoriteListView, MeteoriteSelectorView, GPSTracker.GPSTrackerDelegate {
+class MeteoriteListFragment : androidx.fragment.app.Fragment(),
+        MeteoriteListView,
+        MeteoriteSelectorView,
+        GPSTracker.GPSTrackerDelegate {
 
-    private var mPresenter: MeteoriteListPresenter? = null
-    private var mSglm: GridLayoutManager? = null
-    private var mMeteoriteAdapter: MeteoriteAdapter? = null
-    private var mSelectedMeteorite: String? = null
+    private var presenter: MeteoriteListPresenter? = null
+    private var sglm: GridLayoutManager? = null
+    private var meteoriteAdapter: MeteoriteAdapter? = null
+    private var selectedMeteorite: String? = null
 
-    private var mProgressDialog: ProgressDialog? = null
-    private var mFrameLayout: FrameLayout? = null
+    private var progressDialog: ProgressDialog? = null
     private var mSavedInstanceState: Bundle? = null
-    private var mIsLandscape: Boolean = false
-    private var mMeteoriteViewModel: MeteoriteViewModel? = null
+    private var isLandscape: Boolean = false
+    private var listViewModel: MeteoriteListViewModel? = null
 
     val TAG = MeteoriteListMainActivity::class.java.simpleName
 
@@ -63,17 +63,18 @@ class MeteoriteListFragment : androidx.fragment.app.Fragment(), MeteoriteListVie
 
         super.onCreate(savedInstanceState)
 
-        mMeteoriteViewModel = ViewModelProviders.of(this).get(MeteoriteViewModel::class.java)
+        listViewModel = ViewModelProviders.of(this).get(MeteoriteListViewModel::class.java)
 
-        mPresenter = mMeteoriteViewModel!!.getPresenter()
+        presenter = listViewModel?.getPresenter()
 
-        mIsLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-        val meteoriteSelector = MeteoriteSelectorFactory.getMeteoriteSelector(mIsLandscape, this)
+        val meteoriteSelector = MeteoriteSelectorFactory.getMeteoriteSelector(isLandscape, this)
 
-        mMeteoriteAdapter = MeteoriteAdapter(requireContext(), meteoriteSelector, mPresenter!!)
-        mMeteoriteAdapter!!.setHasStableIds(true)
-        meteoriteRV?.adapter = mMeteoriteAdapter
+        meteoriteAdapter = MeteoriteAdapter(requireContext(), meteoriteSelector, presenter!!).apply {
+            setHasStableIds(true)
+            meteoriteRV?.adapter = meteoriteAdapter
+        }
 
 
         setupGridLayout()
@@ -86,9 +87,9 @@ class MeteoriteListFragment : androidx.fragment.app.Fragment(), MeteoriteListVie
 
         this.mSavedInstanceState = savedInstanceState
 
-        mPresenter?.attachView(this)
+        presenter?.attachView(this)
 
-        mPresenter!!.recoveryAddress!!.observe(this, Observer { status ->
+        presenter!!.recoveryAddress!!.observe(this, Observer { status ->
             if (status == null || status === AddressService.Status.DONE) {
                 this.hideAddressLoading()
             } else if (status === AddressService.Status.LOADING) {
@@ -110,11 +111,11 @@ class MeteoriteListFragment : androidx.fragment.app.Fragment(), MeteoriteListVie
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
 
-        if (mSelectedMeteorite != null) {
-            savedInstanceState.putString(ITEM_SELECTED, mSelectedMeteorite)
+        if (selectedMeteorite != null) {
+            savedInstanceState.putString(ITEM_SELECTED, selectedMeteorite)
         }
 
-        val lastFirstVisiblePosition = mSglm!!.findFirstCompletelyVisibleItemPosition()
+        val lastFirstVisiblePosition = sglm!!.findFirstCompletelyVisibleItemPosition()
         savedInstanceState.putInt(SCROLL_POSITION, lastFirstVisiblePosition)
 
         // Always call the superclass so it can save the view hierarchy state
@@ -123,17 +124,20 @@ class MeteoriteListFragment : androidx.fragment.app.Fragment(), MeteoriteListVie
 
     private fun getMeteorites() {
 
-        val meteorites = mMeteoriteViewModel!!.getMeteorites()
+        val meteorites = listViewModel?.getMeteorites()
 
-        meteorites!!.observe(this, Observer { meteorites1 ->
+        meteorites?.observe(this, Observer { meteorites1 ->
             if (meteorites1 != null && !meteorites1.isEmpty()) {
-                mMeteoriteAdapter!!.setData(meteorites1)
-                mMeteoriteAdapter!!.notifyDataSetChanged()
+
+                meteoriteAdapter?.apply {
+                    setData(meteorites1)
+                    notifyDataSetChanged()
+                }
 
                 if (mSavedInstanceState != null) {
                     val anInt = mSavedInstanceState!!.getInt(SCROLL_POSITION, -1)
                     if (anInt > 0) {
-                        mSglm!!.scrollToPosition(anInt)
+                        sglm!!.scrollToPosition(anInt)
                     }
                 }
             }
@@ -163,10 +167,10 @@ class MeteoriteListFragment : androidx.fragment.app.Fragment(), MeteoriteListVie
 //
 //        var fragmentTransaction = supportFragmentManager.beginTransaction()
 //
-//        if (mSelectedMeteorite == null) {
+//        if (selectedMeteorite == null) {
 //            mFrameLayout!!.visibility = View.VISIBLE
-//            mSglm = GridLayoutManager(this, 1)
-//            meteoriteRV.layoutManager = mSglm
+//            sglm = GridLayoutManager(this, 1)
+//            meteoriteRV.layoutManager = sglm
 //        }
 //        fragmentTransaction = fragmentTransaction.setCustomAnimations(
 //                R.anim.fragment_slide_left_enter,
@@ -176,9 +180,9 @@ class MeteoriteListFragment : androidx.fragment.app.Fragment(), MeteoriteListVie
 //        fragmentTransaction.replace(R.id.fragment, mMeteoriteDetailFragment)
 //        fragmentTransaction.commit()
 //
-//        mSelectedMeteorite = meteorite
+//        selectedMeteorite = meteorite
 //
-//        mMeteoriteAdapter!!.setSelectedMeteorite(mSelectedMeteorite!!)
+//        meteoriteAdapter!!.setSelectedMeteorite(selectedMeteorite!!)
 //
 //    }
 
@@ -191,9 +195,9 @@ class MeteoriteListFragment : androidx.fragment.app.Fragment(), MeteoriteListVie
     }
 
 //    override fun onBackPressed() {
-//        if (mSelectedMeteorite != null && mIsLandscape) {
-//            mSelectedMeteorite = null
-//            mMeteoriteAdapter!!.setSelectedMeteorite(null!!)
+//        if (selectedMeteorite != null && isLandscape) {
+//            selectedMeteorite = null
+//            meteoriteAdapter!!.setSelectedMeteorite(null!!)
 //            setupGridLayout()
 //            mFrameLayout!!.visibility = View.GONE
 //        } else {
@@ -204,8 +208,9 @@ class MeteoriteListFragment : androidx.fragment.app.Fragment(), MeteoriteListVie
     private fun setupGridLayout() {
         val columnCount = resources.getInteger(R.integer.list_column_count)
 
-        mSglm = GridLayoutManager(requireContext(), columnCount)
-        meteoriteRV.layoutManager = mSglm
+        sglm = GridLayoutManager(requireContext(), columnCount)
+
+        meteoriteRV.layoutManager = sglm
     }
 
     private fun getPreviousSelectedMeteorite(savedInstanceState: Bundle?): String? {
@@ -230,8 +235,8 @@ class MeteoriteListFragment : androidx.fragment.app.Fragment(), MeteoriteListVie
 
     override fun meteoriteLoadingStarted() {
         try {
-            if (mProgressDialog == null) {
-                mProgressDialog = ProgressDialog.show(requireContext(), "", getString(R.string.load), true)
+            if (progressDialog == null) {
+                progressDialog = ProgressDialog.show(requireContext(), "", getString(R.string.load), true)
             }
         } catch (e: Exception) {
             Log.e(TAG, e.message, e)
@@ -241,9 +246,9 @@ class MeteoriteListFragment : androidx.fragment.app.Fragment(), MeteoriteListVie
 
     override fun meteoriteLoadingStopped() {
         try {
-            if (mProgressDialog != null && mProgressDialog!!.isShowing) {
-                mProgressDialog!!.dismiss()
-                mProgressDialog = null
+            if (progressDialog != null && progressDialog!!.isShowing) {
+                progressDialog?.dismiss()
+                progressDialog = null
             }
         } catch (e: Exception) {
             Log.e(TAG, e.message, e)
@@ -260,8 +265,8 @@ class MeteoriteListFragment : androidx.fragment.app.Fragment(), MeteoriteListVie
         if (requestCode == LOCATION_REQUEST_CODE) {
             for (grantResult in grantResults) {
                 val isPermitted = grantResult == PackageManager.PERMISSION_GRANTED
-                if (isPermitted) {
-                    mPresenter!!.updateLocation()
+                if (isPermitted && presenter != null) {
+                    presenter?.updateLocation()
                 }
             }
         }

@@ -4,6 +4,7 @@ package com.antonio.samir.meteoritelandingsspots.features.list.presenter
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListView
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.local.AddressService
 import com.antonio.samir.meteoritelandingsspots.service.local.MeteoriteService

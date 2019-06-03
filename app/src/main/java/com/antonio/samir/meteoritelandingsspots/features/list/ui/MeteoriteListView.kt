@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.features.list.presenter
+package com.antonio.samir.meteoritelandingsspots.features.list.ui
 
 
 import com.antonio.samir.meteoritelandingsspots.util.GPSTracker

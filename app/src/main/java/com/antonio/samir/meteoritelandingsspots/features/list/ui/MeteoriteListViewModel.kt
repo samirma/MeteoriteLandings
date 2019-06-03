@@ -7,7 +7,7 @@ import com.antonio.samir.meteoritelandingsspots.features.list.presenter.Meteorit
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
 
 
-class MeteoriteViewModel(application: Application) : AndroidViewModel(application) {
+class MeteoriteListViewModel(application: Application) : AndroidViewModel(application) {
 
     private var presenter: MeteoriteListPresenter? = null
     private var meteorites: LiveData<List<Meteorite>>? = null
