@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.lifecycle.Observer
 import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.features.list.presenter.MeteoriteListPresenter
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelector
+import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
 import org.apache.commons.lang3.StringUtils
 
@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils
 class MeteoriteAdapter(
         private val mContext: Context,
         private val meteoriteSelector: MeteoriteSelector,
-        private val mPresenter: MeteoriteListPresenter
+        private val viewModel: MeteoriteListViewModel
 ) : androidx.recyclerview.widget.RecyclerView.Adapter<ViewHolderMeteorite>() {
 
     private var selectedMeteorite: String? = null
@@ -45,8 +45,8 @@ class MeteoriteAdapter(
         return if (meteorites != null) meteorites!!.size else 0
     }
 
-    fun setData(data: List<Meteorite>) {
-        meteorites = data
+    fun setData(meteorites: List<Meteorite>) {
+        this.meteorites = meteorites
     }
 
     override fun getItemId(position: Int): Long {
@@ -104,7 +104,7 @@ class MeteoriteAdapter(
             showAddress(viewHolder, address)
         } else {
             //If address is still empty then observe this entity to be aware of any change
-            viewHolder.liveMet = mPresenter.getMeteorite(meteorite)
+            viewHolder.liveMet = viewModel.getMeteorite(meteorite)
 
             val addressObserver = Observer<Meteorite> { meteorite1 ->
                 val newAddress = meteorite1?.address

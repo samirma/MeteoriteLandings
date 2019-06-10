@@ -6,10 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.features.detail.presenter.MeteoriteDetailPresenter
+import com.antonio.samir.meteoritelandingsspots.features.detail.viewmodel.MeteoriteDetailViewModel
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryFactory
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -20,9 +21,9 @@ import kotlinx.android.synthetic.main.meteorite_detail.*
 import kotlinx.android.synthetic.main.meteorite_detail_grid.*
 import org.apache.commons.lang3.StringUtils
 
-class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCallback, MeteoriteDetailView {
+class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCallback {
 
-    private lateinit var presenter: MeteoriteDetailPresenter
+    private lateinit var viewModel: MeteoriteDetailViewModel
 
     private var meteoriteId: String? = null
 
@@ -52,11 +53,20 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
 
         (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
 
-        presenter = MeteoriteDetailPresenter(this, MeteoriteRepositoryFactory.getMeteoriteDao(requireContext()))
+        viewModel = ViewModelProviders.of(this).get(MeteoriteDetailViewModel::class.java)
 
-        presenter.loadMeteoriteById(meteoriteId)
+        observeMeteorite()
 
         return view
+    }
+
+    private fun observeMeteorite() {
+
+        viewModel.getMeteorite().observe(this, Observer {
+            setMeteorite(it)
+        })
+
+        meteoriteId?.let { viewModel.loadMeteoriteById(it) }
     }
 
 
@@ -64,7 +74,7 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
         this.map = map
     }
 
-    fun setupMap(meteoriteName: String?, lat: Double, log: Double) {
+    private fun setupMap(meteoriteName: String?, lat: Double, log: Double) {
         map?.clear()
 
         val latLng = LatLng(lat, log)
@@ -79,7 +89,7 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
     }
 
 
-    override fun initView(meteorite: Meteorite) {
+    private fun setMeteorite(meteorite: Meteorite) {
         setLocationText(meteorite.address, view?.findViewById(R.id.location))
 
         if (!isUiDone) {
@@ -87,19 +97,16 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
             val meteoriteName = meteorite.name
             setText(null, this.title, meteoriteName)
 
-            val yearString = meteorite.yearString
-            setText(year_label, this.year, yearString)
+            setText(year_label, this.year, meteorite.yearString)
 
-            val recclass = meteorite.recclass
-            setText(recclass_label, this.recclass, recclass)
+            setText(recclass_label, this.recclass, meteorite.recclass)
 
-            val mass = meteorite.mass
-            setText(mass_label, this.mass, mass)
+            setText(mass_label, this.mass, meteorite.mass)
 
-            if (map != null) {
-                val lat = java.lang.Double.valueOf(meteorite.reclat)
-                val log = java.lang.Double.valueOf(meteorite.reclong)
-                setupMap(meteoriteName, lat!!, log!!)
+            val lat = meteorite.reclat?.toDouble()
+            val log = meteorite.reclong?.toDouble()
+            if (map != null && lat != null && log != null) {
+                setupMap(meteoriteName, lat, log)
             }
 
         }

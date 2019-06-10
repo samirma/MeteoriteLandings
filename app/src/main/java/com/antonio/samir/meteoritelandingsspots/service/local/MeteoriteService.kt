@@ -7,4 +7,6 @@ interface MeteoriteService {
 
     fun loadMeteorites(): LiveData<List<Meteorite>>
 
+    fun getMeteoriteById(id: String): LiveData<Meteorite>?
+
 }
