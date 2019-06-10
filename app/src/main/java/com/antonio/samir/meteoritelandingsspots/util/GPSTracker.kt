@@ -10,9 +10,14 @@ import android.os.Bundle
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
+import javax.inject.Inject
 
 
-class GPSTracker(private val mDelegate: GPSTrackerDelegate, private val mContext: Context) : GPSTrackerInterface {
+class GPSTracker @Inject constructor(
+        private val gpsTrackerDelegate: GPSTrackerDelegate,
+        private val mContext: Context
+) : GPSTrackerInterface {
+
     // flag for GPS status
     private var isGPSEnabled = false
     // Declaring a Location Manager
@@ -56,7 +61,7 @@ class GPSTracker(private val mDelegate: GPSTrackerDelegate, private val mContext
             if (isGPSEnabled) {
 
                 if (!permissionRequested && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    mDelegate.requestPermission()
+                    gpsTrackerDelegate.requestPermission()
                     permissionRequested = true
                 } else {
 

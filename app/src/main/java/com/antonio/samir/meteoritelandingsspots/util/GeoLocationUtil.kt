@@ -6,17 +6,19 @@ import android.location.Geocoder
 import android.util.Log
 import java.io.IOException
 import java.util.*
+import javax.inject.Inject
 
 
-class GeoLocationUtil : GeoLocationUtilInterface {
+class GeoLocationUtil @Inject constructor(val context: Context) : GeoLocationUtilInterface {
 
-    override fun getAddress(latitude: Double?, longitude: Double?, context: Context): Address? {
+    override fun getAddress(latitude: Double, longitude: Double): Address? {
 
         var address: Address? = null
 
         try {
 
-            val addresses = Geocoder(context, Locale.getDefault()).getFromLocation(latitude!!, longitude!!, 1) // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+            val geocoder = Geocoder(context, Locale.getDefault())
+            val addresses = geocoder.getFromLocation(latitude, longitude, 1)
 
             if (addresses != null && !addresses.isEmpty()) {
 

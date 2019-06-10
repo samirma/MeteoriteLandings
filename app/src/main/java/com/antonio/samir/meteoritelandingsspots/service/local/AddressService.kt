@@ -2,33 +2,51 @@ package com.antonio.samir.meteoritelandingsspots.service.local
 
 import android.content.Context
 import android.util.Log
+import androidx.annotation.StringDef
 import androidx.lifecycle.MutableLiveData
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.service.local.AddressService.Status.DONE
-import com.antonio.samir.meteoritelandingsspots.service.local.AddressService.Status.LOADING
-import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryFactory
-import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao
-import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtil
+import com.antonio.samir.meteoritelandingsspots.service.local.AddressService.Status.Companion.DONE
+import com.antonio.samir.meteoritelandingsspots.service.local.AddressService.Status.Companion.LOADING
+import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryInterface
+import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
 import org.apache.commons.lang3.StringUtils
 import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 
-class AddressService(val context: Context) {
+class AddressService @Inject constructor(
+        val context: Context,
+        val meteoriteRepository: MeteoriteRepositoryInterface,
+        val geoLocationUtil: GeoLocationUtilInterface
+) : AddressServiceInterface {
 
-    private val mMeteoriteDao: MeteoriteDao = MeteoriteRepositoryFactory.getMeteoriteDao(context)
+    override val status = MutableLiveData<String>()
 
-    enum class Status {
-        DONE, LOADING
+    @Retention(AnnotationRetention.SOURCE)
+    @StringDef(DONE, LOADING)
+    annotation class Status {
+        companion object {
+            const val DONE = "DONE"
+            const val LOADING = "LOADING"
+        }
     }
 
-    fun recoveryAddress(): MutableLiveData<Status> {
+    companion object {
+
+        val TAG = AddressService::class.java.simpleName
+        internal val executor = ThreadPoolExecutor(0, 3,
+                1L, TimeUnit.MILLISECONDS,
+                LinkedBlockingQueue())
+    }
+
+    override fun recoveryAddress() {
 
         executor.execute {
             if (status.value == null || status.value === DONE) {
-                val meteorites = mMeteoriteDao.meteoritesWithOutAddress
+                val meteorites = meteoriteRepository.meteoritesWithOutAddress()
                 try {
                     if (!meteorites.isEmpty()) {
                         status.postValue(LOADING)
@@ -47,8 +65,6 @@ class AddressService(val context: Context) {
 
         }
 
-        return status
-
     }
 
     private fun recoverAddress(meteorite: Meteorite) {
@@ -58,7 +74,7 @@ class AddressService(val context: Context) {
 
         val address = getAddress(recLat, recLong)
         meteorite.address = address
-        mMeteoriteDao.update(meteorite)
+        meteoriteRepository.update(meteorite)
         Log.i(TAG, String.format("Address for id %s recovered", meteorite.id))
 
 
@@ -67,7 +83,7 @@ class AddressService(val context: Context) {
     private fun getAddress(recLat: String?, recLong: String?): String {
         var addressString = ""
         if (StringUtils.isNoneEmpty(recLat) && StringUtils.isNoneEmpty(recLong)) {
-            val address = GeoLocationUtil.getAddress(java.lang.Double.parseDouble(recLat), java.lang.Double.parseDouble(recLong), context)
+            val address = geoLocationUtil.getAddress(java.lang.Double.parseDouble(recLat), java.lang.Double.parseDouble(recLong))
             if (address != null) {
                 val finalAddress = ArrayList<String>()
                 val city = address.locality
@@ -91,14 +107,5 @@ class AddressService(val context: Context) {
         }
 
         return addressString
-    }
-
-    companion object {
-
-        val TAG = AddressService::class.java.simpleName
-        internal val executor = ThreadPoolExecutor(0, 3,
-                1L, TimeUnit.MILLISECONDS,
-                LinkedBlockingQueue())
-        private val status = MutableLiveData<Status>()
     }
 }
