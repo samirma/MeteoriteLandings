@@ -8,18 +8,15 @@ import java.io.IOException
 import java.util.*
 
 
-object GeoLocationUtil {
+class GeoLocationUtil : GeoLocationUtilInterface {
 
-    fun getAddress(latitude: Double?, longitude: Double?, context: Context): Address? {
-        val geocoder: Geocoder
-
-        geocoder = Geocoder(context, Locale.getDefault())
+    override fun getAddress(latitude: Double?, longitude: Double?, context: Context): Address? {
 
         var address: Address? = null
 
         try {
 
-            val addresses = geocoder.getFromLocation(latitude!!, longitude!!, 1) // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+            val addresses = Geocoder(context, Locale.getDefault()).getFromLocation(latitude!!, longitude!!, 1) // Here 1 represent max location result to returned, by documents it recommended 1 to 5
 
             if (addresses != null && !addresses.isEmpty()) {
 

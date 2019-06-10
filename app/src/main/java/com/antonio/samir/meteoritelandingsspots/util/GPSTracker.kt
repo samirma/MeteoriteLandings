@@ -5,7 +5,6 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
-import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
@@ -13,7 +12,7 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
 
 
-class GPSTracker(private val mDelegate: GPSTrackerDelegate, private val mContext: Context) : LocationListener {
+class GPSTracker(private val mDelegate: GPSTrackerDelegate, private val mContext: Context) : GPSTrackerInterface {
     // flag for GPS status
     private var isGPSEnabled = false
     // Declaring a Location Manager
@@ -51,7 +50,7 @@ class GPSTracker(private val mDelegate: GPSTrackerDelegate, private val mContext
         liveLocation = MutableLiveData()
     }
 
-    fun startLocationService() {
+    override fun startLocationService() {
         try {
             val isGPSEnabled = isGPSEnabled()
             if (isGPSEnabled) {
