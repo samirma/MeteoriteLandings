@@ -30,7 +30,7 @@ class MeteoriteRepository(
         return meteoriteDao.meteoritesWithOutAddress
     }
 
-    override fun getRemoteMeteriorites(): List<Meteorite>? {
+    override fun getRemoteMeteorites(): List<Meteorite>? {
         return nasaService.getMeteorites()
     }
 
