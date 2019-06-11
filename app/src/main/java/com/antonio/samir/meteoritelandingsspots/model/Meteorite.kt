@@ -48,7 +48,7 @@ class Meteorite : Parcelable {
             return yearParsed
         }
 
-    constructor() {}
+    constructor()
 
     protected constructor(`in`: Parcel) {
         this.id = `in`.readInt()
@@ -84,7 +84,7 @@ class Meteorite : Parcelable {
         var result = -1.0
         if (StringUtils.isNotEmpty(reclat) && StringUtils.isNotEmpty(reclong)) {
             try {
-                result = Math.abs(java.lang.Float.valueOf(reclat)!! - latitude) + Math.abs(java.lang.Float.valueOf(reclong)!! - longitude)
+                result = Math.abs(java.lang.Float.valueOf(reclat) - latitude) + Math.abs(java.lang.Float.valueOf(reclong) - longitude)
             } catch (e: Exception) {
                 Log.e(TAG, e.message, e)
             }

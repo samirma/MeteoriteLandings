@@ -7,7 +7,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.antonio.samir.meteoritelandingsspots.service.repository.database.AppDataBase
 import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao
 
-object MeteoriteRepositoryFactory {
+object MeteoriteDaoFactory {
 
     private var appDatabase: AppDataBase? = null
 

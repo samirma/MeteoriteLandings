@@ -8,7 +8,7 @@ import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryFactory
+import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteDaoFactory
 import org.apache.commons.lang3.StringUtils
 
 class MeteoriteRemoteViewsFactory(private val mPackageName: String, private val mContext: Context) : RemoteViewsService.RemoteViewsFactory {
@@ -22,7 +22,7 @@ class MeteoriteRemoteViewsFactory(private val mPackageName: String, private val 
 
         val identityToken = Binder.clearCallingIdentity()
 
-        mMeteorites = MeteoriteRepositoryFactory.getMeteoriteDao(mContext).meteoriteOrdenedSync
+        mMeteorites = MeteoriteDaoFactory.getMeteoriteDao(mContext).meteoriteOrdenedSync
 
         Binder.restoreCallingIdentity(identityToken)
     }

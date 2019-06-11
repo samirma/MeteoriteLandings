@@ -6,10 +6,9 @@ import android.location.Geocoder
 import android.util.Log
 import java.io.IOException
 import java.util.*
-import javax.inject.Inject
 
 
-class GeoLocationUtil @Inject constructor(val context: Context) : GeoLocationUtilInterface {
+class GeoLocationUtil(val context: Context) : GeoLocationUtilInterface {
 
     override fun getAddress(latitude: Double, longitude: Double): Address? {
 

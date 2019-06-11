@@ -79,9 +79,14 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
 
-    //Dagger
-    implementation 'com.google.dagger:dagger:2.13'
-    kapt 'com.google.dagger:dagger-compiler:2.13'
+    //insert-koin.io
+    // Koin for Android
+    implementation 'org.koin:koin-android:2.0.1'
+    // or Koin for Lifecycle scoping
+    implementation 'org.koin:koin-androidx-scope:2.0.1'
+    // or Koin for Android Architecture ViewModel
+    implementation 'org.koin:koin-androidx-viewmodel:2.0.1'
+    
 
     implementation 'com.google.code.gson:gson:2.8.2'
 

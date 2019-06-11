@@ -10,12 +10,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
-import javax.inject.Inject
 
 
-class GPSTracker @Inject constructor(
-        private val gpsTrackerDelegate: GPSTrackerDelegate,
-        private val mContext: Context
+class GPSTracker(
+        private val context: Context
 ) : GPSTrackerInterface {
 
     // flag for GPS status
@@ -25,17 +23,27 @@ class GPSTracker @Inject constructor(
     // flag for network status
     internal var isNetworkEnabled = false
 
-    private val liveLocation: MutableLiveData<Location> // liveLocation
+    private val liveLocation: MutableLiveData<Location> = MutableLiveData() // liveLocation
+
+    companion object {
+
+        // The minimum distance to change Updates in meters
+        private const val MIN_DISTANCE_CHANGE_FOR_UPDATES: Long = 1 // 10 meters
+        // The minimum time between updates in milliseconds
+        private const val MIN_TIME_BW_UPDATES: Long = 1 // 1 minute
+        private val TAG = GPSTracker::class.java.simpleName
+        private var permissionRequested = false
+    }
 
     /**
      * Function to get the user's current liveLocation
      *
      * @return
      */
-    val location: MutableLiveData<Location>
+    override val location: MutableLiveData<Location>
         get() {
             try {
-                startLocationService()
+                startLocationService(null)
             } catch (e: Exception) {
                 Log.e(TAG, e.message, e)
             }
@@ -43,7 +51,7 @@ class GPSTracker @Inject constructor(
             return liveLocation
         }
 
-    fun stopUpdates() {
+    override fun stopUpdates() {
         locationManager!!.removeUpdates(this)
     }
 
@@ -51,18 +59,21 @@ class GPSTracker @Inject constructor(
         fun requestPermission()
     }
 
-    init {
-        liveLocation = MutableLiveData()
-    }
-
-    override fun startLocationService() {
+    override fun startLocationService(gpsTrackerDelegate: GPSTrackerDelegate?) {
         try {
             val isGPSEnabled = isGPSEnabled()
             if (isGPSEnabled) {
 
-                if (!permissionRequested && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    gpsTrackerDelegate.requestPermission()
+                if (!permissionRequested && ActivityCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.ACCESS_FINE_LOCATION
+                        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.ACCESS_COARSE_LOCATION
+                        ) != PackageManager.PERMISSION_GRANTED) {
+                    gpsTrackerDelegate?.requestPermission()
                     permissionRequested = true
+
                 } else {
 
                     var location: Location?
@@ -105,8 +116,8 @@ class GPSTracker @Inject constructor(
 
     }
 
-    fun isGPSEnabled(): Boolean {
-        locationManager = mContext
+    override fun isGPSEnabled(): Boolean {
+        locationManager = context
                 .getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         // getting GPS status
@@ -135,14 +146,5 @@ class GPSTracker @Inject constructor(
 
     override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
 
-    companion object {
-
-        // The minimum distance to change Updates in meters
-        private val MIN_DISTANCE_CHANGE_FOR_UPDATES: Long = 1 // 10 meters
-        // The minimum time between updates in milliseconds
-        private val MIN_TIME_BW_UPDATES: Long = 1 // 1 minute
-        private val TAG = GPSTracker::class.java.simpleName
-        private var permissionRequested = false
-    }
 
 }

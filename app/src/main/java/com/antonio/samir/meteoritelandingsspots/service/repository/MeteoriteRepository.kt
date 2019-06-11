@@ -4,9 +4,8 @@ import androidx.lifecycle.LiveData
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaServiceInterface
-import javax.inject.Inject
 
-class MeteoriteRepository @Inject constructor(
+class MeteoriteRepository(
         val meteoriteDao: MeteoriteDao,
         val nasaService: NasaServiceInterface
 ) : MeteoriteRepositoryInterface {
