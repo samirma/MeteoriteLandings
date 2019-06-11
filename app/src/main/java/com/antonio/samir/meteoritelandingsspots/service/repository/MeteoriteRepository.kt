@@ -31,7 +31,7 @@ class MeteoriteRepository(
     }
 
     override fun getRemoteMeteriorites(): List<Meteorite>? {
-        return nasaService.meteorites
+        return nasaService.getMeteorites()
     }
 
 }

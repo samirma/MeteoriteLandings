@@ -6,19 +6,18 @@ import java.io.IOException
 
 class NasaService(val service: NasaServerEndPoint) : NasaServiceInterface {
 
-    override val meteorites: List<Meteorite>?
-        get() {
+    override fun getMeteorites(): List<Meteorite>? {
+        val publicMeteorites = service.publicMeteorites
 
-            val publicMeteorites = service.publicMeteorites
-
-            val meteorites: List<Meteorite>?
-            try {
-                meteorites = publicMeteorites.execute().body()
-            } catch (e: IOException) {
-                throw MeteoriteServerException(e)
-            }
-
-            return meteorites
+        val meteorites: List<Meteorite>?
+        try {
+            val response = publicMeteorites.execute()
+            meteorites = response.body()
+        } catch (e: IOException) {
+            throw MeteoriteServerException(e)
         }
-    
+
+        return meteorites
+    }
+
 }

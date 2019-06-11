@@ -11,15 +11,23 @@ import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaServerEn
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaService
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaServiceInterface
 import com.antonio.samir.meteoritelandingsspots.util.*
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 
 private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(NasaServerEndPoint.URL)
         .addConverterFactory(GsonConverterFactory.create())
+        .client(OkHttpClient.Builder()
+                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS).build()
+        )
         .build()
 
 val repositoryModule = module {

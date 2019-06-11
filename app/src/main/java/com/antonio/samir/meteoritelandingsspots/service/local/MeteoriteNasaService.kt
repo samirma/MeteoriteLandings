@@ -75,9 +75,13 @@ class MeteoriteNasaService(
 
     private fun saveMeteorites() {
 
-        meteoriteRepository.getRemoteMeteriorites()?.let { meteoriteRepository.insertAll(it) }
+        Thread() {
+            val remoteMeteriorites = meteoriteRepository.getRemoteMeteriorites()
 
-        addressService.recoveryAddress()
+            remoteMeteriorites?.let { meteoriteRepository.insertAll(it) }
+
+            addressService.recoveryAddress()
+        }.start()
 
     }
 
