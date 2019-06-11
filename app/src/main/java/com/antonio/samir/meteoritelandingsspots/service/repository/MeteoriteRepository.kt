@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.repository.database.MeteoriteDao
 import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaServiceInterface
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class MeteoriteRepository(
         val meteoriteDao: MeteoriteDao,
@@ -14,8 +16,10 @@ class MeteoriteRepository(
         return meteoriteDao.meteoriteOrdened
     }
 
-    override fun insertAll(meteorites: List<Meteorite>) {
-        meteoriteDao.insertAll(meteorites)
+    override suspend fun insertAll(meteorites: List<Meteorite>) {
+        withContext(Dispatchers.IO) {
+            meteoriteDao.insertAll(meteorites)
+        }
     }
 
     override fun update(meteorite: Meteorite) {
@@ -30,8 +34,10 @@ class MeteoriteRepository(
         return meteoriteDao.meteoritesWithOutAddress
     }
 
-    override fun getRemoteMeteorites(): List<Meteorite>? {
-        return nasaService.getMeteorites()
+    override suspend fun getRemoteMeteorites(): List<Meteorite>? {
+        return withContext(Dispatchers.IO) {
+            nasaService.getMeteorites()
+        }
     }
 
 }

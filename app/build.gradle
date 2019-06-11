@@ -69,6 +69,7 @@ dependencies {
     //Navigation
     implementation 'androidx.navigation:navigation-fragment-ktx:2.0.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.0.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-alpha01'
 
     //Room
     implementation "androidx.room:room-runtime:2.0.0"
@@ -87,6 +88,9 @@ dependencies {
     // or Koin for Android Architecture ViewModel
     implementation 'org.koin:koin-androidx-viewmodel:2.0.1'
 
+    //Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
 
     implementation 'com.google.code.gson:gson:2.8.2'
 
