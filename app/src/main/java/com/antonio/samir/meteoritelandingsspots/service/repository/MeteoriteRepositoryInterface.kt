@@ -15,5 +15,5 @@ interface MeteoriteRepositoryInterface {
 
     fun insertAll(meteorites: List<Meteorite>)
 
-    fun getRemoteMeteriorites(): List<Meteorite>?
+    fun getRemoteMeteorites(): List<Meteorite>?
 }

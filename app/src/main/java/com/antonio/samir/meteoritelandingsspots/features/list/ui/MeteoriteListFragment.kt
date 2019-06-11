@@ -22,6 +22,9 @@ import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.Me
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelectorFactory
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelectorView
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel
+import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.DONE
+import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.LOADING
+import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.UNABLE_TO_FETCH
 import com.antonio.samir.meteoritelandingsspots.service.local.AddressService
 import com.antonio.samir.meteoritelandingsspots.util.GPSTracker
 import kotlinx.android.synthetic.main.fragment_meteorite_list.*
@@ -33,7 +36,7 @@ class MeteoriteListFragment : Fragment(),
         GPSTracker.GPSTrackerDelegate {
 
     private var sglm: GridLayoutManager? = null
-    private var meteoriteAdapter: MeteoriteAdapter? = null
+    private lateinit var meteoriteAdapter: MeteoriteAdapter
     private var selectedMeteorite: String? = null
 
     private var progressDialog: ProgressDialog? = null
@@ -67,9 +70,9 @@ class MeteoriteListFragment : Fragment(),
 
         meteoriteAdapter = MeteoriteAdapter(requireContext(), meteoriteSelector, listViewModel).apply {
             setHasStableIds(true)
-            meteoriteRV?.adapter = meteoriteAdapter
         }
 
+        meteoriteRV?.adapter = meteoriteAdapter
 
         setupGridLayout()
 
@@ -91,27 +94,18 @@ class MeteoriteListFragment : Fragment(),
 
         observeRecoveryAddressStatus()
 
-        observeUnableToFetch()
-
         observeLoadingStatus()
 
         observeRequestPermission()
 
     }
 
-    private fun observeUnableToFetch() {
-        listViewModel.unableToFetch.observe(this, Observer {
-            if (it) {
-                unableToFetch()
-            }
-        })
-    }
-
     private fun observeLoadingStatus() {
         listViewModel.loadingStatus.observe(this, Observer {
             when (it) {
-                MeteoriteListViewModel.DownloadStatus.DONE -> meteoriteLoadingStopped()
-                MeteoriteListViewModel.DownloadStatus.LOADING -> meteoriteLoadingStarted()
+                DONE -> meteoriteLoadingStopped()
+                LOADING -> meteoriteLoadingStarted()
+                UNABLE_TO_FETCH -> unableToFetch()
             }
         })
     }
@@ -159,14 +153,8 @@ class MeteoriteListFragment : Fragment(),
     private fun observeMeteorites() {
 
         listViewModel.meteorites.observe(this, Observer { meteorites ->
-            if (meteorites.isNotEmpty()) {
-
-                meteoriteAdapter?.apply {
-                    setData(meteorites)
-                    notifyDataSetChanged()
-                }
-
-            }
+            meteoriteAdapter.setData(meteorites)
+            meteoriteAdapter.notifyDataSetChanged()
         })
 
         listViewModel.loadMeteorites()

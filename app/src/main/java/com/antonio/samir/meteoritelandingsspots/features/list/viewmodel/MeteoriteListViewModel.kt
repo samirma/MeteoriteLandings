@@ -3,10 +3,12 @@ package com.antonio.samir.meteoritelandingsspots.features.list.viewmodel
 
 import androidx.annotation.StringDef
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.DONE
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.LOADING
+import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.UNABLE_TO_FETCH
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.local.MeteoriteService
 import com.antonio.samir.meteoritelandingsspots.util.GPSTracker
@@ -22,43 +24,37 @@ class MeteoriteListViewModel(
         private val networkUtil: NetworkUtilInterface
 ) : ViewModel() {
 
-    var recoveryAddressStatus: MutableLiveData<String>? = null
+    var recoveryAddressStatus: MediatorLiveData<String>? = null
 
-    val meteorites: LiveData<List<Meteorite>> = meteoriteService.loadMeteorites()
-
-    val unableToFetch: MutableLiveData<Boolean> = MutableLiveData()
+    val meteorites: MediatorLiveData<List<Meteorite>> = MediatorLiveData()
 
     val loadingStatus: MutableLiveData<String> = MutableLiveData()
 
     val request: MutableLiveData<Boolean> = MutableLiveData()
 
     @Retention(AnnotationRetention.SOURCE)
-    @StringDef(DONE, LOADING)
+    @StringDef(DONE, LOADING, UNABLE_TO_FETCH)
     annotation class DownloadStatus {
         companion object {
             const val DONE = "DONE"
             const val LOADING = "LOADING"
+            const val UNABLE_TO_FETCH = "UNABLE_TO_FETCH"
         }
     }
 
     fun loadMeteorites() {
-        val data = meteorites
 
-        val meteorites = data.value
-        val isEmpty = meteorites == null || meteorites.isEmpty()
+        loadingStatus.value = LOADING
 
-        if (isEmpty) {
-            loadingStatus.value = "meteoriteLoading"
-            data.observeForever { meteorites1 ->
-                val isNotEmpty = meteorites1 != null && meteorites1.isNotEmpty()
-                if (isNotEmpty) {
-                    loadingStatus.value = "meteoriteLoadingStopped"
-
-                }
+        meteorites.addSource(meteoriteService.loadMeteorites()) { value ->
+            val isNotEmpty = value.isNotEmpty()
+            when {
+                isNotEmpty -> loadingStatus.value = DONE
+                !networkUtil.hasConnectivity() -> loadingStatus.value = UNABLE_TO_FETCH
             }
+            meteorites.value = value
         }
 
-        unableToFetch.value = !networkUtil.hasConnectivity()
     }
 
     fun updateLocation() {
