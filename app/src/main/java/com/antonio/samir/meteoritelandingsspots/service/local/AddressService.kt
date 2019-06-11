@@ -14,10 +14,9 @@ import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 
-class AddressService @Inject constructor(
+class AddressService(
         val context: Context,
         val meteoriteRepository: MeteoriteRepositoryInterface,
         val geoLocationUtil: GeoLocationUtilInterface

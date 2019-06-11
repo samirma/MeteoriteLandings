@@ -6,14 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryInterface
-import com.antonio.samir.meteoritelandingsspots.util.GPSTracker
+import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import java.util.*
-import javax.inject.Inject
 
-class MeteoriteNasaService @Inject constructor(
+class MeteoriteNasaService(
         private val meteoriteRepository: MeteoriteRepositoryInterface,
         private val addressService: AddressServiceInterface,
-        private val gpsTracker: GPSTracker
+        private val gpsTracker: GPSTrackerInterface
 ) : MeteoriteService {
 
     override fun loadMeteorites(): LiveData<List<Meteorite>> {

@@ -2,9 +2,8 @@ package com.antonio.samir.meteoritelandingsspots.util
 
 import android.content.Context
 import android.net.ConnectivityManager
-import javax.inject.Inject
 
-class NetworkUtil @Inject constructor(context: Context) : NetworkUtilInterface {
+class NetworkUtil(context: Context) : NetworkUtilInterface {
 
     private var appContext: Context = context.applicationContext
 

@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.features.detail.viewmodel.MeteoriteDetailViewModel
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
@@ -20,10 +19,11 @@ import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.meteorite_detail.*
 import kotlinx.android.synthetic.main.meteorite_detail_grid.*
 import org.apache.commons.lang3.StringUtils
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCallback {
 
-    private lateinit var viewModel: MeteoriteDetailViewModel
+    val viewModel: MeteoriteDetailViewModel by viewModel()
 
     private var meteoriteId: String? = null
 
@@ -52,8 +52,6 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
         val view = inflater.inflate(R.layout.fragment_meteorite_detail, container, false)
 
         (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
-
-        viewModel = ViewModelProviders.of(this).get(MeteoriteDetailViewModel::class.java)
 
         observeMeteorite()
 

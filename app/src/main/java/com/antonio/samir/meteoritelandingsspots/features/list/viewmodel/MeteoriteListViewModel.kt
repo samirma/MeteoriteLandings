@@ -9,6 +9,7 @@ import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.Meteorit
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.LOADING
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.local.MeteoriteService
+import com.antonio.samir.meteoritelandingsspots.util.GPSTracker
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import com.antonio.samir.meteoritelandingsspots.util.NetworkUtilInterface
 
@@ -23,11 +24,13 @@ class MeteoriteListViewModel(
 
     var recoveryAddressStatus: MutableLiveData<String>? = null
 
-    val meteorites: MutableLiveData<List<Meteorite>> = MutableLiveData()
+    val meteorites: LiveData<List<Meteorite>> = meteoriteService.loadMeteorites()
 
     val unableToFetch: MutableLiveData<Boolean> = MutableLiveData()
 
     val loadingStatus: MutableLiveData<String> = MutableLiveData()
+
+    val request: MutableLiveData<Boolean> = MutableLiveData()
 
     @Retention(AnnotationRetention.SOURCE)
     @StringDef(DONE, LOADING)
@@ -39,7 +42,7 @@ class MeteoriteListViewModel(
     }
 
     fun loadMeteorites() {
-        val data = meteoriteService.loadMeteorites()
+        val data = meteorites
 
         val meteorites = data.value
         val isEmpty = meteorites == null || meteorites.isEmpty()
@@ -55,11 +58,16 @@ class MeteoriteListViewModel(
             }
         }
 
-        unableToFetch.value = networkUtil.hasConnectivity()
+        unableToFetch.value = !networkUtil.hasConnectivity()
     }
 
     fun updateLocation() {
-        gpsTracker.startLocationService()
+        gpsTracker.startLocationService(object : GPSTracker.GPSTrackerDelegate {
+            override fun requestPermission() {
+                request.value = true
+            }
+
+        })
     }
 
     fun getMeteorite(meteorite: Meteorite): LiveData<Meteorite>? {

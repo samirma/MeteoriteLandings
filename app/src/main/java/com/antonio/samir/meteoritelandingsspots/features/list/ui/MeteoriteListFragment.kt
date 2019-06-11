@@ -14,7 +14,6 @@ import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.antonio.samir.meteoritelandingsspots.R
@@ -27,6 +26,7 @@ import com.antonio.samir.meteoritelandingsspots.service.local.AddressService
 import com.antonio.samir.meteoritelandingsspots.util.GPSTracker
 import kotlinx.android.synthetic.main.fragment_meteorite_list.*
 import org.apache.commons.lang3.StringUtils
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MeteoriteListFragment : Fragment(),
         MeteoriteSelectorView,
@@ -38,7 +38,8 @@ class MeteoriteListFragment : Fragment(),
 
     private var progressDialog: ProgressDialog? = null
     private var isLandscape: Boolean = false
-    private var listViewModel: MeteoriteListViewModel? = null
+
+    private val listViewModel: MeteoriteListViewModel by viewModel()
 
     val TAG = MeteoriteListMainActivity::class.java.simpleName
 
@@ -57,13 +58,14 @@ class MeteoriteListFragment : Fragment(),
 
         super.onCreate(savedInstanceState)
 
-        listViewModel = ViewModelProviders.of(this).get(MeteoriteListViewModel::class.java)
-
         isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-        val meteoriteSelector = MeteoriteSelectorFactory.getMeteoriteSelector(isLandscape, this)
+        val meteoriteSelector = MeteoriteSelectorFactory.getMeteoriteSelector(
+                isLandscape,
+                this
+        )
 
-        meteoriteAdapter = MeteoriteAdapter(requireContext(), meteoriteSelector, listViewModel!!).apply {
+        meteoriteAdapter = MeteoriteAdapter(requireContext(), meteoriteSelector, listViewModel).apply {
             setHasStableIds(true)
             meteoriteRV?.adapter = meteoriteAdapter
         }
@@ -91,10 +93,14 @@ class MeteoriteListFragment : Fragment(),
 
         observeUnableToFetch()
 
+        observeLoadingStatus()
+
+        observeRequestPermission()
+
     }
 
     private fun observeUnableToFetch() {
-        listViewModel?.unableToFetch?.observe(this, Observer {
+        listViewModel.unableToFetch.observe(this, Observer {
             if (it) {
                 unableToFetch()
             }
@@ -102,7 +108,7 @@ class MeteoriteListFragment : Fragment(),
     }
 
     private fun observeLoadingStatus() {
-        listViewModel?.loadingStatus?.observe(this, Observer {
+        listViewModel.loadingStatus.observe(this, Observer {
             when (it) {
                 MeteoriteListViewModel.DownloadStatus.DONE -> meteoriteLoadingStopped()
                 MeteoriteListViewModel.DownloadStatus.LOADING -> meteoriteLoadingStarted()
@@ -110,9 +116,17 @@ class MeteoriteListFragment : Fragment(),
         })
     }
 
+    private fun observeRequestPermission() {
+        listViewModel.request.observe(this, Observer {
+            if (it) {
+                requestPermission()
+            }
+        })
+    }
+
 
     private fun observeRecoveryAddressStatus() {
-        listViewModel?.recoveryAddressStatus?.observe(this, Observer { status ->
+        listViewModel.recoveryAddressStatus?.observe(this, Observer { status ->
             if (status == null || status === AddressService.Status.DONE) {
                 this.hideAddressLoading()
             } else if (status === AddressService.Status.LOADING) {
@@ -144,7 +158,7 @@ class MeteoriteListFragment : Fragment(),
 
     private fun observeMeteorites() {
 
-        listViewModel?.meteorites?.observe(this, Observer { meteorites ->
+        listViewModel.meteorites.observe(this, Observer { meteorites ->
             if (meteorites.isNotEmpty()) {
 
                 meteoriteAdapter?.apply {
@@ -155,15 +169,15 @@ class MeteoriteListFragment : Fragment(),
             }
         })
 
-        listViewModel?.loadMeteorites()
+        listViewModel.loadMeteorites()
 
     }
 
-    fun unableToFetch() {
+    private fun unableToFetch() {
         error(getString(R.string.no_network))
     }
 
-    fun error(messageString: String) {
+    private fun error(messageString: String) {
         meteoriteRV.visibility = View.GONE
         messageTV.visibility = View.VISIBLE
         messageTV.text = messageString
@@ -247,7 +261,7 @@ class MeteoriteListFragment : Fragment(),
         return meteorite
     }
 
-    fun meteoriteLoadingStarted() {
+    private fun meteoriteLoadingStarted() {
         try {
             if (progressDialog == null) {
                 progressDialog = ProgressDialog.show(requireContext(), "", getString(R.string.load), true)
@@ -258,7 +272,7 @@ class MeteoriteListFragment : Fragment(),
 
     }
 
-    fun meteoriteLoadingStopped() {
+    private fun meteoriteLoadingStopped() {
         try {
             if (progressDialog != null && progressDialog!!.isShowing) {
                 progressDialog?.dismiss()
@@ -280,7 +294,7 @@ class MeteoriteListFragment : Fragment(),
             for (grantResult in grantResults) {
                 val isPermitted = grantResult == PackageManager.PERMISSION_GRANTED
                 if (isPermitted) {
-                    listViewModel?.updateLocation()
+                    listViewModel.updateLocation()
                 }
             }
         }
