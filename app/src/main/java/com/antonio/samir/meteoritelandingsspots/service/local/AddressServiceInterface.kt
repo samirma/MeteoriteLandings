@@ -6,5 +6,5 @@ interface AddressServiceInterface {
 
     val status: MutableLiveData<String>
 
-    fun recoveryAddress()
+    suspend fun recoveryAddress()
 }

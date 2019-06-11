@@ -7,6 +7,9 @@ import androidx.lifecycle.Observer
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryInterface
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -69,21 +72,15 @@ class MeteoriteNasaService(
     }
 
     private fun recoverFromNetwork() {
-
-        Thread() {
+        GlobalScope.launch(Dispatchers.Default) {
             val remoteMeteorites = meteoriteRepository.getRemoteMeteorites()
-
             remoteMeteorites?.let { meteoriteRepository.insertAll(it) }
-
-            Thread { addressService.recoveryAddress() }.start()
-
-        }.start()
-
+            addressService.recoveryAddress()
+        }
     }
 
     override fun getMeteoriteById(id: String): LiveData<Meteorite>? {
         return meteoriteRepository.getMeteoriteById(id)
     }
-
 
 }

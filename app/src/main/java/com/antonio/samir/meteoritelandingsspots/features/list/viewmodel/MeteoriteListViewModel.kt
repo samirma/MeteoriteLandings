@@ -2,10 +2,7 @@ package com.antonio.samir.meteoritelandingsspots.features.list.viewmodel
 
 
 import androidx.annotation.StringDef
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.DONE
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.LOADING
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.UNABLE_TO_FETCH
@@ -14,6 +11,7 @@ import com.antonio.samir.meteoritelandingsspots.service.local.MeteoriteService
 import com.antonio.samir.meteoritelandingsspots.util.GPSTracker
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import com.antonio.samir.meteoritelandingsspots.util.NetworkUtilInterface
+import kotlinx.coroutines.launch
 
 /**
  * Presenter layer responsible for manage the interactions between the activity and the services
@@ -46,13 +44,15 @@ class MeteoriteListViewModel(
 
         loadingStatus.value = LOADING
 
-        meteorites.addSource(meteoriteService.loadMeteorites()) { value ->
-            val isNotEmpty = value.isNotEmpty()
-            when {
-                isNotEmpty -> loadingStatus.value = DONE
-                !networkUtil.hasConnectivity() -> loadingStatus.value = UNABLE_TO_FETCH
+        viewModelScope.launch {
+            meteorites.addSource(meteoriteService.loadMeteorites()) { value ->
+                val isNotEmpty = value.isNotEmpty()
+                when {
+                    isNotEmpty -> loadingStatus.value = DONE
+                    !networkUtil.hasConnectivity() -> loadingStatus.value = UNABLE_TO_FETCH
+                }
+                meteorites.value = value
             }
-            meteorites.value = value
         }
 
     }
