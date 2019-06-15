@@ -26,14 +26,14 @@ import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.Meteorit
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.LOADING
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.UNABLE_TO_FETCH
 import com.antonio.samir.meteoritelandingsspots.service.local.AddressService
-import com.antonio.samir.meteoritelandingsspots.util.GPSTracker
 import kotlinx.android.synthetic.main.fragment_meteorite_list.*
 import org.apache.commons.lang3.StringUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MeteoriteListFragment : Fragment(),
-        MeteoriteSelectorView,
-        GPSTracker.GPSTrackerDelegate {
+        MeteoriteSelectorView {
+
+    private val TAG = MeteoriteListMainActivity::class.java.simpleName
 
     private var sglm: GridLayoutManager? = null
     private lateinit var meteoriteAdapter: MeteoriteAdapter
@@ -44,7 +44,6 @@ class MeteoriteListFragment : Fragment(),
 
     private val listViewModel: MeteoriteListViewModel by viewModel()
 
-    val TAG = MeteoriteListMainActivity::class.java.simpleName
 
     val LOCATION_REQUEST_CODE = 11111
 
@@ -100,6 +99,27 @@ class MeteoriteListFragment : Fragment(),
 
     }
 
+    private fun observeMeteorites() {
+
+        listViewModel.meteorites.observe(this, Observer { meteorites ->
+            meteoriteAdapter.setData(meteorites)
+            meteoriteAdapter.notifyDataSetChanged()
+        })
+
+        listViewModel.loadMeteorites()
+
+    }
+
+    private fun observeRecoveryAddressStatus() {
+        listViewModel.recoveryAddressStatus.observe(this, Observer { status ->
+            if (status == null || status === AddressService.Status.DONE) {
+                this.hideAddressLoading()
+            } else if (status === AddressService.Status.LOADING) {
+                this.showAddressLoading()
+            }
+        })
+    }
+
     private fun observeLoadingStatus() {
         listViewModel.loadingStatus.observe(this, Observer {
             when (it) {
@@ -111,20 +131,10 @@ class MeteoriteListFragment : Fragment(),
     }
 
     private fun observeRequestPermission() {
-        listViewModel.request.observe(this, Observer {
+        listViewModel.isAuthorizationRequested().observe(this, Observer {
             if (it) {
-                requestPermission()
-            }
-        })
-    }
+                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_REQUEST_CODE)
 
-
-    private fun observeRecoveryAddressStatus() {
-        listViewModel.recoveryAddressStatus?.observe(this, Observer { status ->
-            if (status == null || status === AddressService.Status.DONE) {
-                this.hideAddressLoading()
-            } else if (status === AddressService.Status.LOADING) {
-                this.showAddressLoading()
             }
         })
     }
@@ -150,16 +160,6 @@ class MeteoriteListFragment : Fragment(),
         super.onSaveInstanceState(savedInstanceState)
     }
 
-    private fun observeMeteorites() {
-
-        listViewModel.meteorites.observe(this, Observer { meteorites ->
-            meteoriteAdapter.setData(meteorites)
-            meteoriteAdapter.notifyDataSetChanged()
-        })
-
-        listViewModel.loadMeteorites()
-
-    }
 
     private fun unableToFetch() {
         error(getString(R.string.no_network))
@@ -170,10 +170,6 @@ class MeteoriteListFragment : Fragment(),
         messageTV.visibility = View.VISIBLE
         messageTV.text = messageString
         meteoriteLoadingStopped()
-    }
-
-    fun hideList() {
-        meteoriteRV.visibility = View.GONE
     }
 
 //    /*
@@ -270,10 +266,6 @@ class MeteoriteListFragment : Fragment(),
             Log.e(TAG, e.message, e)
         }
 
-    }
-
-    override fun requestPermission() {
-        ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_REQUEST_CODE)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, @NonNull permissions: Array<String>, @NonNull grantResults: IntArray) {

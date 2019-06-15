@@ -3,7 +3,6 @@ package com.antonio.samir.meteoritelandingsspots.service.local
 import android.content.Context
 import android.util.Log
 import androidx.annotation.StringDef
-import androidx.annotation.WorkerThread
 import androidx.lifecycle.MutableLiveData
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.local.AddressService.Status.Companion.DONE
@@ -42,8 +41,7 @@ class AddressService(
                 LinkedBlockingQueue())
     }
 
-    @WorkerThread
-    override suspend fun recoveryAddress() {
+    override fun recoveryAddress() {
 
         executor.execute {
             if (status.value == null || status.value === DONE) {

@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.features.detail.viewmodel.MeteoriteDetailViewModel
@@ -28,7 +27,6 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
     private var meteoriteId: String? = null
 
     private var map: GoogleMap? = null
-    private var meteoriteLiveData: LiveData<Meteorite>? = null
     private var isUiDone = false
 
 
@@ -114,7 +112,6 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
         if (StringUtils.isNotEmpty(address)) {
             setText(null, text, address)
             text!!.visibility = View.VISIBLE
-            meteoriteLiveData!!.removeObservers(this)
         } else {
             text!!.visibility = View.GONE
         }
