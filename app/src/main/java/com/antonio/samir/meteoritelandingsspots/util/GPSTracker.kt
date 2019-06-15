@@ -2,6 +2,7 @@ package com.antonio.samir.meteoritelandingsspots.util
 
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
@@ -10,6 +11,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
+import java.util.concurrent.atomic.AtomicBoolean
 
 
 class GPSTracker(
@@ -19,11 +21,20 @@ class GPSTracker(
     // flag for GPS status
     private var isGPSEnabled = false
     // Declaring a Location Manager
-    protected var locationManager: LocationManager? = null
+    private var locationManager: LocationManager? = null
     // flag for network status
-    internal var isNetworkEnabled = false
+    private var isNetworkEnabled = false
+
+    private val isLocationServiceStarted = AtomicBoolean(false)
 
     private val liveLocation: MutableLiveData<Location> = MutableLiveData() // liveLocation
+
+    /**
+     * Function to know if the authorization is required or not
+     *
+     * @return Boolean
+     */
+    override val needAuthorization: MutableLiveData<Boolean> = MutableLiveData()
 
     companion object {
 
@@ -32,88 +43,89 @@ class GPSTracker(
         // The minimum time between updates in milliseconds
         private const val MIN_TIME_BW_UPDATES: Long = 1 // 1 minute
         private val TAG = GPSTracker::class.java.simpleName
-        private var permissionRequested = false
     }
 
     /**
      * Function to get the user's current liveLocation
      *
-     * @return
+     * @return Location
      */
     override val location: MutableLiveData<Location>
         get() {
-            try {
-                startLocationService(null)
-            } catch (e: Exception) {
-                Log.e(TAG, e.message, e)
-            }
-
             return liveLocation
         }
 
+    override fun isLocationServiceStarted(): Boolean {
+        return isLocationServiceStarted.get()
+    }
+
+    override val isLocationAutorized: Boolean
+        get() {
+            val hasFine = ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+
+            val hasCoarse = ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+
+            return hasFine || hasCoarse
+        }
+
+
     override fun stopUpdates() {
-        locationManager!!.removeUpdates(this)
+        locationManager?.removeUpdates(this)
     }
 
-    interface GPSTrackerDelegate {
-        fun requestPermission()
-    }
-
-    override fun startLocationService(gpsTrackerDelegate: GPSTrackerDelegate?) {
+    override fun startLocationService() {
         try {
-            val isGPSEnabled = isGPSEnabled()
-            if (isGPSEnabled) {
 
-                if (!permissionRequested && ActivityCompat.checkSelfPermission(
-                                context,
-                                Manifest.permission.ACCESS_FINE_LOCATION
-                        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                                context,
-                                Manifest.permission.ACCESS_COARSE_LOCATION
-                        ) != PackageManager.PERMISSION_GRANTED) {
-                    gpsTrackerDelegate?.requestPermission()
-                    permissionRequested = true
-
-                } else {
-
-                    var location: Location?
-
-                    if (isNetworkEnabled) {
-
-                        locationManager!!.requestLocationUpdates(
-                                LocationManager.NETWORK_PROVIDER,
-                                MIN_TIME_BW_UPDATES,
-                                MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), this)
-                        Log.d(TAG, "Network")
-                        if (locationManager != null) {
-                            location = locationManager!!
-                                    .getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-                            if (location != null) {
-                                onLocationChanged(location)
-                            }
-                        }
-                    }
-                    // if GPS Enabled get lat/long using GPS Services
-                    if (this.isGPSEnabled) {
-                        locationManager!!.requestLocationUpdates(
-                                LocationManager.GPS_PROVIDER,
-                                MIN_TIME_BW_UPDATES,
-                                MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), this)
-                        Log.d(TAG, "GPS Enabled")
-                        if (locationManager != null) {
-                            location = locationManager!!
-                                    .getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                            onLocationChanged(location)
-                        }
-                    }
-                }
-
+            if (isLocationAutorized) {
+                startLocation()
             }
+
+            needAuthorization.value = !isLocationAutorized
 
         } catch (e: Exception) {
             Log.e(TAG, e.message, e)
         }
 
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun startLocation() {
+        var location: Location?
+
+        if (isNetworkEnabled) {
+
+            locationManager!!.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER,
+                    MIN_TIME_BW_UPDATES,
+                    MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), this)
+            Log.d(TAG, "Network")
+            if (locationManager != null) {
+                location = locationManager!!
+                        .getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                if (location != null) {
+                    onLocationChanged(location)
+                }
+            }
+        }
+        // if GPS Enabled get lat/long using GPS Services
+        if (this.isGPSEnabled) {
+            locationManager!!.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER,
+                    MIN_TIME_BW_UPDATES,
+                    MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), this)
+            Log.d(TAG, "GPS Enabled")
+            if (locationManager != null) {
+                location = locationManager!!
+                        .getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                onLocationChanged(location)
+            }
+        }
     }
 
     override fun isGPSEnabled(): Boolean {
@@ -140,9 +152,13 @@ class GPSTracker(
         liveLocation.value = location
     }
 
-    override fun onProviderDisabled(provider: String) {}
+    override fun onProviderDisabled(provider: String) {
+        isLocationServiceStarted.set(false)
+    }
 
-    override fun onProviderEnabled(provider: String) {}
+    override fun onProviderEnabled(provider: String) {
+        isLocationServiceStarted.set(true)
+    }
 
     override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
 

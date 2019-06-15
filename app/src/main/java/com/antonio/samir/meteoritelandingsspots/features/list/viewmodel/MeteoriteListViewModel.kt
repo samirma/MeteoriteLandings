@@ -8,7 +8,6 @@ import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.Meteorit
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.UNABLE_TO_FETCH
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.local.MeteoriteService
-import com.antonio.samir.meteoritelandingsspots.util.GPSTracker
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import com.antonio.samir.meteoritelandingsspots.util.NetworkUtilInterface
 import kotlinx.coroutines.launch
@@ -22,13 +21,11 @@ class MeteoriteListViewModel(
         private val networkUtil: NetworkUtilInterface
 ) : ViewModel() {
 
-    var recoveryAddressStatus: MediatorLiveData<String>? = null
+    var recoveryAddressStatus: MediatorLiveData<String> = MediatorLiveData()
 
     val meteorites: MediatorLiveData<List<Meteorite>> = MediatorLiveData()
 
     val loadingStatus: MutableLiveData<String> = MutableLiveData()
-
-    val request: MutableLiveData<Boolean> = MutableLiveData()
 
     @Retention(AnnotationRetention.SOURCE)
     @StringDef(DONE, LOADING, UNABLE_TO_FETCH)
@@ -55,15 +52,18 @@ class MeteoriteListViewModel(
             }
         }
 
+        recoveryAddressStatus.addSource(meteoriteService.addressStatus()) {
+            recoveryAddressStatus.value = it
+        }
+
     }
 
     fun updateLocation() {
-        gpsTracker.startLocationService(object : GPSTracker.GPSTrackerDelegate {
-            override fun requestPermission() {
-                request.value = true
-            }
+        gpsTracker.startLocationService()
+    }
 
-        })
+    fun isAuthorizationRequested(): LiveData<Boolean> {
+        return gpsTracker.needAuthorization
     }
 
     fun getMeteorite(meteorite: Meteorite): LiveData<Meteorite>? {
