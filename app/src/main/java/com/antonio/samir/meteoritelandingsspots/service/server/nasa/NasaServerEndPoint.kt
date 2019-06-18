@@ -1,8 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.service.server.nasa
 
 import com.antonio.samir.meteoritelandingsspots.model.Meteorite
-
-import retrofit2.Call
 import retrofit2.http.GET
 
 /**
@@ -10,13 +8,13 @@ import retrofit2.http.GET
  */
 interface NasaServerEndPoint {
 
-
-    @get:GET("resource/y77d-th95.json")
-    val publicMeteorites: Call<List<Meteorite>>
-
     companion object {
 
         val URL = "https://data.nasa.gov"
     }
+
+    @GET("resource/y77d-th95.json")
+    suspend fun publicMeteorites(): List<Meteorite>
+
 
 }

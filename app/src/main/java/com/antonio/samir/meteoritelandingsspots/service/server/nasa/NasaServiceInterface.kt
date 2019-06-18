@@ -4,6 +4,6 @@ import com.antonio.samir.meteoritelandingsspots.model.Meteorite
 
 interface NasaServiceInterface {
 
-    fun getMeteorites(): List<Meteorite>?
+    suspend fun getMeteorites(): List<Meteorite>?
 
 }

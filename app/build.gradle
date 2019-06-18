@@ -70,15 +70,17 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.0.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-alpha01'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha01'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha01'
 
     //Room
-    implementation "androidx.room:room-runtime:2.0.0"
-    kapt "androidx.room:room-compiler:2.0.0"
+    implementation "androidx.room:room-runtime:2.1.0"
+    kapt "androidx.room:room-compiler:2.1.0"
 
     //Play services
-    implementation 'com.google.android.gms:play-services-analytics:16.0.8'
-    implementation 'com.google.android.gms:play-services-location:16.0.0'
-    implementation 'com.google.android.gms:play-services-maps:16.1.0'
+    implementation 'com.google.android.gms:play-services-analytics:17.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
 
     //insert-koin.io
     // Koin for Android
@@ -102,7 +104,7 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.5'
 
     //Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.6.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
 
@@ -113,7 +115,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'design'
         exclude group: 'com.android.support', module: 'recyclerview-v7'
     }
-    androidTestImplementation 'org.mockito:mockito-core:2.16.0'
+    androidTestImplementation 'org.mockito:mockito-core:2.19.0'
 
     //Stetho
     debugImplementation 'com.facebook.stetho:stetho:1.5.0'
