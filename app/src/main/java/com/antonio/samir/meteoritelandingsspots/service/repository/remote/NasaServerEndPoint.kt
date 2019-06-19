@@ -1,6 +1,6 @@
-package com.antonio.samir.meteoritelandingsspots.service.server.nasa
+package com.antonio.samir.meteoritelandingsspots.service.repository.remote
 
-import com.antonio.samir.meteoritelandingsspots.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import retrofit2.http.GET
 
 /**
