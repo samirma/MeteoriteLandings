@@ -1,12 +1,12 @@
-package com.antonio.samir.meteoritelandingsspots.service.server.nasa
+package com.antonio.samir.meteoritelandingsspots.service.repository.remote
 
-import com.antonio.samir.meteoritelandingsspots.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.service.local.MeteoriteServerException
+import com.antonio.samir.meteoritelandingsspots.service.business.MeteoriteServerException
+import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException
 
-class NasaService(val service: NasaServerEndPoint) : NasaServiceInterface {
+class NasaRemoteRepository(val service: NasaServerEndPoint) : NasaRemoteRepositoryInterface {
 
     override suspend fun getMeteorites(): List<Meteorite>? = withContext(Dispatchers.IO) {
 

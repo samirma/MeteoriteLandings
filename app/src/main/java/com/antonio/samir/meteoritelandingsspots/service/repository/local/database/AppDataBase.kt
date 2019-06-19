@@ -1,8 +1,8 @@
-package com.antonio.samir.meteoritelandingsspots.service.repository.database
+package com.antonio.samir.meteoritelandingsspots.service.repository.local.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.antonio.samir.meteoritelandingsspots.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 
 @Database(entities = arrayOf(Meteorite::class), version = 2)
 abstract class AppDataBase : RoomDatabase() {
