@@ -25,7 +25,7 @@ import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.Meteorit
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.DONE
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.LOADING
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.UNABLE_TO_FETCH
-import com.antonio.samir.meteoritelandingsspots.service.local.AddressService
+import com.antonio.samir.meteoritelandingsspots.service.business.AddressService
 import kotlinx.android.synthetic.main.fragment_meteorite_list.*
 import org.apache.commons.lang3.StringUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -172,32 +172,6 @@ class MeteoriteListFragment : Fragment(),
         meteoriteLoadingStopped()
     }
 
-//    /*
-//    MeteoriteSelectorView
-//     */
-//    override fun selectLandscape(meteorite: String?) {
-//
-//        var fragmentTransaction = supportFragmentManager.beginTransaction()
-//
-//        if (selectedMeteorite == null) {
-//            mFrameLayout!!.visibility = View.VISIBLE
-//            sglm = GridLayoutManager(this, 1)
-//            meteoriteRV.layoutManager = sglm
-//        }
-//        fragmentTransaction = fragmentTransaction.setCustomAnimations(
-//                R.anim.fragment_slide_left_enter,
-//                R.anim.fragment_slide_left_exit)
-//
-//        val mMeteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteorite!!)
-//        fragmentTransaction.replace(R.id.fragment, mMeteoriteDetailFragment)
-//        fragmentTransaction.commit()
-//
-//        selectedMeteorite = meteorite
-//
-//        meteoriteAdapter!!.setSelectedMeteorite(selectedMeteorite!!)
-//
-//    }
-
     override fun selectPortrait(meteorite: String?) {
         val bundle = Bundle().apply {
             putString(METEORITE, meteorite)
@@ -205,17 +179,6 @@ class MeteoriteListFragment : Fragment(),
         findNavController().navigate(R.id.action_meteoriteListFragment_to_meteoriteDetailFragment, bundle)
 
     }
-
-//    override fun onBackPressed() {
-//        if (selectedMeteorite != null && isLandscape) {
-//            selectedMeteorite = null
-//            meteoriteAdapter!!.setSelectedMeteorite(null!!)
-//            setupGridLayout()
-//            mFrameLayout!!.visibility = View.GONE
-//        } else {
-//            super.onBackPressed()
-//        }
-//    }
 
     private fun setupGridLayout() {
         val columnCount = resources.getInteger(R.integer.list_column_count)

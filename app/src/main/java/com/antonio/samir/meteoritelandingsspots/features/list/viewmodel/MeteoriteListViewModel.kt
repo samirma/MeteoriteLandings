@@ -6,8 +6,8 @@ import androidx.lifecycle.*
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.DONE
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.LOADING
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.UNABLE_TO_FETCH
-import com.antonio.samir.meteoritelandingsspots.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.service.local.MeteoriteService
+import com.antonio.samir.meteoritelandingsspots.service.business.MeteoriteServiceInterface
+import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import com.antonio.samir.meteoritelandingsspots.util.NetworkUtilInterface
 import kotlinx.coroutines.launch
@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
  * Presenter layer responsible for manage the interactions between the activity and the services
  */
 class MeteoriteListViewModel(
-        private val meteoriteService: MeteoriteService,
+        private val meteoriteServiceInterface: MeteoriteServiceInterface,
         private val gpsTracker: GPSTrackerInterface,
         private val networkUtil: NetworkUtilInterface
 ) : ViewModel() {
@@ -42,7 +42,7 @@ class MeteoriteListViewModel(
         loadingStatus.value = LOADING
 
         viewModelScope.launch {
-            meteorites.addSource(meteoriteService.loadMeteorites()) { value ->
+            meteorites.addSource(meteoriteServiceInterface.loadMeteorites()) { value ->
                 val isNotEmpty = value.isNotEmpty()
                 when {
                     isNotEmpty -> loadingStatus.value = DONE
@@ -52,7 +52,7 @@ class MeteoriteListViewModel(
             }
         }
 
-        recoveryAddressStatus.addSource(meteoriteService.addressStatus()) {
+        recoveryAddressStatus.addSource(meteoriteServiceInterface.addressStatus()) {
             recoveryAddressStatus.value = it
         }
 
@@ -68,7 +68,7 @@ class MeteoriteListViewModel(
 
     fun getMeteorite(meteorite: Meteorite): LiveData<Meteorite>? {
 
-        return meteoriteService.getMeteoriteById(meteorite.id.toString())
+        return meteoriteServiceInterface.getMeteoriteById(meteorite.id.toString())
 
     }
 

@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.features.detail.viewmodel.MeteoriteDetailViewModel
-import com.antonio.samir.meteoritelandingsspots.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback

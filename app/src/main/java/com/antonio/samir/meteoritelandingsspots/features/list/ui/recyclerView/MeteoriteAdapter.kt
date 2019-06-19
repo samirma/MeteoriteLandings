@@ -9,7 +9,7 @@ import androidx.lifecycle.Observer
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelector
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel
-import com.antonio.samir.meteoritelandingsspots.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import org.apache.commons.lang3.StringUtils
 
 /**

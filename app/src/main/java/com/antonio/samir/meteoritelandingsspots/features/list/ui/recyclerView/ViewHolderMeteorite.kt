@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 
 
 class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
