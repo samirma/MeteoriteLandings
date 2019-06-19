@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.service.local
+package com.antonio.samir.meteoritelandingsspots.service.business
 
 /**
  * Server Exception created in order to prevent the ui layer be aware the exception of service layer
