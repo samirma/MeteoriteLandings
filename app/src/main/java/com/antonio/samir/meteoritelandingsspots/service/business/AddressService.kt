@@ -1,13 +1,13 @@
-package com.antonio.samir.meteoritelandingsspots.service.local
+package com.antonio.samir.meteoritelandingsspots.service.business
 
 import android.content.Context
 import android.util.Log
 import androidx.annotation.StringDef
 import androidx.lifecycle.MutableLiveData
-import com.antonio.samir.meteoritelandingsspots.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.service.local.AddressService.Status.Companion.DONE
-import com.antonio.samir.meteoritelandingsspots.service.local.AddressService.Status.Companion.LOADING
-import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryInterface
+import com.antonio.samir.meteoritelandingsspots.service.business.AddressService.Status.Companion.DONE
+import com.antonio.samir.meteoritelandingsspots.service.business.AddressService.Status.Companion.LOADING
+import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteRepositoryInterface
 import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
 import org.apache.commons.lang3.StringUtils
 import java.util.*
@@ -47,7 +47,7 @@ class AddressService(
             if (status.value == null || status.value === DONE) {
                 val meteorites = meteoriteRepository.meteoritesWithOutAddress()
                 try {
-                    if (!meteorites.isEmpty()) {
+                    if (meteorites.isNotEmpty()) {
                         status.postValue(LOADING)
 
                         meteorites.onEach { meteorite ->

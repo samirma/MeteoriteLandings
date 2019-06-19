@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.model
+package com.antonio.samir.meteoritelandingsspots.service.business.model
 
 import android.os.Parcel
 import android.os.Parcelable

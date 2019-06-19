@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.service.local
+package com.antonio.samir.meteoritelandingsspots.service.business
 
 import androidx.lifecycle.MutableLiveData
 
