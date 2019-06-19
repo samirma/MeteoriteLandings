@@ -1,15 +1,15 @@
 import com.antonio.samir.meteoritelandingsspots.features.detail.viewmodel.MeteoriteDetailViewModel
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel
-import com.antonio.samir.meteoritelandingsspots.service.local.AddressService
-import com.antonio.samir.meteoritelandingsspots.service.local.AddressServiceInterface
-import com.antonio.samir.meteoritelandingsspots.service.local.MeteoriteNasaService
-import com.antonio.samir.meteoritelandingsspots.service.local.MeteoriteService
-import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteDaoFactory
-import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepository
-import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteRepositoryInterface
-import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaServerEndPoint
-import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaService
-import com.antonio.samir.meteoritelandingsspots.service.server.nasa.NasaServiceInterface
+import com.antonio.samir.meteoritelandingsspots.service.business.AddressService
+import com.antonio.samir.meteoritelandingsspots.service.business.AddressServiceInterface
+import com.antonio.samir.meteoritelandingsspots.service.business.MeteoriteNasaService
+import com.antonio.samir.meteoritelandingsspots.service.business.MeteoriteServiceInterface
+import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteDaoFactory
+import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteRepository
+import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteRepositoryInterface
+import com.antonio.samir.meteoritelandingsspots.service.repository.remote.NasaRemoteRepository
+import com.antonio.samir.meteoritelandingsspots.service.repository.remote.NasaRemoteRepositoryInterface
+import com.antonio.samir.meteoritelandingsspots.service.repository.remote.NasaServerEndPoint
 import com.antonio.samir.meteoritelandingsspots.util.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -37,7 +37,7 @@ val repositoryModule = module {
 val networkModule = module {
     single { retrofit.create(NasaServerEndPoint::class.java) }
     single { NetworkUtil(get()) as NetworkUtilInterface }
-    single { NasaService(get()) as NasaServiceInterface }
+    single { NasaRemoteRepository(get()) as NasaRemoteRepositoryInterface }
 }
 
 val databaseModule = module {
@@ -48,7 +48,7 @@ val businessModule = module {
     single { GeoLocationUtil(get()) as GeoLocationUtilInterface }
     single { GPSTracker(get()) as GPSTrackerInterface }
     single { AddressService(get(), get(), get()) as AddressServiceInterface }
-    single { MeteoriteNasaService(get(), get(), get()) as MeteoriteService }
+    single { MeteoriteNasaService(get(), get(), get()) as MeteoriteServiceInterface }
 }
 
 val viewModelModule = module {

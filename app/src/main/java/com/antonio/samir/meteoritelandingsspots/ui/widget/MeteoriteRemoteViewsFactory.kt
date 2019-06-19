@@ -7,8 +7,8 @@ import android.os.Build
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.service.repository.MeteoriteDaoFactory
+import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteDaoFactory
 import org.apache.commons.lang3.StringUtils
 
 class MeteoriteRemoteViewsFactory(private val mPackageName: String, private val mContext: Context) : RemoteViewsService.RemoteViewsFactory {

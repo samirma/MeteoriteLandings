@@ -48,6 +48,9 @@
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/key_map" />
 
     </application>
 

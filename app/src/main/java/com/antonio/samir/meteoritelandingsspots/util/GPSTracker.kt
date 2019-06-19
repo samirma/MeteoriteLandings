@@ -76,6 +76,7 @@ class GPSTracker(
 
 
     override fun stopUpdates() {
+        isLocationServiceStarted.set(false)
         locationManager?.removeUpdates(this)
     }
 
@@ -136,13 +137,9 @@ class GPSTracker(
         isGPSEnabled = locationManager!!
                 .isProviderEnabled(LocationManager.GPS_PROVIDER)
 
-        Log.v("isGPSEnabled", "=$isGPSEnabled")
-
         // getting network status
         isNetworkEnabled = locationManager!!
                 .isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-
-        Log.v("isNetworkEnabled", "=$isNetworkEnabled")
 
         return isGPSEnabled || isNetworkEnabled
     }
