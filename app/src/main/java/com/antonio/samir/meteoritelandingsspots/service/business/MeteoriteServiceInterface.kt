@@ -8,7 +8,7 @@ interface MeteoriteServiceInterface {
 
     suspend fun loadMeteorites(): LiveData<List<Meteorite>>
 
-    suspend fun getMeteoriteById(id: String): LiveData<Meteorite>?
+    fun getMeteoriteById(id: String): LiveData<Meteorite>?
 
     fun addressStatus(): MutableLiveData<String>
 }

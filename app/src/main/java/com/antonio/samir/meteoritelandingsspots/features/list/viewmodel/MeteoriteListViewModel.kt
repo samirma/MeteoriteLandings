@@ -1,6 +1,7 @@
 package com.antonio.samir.meteoritelandingsspots.features.list.viewmodel
 
 
+import android.util.Log
 import androidx.annotation.StringDef
 import androidx.lifecycle.*
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.DONE
@@ -10,10 +11,11 @@ import com.antonio.samir.meteoritelandingsspots.service.business.MeteoriteServic
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import com.antonio.samir.meteoritelandingsspots.util.NetworkUtilInterface
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 /**
- * Presenter layer responsible for manage the interactions between the activity and the services
+ * Layer responsible for manage the interactions between the activity and the services
  */
 class MeteoriteListViewModel(
         private val meteoriteServiceInterface: MeteoriteServiceInterface,
@@ -21,11 +23,13 @@ class MeteoriteListViewModel(
         private val networkUtil: NetworkUtilInterface
 ) : ViewModel() {
 
-    var recoveryAddressStatus: MediatorLiveData<String> = MediatorLiveData()
+    var recoveryAddressStatus: LiveData<String> = meteoriteServiceInterface.addressStatus()
 
     val meteorites: MediatorLiveData<List<Meteorite>> = MediatorLiveData()
 
     val loadingStatus: MutableLiveData<String> = MutableLiveData()
+
+    val TAG = MeteoriteListViewModel::class.java.simpleName
 
     @Retention(AnnotationRetention.SOURCE)
     @StringDef(DONE, LOADING, UNABLE_TO_FETCH)
@@ -38,24 +42,12 @@ class MeteoriteListViewModel(
     }
 
     fun loadMeteorites() {
-
-        loadingStatus.value = LOADING
-
-        viewModelScope.launch {
-            meteorites.addSource(meteoriteServiceInterface.loadMeteorites()) { value ->
-                val isNotEmpty = value.isNotEmpty()
-                when {
-                    isNotEmpty -> loadingStatus.value = DONE
-                    !networkUtil.hasConnectivity() -> loadingStatus.value = UNABLE_TO_FETCH
-                }
+        launchDataLoad {
+            val loadMeteorites = meteoriteServiceInterface.loadMeteorites()
+            meteorites.addSource(loadMeteorites) { value ->
                 meteorites.value = value
             }
         }
-
-        recoveryAddressStatus.addSource(meteoriteServiceInterface.addressStatus()) {
-            recoveryAddressStatus.value = it
-        }
-
     }
 
     fun updateLocation() {
@@ -72,4 +64,17 @@ class MeteoriteListViewModel(
 
     }
 
+    private fun launchDataLoad(block: suspend () -> Unit): Job {
+        return viewModelScope.launch {
+            try {
+                loadingStatus.value = LOADING
+                block()
+            } catch (error: Exception) {
+                Log.e(TAG, error.message, error)
+                loadingStatus.value = UNABLE_TO_FETCH
+            } finally {
+                loadingStatus.value = DONE
+            }
+        }
+    }
 }

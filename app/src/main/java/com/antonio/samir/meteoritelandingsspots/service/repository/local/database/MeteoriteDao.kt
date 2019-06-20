@@ -13,7 +13,7 @@ import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 interface MeteoriteDao {
 
     @Query("SELECT * from meteorites ORDER BY name")
-    suspend fun meteoriteOrdered(): LiveData<List<Meteorite>>
+    fun meteoriteOrdered(): LiveData<List<Meteorite>>
 
     @Query("SELECT * from meteorites WHERE address IS NULL ORDER BY id")
     suspend fun meteoritesWithOutAddress(): List<Meteorite>
@@ -25,5 +25,6 @@ interface MeteoriteDao {
     suspend fun update(meteorite: Meteorite)
 
     @Query("SELECT * from meteorites where id = :meteoriteId LIMIT 1")
-    suspend fun getMeteoriteById(meteoriteId: String): LiveData<Meteorite>
+    fun getMeteoriteById(meteoriteId: String): LiveData<Meteorite>
+
 }
