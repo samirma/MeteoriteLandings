@@ -9,11 +9,12 @@ import com.antonio.samir.meteoritelandingsspots.service.business.AddressService.
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteRepositoryInterface
 import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.apache.commons.lang3.StringUtils
 import java.util.*
-import java.util.concurrent.LinkedBlockingQueue
-import java.util.concurrent.ThreadPoolExecutor
-import java.util.concurrent.TimeUnit
 
 
 class AddressService(
@@ -21,6 +22,8 @@ class AddressService(
         val meteoriteRepository: MeteoriteRepositoryInterface,
         val geoLocationUtil: GeoLocationUtilInterface
 ) : AddressServiceInterface {
+
+    val TAG = AddressService::class.java.simpleName
 
     override val status = MutableLiveData<String>()
 
@@ -33,17 +36,9 @@ class AddressService(
         }
     }
 
-    companion object {
-
-        val TAG = AddressService::class.java.simpleName
-        internal val executor = ThreadPoolExecutor(0, 3,
-                1L, TimeUnit.MILLISECONDS,
-                LinkedBlockingQueue())
-    }
-
     override fun recoveryAddress() {
 
-        executor.execute {
+        GlobalScope.launch(Dispatchers.Default) {
             if (status.value == null || status.value === DONE) {
                 val meteorites = meteoriteRepository.meteoritesWithOutAddress()
                 try {
@@ -66,8 +61,7 @@ class AddressService(
 
     }
 
-    private fun recoverAddress(meteorite: Meteorite) {
-
+    private suspend fun recoverAddress(meteorite: Meteorite) = withContext(Dispatchers.Default) {
         val recLat = meteorite.reclat
         val recLong = meteorite.reclong
 
@@ -76,8 +70,8 @@ class AddressService(
         meteoriteRepository.update(meteorite)
         Log.i(TAG, String.format("Address for id %s recovered", meteorite.id))
 
-
     }
+
 
     private fun getAddress(recLat: String?, recLong: String?): String {
         var addressString = ""
