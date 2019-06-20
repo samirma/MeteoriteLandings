@@ -1,18 +1,24 @@
 package com.antonio.samir.meteoritelandingsspots.ui.widget
 
 import android.annotation.TargetApi
-import android.content.Context
 import android.os.Binder
 import android.os.Build
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteDaoFactory
+import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteRepositoryInterface
 import org.apache.commons.lang3.StringUtils
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
-class MeteoriteRemoteViewsFactory(private val mPackageName: String, private val mContext: Context) : RemoteViewsService.RemoteViewsFactory {
-    private var mMeteorites: List<Meteorite>? = null
+class MeteoriteRemoteViewsFactory(
+        private val mPackageName: String
+) : RemoteViewsService.RemoteViewsFactory, KoinComponent {
+
+    private var meteorites: List<Meteorite>? = null
+
+    val meteoriteRepository: MeteoriteRepositoryInterface  by inject()
 
     override fun onCreate() {
 
@@ -22,25 +28,25 @@ class MeteoriteRemoteViewsFactory(private val mPackageName: String, private val 
 
         val identityToken = Binder.clearCallingIdentity()
 
-        mMeteorites = MeteoriteDaoFactory.getMeteoriteDao(mContext).meteoriteOrdenedSync
+        meteorites = meteoriteRepository.meteoriteOrdened().value
 
         Binder.restoreCallingIdentity(identityToken)
     }
 
     override fun onDestroy() {
-        if (mMeteorites != null) {
-            mMeteorites = null
+        if (meteorites != null) {
+            meteorites = null
         }
     }
 
     override fun getCount(): Int {
-        return if (mMeteorites == null) 0 else mMeteorites!!.size
+        return if (meteorites == null) 0 else meteorites!!.size
     }
 
     override fun getViewAt(position: Int): RemoteViews {
         val views = RemoteViews(mPackageName, R.layout.meteorite_widget_item)
 
-        val meteorite = mMeteorites!![position]
+        val meteorite = meteorites!![position]
 
         val meteoriteName = meteorite.name
         val year = meteorite.yearString
@@ -51,9 +57,7 @@ class MeteoriteRemoteViewsFactory(private val mPackageName: String, private val 
         views.setTextViewText(R.id.year, year)
         setLocationText(meteorite.address, views)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-            setRemoteContentDescription(views, meteoriteName)
-        }
+        setRemoteContentDescription(views, meteoriteName)
 
 //        val intent = Intent(mContext, MeteoriteDetailActivity::class.java)
 //        intent.putExtra(ITEM_SELECTED, idString)
@@ -72,7 +76,7 @@ class MeteoriteRemoteViewsFactory(private val mPackageName: String, private val 
     }
 
     override fun getItemId(position: Int): Long {
-        return mMeteorites!![position].id.toLong()
+        return meteorites!![position].id.toLong()
     }
 
     override fun hasStableIds(): Boolean {
