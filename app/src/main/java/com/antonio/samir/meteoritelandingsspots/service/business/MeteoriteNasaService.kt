@@ -26,6 +26,8 @@ class MeteoriteNasaService(
 
     private val isGpsOrdered = AtomicBoolean(false)
 
+    private val addressServiceStarted = AtomicBoolean(false)
+
     private val mediatorLiveData = MediatorLiveData<List<Meteorite>>()
 
     override suspend fun loadMeteorites(): LiveData<List<Meteorite>> {
@@ -34,18 +36,24 @@ class MeteoriteNasaService(
 
         mediatorLiveData.addSource(liveData) { meteoritesFromDB ->
 
-            if (meteoritesFromDB.isEmpty() && !isUpdateRequired.getAndSet(true)) {
-                //If it is empty so load the data from internet
-                GlobalScope.launch {
+            mediatorLiveData.value = meteoritesFromDB
+
+            GlobalScope.launch(Dispatchers.Main) {
+
+                if (meteoritesFromDB.isEmpty() && !isUpdateRequired.getAndSet(true)) {
+                    //If it is empty so load the data from internet
                     recoverFromNetwork()
+                } else {
+
+                    if (!isGpsOrdered.getAndSet(true) && !gpsTracker.isLocationServiceStarted() && gpsTracker.isGPSEnabled()) {
+                        gpsTracker.startLocationService()
+                        orderByLocation(meteoritesFromDB)
+                    }
+
+                    if (!addressServiceStarted.getAndSet(true)) {
+                        addressService.recoveryAddress()
+                    }
                 }
-            } else {
-                if (!isGpsOrdered.get() && !gpsTracker.isLocationServiceStarted() && gpsTracker.isGPSEnabled()) {
-                    gpsTracker.startLocationService()
-                    orderByLocation(meteoritesFromDB)
-                }
-                this.mediatorLiveData.value = meteoritesFromDB
-//                addressService.recoveryAddress()
             }
 
         }
@@ -97,21 +105,17 @@ class MeteoriteNasaService(
 
         sortedSet.addAll(meteorites)
 
-        isGpsOrdered.set(true)
-
         return@withContext ArrayList(sortedSet)
 
     }
 
 
-    private fun recoverFromNetwork() {
-        GlobalScope.launch(Dispatchers.Default) {
-            val remoteMeteorites = meteoriteRepository.getRemoteMeteorites()
-            remoteMeteorites?.let { meteoriteRepository.insertAll(it) }
-        }
+    private suspend fun recoverFromNetwork() {
+        val remoteMeteorites = meteoriteRepository.getRemoteMeteorites()
+        remoteMeteorites?.let { meteoriteRepository.insertAll(it) }
     }
 
-    override suspend fun getMeteoriteById(id: String): LiveData<Meteorite>? {
+    override fun getMeteoriteById(id: String): LiveData<Meteorite>? {
         return meteoriteRepository.getMeteoriteById(id)
     }
 
