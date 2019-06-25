@@ -6,11 +6,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
+import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
 
 
@@ -80,7 +83,7 @@ class GPSTracker(
         locationManager?.removeUpdates(this)
     }
 
-    override fun startLocationService() {
+    override suspend fun startLocationService() = withContext(Dispatchers.Main) {
         try {
 
             if (isLocationAutorized) {
@@ -96,15 +99,17 @@ class GPSTracker(
     }
 
     @SuppressLint("MissingPermission")
-    private fun startLocation() {
+    private suspend fun startLocation() = withContext(Dispatchers.Main) {
         var location: Location?
+
+        val locationListener: LocationListener = this@GPSTracker
 
         if (isNetworkEnabled) {
 
             locationManager!!.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER,
                     MIN_TIME_BW_UPDATES,
-                    MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), this)
+                    MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), locationListener)
             Log.d(TAG, "Network")
             if (locationManager != null) {
                 location = locationManager!!
@@ -115,11 +120,11 @@ class GPSTracker(
             }
         }
         // if GPS Enabled get lat/long using GPS Services
-        if (this.isGPSEnabled) {
+        if (isGPSEnabled) {
             locationManager!!.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
                     MIN_TIME_BW_UPDATES,
-                    MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), this)
+                    MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), locationListener)
             Log.d(TAG, "GPS Enabled")
             if (locationManager != null) {
                 location = locationManager!!
