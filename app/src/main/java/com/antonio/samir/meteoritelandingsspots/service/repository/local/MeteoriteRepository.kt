@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.service.repository.local
 
+import android.location.Location
 import androidx.lifecycle.LiveData
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.repository.local.database.MeteoriteDao
@@ -9,6 +10,16 @@ class MeteoriteRepository(
         val meteoriteDao: MeteoriteDao,
         val nasaRemoteRepository: NasaRemoteRepositoryInterface
 ) : MeteoriteRepositoryInterface {
+
+    override fun meteoriteOrdenedByLocation(location: Location): LiveData<List<Meteorite>> {
+        val lng = location.longitude
+        val lat = location.latitude
+        return meteoriteDao.meteoriteOrderedByLocation(lat, lng)
+    }
+
+    override suspend fun getMeteoritesCount(): Int {
+        return meteoriteDao.getMeteoritesCount()
+    }
 
     override fun meteoriteOrdened(): LiveData<List<Meteorite>> {
         return meteoriteDao.meteoriteOrdered()
