@@ -19,7 +19,7 @@ class GeoLocationUtil(val context: Context) : GeoLocationUtilInterface {
             val geocoder = Geocoder(context, Locale.getDefault())
             val addresses = geocoder.getFromLocation(latitude, longitude, 1)
 
-            if (addresses != null && !addresses.isEmpty()) {
+            if (addresses.isNotEmpty()) {
 
                 address = addresses[0]
 
