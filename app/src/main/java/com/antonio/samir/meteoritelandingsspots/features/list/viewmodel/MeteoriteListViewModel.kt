@@ -44,6 +44,7 @@ class MeteoriteListViewModel(
     fun loadMeteorites() {
         launchDataLoad {
             val loadMeteorites = meteoriteServiceInterface.loadMeteorites()
+            meteorites.removeSource(loadMeteorites)
             meteorites.addSource(loadMeteorites) { value ->
                 meteorites.value = value
             }
@@ -51,7 +52,7 @@ class MeteoriteListViewModel(
     }
 
     fun updateLocation() {
-        gpsTracker.startLocationService()
+        viewModelScope.launch { gpsTracker.startLocationService() }
     }
 
     fun isAuthorizationRequested(): LiveData<Boolean> {
