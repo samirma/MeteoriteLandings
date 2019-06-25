@@ -2,15 +2,12 @@ package com.antonio.samir.meteoritelandingsspots.service.business
 
 import android.location.Location
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteRepositoryInterface
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -28,37 +25,25 @@ class MeteoriteNasaService(
 
     private val addressServiceStarted = AtomicBoolean(false)
 
-    private val mediatorLiveData = MediatorLiveData<List<Meteorite>>()
+    private var location: Location? = null
 
-    override suspend fun loadMeteorites(): LiveData<List<Meteorite>> {
+    override suspend fun loadMeteorites(): LiveData<List<Meteorite>> = withContext(Dispatchers.Default) {
 
-        val liveData = meteoriteRepository.meteoriteOrdened()
+        if (meteoriteRepository.getMeteoritesCount() == 0 && !isUpdateRequired.getAndSet(true)) {
+            //If it is empty so load the data from internet
+            recoverFromNetwork()
+        } else {
 
-        mediatorLiveData.addSource(liveData) { meteoritesFromDB ->
-
-            mediatorLiveData.value = meteoritesFromDB
-
-            GlobalScope.launch(Dispatchers.Main) {
-
-                if (meteoritesFromDB.isEmpty() && !isUpdateRequired.getAndSet(true)) {
-                    //If it is empty so load the data from internet
-                    recoverFromNetwork()
-                } else {
-
-                    if (!isGpsOrdered.getAndSet(true) && !gpsTracker.isLocationServiceStarted() && gpsTracker.isGPSEnabled()) {
-                        gpsTracker.startLocationService()
-                        orderByLocation(meteoritesFromDB)
-                    }
-
-                    if (!addressServiceStarted.getAndSet(true)) {
-                        addressService.recoveryAddress()
-                    }
-                }
+            if (!isGpsOrdered.getAndSet(true) && !gpsTracker.isLocationServiceStarted() && gpsTracker.isGPSEnabled()) {
+                updateLocation()
             }
 
+            if (!addressServiceStarted.getAndSet(true)) {
+                addressService.recoveryAddress()
+            }
         }
 
-        return mediatorLiveData
+        return@withContext meteoriteRepository.meteoriteOrdened()
 
     }
 
@@ -66,20 +51,15 @@ class MeteoriteNasaService(
         return addressService.status
     }
 
-    private fun orderByLocation(meteorites: List<Meteorite>) {
+    private suspend fun updateLocation() = withContext(Dispatchers.Main) {
+
+        gpsTracker.startLocationService()
 
         val trackerLocation = gpsTracker.location
         trackerLocation.observeForever(object : Observer<Location> {
             override fun onChanged(location: Location?) {
                 if (location != null) {
-
-                    GlobalScope.launch(Dispatchers.Main) {
-
-                        val orderList = orderList(location, meteorites)
-
-                        mediatorLiveData.value = orderList
-                    }
-
+                    this@MeteoriteNasaService.location = location
                     trackerLocation.removeObserver(this)
                     gpsTracker.stopUpdates()
 
@@ -91,11 +71,10 @@ class MeteoriteNasaService(
     private suspend fun orderList(
             location: Location,
             meteorites: List<Meteorite>
-    ): ArrayList<Meteorite>? = withContext(Dispatchers.IO)
+    ): ArrayList<Meteorite>? = withContext(Dispatchers.Default)
     {
         val latitude = location.latitude
         val longitude = location.longitude
-        //String sortOrder = String.format("ABS(reclat - %s ) + ABS(reclong - %s) ASC", latitude, longitude);
 
         val sortedSet = TreeSet<Meteorite> { m1, m2 ->
             val distance1 = m1.distance(latitude, longitude)
