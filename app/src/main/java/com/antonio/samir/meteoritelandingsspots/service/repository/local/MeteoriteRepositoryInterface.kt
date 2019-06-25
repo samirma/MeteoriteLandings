@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.service.repository.local
 
+import android.location.Location
 import androidx.lifecycle.LiveData
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 
@@ -16,5 +17,9 @@ interface MeteoriteRepositoryInterface {
     suspend fun insertAll(meteorites: List<Meteorite>)
 
     suspend fun getRemoteMeteorites(): List<Meteorite>?
+
+    suspend fun getMeteoritesCount(): Int
+    
+    fun meteoriteOrdenedByLocation(location: Location): LiveData<List<Meteorite>>
 
 }
