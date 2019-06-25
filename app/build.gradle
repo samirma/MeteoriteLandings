@@ -10,6 +10,12 @@ android {
     def prop_keyAlias = new String(properties.getProperty('keyAlias'))
     def prop_keyPassword = new String(properties.getProperty('keyStorePassword'))
     def prop_storeFile = file(new String(properties.getProperty('keyStore')))
+
+
+    androidExtensions {
+        experimental = true
+    }
+
     signingConfigs {
         config {
             keyAlias 'dev_key'
