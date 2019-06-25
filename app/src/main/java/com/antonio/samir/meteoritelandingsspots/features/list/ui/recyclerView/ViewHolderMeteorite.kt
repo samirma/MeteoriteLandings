@@ -12,26 +12,24 @@ import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 
 class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
 
-    var mName: TextView
+    var name: TextView
 
-    var mLocation: TextView
+    var location: TextView
 
     var mCardview: CardView
 
-    var mYear: TextView
     var addressObserver: Observer<Meteorite>? = null
     var liveMet: LiveData<Meteorite>? = null
     var id: String? = null
 
     init {
 
-        mName = view.findViewById(R.id.title)
+        name = view.findViewById(R.id.title)
 
-        mLocation = view.findViewById(R.id.location)
+        location = view.findViewById(R.id.location)
 
         mCardview = view.findViewById(R.id.cardview)
 
-        mYear = view.findViewById(R.id.year)
 
     }
 

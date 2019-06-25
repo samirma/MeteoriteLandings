@@ -32,7 +32,7 @@ class Meteorite constructor() : Parcelable {
     companion object {
         val TAG = Meteorite::class.java.simpleName
 
-        private val SIMPLE_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+        val SIMPLE_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
     }
 
     val yearString: String?

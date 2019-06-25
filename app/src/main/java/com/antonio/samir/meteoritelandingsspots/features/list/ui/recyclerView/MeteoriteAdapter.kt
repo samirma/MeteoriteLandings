@@ -16,7 +16,7 @@ import org.apache.commons.lang3.StringUtils
  * Custom RecyclerView.Adapter to deal with meteorites cursor
  */
 class MeteoriteAdapter(
-        private val mContext: Context,
+        private val context: Context,
         private val meteoriteSelector: MeteoriteSelector,
         private val viewModel: MeteoriteListViewModel
 ) : androidx.recyclerview.widget.RecyclerView.Adapter<ViewHolderMeteorite>() {
@@ -61,12 +61,9 @@ class MeteoriteAdapter(
 
         val idString = meteorite.id.toString()
 
-        viewHolder.mName.text = mContext.getString(R.string.title, meteoriteName, year)
-        viewHolder.mYear.text = year
-        viewHolder.mYear.visibility = View.GONE
+        viewHolder.name.text = context.getString(R.string.title, meteoriteName, year)
 
-        viewHolder.mName.contentDescription = meteoriteName
-        viewHolder.mYear.contentDescription = year
+        viewHolder.name.contentDescription = meteoriteName
 
         setLocationText(meteorite, viewHolder)
 
@@ -83,14 +80,14 @@ class MeteoriteAdapter(
             elevation = R.dimen.selected_item_elevation
         }
 
-        viewHolder.mCardview.setCardBackgroundColor(mContext.resources.getColor(color))
-        viewHolder.mCardview.cardElevation = mContext.resources.getDimensionPixelSize(elevation).toFloat()
-        viewHolder.mName.setTextColor(mContext.resources.getColor(title_color))
+        viewHolder.mCardview.setCardBackgroundColor(context.resources.getColor(color))
+        viewHolder.mCardview.cardElevation = context.resources.getDimensionPixelSize(elevation).toFloat()
+        viewHolder.name.setTextColor(context.resources.getColor(title_color))
 
     }
 
 
-    fun setLocationText(meteorite: Meteorite, viewHolder: ViewHolderMeteorite) {
+    private fun setLocationText(meteorite: Meteorite, viewHolder: ViewHolderMeteorite) {
         val address = meteorite.address
 
         //Always remove the previous observer
@@ -101,7 +98,7 @@ class MeteoriteAdapter(
         }
 
         if (StringUtils.isNotEmpty(address)) {
-            showAddress(viewHolder, address)
+            showAddress(viewHolder, address, meteorite)
         } else {
             //If address is still empty then observe this entity to be aware of any change
             viewHolder.liveMet = viewModel.getMeteorite(meteorite)
@@ -109,21 +106,21 @@ class MeteoriteAdapter(
             val addressObserver = Observer<Meteorite> { meteorite1 ->
                 val newAddress = meteorite1?.address
                 if (StringUtils.isNotEmpty(newAddress)) {
-                    showAddress(viewHolder, newAddress!!)
-                    viewHolder.mLocation.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.view_show))
+                    showAddress(viewHolder, newAddress!!, meteorite)
+                    viewHolder.location.startAnimation(AnimationUtils.loadAnimation(context, R.anim.view_show))
                     viewHolder.liveMet?.removeObserver(viewHolder.addressObserver!!)
                 }
             }
 
             viewHolder.addressObserver = addressObserver
             viewHolder.liveMet?.observeForever(viewHolder.addressObserver!!)
-            viewHolder.mLocation.visibility = View.INVISIBLE
+            viewHolder.location.visibility = View.INVISIBLE
         }
     }
 
-    private fun showAddress(viewHolder: ViewHolderMeteorite, address: String?) {
-        viewHolder.mLocation.text = address
-        viewHolder.mLocation.visibility = View.VISIBLE
+    private fun showAddress(viewHolder: ViewHolderMeteorite, address: String?, meteorite: Meteorite) {
+        viewHolder.location.text = address
+        viewHolder.location.visibility = View.VISIBLE
     }
 
     fun setSelectedMeteorite(selectedMeteorite: String) {
