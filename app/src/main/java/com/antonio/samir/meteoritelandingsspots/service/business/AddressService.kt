@@ -43,12 +43,14 @@ class AddressService(
                 val meteorites = meteoriteRepository.meteoritesWithOutAddress()
                 try {
                     if (meteorites.isNotEmpty()) {
+                        Log.i(TAG, "recoveryAddress $LOADING")
                         status.postValue(LOADING)
 
                         meteorites.onEach { meteorite ->
                             recoverAddress(meteorite)
                         }
 
+                        Log.i(TAG, "recoveryAddress $DONE")
                         status.postValue(DONE)
                     }
                 } catch (e: Exception) {
@@ -68,7 +70,7 @@ class AddressService(
         val address = getAddress(recLat, recLong)
         meteorite.address = address
         meteoriteRepository.update(meteorite)
-        Log.i(TAG, String.format("Address for id %s recovered", meteorite.id))
+//        Log.i(TAG, String.format("Address for id %s recovered", meteorite.id))
 
     }
 
