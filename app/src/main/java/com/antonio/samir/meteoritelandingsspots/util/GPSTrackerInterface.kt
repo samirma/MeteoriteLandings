@@ -11,7 +11,7 @@ interface GPSTrackerInterface : LocationListener {
 
     val location: MutableLiveData<Location>
 
-    fun startLocationService()
+    suspend fun startLocationService(): Any
 
     fun isLocationServiceStarted(): Boolean
 
