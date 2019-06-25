@@ -86,7 +86,7 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
 
 
     private fun setMeteorite(meteorite: Meteorite) {
-        setLocationText(meteorite.address, view?.findViewById(R.id.location))
+        setLocationText(meteorite.address, view?.findViewById(R.id.location), meteorite)
 
         if (!isUiDone) {
             isUiDone = true
@@ -108,12 +108,13 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
         }
     }
 
-    private fun setLocationText(address: String?, text: TextView?) {
-        if (StringUtils.isNotEmpty(address)) {
-            setText(null, text, address)
-            text!!.visibility = View.VISIBLE
+    private fun setLocationText(address: String?, text: TextView?, meteorite: Meteorite) {
+
+        text?.visibility = if (StringUtils.isNotEmpty(address)) {
+            setText(null, text, address + meteorite.distance(41.1579, 8.6291))
+            View.VISIBLE
         } else {
-            text!!.visibility = View.GONE
+            View.GONE
         }
     }
 
