@@ -21,8 +21,9 @@
         android:animateLayoutChanges="true"
         android:orientation="horizontal">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/meteoriteRV"
+        <fragment
+            android:id="@+id/listFragment"
+            android:name="com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListFragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
@@ -32,8 +33,9 @@
             android:paddingBottom="28dp"
             android:scrollbarStyle="outsideOverlay" />
 
-        <FrameLayout
-            android:id="@+id/fragment"
+        <fragment
+            android:id="@+id/meteoriteDetailFragment"
+            android:name="com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailFragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="5"
