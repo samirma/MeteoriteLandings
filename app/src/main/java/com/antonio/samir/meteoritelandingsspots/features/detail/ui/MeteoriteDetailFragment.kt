@@ -111,7 +111,7 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
     private fun setLocationText(address: String?, text: TextView?, meteorite: Meteorite) {
 
         text?.visibility = if (StringUtils.isNotEmpty(address)) {
-            setText(null, text, address + meteorite.distance(41.1579, 8.6291))
+            setText(null, text, address)
             View.VISIBLE
         } else {
             View.GONE
