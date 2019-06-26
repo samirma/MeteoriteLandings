@@ -4,11 +4,11 @@ import android.os.Parcelable
 import android.text.TextUtils
 import android.util.Log
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
-import org.apache.commons.lang3.StringUtils
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -28,6 +28,9 @@ class Meteorite constructor() : Parcelable {
     var reclong: String? = null
     var reclat: String? = null
     var address: String? = null
+
+    @Ignore
+    var distance: Float? = null
 
     companion object {
         val TAG = Meteorite::class.java.simpleName
@@ -54,19 +57,5 @@ class Meteorite constructor() : Parcelable {
             }
             return yearParsed
         }
-
-    fun distance(latitude: Double, longitude: Double): Double {
-        var result = -1.0
-        if (StringUtils.isNotEmpty(reclat) && StringUtils.isNotEmpty(reclong)) {
-            try {
-                result = Math.abs(java.lang.Float.valueOf(reclat) - latitude) + Math.abs(java.lang.Float.valueOf(reclong) - longitude)
-            } catch (e: Exception) {
-                Log.e(TAG, e.message, e)
-            }
-
-        }
-        return result
-    }
-
 
 }
