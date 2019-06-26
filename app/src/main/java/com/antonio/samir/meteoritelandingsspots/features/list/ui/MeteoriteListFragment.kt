@@ -32,7 +32,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class MeteoriteListFragment : Fragment(),
         MeteoriteSelectorView {
 
-    private val TAG = MeteoriteListMainActivity::class.java.simpleName
+    private val TAG = MeteoriteListFragment::class.java.simpleName
 
     private var sglm: GridLayoutManager? = null
     private lateinit var meteoriteAdapter: MeteoriteAdapter
