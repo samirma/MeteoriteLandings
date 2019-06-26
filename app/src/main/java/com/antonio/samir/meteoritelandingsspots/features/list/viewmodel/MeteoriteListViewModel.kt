@@ -68,7 +68,9 @@ class MeteoriteListViewModel(
     private fun launchDataLoad(block: suspend () -> Unit): Job {
         return viewModelScope.launch {
             try {
-                loadingStatus.value = LOADING
+                if (loadingStatus.value != DONE) {
+                    loadingStatus.value = LOADING
+                }
                 block()
             } catch (error: Exception) {
                 Log.e(TAG, error.message, error)
