@@ -1,10 +1,10 @@
-package com.antonio.samir.meteoritelandingsspots.features.list.ui
+package com.antonio.samir.meteoritelandingsspots.features
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.antonio.samir.meteoritelandingsspots.R
 
-class MeteoriteListMainActivity : AppCompatActivity() {
+class MeteoriteMainEntryPointActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

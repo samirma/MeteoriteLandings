@@ -20,12 +20,13 @@
             android:required="false" />
 
         <activity
-            android:name="com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListMainActivity"
+            android:name="com.antonio.samir.meteoritelandingsspots.features.MeteoriteMainEntryPointActivity"
             android:label="@string/title_activity_main"
             android:launchMode="standard"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
