@@ -11,6 +11,7 @@ import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.stream.Collectors
 
 
 class MeteoriteNasaService(
@@ -94,9 +95,16 @@ class MeteoriteNasaService(
         })
     }
 
-    private suspend fun recoverFromNetwork() {
+    private suspend fun recoverFromNetwork() = withContext(Dispatchers.Default) {
+
         val remoteMeteorites = meteoriteRepository.getRemoteMeteorites()
-        remoteMeteorites?.let { meteoriteRepository.insertAll(it) }
+
+        val filteredList = remoteMeteorites
+                ?.stream()
+                ?.filter { it.reclong?.toDoubleOrNull() != null && it.reclat?.toDoubleOrNull() != null }
+                ?.collect(Collectors.toList())
+
+        filteredList?.let { meteoriteRepository.insertAll(it) }
     }
 
     override fun getMeteoriteById(id: String): LiveData<Meteorite>? {
