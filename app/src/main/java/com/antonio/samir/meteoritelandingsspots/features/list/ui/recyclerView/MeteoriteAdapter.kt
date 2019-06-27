@@ -24,9 +24,6 @@ class MeteoriteAdapter(
 
     private var selectedMeteorite: Meteorite? = null
 
-    var vieHolderMeteorite: ViewHolderMeteorite? = null
-        private set
-
     private var meteorites: List<Meteorite>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderMeteorite {
@@ -34,14 +31,12 @@ class MeteoriteAdapter(
         val vh = ViewHolderMeteorite(view)
 
         //On view click use MeteoriteSelector to do execute the proper according the current layout
-        view.setOnClickListener { view1 ->
-            vieHolderMeteorite = vh
+        view.setOnClickListener {
             vh.meteorite?.let { meteoriteSelector.selectItemId(it.id.toString()) }
 
+            //Update des/selected items
             val previousMet = selectedMeteorite
-
             selectedMeteorite = vh.meteorite
-
             meteorites?.let {
                 notifyItemChanged(it.indexOf(previousMet))
                 notifyItemChanged(it.indexOf(selectedMeteorite))
@@ -61,7 +56,7 @@ class MeteoriteAdapter(
     }
 
     override fun getItemId(position: Int): Long {
-        return position.toLong()
+        return meteorites?.get(position)?.id?.toLong() ?: 0
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolderMeteorite, position: Int) {

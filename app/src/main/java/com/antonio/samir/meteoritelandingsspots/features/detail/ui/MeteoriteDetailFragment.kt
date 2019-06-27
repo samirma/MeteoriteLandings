@@ -27,8 +27,6 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
     private var meteoriteId: String? = null
 
     private var map: GoogleMap? = null
-    private var isUiDone = false
-
 
     companion object {
 
@@ -70,23 +68,26 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
             setMeteorite(it)
         })
 
-        meteoriteId?.let { viewModel.loadMeteoriteById(it) }
+        meteoriteId?.let { setCurrentMeteorite(it) }
     }
 
+    fun setCurrentMeteorite(meteoriteId: String) {
+        viewModel.loadMeteoriteById(meteoriteId)
+    }
 
     override fun onMapReady(map: GoogleMap) {
         this.map = map
     }
 
     private fun setupMap(meteoriteName: String?, lat: Double, log: Double) {
-        map?.clear()
-
         val latLng = LatLng(lat, log)
+
+        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 30f))
+
+        map?.clear()
 
         map?.addMarker(MarkerOptions().position(
                 latLng).title(meteoriteName))
-
-        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 30f))
 
         // Zoom in, animating the camera.
         map?.animateCamera(CameraUpdateFactory.zoomTo(10f), 2000, null)
@@ -96,24 +97,21 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
     private fun setMeteorite(meteorite: Meteorite) {
         setLocationText(meteorite.address, view?.findViewById(R.id.location), meteorite)
 
-        if (!isUiDone) {
-            isUiDone = true
-            val meteoriteName = meteorite.name
-            setText(null, this.title, meteoriteName)
+        val meteoriteName = meteorite.name
+        setText(null, this.title, meteoriteName)
 
-            setText(year_label, this.year, meteorite.yearString)
+        setText(year_label, this.year, meteorite.yearString)
 
-            setText(recclass_label, this.recclass, meteorite.recclass)
+        setText(recclass_label, this.recclass, meteorite.recclass)
 
-            setText(mass_label, this.mass, meteorite.mass)
+        setText(mass_label, this.mass, meteorite.mass)
 
-            val lat = meteorite.reclat?.toDouble()
-            val log = meteorite.reclong?.toDouble()
-            if (map != null && lat != null && log != null) {
-                setupMap(meteoriteName, lat, log)
-            }
-
+        val lat = meteorite.reclat?.toDouble()
+        val log = meteorite.reclong?.toDouble()
+        if (map != null && lat != null && log != null) {
+            setupMap(meteoriteName, lat, log)
         }
+
     }
 
     private fun setLocationText(address: String?, text: TextView?, meteorite: Meteorite) {

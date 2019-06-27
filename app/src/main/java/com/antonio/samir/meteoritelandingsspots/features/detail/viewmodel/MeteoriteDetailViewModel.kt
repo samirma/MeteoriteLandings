@@ -13,15 +13,20 @@ class MeteoriteDetailViewModel(
         private val meteoriteService: MeteoriteServiceInterface
 ) : ViewModel() {
 
+    private var currentMeteorite: LiveData<Meteorite>? = null
+
     private val meteorite: MediatorLiveData<Meteorite> = MediatorLiveData()
 
     fun loadMeteoriteById(meteoriteId: String) {
+        val meteoriteById = meteoriteService.getMeteoriteById(meteoriteId)
         viewModelScope.launch {
-            meteoriteService.getMeteoriteById(meteoriteId)?.let {
+            meteoriteById?.let {
                 meteorite.addSource(it) { value ->
                     meteorite.setValue(value)
                 }
             }
+            currentMeteorite?.let { meteorite.removeSource(it) }
+            currentMeteorite = meteoriteById
         }
     }
 

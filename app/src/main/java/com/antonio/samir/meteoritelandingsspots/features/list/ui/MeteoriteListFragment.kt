@@ -176,8 +176,9 @@ class MeteoriteListFragment : Fragment(),
      */
     override fun selectLandscape(meteorite: String) {
         if (selectedMeteorite == null) {
-            sglm = GridLayoutManager(requireContext(), 1)
-            meteoriteRV.layoutManager = sglm
+            if (sglm?.spanCount != 1) {
+                sglm?.spanCount = 1
+            }
         }
         (activity as MeteoriteMainEntryPointActivity).selectMeteoriteLandscape(meteorite)
     }
