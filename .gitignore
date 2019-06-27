@@ -45,3 +45,5 @@ google-services.json
 /captures/
 release.keystore
 production.properties
+
+secret.xml
