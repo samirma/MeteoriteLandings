@@ -6,6 +6,6 @@ package com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.s
  */
 interface MeteoriteSelector {
 
-    fun selectItemId(meteorite: String?)
+    fun selectItemId(meteorite: String)
 
 }

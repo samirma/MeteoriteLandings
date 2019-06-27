@@ -34,6 +34,14 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
 
         const val METEORITE = "METEORITE"
 
+        fun newInstance(meteorite: String): MeteoriteDetailFragment {
+            val fragment = MeteoriteDetailFragment()
+            val args = Bundle()
+            args.putString(METEORITE, meteorite)
+            fragment.arguments = args
+            return fragment
+        }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

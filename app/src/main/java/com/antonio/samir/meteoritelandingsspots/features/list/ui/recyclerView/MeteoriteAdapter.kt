@@ -11,6 +11,7 @@ import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.se
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import org.apache.commons.lang3.StringUtils
+import java.util.*
 
 /**
  * Custom RecyclerView.Adapter to deal with meteorites cursor
@@ -21,7 +22,7 @@ class MeteoriteAdapter(
         private val viewModel: MeteoriteListViewModel
 ) : androidx.recyclerview.widget.RecyclerView.Adapter<ViewHolderMeteorite>() {
 
-    private var selectedMeteorite: String? = null
+    private var selectedMeteorite: Meteorite? = null
 
     var vieHolderMeteorite: ViewHolderMeteorite? = null
         private set
@@ -35,7 +36,17 @@ class MeteoriteAdapter(
         //On view click use MeteoriteSelector to do execute the proper according the current layout
         view.setOnClickListener { view1 ->
             vieHolderMeteorite = vh
-            meteoriteSelector.selectItemId(vh.id)
+            vh.meteorite?.let { meteoriteSelector.selectItemId(it.id.toString()) }
+
+            val previousMet = selectedMeteorite
+
+            selectedMeteorite = vh.meteorite
+
+            meteorites?.let {
+                notifyItemChanged(it.indexOf(previousMet))
+                notifyItemChanged(it.indexOf(selectedMeteorite))
+            }
+
         }
         return vh
     }
@@ -59,22 +70,20 @@ class MeteoriteAdapter(
         val meteoriteName = meteorite.name
         val year = meteorite.yearString
 
-        val idString = meteorite.id.toString()
-
         viewHolder.name.text = context.getString(R.string.title, meteoriteName, year)
 
         viewHolder.name.contentDescription = meteoriteName
 
         setLocationText(meteorite, viewHolder)
 
-        viewHolder.id = idString
+        viewHolder.meteorite = meteorite
 
 
         var color = R.color.unselected_item_color
         var title_color = R.color.title_color
         var elevation = R.dimen.unselected_item_elevation
 
-        if (StringUtils.equals(idString, selectedMeteorite)) {
+        if (Objects.equals(meteorite, selectedMeteorite)) {
             color = R.color.selected_item_color
             title_color = R.color.selected_title_color
             elevation = R.dimen.selected_item_elevation
@@ -123,8 +132,4 @@ class MeteoriteAdapter(
         viewHolder.location.visibility = View.VISIBLE
     }
 
-    fun setSelectedMeteorite(selectedMeteorite: String) {
-        notifyDataSetChanged()
-        this.selectedMeteorite = selectedMeteorite
-    }
 }
