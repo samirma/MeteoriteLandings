@@ -5,11 +5,11 @@ package com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.s
  */
 interface MeteoriteSelectorView {
 
-//    /**
-//     * Exceute landscape command for meteorite selection
-//     * @param meteorite
-//     */
-//    fun selectLandscape(meteorite: String?)
+    /**
+     * Exceute landscape command for meteorite selection
+     * @param meteorite
+     */
+    fun selectLandscape(meteorite: String)
 
     /**
      * Exceute portrait command for meteorite selection

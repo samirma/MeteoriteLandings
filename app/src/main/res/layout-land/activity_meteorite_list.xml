@@ -33,9 +33,8 @@
             android:paddingBottom="28dp"
             android:scrollbarStyle="outsideOverlay" />
 
-        <fragment
-            android:id="@+id/meteoriteDetailFragment"
-            android:name="com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailFragment"
+        <FrameLayout
+            android:id="@+id/fragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="5"

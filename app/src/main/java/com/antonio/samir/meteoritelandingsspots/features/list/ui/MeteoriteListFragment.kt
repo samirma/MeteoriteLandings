@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.antonio.samir.meteoritelandingsspots.R
+import com.antonio.samir.meteoritelandingsspots.features.MeteoriteMainEntryPointActivity
 import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailFragment.Companion.METEORITE
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.MeteoriteAdapter
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelectorFactory
@@ -77,7 +78,7 @@ class MeteoriteListFragment : Fragment(),
         val selectedMeteorite = getPreviousSelectedMeteorite(savedInstanceState)
 
         if (StringUtils.isNoneBlank(selectedMeteorite)) {
-            meteoriteSelector.selectItemId(selectedMeteorite)
+            selectedMeteorite?.let { meteoriteSelector.selectItemId(it) }
         }
 
 
@@ -168,6 +169,17 @@ class MeteoriteListFragment : Fragment(),
         messageTV.visibility = View.VISIBLE
         messageTV.text = messageString
         meteoriteLoadingStopped()
+    }
+
+    /**
+     * MeteoriteSelectorView implementation
+     */
+    override fun selectLandscape(meteorite: String) {
+        if (selectedMeteorite == null) {
+            sglm = GridLayoutManager(requireContext(), 1)
+            meteoriteRV.layoutManager = sglm
+        }
+        (activity as MeteoriteMainEntryPointActivity).selectMeteoriteLandscape(meteorite)
     }
 
     override fun selectPortrait(meteorite: String?) {

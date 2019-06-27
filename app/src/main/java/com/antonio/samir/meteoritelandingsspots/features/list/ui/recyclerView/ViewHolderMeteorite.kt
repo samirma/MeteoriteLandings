@@ -19,8 +19,10 @@ class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
     var mCardview: CardView
 
     var addressObserver: Observer<Meteorite>? = null
+
     var liveMet: LiveData<Meteorite>? = null
-    var id: String? = null
+
+    var meteorite: Meteorite? = null
 
     init {
 

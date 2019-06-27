@@ -3,7 +3,7 @@ package com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.s
 
 class MeteoriteSelectorPortrait(private val view: MeteoriteSelectorView) : MeteoriteSelector {
 
-    override fun selectItemId(meteorite: String?) {
+    override fun selectItemId(meteorite: String) {
         view.selectPortrait(meteorite)
     }
 }
