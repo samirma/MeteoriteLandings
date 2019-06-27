@@ -18,21 +18,27 @@ class MeteoriteMainEntryPointActivity : AppCompatActivity() {
         setContentView(R.layout.activity_meteorite_list)
     }
 
-    fun selectMeteoriteLandscape(meteorite: String?) {
+    fun selectMeteoriteLandscape(meteoriteId: String) {
 
-        fragment?.visibility = View.VISIBLE
+        if (meteoriteDetailFragment == null) {
 
-        var fragmentTransaction = supportFragmentManager.beginTransaction()
+            fragment?.visibility = View.VISIBLE
 
-        fragmentTransaction = fragmentTransaction.setCustomAnimations(
-                R.anim.fragment_slide_left_enter,
-                R.anim.fragment_slide_left_exit)
+            var fragmentTransaction = supportFragmentManager.beginTransaction()
 
-        meteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteorite!!)
-        fragmentTransaction.replace(R.id.fragment, meteoriteDetailFragment!!)
-        fragmentTransaction.commit()
+            fragmentTransaction = fragmentTransaction.setCustomAnimations(
+                    R.anim.fragment_slide_left_enter,
+                    R.anim.fragment_slide_left_exit)
 
-        selectedMeteorite = meteorite
+            meteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteoriteId)
+            fragmentTransaction.replace(R.id.fragment, meteoriteDetailFragment!!)
+            fragmentTransaction.commit()
+
+        } else {
+            meteoriteDetailFragment?.setCurrentMeteorite(meteoriteId)
+        }
+
+        selectedMeteorite = meteoriteId
 
     }
 
