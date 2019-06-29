@@ -16,7 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.features.MeteoriteMainEntryPointActivity
+import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailFragment
 import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailFragment.Companion.METEORITE
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.MeteoriteAdapter
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelectorFactory
@@ -41,6 +41,8 @@ class MeteoriteListFragment : Fragment(),
 
     private var progressDialog: ProgressDialog? = null
     private var isLandscape: Boolean = false
+
+    private var meteoriteDetailFragment: MeteoriteDetailFragment? = null
 
     private val listViewModel: MeteoriteListViewModel by viewModel()
 
@@ -180,7 +182,33 @@ class MeteoriteListFragment : Fragment(),
                 sglm?.spanCount = 1
             }
         }
-        (activity as MeteoriteMainEntryPointActivity).selectMeteoriteLandscape(meteorite)
+        selectMeteoriteLandscape(meteorite)
+    }
+
+    private fun selectMeteoriteLandscape(meteoriteId: String) {
+
+        if (meteoriteDetailFragment == null) {
+
+            fragment?.visibility = View.VISIBLE
+
+            var fragmentTransaction = fragmentManager?.beginTransaction()
+
+            if (fragmentTransaction != null) {
+                fragmentTransaction = fragmentTransaction.setCustomAnimations(
+                        R.anim.fragment_slide_left_enter,
+                        R.anim.fragment_slide_left_exit)
+
+                meteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteoriteId)
+                fragmentTransaction.replace(R.id.fragment, meteoriteDetailFragment!!)
+                fragmentTransaction.commit()
+            }
+
+        } else {
+            meteoriteDetailFragment?.setCurrentMeteorite(meteoriteId)
+        }
+
+        selectedMeteorite = meteoriteId
+
     }
 
     override fun selectPortrait(meteorite: String?) {
