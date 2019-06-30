@@ -215,7 +215,7 @@ class MeteoriteListFragment : Fragment(),
         val bundle = Bundle().apply {
             putString(METEORITE, meteorite)
         }
-        findNavController().navigate(R.id.action_meteoriteListFragment_to_meteoriteDetailFragment, bundle)
+        findNavController().navigate(R.id.toDetail, bundle)
 
     }
 

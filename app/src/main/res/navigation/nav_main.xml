@@ -9,7 +9,7 @@
         android:name="com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListFragment"
         android:label="MeteoriteListFragment">
         <action
-            android:id="@+id/action_meteoriteListFragment_to_meteoriteDetailFragment"
+            android:id="@+id/toDetail"
             app:destination="@id/meteoriteDetailFragment"
             app:enterAnim="@anim/nav_default_pop_enter_anim"
             app:exitAnim="@anim/nav_default_pop_exit_anim"
