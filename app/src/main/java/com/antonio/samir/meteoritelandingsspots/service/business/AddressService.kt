@@ -67,38 +67,38 @@ class AddressService(
         val recLat = meteorite.reclat
         val recLong = meteorite.reclong
 
-        val address = getAddress(recLat, recLong)
-        meteorite.address = address
-        meteoriteRepository.update(meteorite)
-//        Log.i(TAG, String.format("Address for id %s recovered", meteorite.id))
+        if (recLat != null && recLong != null) {
+            val address = getAddress(recLat.toDouble(), recLong.toDouble())
+            meteorite.address = address
+            meteoriteRepository.update(meteorite)
+            Log.v(TAG, "Address for id ${meteorite.id} recovered")
+        }
 
     }
 
 
-    private fun getAddress(recLat: String?, recLong: String?): String {
+    private fun getAddress(recLat: Double, recLong: Double): String {
         var addressString = ""
-        if (StringUtils.isNoneEmpty(recLat) && StringUtils.isNoneEmpty(recLong)) {
-            val address = geoLocationUtil.getAddress(java.lang.Double.parseDouble(recLat), java.lang.Double.parseDouble(recLong))
-            if (address != null) {
-                val finalAddress = ArrayList<String>()
-                val city = address.locality
-                if (StringUtils.isNoneEmpty(city)) {
-                    finalAddress.add(city)
-                }
-
-                val state = address.adminArea
-                if (StringUtils.isNoneEmpty(state)) {
-                    finalAddress.add(state)
-                }
-
-                val countryName = address.countryName
-                if (StringUtils.isNoneEmpty(countryName)) {
-                    finalAddress.add(countryName)
-                }
-
-                addressString = StringUtils.join(finalAddress, ", ")
-
+        val address = geoLocationUtil.getAddress(recLat, recLong)
+        if (address != null) {
+            val finalAddress = ArrayList<String>()
+            val city = address.locality
+            if (StringUtils.isNoneEmpty(city)) {
+                finalAddress.add(city)
             }
+
+            val state = address.adminArea
+            if (StringUtils.isNoneEmpty(state)) {
+                finalAddress.add(state)
+            }
+
+            val countryName = address.countryName
+            if (StringUtils.isNoneEmpty(countryName)) {
+                finalAddress.add(countryName)
+            }
+
+            addressString = StringUtils.join(finalAddress, ", ")
+
         }
 
         return addressString
