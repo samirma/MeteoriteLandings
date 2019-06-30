@@ -18,7 +18,7 @@ interface MeteoriteDao {
     @Query("SELECT * from meteorites ORDER BY ((reclat-:lat)*(reclat-:lat)) + ((reclong - :lng)*(reclong - :lng)) ASC")
     fun meteoriteOrderedByLocation(lat: Double, lng: Double): LiveData<List<Meteorite>>
 
-    @Query("SELECT * from meteorites WHERE address IS NULL ORDER BY id")
+    @Query("SELECT * from meteorites WHERE address IS NULL OR LENGTH(address) = 0 ORDER BY id")
     suspend fun meteoritesWithOutAddress(): List<Meteorite>
 
     @Insert
