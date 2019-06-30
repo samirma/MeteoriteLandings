@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.antonio.samir.meteoritelandingsspots.service.business.MeteoriteServiceInterface
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import kotlinx.coroutines.launch
-import java.util.*
 
 
 class MeteoriteDetailViewModel(
@@ -23,7 +22,8 @@ class MeteoriteDetailViewModel(
         viewModelScope.launch {
             meteoriteById?.let {
                 meteorite.addSource(it) { value ->
-                    if (!Objects.equals(meteorite.value, value)) {
+                    val currentValue = meteorite.value
+                    if (value.id != currentValue?.id || value.address != currentValue.address) {
                         meteorite.value = value
                     }
                 }

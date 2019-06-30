@@ -95,6 +95,7 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
 
 
     private fun setMeteorite(meteorite: Meteorite) {
+
         setLocationText(meteorite.address, view?.findViewById(R.id.location), meteorite)
 
         val meteoriteName = meteorite.name
