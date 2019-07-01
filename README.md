@@ -17,10 +17,10 @@ https://www.norio.be/android-feature-graphic-generator/
 
 
 ## Build with
-. Kotlin
-. Coroutines, Let's play without RX
-. Koin, Let's play without Dagger
-. LiveData
-. Room
-. Navigation-ui
-. Retrofit2
+- Kotlin
+- Coroutines - Rx free
+- Koin - Dagger free
+- LiveData
+- Room
+- Navigation-ui
+- Retrofit2
