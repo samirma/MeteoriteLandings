@@ -1,11 +1,13 @@
 package com.antonio.samir.meteoritelandingsspots.features.detail.ui
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.features.detail.viewmodel.MeteoriteDetailViewModel
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
@@ -31,11 +33,13 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
     companion object {
 
         const val METEORITE = "METEORITE"
+        const val OPENED_INSIDE_NAVIGATOR = "OPENED_INSIDE_NAVIGATOR"
 
         fun newInstance(meteorite: String): MeteoriteDetailFragment {
             val fragment = MeteoriteDetailFragment()
             val args = Bundle()
             args.putString(METEORITE, meteorite)
+            args.putBoolean(OPENED_INSIDE_NAVIGATOR, false)
             fragment.arguments = args
             return fragment
         }
@@ -60,9 +64,15 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
+        if (isLandscape && arguments?.getBoolean(OPENED_INSIDE_NAVIGATOR) == false) {
+            findNavController().popBackStack()
+        }
+        
+        (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
         observeMeteorite()
+
     }
 
     private fun observeMeteorite() {
