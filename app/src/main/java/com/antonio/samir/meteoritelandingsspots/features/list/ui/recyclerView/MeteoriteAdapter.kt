@@ -6,10 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DiffUtil
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelector
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.apache.commons.lang3.StringUtils
 import java.util.*
 
@@ -24,7 +27,7 @@ class MeteoriteAdapter(
 
     private var selectedMeteorite: Meteorite? = null
 
-    private var meteorites: List<Meteorite>? = null
+    private var meteorites: List<Meteorite> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderMeteorite {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_meteorite, parent, false)
@@ -37,10 +40,9 @@ class MeteoriteAdapter(
             //Update des/selected items
             val previousMet = selectedMeteorite
             selectedMeteorite = vh.meteorite
-            meteorites?.let {
-                notifyItemChanged(it.indexOf(previousMet))
-                notifyItemChanged(it.indexOf(selectedMeteorite))
-            }
+
+            notifyItemChanged(meteorites.indexOf(previousMet))
+            notifyItemChanged(meteorites.indexOf(selectedMeteorite))
 
         }
         return vh
@@ -48,19 +50,29 @@ class MeteoriteAdapter(
 
 
     override fun getItemCount(): Int {
-        return if (meteorites != null) meteorites!!.size else 0
+        return meteorites.size
     }
 
-    fun setData(meteorites: List<Meteorite>) {
-        this.meteorites = meteorites
+    suspend fun setData(meteorites: List<Meteorite>) = withContext(Dispatchers.Default) {
+
+        val meteoriteDiffCallback = MeteoriteDiffCallback(this@MeteoriteAdapter.meteorites, meteorites)
+
+        val diffResult = DiffUtil.calculateDiff(meteoriteDiffCallback)
+
+        withContext(Dispatchers.Main) {
+            diffResult.dispatchUpdatesTo(this@MeteoriteAdapter)
+        }
+
+        this@MeteoriteAdapter.meteorites = meteorites
+
     }
 
     override fun getItemId(position: Int): Long {
-        return meteorites?.get(position)?.id?.toLong() ?: 0
+        return meteorites[position].id.toLong()
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolderMeteorite, position: Int) {
-        val meteorite = meteorites!![position]
+        val meteorite = meteorites[position]
 
         val meteoriteName = meteorite.name
         val year = meteorite.yearString

@@ -15,7 +15,7 @@ import java.util.*
 
 @Entity(tableName = "meteorites", indices = arrayOf(Index("id")))
 @Parcelize
-class Meteorite constructor() : Parcelable {
+class Meteorite : Parcelable {
     @PrimaryKey
     @SerializedName("id")
     var id: Int = 0
