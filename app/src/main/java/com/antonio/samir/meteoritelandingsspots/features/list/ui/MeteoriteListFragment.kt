@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import androidx.annotation.NonNull
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.antonio.samir.meteoritelandingsspots.R
@@ -27,6 +28,7 @@ import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.Meteorit
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.UNABLE_TO_FETCH
 import com.antonio.samir.meteoritelandingsspots.service.business.AddressService
 import kotlinx.android.synthetic.main.fragment_meteorite_list.*
+import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -104,8 +106,9 @@ class MeteoriteListFragment : Fragment(),
     private fun observeMeteorites() {
 
         listViewModel.meteorites.observe(this, Observer { meteorites ->
-            meteoriteAdapter.setData(meteorites)
-            meteoriteAdapter.notifyDataSetChanged()
+            lifecycleScope.launch {
+                meteoriteAdapter.setData(meteorites)
+            }
         })
 
         listViewModel.loadMeteorites()
