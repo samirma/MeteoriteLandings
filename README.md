@@ -14,3 +14,13 @@ http://www.iconarchive.com/show/flat-icons-by-flat-icons.com/Meteor-icon.html
 
 Feature image created using:
 https://www.norio.be/android-feature-graphic-generator/
+
+
+## Build with
+. Kotlin
+. Coroutines, Let's play without RX
+. Koin, Let's play without Dagger
+. LiveData
+. Room
+. Navigation-ui
+. Retrofit2
