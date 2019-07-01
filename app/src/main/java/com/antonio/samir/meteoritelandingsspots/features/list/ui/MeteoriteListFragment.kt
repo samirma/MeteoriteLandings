@@ -42,18 +42,15 @@ class MeteoriteListFragment : Fragment(),
     private var selectedMeteorite: String? = null
 
     private var progressDialog: ProgressDialog? = null
-    private var isLandscape: Boolean = false
 
     private var meteoriteDetailFragment: MeteoriteDetailFragment? = null
 
     private val listViewModel: MeteoriteListViewModel by viewModel()
 
-
-    val LOCATION_REQUEST_CODE = 11111
-
     companion object {
-        val ITEM_SELECTED = "ITEM_SELECTED"
-        val SCROLL_POSITION = "SCROLL_POSITION"
+        const val LOCATION_REQUEST_CODE = 11111
+        const val ITEM_SELECTED = "ITEM_SELECTED"
+        const val SCROLL_POSITION = "SCROLL_POSITION"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -64,7 +61,7 @@ class MeteoriteListFragment : Fragment(),
 
         super.onCreate(savedInstanceState)
 
-        isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
         val meteoriteSelector = MeteoriteSelectorFactory.getMeteoriteSelector(
                 isLandscape,
@@ -244,8 +241,6 @@ class MeteoriteListFragment : Fragment(),
         if (meteorite == null && extras != null && !isRedeliver) {
             meteorite = extras.getString(ITEM_SELECTED)
         }
-
-        Log.i(TAG, "isRedeliver: $isRedeliver")
 
         return meteorite
     }

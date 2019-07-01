@@ -129,7 +129,7 @@ class MeteoriteAdapter(
             }
 
             viewHolder.addressObserver = addressObserver
-            viewHolder.liveMet?.observeForever(viewHolder.addressObserver!!)
+            viewHolder.liveMet?.observeForever(addressObserver)
             viewHolder.location.visibility = View.INVISIBLE
         }
     }
