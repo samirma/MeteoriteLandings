@@ -154,8 +154,7 @@ class MeteoriteListFragment : Fragment(),
             savedInstanceState.putString(ITEM_SELECTED, selectedMeteorite)
         }
 
-        val lastFirstVisiblePosition = sglm!!.findFirstCompletelyVisibleItemPosition()
-        savedInstanceState.putInt(SCROLL_POSITION, lastFirstVisiblePosition)
+        sglm?.findFirstCompletelyVisibleItemPosition()?.let { savedInstanceState.putInt(SCROLL_POSITION, it) }
 
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState)

@@ -69,8 +69,10 @@ class AddressService(
 
         if (recLat != null && recLong != null) {
             val address = getAddress(recLat.toDouble(), recLong.toDouble())
-            meteorite.address = address
-            meteoriteRepository.update(meteorite)
+            if (!address.isBlank()) {
+                meteorite.address = address
+                meteoriteRepository.update(meteorite)
+            }
             Log.v(TAG, "Address for id ${meteorite.id} recovered")
         }
 
