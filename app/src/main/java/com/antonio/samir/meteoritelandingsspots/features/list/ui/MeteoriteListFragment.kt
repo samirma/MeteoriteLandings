@@ -27,9 +27,9 @@ import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.Meteorit
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.LOADING
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.UNABLE_TO_FETCH
 import com.antonio.samir.meteoritelandingsspots.service.business.AddressService
+import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import kotlinx.android.synthetic.main.fragment_meteorite_list.*
 import kotlinx.coroutines.launch
-import org.apache.commons.lang3.StringUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MeteoriteListFragment : Fragment(),
@@ -39,7 +39,7 @@ class MeteoriteListFragment : Fragment(),
 
     private var sglm: GridLayoutManager? = null
     private lateinit var meteoriteAdapter: MeteoriteAdapter
-    private var selectedMeteorite: String? = null
+    private var selectedMeteorite: Meteorite? = null
 
     private var progressDialog: ProgressDialog? = null
 
@@ -78,10 +78,7 @@ class MeteoriteListFragment : Fragment(),
 
         val selectedMeteorite = getPreviousSelectedMeteorite(savedInstanceState)
 
-        if (StringUtils.isNoneBlank(selectedMeteorite)) {
-            selectedMeteorite?.let { meteoriteSelector.selectItemId(it) }
-        }
-
+        selectedMeteorite?.let { meteoriteSelector.selectItem(it) }
 
         if (savedInstanceState != null) {
             val anInt = savedInstanceState.getInt(SCROLL_POSITION, -1)
@@ -151,7 +148,7 @@ class MeteoriteListFragment : Fragment(),
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
 
         if (selectedMeteorite != null) {
-            savedInstanceState.putString(ITEM_SELECTED, selectedMeteorite)
+            savedInstanceState.putParcelable(ITEM_SELECTED, selectedMeteorite)
         }
 
         sglm?.findFirstCompletelyVisibleItemPosition()?.let { savedInstanceState.putInt(SCROLL_POSITION, it) }
@@ -175,7 +172,7 @@ class MeteoriteListFragment : Fragment(),
     /**
      * MeteoriteSelectorView implementation
      */
-    override fun selectLandscape(meteorite: String) {
+    override fun selectLandscape(meteorite: Meteorite) {
         if (selectedMeteorite == null) {
             if (sglm?.spanCount != 1) {
                 sglm?.spanCount = 1
@@ -184,7 +181,17 @@ class MeteoriteListFragment : Fragment(),
         selectMeteoriteLandscape(meteorite)
     }
 
-    private fun selectMeteoriteLandscape(meteoriteId: String) {
+    override fun selectPortrait(meteorite: Meteorite) {
+        val bundle = Bundle().apply {
+            putParcelable(METEORITE, meteorite)
+        }
+        findNavController().navigate(R.id.toDetail, bundle)
+
+        selectedMeteorite = meteorite
+
+    }
+
+    private fun selectMeteoriteLandscape(meteorite: Meteorite) {
 
         if (meteoriteDetailFragment == null) {
 
@@ -197,26 +204,21 @@ class MeteoriteListFragment : Fragment(),
                         R.anim.fragment_slide_left_enter,
                         R.anim.fragment_slide_left_exit)
 
-                meteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteoriteId)
+                meteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteorite)
                 fragmentTransaction.replace(R.id.fragment, meteoriteDetailFragment!!)
                 fragmentTransaction.commit()
             }
 
         } else {
-            meteoriteDetailFragment?.setCurrentMeteorite(meteoriteId)
+            meteoriteDetailFragment?.setCurrentMeteorite(meteorite)
         }
 
-        selectedMeteorite = meteoriteId
+        selectedMeteorite = meteorite
+
+        meteoriteAdapter.updateListUI(meteorite)
 
     }
 
-    override fun selectPortrait(meteorite: String?) {
-        val bundle = Bundle().apply {
-            putString(METEORITE, meteorite)
-        }
-        findNavController().navigate(R.id.toDetail, bundle)
-
-    }
 
     private fun setupGridLayout() {
         val columnCount = resources.getInteger(R.integer.list_column_count)
@@ -226,19 +228,19 @@ class MeteoriteListFragment : Fragment(),
         meteoriteRV.layoutManager = sglm
     }
 
-    private fun getPreviousSelectedMeteorite(savedInstanceState: Bundle?): String? {
+    private fun getPreviousSelectedMeteorite(savedInstanceState: Bundle?): Meteorite? {
 
-        var meteorite: String? = null
+        var meteorite: Meteorite? = null
 
         if (savedInstanceState != null) {
-            meteorite = savedInstanceState.getString(ITEM_SELECTED)
+            meteorite = savedInstanceState.getParcelable(ITEM_SELECTED)
         }
 
         val intent = Intent()
         val extras = intent.extras
         val isRedeliver = savedInstanceState != null || intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY != 0
         if (meteorite == null && extras != null && !isRedeliver) {
-            meteorite = extras.getString(ITEM_SELECTED)
+            meteorite = extras.getParcelable(ITEM_SELECTED)
         }
 
         return meteorite

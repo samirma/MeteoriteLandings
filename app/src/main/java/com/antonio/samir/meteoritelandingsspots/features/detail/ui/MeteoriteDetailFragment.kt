@@ -26,7 +26,7 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
 
     val viewModel: MeteoriteDetailViewModel by viewModel()
 
-    private var meteoriteId: String? = null
+    private var meteoriteId: Meteorite? = null
 
     private var map: GoogleMap? = null
 
@@ -35,10 +35,10 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
         const val METEORITE = "METEORITE"
         const val OPENED_INSIDE_NAVIGATOR = "OPENED_INSIDE_NAVIGATOR"
 
-        fun newInstance(meteorite: String): MeteoriteDetailFragment {
+        fun newInstance(meteorite: Meteorite): MeteoriteDetailFragment {
             val fragment = MeteoriteDetailFragment()
             val args = Bundle()
-            args.putString(METEORITE, meteorite)
+            args.putParcelable(METEORITE, meteorite)
             args.putBoolean(OPENED_INSIDE_NAVIGATOR, false)
             fragment.arguments = args
             return fragment
@@ -50,7 +50,7 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
         super.onCreate(savedInstanceState)
         if (arguments != null) {
             //Recovering the meteorite to work on it
-            meteoriteId = arguments?.getString(METEORITE)
+            meteoriteId = arguments?.getParcelable(METEORITE)
         }
     }
 
@@ -69,7 +69,7 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
         if (isLandscape && arguments?.getBoolean(OPENED_INSIDE_NAVIGATOR) == false) {
             findNavController().popBackStack()
         }
-        
+
         (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
         observeMeteorite()
 
@@ -84,8 +84,8 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
         meteoriteId?.let { setCurrentMeteorite(it) }
     }
 
-    fun setCurrentMeteorite(meteoriteId: String) {
-        viewModel.loadMeteoriteById(meteoriteId)
+    fun setCurrentMeteorite(meteorite: Meteorite) {
+        viewModel.loadMeteorite(meteorite)
     }
 
     override fun onMapReady(map: GoogleMap) {

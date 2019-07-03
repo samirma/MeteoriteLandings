@@ -35,19 +35,21 @@ class MeteoriteAdapter(
 
         //On view click use MeteoriteSelector to do execute the proper according the current layout
         view.setOnClickListener {
-            vh.meteorite?.let { meteoriteSelector.selectItemId(it.id.toString()) }
-
-            //Update des/selected items
-            val previousMet = selectedMeteorite
-            selectedMeteorite = vh.meteorite
-
-            notifyItemChanged(meteorites.indexOf(previousMet))
-            notifyItemChanged(meteorites.indexOf(selectedMeteorite))
-
+            vh.meteorite?.let { meteoriteSelector.selectItem(it) }
         }
         return vh
     }
 
+    fun updateListUI(meteorite: Meteorite) {
+        if (!Objects.equals(meteorite, selectedMeteorite)) {
+            
+            val previousMet = selectedMeteorite
+            selectedMeteorite = meteorite
+
+            notifyItemChanged(meteorites.indexOf(previousMet))
+            notifyItemChanged(meteorites.indexOf(meteorite))
+        }
+    }
 
     override fun getItemCount(): Int {
         return meteorites.size
@@ -138,5 +140,6 @@ class MeteoriteAdapter(
         viewHolder.location.text = address
         viewHolder.location.visibility = View.VISIBLE
     }
+
 
 }
