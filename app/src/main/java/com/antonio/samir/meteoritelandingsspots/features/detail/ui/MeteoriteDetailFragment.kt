@@ -2,6 +2,7 @@ package com.antonio.samir.meteoritelandingsspots.features.detail.ui
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +29,7 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
 
     private var meteoriteId: Meteorite? = null
 
-    private var map: GoogleMap? = null
+    val TAG = MeteoriteDetailFragment::class.java.simpleName
 
     companion object {
 
@@ -70,8 +71,8 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
             findNavController().popBackStack()
         }
 
-        (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
         observeMeteorite()
+        (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
 
     }
 
@@ -89,21 +90,33 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
     }
 
     override fun onMapReady(map: GoogleMap) {
-        this.map = map
+
+        viewModel.getMeteorite().observe(this, Observer { meteorite ->
+            val lat = meteorite.reclat?.toDouble()
+            val log = meteorite.reclong?.toDouble()
+
+            Log.d(TAG, "Show meteorite: ${meteorite.id} $lat $log")
+
+            if (lat != null && log != null) {
+                setupMap(meteorite.name, lat, log, map)
+            }
+        })
+        
     }
 
-    private fun setupMap(meteoriteName: String?, lat: Double, log: Double) {
+    private fun setupMap(meteoriteName: String?, lat: Double, log: Double, map: GoogleMap) {
+        map.clear()
+
         val latLng = LatLng(lat, log)
 
-        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 30f))
-
-        map?.clear()
-
-        map?.addMarker(MarkerOptions().position(
+        map.addMarker(MarkerOptions().position(
                 latLng).title(meteoriteName))
+        Log.d(TAG, "Marker added: $lat $log")
+
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 30f))
 
         // Zoom in, animating the camera.
-        map?.animateCamera(CameraUpdateFactory.zoomTo(10f), 2000, null)
+        map.animateCamera(CameraUpdateFactory.zoomTo(10f), 2000, null)
     }
 
 
@@ -119,12 +132,6 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
         setText(recclass_label, this.recclass, meteorite.recclass)
 
         setText(mass_label, this.mass, meteorite.mass)
-
-        val lat = meteorite.reclat?.toDouble()
-        val log = meteorite.reclong?.toDouble()
-        if (map != null && lat != null && log != null) {
-            setupMap(meteoriteName, lat, log)
-        }
 
     }
 
