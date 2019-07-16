@@ -4,7 +4,6 @@ import android.os.Parcelable
 import android.text.TextUtils
 import android.util.Log
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
@@ -28,9 +27,6 @@ class Meteorite : Parcelable {
     var reclong: String? = null
     var reclat: String? = null
     var address: String? = null
-
-    @Ignore
-    var distance: Float? = null
 
     companion object {
         val TAG = Meteorite::class.java.simpleName

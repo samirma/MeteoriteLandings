@@ -52,7 +52,7 @@ val businessModule = module {
 }
 
 val viewModelModule = module {
-    viewModel { MeteoriteListViewModel(get(), get(), get()) }
+    viewModel { MeteoriteListViewModel(get(), get()) }
     viewModel { MeteoriteDetailViewModel(get()) }
 }
 

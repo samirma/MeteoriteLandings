@@ -1,6 +1,7 @@
 package com.antonio.samir.meteoritelandingsspots.features.list.viewmodel
 
 
+import android.location.Location
 import android.util.Log
 import androidx.annotation.StringDef
 import androidx.lifecycle.*
@@ -10,7 +11,6 @@ import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.Meteorit
 import com.antonio.samir.meteoritelandingsspots.service.business.MeteoriteServiceInterface
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
-import com.antonio.samir.meteoritelandingsspots.util.NetworkUtilInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -18,12 +18,11 @@ import kotlinx.coroutines.launch
  * Layer responsible for manage the interactions between the activity and the services
  */
 class MeteoriteListViewModel(
-        private val meteoriteServiceInterface: MeteoriteServiceInterface,
-        private val gpsTracker: GPSTrackerInterface,
-        private val networkUtil: NetworkUtilInterface
+        private val meteoriteService: MeteoriteServiceInterface,
+        private val gpsTracker: GPSTrackerInterface
 ) : ViewModel() {
 
-    var recoveryAddressStatus: LiveData<String> = meteoriteServiceInterface.addressStatus()
+    var recoveryAddressStatus: LiveData<String> = meteoriteService.addressStatus()
 
     val meteorites: MediatorLiveData<List<Meteorite>> = MediatorLiveData()
 
@@ -43,7 +42,7 @@ class MeteoriteListViewModel(
 
     fun loadMeteorites() {
         launchDataLoad {
-            val loadMeteorites = meteoriteServiceInterface.loadMeteorites()
+            val loadMeteorites = meteoriteService.loadMeteorites()
             meteorites.removeSource(loadMeteorites)
             meteorites.addSource(loadMeteorites) { value ->
                 meteorites.value = value
@@ -61,8 +60,12 @@ class MeteoriteListViewModel(
 
     fun getMeteorite(meteorite: Meteorite): LiveData<Meteorite>? {
 
-        return meteoriteServiceInterface.getMeteoriteById(meteorite.id.toString())
+        return meteoriteService.getMeteoriteById(meteorite.id.toString())
 
+    }
+
+    fun getLocation(): Location? {
+        return meteoriteService.location
     }
 
     private fun launchDataLoad(block: suspend () -> Unit): Job {

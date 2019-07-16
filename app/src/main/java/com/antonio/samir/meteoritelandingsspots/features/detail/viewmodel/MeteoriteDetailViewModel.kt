@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.detail.viewmodel
 
+import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
@@ -35,6 +36,10 @@ class MeteoriteDetailViewModel(
 
     fun getMeteorite(): LiveData<Meteorite> {
         return meteorite
+    }
+
+    fun getLocation(): Location? {
+        return meteoriteService.location
     }
 
 }
