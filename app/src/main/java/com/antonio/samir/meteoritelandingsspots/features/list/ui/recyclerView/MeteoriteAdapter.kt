@@ -8,6 +8,7 @@ import android.view.animation.AnimationUtils
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import com.antonio.samir.meteoritelandingsspots.R
+import com.antonio.samir.meteoritelandingsspots.features.getDistanceFrom
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelector
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
@@ -42,7 +43,7 @@ class MeteoriteAdapter(
 
     fun updateListUI(meteorite: Meteorite) {
         if (!Objects.equals(meteorite, selectedMeteorite)) {
-            
+
             val previousMet = selectedMeteorite
             selectedMeteorite = meteorite
 
@@ -137,7 +138,13 @@ class MeteoriteAdapter(
     }
 
     private fun showAddress(viewHolder: ViewHolderMeteorite, address: String?, meteorite: Meteorite) {
-        viewHolder.location.text = address
+        val location = viewModel.getLocation()
+        val finalAddress = address + if (location != null) {
+            " - ${meteorite.getDistanceFrom(location.latitude, location.longitude)}"
+        } else {
+            ""
+        }
+        viewHolder.location.text = finalAddress
         viewHolder.location.visibility = View.VISIBLE
     }
 

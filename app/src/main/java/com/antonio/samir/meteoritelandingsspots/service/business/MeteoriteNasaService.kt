@@ -26,7 +26,7 @@ class MeteoriteNasaService(
 
     private lateinit var mediatorLiveData: MediatorLiveData<List<Meteorite>>
 
-    private var location: Location? = null
+    override var location: Location? = null
 
     private val meteoritesByName = meteoriteRepository.meteoriteOrdened()
 
