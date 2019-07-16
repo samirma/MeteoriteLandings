@@ -9,13 +9,13 @@ interface MeteoriteSelectorView {
 
     /**
      * Exceute landscape command for meteorite selection
-     * @param meteoriteId
+     * @param meteorite
      */
-    fun selectLandscape(meteoriteId: Meteorite)
+    fun selectLandscape(meteorite: Meteorite)
 
     /**
      * Exceute portrait command for meteorite selection
-     * @param meteoriteId
+     * @param meteorite
      */
     fun selectPortrait(meteorite: Meteorite)
 

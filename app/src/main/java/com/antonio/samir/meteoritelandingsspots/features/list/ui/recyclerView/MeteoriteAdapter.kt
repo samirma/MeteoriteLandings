@@ -11,6 +11,7 @@ import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.features.getDistanceFrom
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelector
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel
+import com.antonio.samir.meteoritelandingsspots.features.yearString
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
