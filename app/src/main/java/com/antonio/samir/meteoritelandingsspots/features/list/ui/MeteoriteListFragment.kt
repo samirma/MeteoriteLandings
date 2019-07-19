@@ -99,7 +99,7 @@ class MeteoriteListFragment : Fragment(),
 
     private fun observeMeteorites() {
 
-        listViewModel.meteorites.observe(this, Observer { meteorites ->
+        listViewModel.meteorites.observe(viewLifecycleOwner, Observer { meteorites ->
             lifecycleScope.launch {
                 meteoriteAdapter.setData(meteorites)
             }
@@ -110,7 +110,7 @@ class MeteoriteListFragment : Fragment(),
     }
 
     private fun observeRecoveryAddressStatus() {
-        listViewModel.recoveryAddressStatus.observe(this, Observer { status ->
+        listViewModel.recoveryAddressStatus.observe(viewLifecycleOwner, Observer { status ->
             if (status == null || status === AddressService.Status.DONE) {
                 this.hideAddressLoading()
             } else if (status === AddressService.Status.LOADING) {
@@ -120,7 +120,7 @@ class MeteoriteListFragment : Fragment(),
     }
 
     private fun observeLoadingStatus() {
-        listViewModel.loadingStatus.observe(this, Observer {
+        listViewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
             when (it) {
                 DONE -> meteoriteLoadingStopped()
                 LOADING -> meteoriteLoadingStarted()
@@ -129,8 +129,11 @@ class MeteoriteListFragment : Fragment(),
         })
     }
 
+    /**
+     * Request user permission
+     */
     private fun observeRequestPermission() {
-        listViewModel.isAuthorizationRequested().observe(this, Observer {
+        listViewModel.isAuthorizationRequested().observe(viewLifecycleOwner, Observer {
             if (it) {
                 requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_REQUEST_CODE)
             }
