@@ -9,8 +9,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.any
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 
@@ -40,7 +40,7 @@ class MeteoriteDetailViewModelTest {
 
         val data = MutableLiveData<Meteorite>()
 
-        `when`(meteoriteService.getMeteoriteById(any())).thenReturn(data)
+        `when`(meteoriteService.getMeteoriteById(ArgumentMatchers.anyString())).thenReturn(data)
 
     }
 }

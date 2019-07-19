@@ -27,7 +27,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCallback {
 
-    val viewModel: MeteoriteDetailViewModel by viewModel()
+    private var meteorite: Meteorite? = null
+
+    private val viewModel: MeteoriteDetailViewModel by viewModel()
 
     private var meteoriteId: Meteorite? = null
 
@@ -74,14 +76,13 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
         }
 
         observeMeteorite()
-        (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
-
     }
 
     private fun observeMeteorite() {
 
         viewModel.getMeteorite().observe(viewLifecycleOwner, Observer {
             setMeteorite(it)
+            (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
         })
 
         meteoriteId?.let { setCurrentMeteorite(it) }
@@ -93,17 +94,16 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
 
     override fun onMapReady(map: GoogleMap) {
 
-        viewModel.getMeteorite().observe(viewLifecycleOwner, Observer { meteorite ->
-            val lat = meteorite.reclat?.toDouble()
-            val log = meteorite.reclong?.toDouble()
+        meteorite?.let {
+            val lat = it.reclat?.toDouble()
+            val log = it.reclong?.toDouble()
 
-            Log.d(TAG, "Show meteorite: ${meteorite.id} $lat $log")
+            Log.d(TAG, "Show meteorite: ${it.id} $lat $log")
 
             if (lat != null && log != null) {
-                setupMap(meteorite.name, lat, log, map)
+                setupMap(it.name, lat, log, map)
             }
-        })
-
+        }
     }
 
     private fun setupMap(meteoriteName: String?, lat: Double, log: Double, map: GoogleMap) {
@@ -134,6 +134,8 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
         setText(recclass_label, this.recclass, meteorite.recclass)
 
         setText(mass_label, this.mass, meteorite.mass)
+
+        this.meteorite = meteorite
 
     }
 
