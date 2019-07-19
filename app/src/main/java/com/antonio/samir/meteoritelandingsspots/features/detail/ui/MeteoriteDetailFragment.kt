@@ -80,7 +80,7 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
 
     private fun observeMeteorite() {
 
-        viewModel.getMeteorite().observe(this, Observer {
+        viewModel.getMeteorite().observe(viewLifecycleOwner, Observer {
             setMeteorite(it)
         })
 
@@ -93,7 +93,7 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
 
     override fun onMapReady(map: GoogleMap) {
 
-        viewModel.getMeteorite().observe(this, Observer { meteorite ->
+        viewModel.getMeteorite().observe(viewLifecycleOwner, Observer { meteorite ->
             val lat = meteorite.reclat?.toDouble()
             val log = meteorite.reclong?.toDouble()
 
