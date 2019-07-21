@@ -13,6 +13,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import kotlin.test.assertEquals
 
 class MeteoriteDetailViewModelTest {
 
@@ -40,7 +41,14 @@ class MeteoriteDetailViewModelTest {
 
         val data = MutableLiveData<Meteorite>()
 
+        data.value = Meteorite().apply {
+            id = 123
+        }
+
         `when`(meteoriteService.getMeteoriteById(ArgumentMatchers.anyString())).thenReturn(data)
+
+
+        assertEquals(meteoriteService.getMeteoriteById(ArgumentMatchers.anyString())?.value, data.value)
 
     }
 }
