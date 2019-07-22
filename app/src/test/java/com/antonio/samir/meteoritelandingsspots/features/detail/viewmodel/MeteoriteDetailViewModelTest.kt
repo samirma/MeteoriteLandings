@@ -47,8 +47,12 @@ class MeteoriteDetailViewModelTest {
 
         `when`(meteoriteService.getMeteoriteById(ArgumentMatchers.anyString())).thenReturn(data)
 
+        viewModel.loadMeteorite(Meteorite().apply {
+            id = 123
+        })
 
-        assertEquals(meteoriteService.getMeteoriteById(ArgumentMatchers.anyString())?.value, data.value)
+        assertEquals(viewModel.getMeteorite().value, data.value)
 
     }
+
 }
