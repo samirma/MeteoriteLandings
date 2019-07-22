@@ -4,10 +4,8 @@ import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.antonio.samir.meteoritelandingsspots.service.business.MeteoriteServiceInterface
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
-import kotlinx.coroutines.launch
 
 
 class MeteoriteDetailViewModel(
@@ -18,19 +16,17 @@ class MeteoriteDetailViewModel(
 
     private val meteorite: MediatorLiveData<Meteorite> = MediatorLiveData()
 
-    fun loadMeteorite(meteoriteId: Meteorite) {
-        val meteoriteById = meteoriteService.getMeteoriteById(meteoriteId.id.toString())
-        viewModelScope.launch {
-            meteoriteById?.let {
-                meteorite.addSource(it) { value ->
-                    val currentValue = meteorite.value
-                    if (value.id != currentValue?.id || value.address != currentValue.address) {
-                        meteorite.value = value
-                    }
+    fun loadMeteorite(meteoriteRef: Meteorite) {
+        val meteorite = meteoriteService.getMeteoriteById(meteoriteRef.id.toString())
+        meteorite?.let {
+            this@MeteoriteDetailViewModel.meteorite.addSource(it) { value ->
+                val currentValue = this@MeteoriteDetailViewModel.meteorite.value
+                if (value.id != currentValue?.id || value.address != currentValue.address) {
+                    this@MeteoriteDetailViewModel.meteorite.postValue(value)
                 }
             }
-            currentMeteorite?.let { meteorite.removeSource(it) }
-            currentMeteorite = meteoriteById
+            currentMeteorite?.let { this@MeteoriteDetailViewModel.meteorite.removeSource(it) }
+            currentMeteorite = meteorite
         }
     }
 
