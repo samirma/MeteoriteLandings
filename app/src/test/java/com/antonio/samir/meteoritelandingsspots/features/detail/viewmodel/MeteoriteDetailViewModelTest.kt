@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.detail.viewmodel
 
+import android.location.Location
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.antonio.samir.meteoritelandingsspots.service.business.MeteoriteServiceInterface
@@ -24,13 +25,17 @@ class MeteoriteDetailViewModelTest {
     @JvmField
     val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-    lateinit var viewModel: MeteoriteDetailViewModel
+    private lateinit var viewModel: MeteoriteDetailViewModel
 
-    lateinit var meteoriteService: MeteoriteServiceInterface
+    private lateinit var meteoriteService: MeteoriteServiceInterface
+
+    private lateinit var location: Location
 
     @Before
     fun setUp() {
         meteoriteService = mock()
+
+        location = mock()
 
         viewModel = MeteoriteDetailViewModel(meteoriteService)
 
@@ -56,6 +61,14 @@ class MeteoriteDetailViewModelTest {
         }
 
         assertEquals(meteorite.value, data.value)
+
+    }
+
+    @Test
+    fun getLocationSuccess() {
+        `when`(meteoriteService.location).thenReturn(location)
+
+        assertEquals(viewModel.getLocation(), location)
 
     }
 
