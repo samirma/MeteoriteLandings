@@ -51,7 +51,11 @@ class MeteoriteDetailViewModelTest {
             id = 123
         })
 
-        assertEquals(viewModel.getMeteorite().value, data.value)
+        val meteorite = viewModel.getMeteorite().apply {
+            observeForever {}
+        }
+
+        assertEquals(meteorite.value, data.value)
 
     }
 
