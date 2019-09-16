@@ -221,8 +221,7 @@ class MeteoriteListFragment : Fragment(),
         meteoriteAdapter.updateListUI(meteorite)
 
     }
-
-
+    
     private fun setupGridLayout() {
         val columnCount = resources.getInteger(R.integer.list_column_count)
 
