@@ -69,9 +69,46 @@ class MeteoriteListViewModelTest {
             observeForever {}
         }
 
+        val loadingStatus = viewModel.loadingStatus.apply {
+            observeForever {}
+        }
+
         val actual = meteorite.value
         val expected = data.value
         assertEquals(expected, actual)
+
+        assertEquals(MeteoriteListViewModel.DownloadStatus.DONE, loadingStatus.value)
+
+    }
+
+    @Test
+    fun loadMeteoriteError() = runBlockingTest {
+
+        val data = MutableLiveData<List<Meteorite>>()
+
+        data.value = listOf(Meteorite().apply {
+            id = 123
+        })
+
+        Mockito.`when`(meteoriteService.loadMeteorites()).thenThrow(Error("some error"))
+
+        viewModel.loadMeteorites()
+
+        sleep(1000)
+
+        val meteorite = viewModel.meteorites.apply {
+            observeForever {}
+        }
+
+        val loadingStatus = viewModel.loadingStatus.apply {
+            observeForever {}
+        }
+
+        val actual = meteorite.value
+        val expected = data.value
+        assertEquals(expected, actual)
+
+        assertEquals(MeteoriteListViewModel.DownloadStatus.UNABLE_TO_FETCH, loadingStatus.value)
 
     }
 
