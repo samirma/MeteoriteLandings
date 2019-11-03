@@ -2,15 +2,14 @@ package com.antonio.samir.meteoritelandingsspots.features.list.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
+import com.antonio.samir.meteoritelandingsspots.rule.MainCoroutineRule
 import com.antonio.samir.meteoritelandingsspots.service.business.MeteoriteServiceInterface
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import com.nhaarman.mockitokotlin2.mock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -27,6 +26,9 @@ class MeteoriteListViewModelTest {
     @get:Rule
     val rule: TestRule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val coroutineRule: TestRule = MainCoroutineRule()
+
     @Rule
     @JvmField
     val mockitoRule: MockitoRule = MockitoJUnit.rule()
@@ -37,16 +39,16 @@ class MeteoriteListViewModelTest {
 
     private lateinit var viewModel: MeteoriteListViewModel
 
+    private var location: String? = null
+
     @Before
     fun setUp() {
-
-        Dispatchers.setMain(newSingleThreadContext("UI thread"))
 
         meteoriteService = mock()
 
         gpsTracker = mock()
 
-        viewModel = MeteoriteListViewModel(meteoriteService, gpsTracker)
+        viewModel = MeteoriteListViewModel(meteoriteService, gpsTracker, Dispatchers.Default)
 
     }
 
@@ -59,9 +61,9 @@ class MeteoriteListViewModelTest {
             id = 123
         })
 
-        Mockito.`when`(meteoriteService.loadMeteorites()).thenReturn(data)
+        Mockito.`when`(meteoriteService.loadMeteorites(location)).thenReturn(data)
 
-        viewModel.loadMeteorites()
+        viewModel.loadMeteorites(location)
 
         sleep(1000)
 
@@ -90,9 +92,9 @@ class MeteoriteListViewModelTest {
             id = 123
         })
 
-        Mockito.`when`(meteoriteService.loadMeteorites()).thenThrow(Error("some error"))
+        Mockito.`when`(meteoriteService.loadMeteorites(location)).thenThrow(Error("some error"))
 
-        viewModel.loadMeteorites()
+        viewModel.loadMeteorites(location)
 
         sleep(1000)
 
