@@ -11,6 +11,7 @@ import com.antonio.samir.meteoritelandingsspots.service.repository.remote.NasaRe
 import com.antonio.samir.meteoritelandingsspots.service.repository.remote.NasaRemoteRepositoryInterface
 import com.antonio.samir.meteoritelandingsspots.service.repository.remote.NasaServerEndPoint
 import com.antonio.samir.meteoritelandingsspots.util.*
+import kotlinx.coroutines.Dispatchers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -52,7 +53,7 @@ val businessModule = module {
 }
 
 val viewModelModule = module {
-    viewModel { MeteoriteListViewModel(get(), get()) }
+    viewModel { MeteoriteListViewModel(get(), get(), Dispatchers.Default) }
     viewModel { MeteoriteDetailViewModel(get()) }
 }
 

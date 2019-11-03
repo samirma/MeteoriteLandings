@@ -1,6 +1,5 @@
 package com.antonio.samir.meteoritelandingsspots.service.business
 
-import android.content.Context
 import android.util.Log
 import androidx.annotation.StringDef
 import androidx.lifecycle.MutableLiveData
@@ -9,18 +8,15 @@ import com.antonio.samir.meteoritelandingsspots.service.business.AddressService.
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteRepositoryInterface
 import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import org.apache.commons.lang3.StringUtils
 import java.util.*
 
 
 class AddressService(
-        val context: Context,
-        val meteoriteRepository: MeteoriteRepositoryInterface,
-        val geoLocationUtil: GeoLocationUtilInterface
+        private val meteoriteRepository: MeteoriteRepositoryInterface,
+        private val geoLocationUtil: GeoLocationUtilInterface,
+        private val defaultDispatcher: CoroutineDispatcher
 ) : AddressServiceInterface {
 
     val TAG = AddressService::class.java.simpleName
@@ -38,7 +34,7 @@ class AddressService(
 
     override fun recoveryAddress() {
 
-        GlobalScope.launch(Dispatchers.Default) {
+        GlobalScope.launch(defaultDispatcher) {
             if (status.value == null || status.value === DONE) {
                 val meteorites = meteoriteRepository.meteoritesWithOutAddress()
                 try {

@@ -30,7 +30,7 @@ class MeteoriteNasaService(
 
     private val meteoritesByName = meteoriteRepository.meteoriteOrdened()
 
-    override suspend fun loadMeteorites(): LiveData<List<Meteorite>> = withContext(Dispatchers.Default) {
+    override suspend fun loadMeteorites(location: String?): LiveData<List<Meteorite>> = withContext(Dispatchers.Default) {
 
         mediatorLiveData = MediatorLiveData()
 

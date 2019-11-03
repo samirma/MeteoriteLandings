@@ -95,6 +95,8 @@ class MeteoriteListFragment : Fragment(),
 
         observeRequestPermission()
 
+        searchText
+
     }
 
     private fun observeMeteorites() {
@@ -221,7 +223,7 @@ class MeteoriteListFragment : Fragment(),
         meteoriteAdapter.updateListUI(meteorite)
 
     }
-    
+
     private fun setupGridLayout() {
         val columnCount = resources.getInteger(R.integer.list_column_count)
 
