@@ -6,7 +6,7 @@ import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 
 interface MeteoriteRepositoryInterface {
 
-    fun meteoriteOrdened(): LiveData<List<Meteorite>>
+    fun meteoriteOrdered(location: Location?, filter: String?): LiveData<List<Meteorite>>
 
     suspend fun meteoritesWithOutAddress(): List<Meteorite>
 
@@ -19,7 +19,5 @@ interface MeteoriteRepositoryInterface {
     suspend fun getRemoteMeteorites(): List<Meteorite>?
 
     suspend fun getMeteoritesCount(): Int
-    
-    fun meteoriteOrdenedByLocation(location: Location): LiveData<List<Meteorite>>
 
 }

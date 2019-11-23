@@ -19,7 +19,7 @@ class MeteoriteRemoteViewsFactory(
 
     private var meteorites: List<Meteorite>? = null
 
-    val meteoriteRepository: MeteoriteRepositoryInterface  by inject()
+    val meteoriteRepository: MeteoriteRepositoryInterface by inject()
 
     override fun onCreate() {
 
@@ -29,7 +29,7 @@ class MeteoriteRemoteViewsFactory(
 
         val identityToken = Binder.clearCallingIdentity()
 
-        meteorites = meteoriteRepository.meteoriteOrdened().value
+        meteorites = meteoriteRepository.meteoriteOrdered().value
 
         Binder.restoreCallingIdentity(identityToken)
     }
