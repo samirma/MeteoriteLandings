@@ -11,7 +11,6 @@ import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
-import java.util.stream.Collectors
 
 
 class MeteoriteNasaService(
@@ -28,7 +27,7 @@ class MeteoriteNasaService(
 
     override var location: Location? = null
 
-    private val meteoritesByName = meteoriteRepository.meteoriteOrdened()
+    private val meteoritesByName = meteoriteRepository.meteoriteOrdered(null, null)
 
     override suspend fun loadMeteorites(location: String?): LiveData<List<Meteorite>> = withContext(Dispatchers.Default) {
 
@@ -43,7 +42,7 @@ class MeteoriteNasaService(
             addressService.recoveryAddress()
         }
 
-        changeMeteoritesSourceSuspended(meteoritesByName)
+        changeMeteoritesSourceSuspended(meteoriteRepository.meteoriteOrdered(null, location))
 
         if (!gpsTracker.isLocationServiceStarted() && gpsTracker.isGPSEnabled()) {
             updateLocation()
@@ -84,7 +83,7 @@ class MeteoriteNasaService(
 
                     this@MeteoriteNasaService.location = location
 
-                    changeMeteoritesSource(meteoriteRepository.meteoriteOrdenedByLocation(location))
+                    changeMeteoritesSource(meteoriteRepository.meteoriteOrdered(location, null))
 
                     trackerLocation.removeObserver(this)
 
@@ -100,9 +99,7 @@ class MeteoriteNasaService(
         val remoteMeteorites = meteoriteRepository.getRemoteMeteorites()
 
         val filteredList = remoteMeteorites
-                ?.stream()
                 ?.filter { it.reclong?.toDoubleOrNull() != null && it.reclat?.toDoubleOrNull() != null }
-                ?.collect(Collectors.toList())
 
         filteredList?.let { meteoriteRepository.insertAll(it) }
     }

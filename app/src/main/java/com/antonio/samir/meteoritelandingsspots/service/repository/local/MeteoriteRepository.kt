@@ -11,7 +11,7 @@ class MeteoriteRepository(
         val nasaRemoteRepository: NasaRemoteRepositoryInterface
 ) : MeteoriteRepositoryInterface {
 
-    override fun meteoriteOrdenedByLocation(location: Location): LiveData<List<Meteorite>> {
+    override fun meteoriteOrderedByLocation(location: Location): LiveData<List<Meteorite>> {
         val lng = location.longitude
         val lat = location.latitude
         return meteoriteDao.meteoriteOrderedByLocation(lat, lng)
@@ -21,7 +21,7 @@ class MeteoriteRepository(
         return meteoriteDao.getMeteoritesCount()
     }
 
-    override fun meteoriteOrdened(): LiveData<List<Meteorite>> {
+    override fun meteoriteOrdered(): LiveData<List<Meteorite>> {
         return meteoriteDao.meteoriteOrdered()
     }
 
