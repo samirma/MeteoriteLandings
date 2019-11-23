@@ -29,7 +29,7 @@ class MeteoriteRemoteViewsFactory(
 
         val identityToken = Binder.clearCallingIdentity()
 
-        meteorites = meteoriteRepository.meteoriteOrdered().value
+        meteorites = meteoriteRepository.meteoriteOrdered(null, null).value
 
         Binder.restoreCallingIdentity(identityToken)
     }
