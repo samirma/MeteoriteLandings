@@ -11,18 +11,20 @@ class MeteoriteRepository(
         val nasaRemoteRepository: NasaRemoteRepositoryInterface
 ) : MeteoriteRepositoryInterface {
 
-    override fun meteoriteOrderedByLocation(location: Location): LiveData<List<Meteorite>> {
-        val lng = location.longitude
-        val lat = location.latitude
-        return meteoriteDao.meteoriteOrderedByLocation(lat, lng)
+    override fun meteoriteOrdered(location: Location?, filter: String?): LiveData<List<Meteorite>> {
+
+        if (location == null) {
+            return meteoriteDao.meteoriteOrdered()
+        } else {
+            val lng = location.longitude
+            val lat = location.latitude
+            return meteoriteDao.meteoriteOrderedByLocationFilted(lat, lng, filter ?: "")
+        }
+
     }
 
     override suspend fun getMeteoritesCount(): Int {
         return meteoriteDao.getMeteoritesCount()
-    }
-
-    override fun meteoriteOrdered(): LiveData<List<Meteorite>> {
-        return meteoriteDao.meteoriteOrdered()
     }
 
     override suspend fun insertAll(meteorites: List<Meteorite>) {

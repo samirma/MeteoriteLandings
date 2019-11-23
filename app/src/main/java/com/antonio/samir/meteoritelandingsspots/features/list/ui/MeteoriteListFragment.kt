@@ -107,7 +107,7 @@ class MeteoriteListFragment : Fragment(),
             }
         })
 
-        listViewModel.loadMeteorites()
+        listViewModel.loadMeteorites(null)
 
     }
 
