@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
 
-
 class MeteoriteNasaService(
         private val meteoriteRepository: MeteoriteRepositoryInterface,
         private val addressService: AddressServiceInterface,
@@ -23,15 +22,13 @@ class MeteoriteNasaService(
 
     private val addressServiceStarted = AtomicBoolean(false)
 
-    private lateinit var mediatorLiveData: MediatorLiveData<List<Meteorite>>
+    private var mediatorLiveData: MediatorLiveData<List<Meteorite>> = MediatorLiveData()
 
     override var location: Location? = null
 
     private val meteoritesByName = meteoriteRepository.meteoriteOrdered(null, null)
 
     override suspend fun loadMeteorites(location: String?): LiveData<List<Meteorite>> = withContext(Dispatchers.Default) {
-
-        mediatorLiveData = MediatorLiveData()
 
         if (meteoriteRepository.getMeteoritesCount() == 0 && !isUpdateRequired.getAndSet(true)) {
             //If it is empty so load the data from internet
@@ -50,6 +47,10 @@ class MeteoriteNasaService(
 
         return@withContext mediatorLiveData
 
+    }
+
+    override suspend fun filterList(filter: String) {
+        changeMeteoritesSourceSuspended(meteoriteRepository.meteoriteOrdered(location, filter))
     }
 
     private suspend fun changeMeteoritesSourceSuspended(source: LiveData<List<Meteorite>>) = withContext(Dispatchers.Main) {
