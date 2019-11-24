@@ -48,12 +48,12 @@ val databaseModule = module {
 val businessModule = module {
     single { GeoLocationUtil(get()) as GeoLocationUtilInterface }
     single { GPSTracker(get()) as GPSTrackerInterface }
-    single { AddressService(get(), get(), get()) as AddressServiceInterface }
+    single { AddressService(get(), get(), Dispatchers.Default) as AddressServiceInterface }
     single { MeteoriteNasaService(get(), get(), get()) as MeteoriteServiceInterface }
 }
 
 val viewModelModule = module {
-    viewModel { MeteoriteListViewModel(get(), get(), Dispatchers.Default) }
+    viewModel { MeteoriteListViewModel(get(), get(), Dispatchers.Main) }
     viewModel { MeteoriteDetailViewModel(get()) }
 }
 
