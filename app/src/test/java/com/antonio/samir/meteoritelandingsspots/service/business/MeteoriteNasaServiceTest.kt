@@ -60,4 +60,19 @@ class MeteoriteNasaServiceTest {
 
     }
 
+
+    @Test
+    fun testFilterList() = runBlockingTest {
+
+        whenever(meteoriteRepository.getMeteoritesCount()).doReturn(0)
+
+        meteoriteNasaService.loadMeteorites(null)
+
+        val filter = "us"
+        meteoriteNasaService.filterList(filter)
+
+        verify(meteoriteRepository).meteoriteOrdered(null, filter)
+
+    }
+
 }
