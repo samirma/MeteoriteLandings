@@ -7,8 +7,12 @@ import com.antonio.samir.meteoritelandingsspots.service.business.AddressService.
 import com.antonio.samir.meteoritelandingsspots.service.business.AddressService.Status.Companion.LOADING
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteRepositoryInterface
+import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
+import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.apache.commons.lang3.StringUtils
 import java.util.*
 
@@ -16,7 +20,7 @@ import java.util.*
 class AddressService(
         private val meteoriteRepository: MeteoriteRepositoryInterface,
         private val geoLocationUtil: GeoLocationUtilInterface,
-        private val defaultDispatcher: CoroutineDispatcher
+        private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
 ) : AddressServiceInterface {
 
     val TAG = AddressService::class.java.simpleName
@@ -34,7 +38,7 @@ class AddressService(
 
     override fun recoveryAddress() {
 
-        GlobalScope.launch(defaultDispatcher) {
+        GlobalScope.launch(dispatchers.default()) {
             if (status.value == null || status.value === DONE) {
                 val meteorites = meteoriteRepository.meteoritesWithOutAddress()
                 try {
@@ -59,7 +63,7 @@ class AddressService(
 
     }
 
-    private suspend fun recoverAddress(meteorite: Meteorite) = withContext(Dispatchers.Default) {
+    private suspend fun recoverAddress(meteorite: Meteorite) = withContext(dispatchers.default()) {
         val recLat = meteorite.reclat
         val recLong = meteorite.reclong
 

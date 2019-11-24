@@ -7,15 +7,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteRepositoryInterface
+import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
+import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
 
 class MeteoriteNasaService(
         private val meteoriteRepository: MeteoriteRepositoryInterface,
         private val addressService: AddressServiceInterface,
-        private val gpsTracker: GPSTrackerInterface
+        private val gpsTracker: GPSTrackerInterface,
+        private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
 ) : MeteoriteServiceInterface {
 
     private val isUpdateRequired = AtomicBoolean(false)
@@ -28,7 +30,7 @@ class MeteoriteNasaService(
 
     private val meteoritesByName = meteoriteRepository.meteoriteOrdered(null, null)
 
-    override suspend fun loadMeteorites(location: String?): LiveData<List<Meteorite>> = withContext(Dispatchers.Default) {
+    override suspend fun loadMeteorites(location: String?): LiveData<List<Meteorite>> = withContext(dispatchers.default()) {
 
         if (meteoriteRepository.getMeteoritesCount() == 0 && !isUpdateRequired.getAndSet(true)) {
             //If it is empty so load the data from internet
@@ -53,7 +55,7 @@ class MeteoriteNasaService(
         changeMeteoritesSourceSuspended(meteoriteRepository.meteoriteOrdered(location, filter))
     }
 
-    private suspend fun changeMeteoritesSourceSuspended(source: LiveData<List<Meteorite>>) = withContext(Dispatchers.Main) {
+    private suspend fun changeMeteoritesSourceSuspended(source: LiveData<List<Meteorite>>) = withContext(dispatchers.main()) {
         changeMeteoritesSource(source)
     }
 
@@ -73,7 +75,7 @@ class MeteoriteNasaService(
         return addressService.status
     }
 
-    private suspend fun updateLocation() = withContext(Dispatchers.Main) {
+    private suspend fun updateLocation() = withContext(dispatchers.main()) {
 
         gpsTracker.startLocationService()
 
@@ -95,7 +97,7 @@ class MeteoriteNasaService(
         })
     }
 
-    private suspend fun recoverFromNetwork() = withContext(Dispatchers.Default) {
+    private suspend fun recoverFromNetwork() = withContext(dispatchers.default()) {
 
         val remoteMeteorites = meteoriteRepository.getRemoteMeteorites()
 
