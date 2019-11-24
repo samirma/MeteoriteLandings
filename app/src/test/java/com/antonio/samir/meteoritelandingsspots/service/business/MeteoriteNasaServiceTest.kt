@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.service.business
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteRepositoryInterface
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import com.nhaarman.mockitokotlin2.doReturn
@@ -9,10 +10,14 @@ import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class MeteoriteNasaServiceTest {
+
+    @get:Rule
+    val instantExecutorRule = InstantTaskExecutorRule()
 
     private val meteoriteRepository: MeteoriteRepositoryInterface = mock()
     private val addressService: AddressServiceInterface = mock()

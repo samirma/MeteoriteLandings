@@ -2,7 +2,6 @@ package com.antonio.samir.meteoritelandingsspots.features.list.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import com.antonio.samir.meteoritelandingsspots.rule.MainCoroutineRule
 import com.antonio.samir.meteoritelandingsspots.service.business.MeteoriteServiceInterface
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
