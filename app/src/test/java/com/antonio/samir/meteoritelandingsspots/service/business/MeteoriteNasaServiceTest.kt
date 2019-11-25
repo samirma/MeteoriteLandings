@@ -1,12 +1,11 @@
 package com.antonio.samir.meteoritelandingsspots.service.business
 
+import androidx.lifecycle.LiveData
 import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
+import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteRepositoryInterface
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
@@ -19,21 +18,26 @@ class MeteoriteNasaServiceTest {
     @get:Rule
     var coroutinesTestRule = CoroutineTestRule()
 
-    private val meteoriteRepository: MeteoriteRepositoryInterface = mock()
-    private val addressService: AddressServiceInterface = mock()
-    private val gpsTracker: GPSTrackerInterface = mock()
+    private val mockRepository: MeteoriteRepositoryInterface = mock()
+    private val mockAddressService: AddressServiceInterface = mock()
+    private val mockGpsTracker: GPSTrackerInterface = mock()
+    private val mockLiveDataListMeteorite: LiveData<List<Meteorite>> = mock()
 
     private lateinit var meteoriteNasaService: MeteoriteServiceInterface
 
     @Before
     fun setUp() {
 
-        meteoriteNasaService = MeteoriteNasaService(meteoriteRepository, addressService, gpsTracker, coroutinesTestRule.testDispatcherProvider)
+        whenever(mockRepository.meteoriteOrdered(null, null)).thenReturn(mockLiveDataListMeteorite)
+
+        meteoriteNasaService = MeteoriteNasaService(mockRepository, mockAddressService, mockGpsTracker, coroutinesTestRule.testDispatcherProvider)
 
     }
 
     @Test
     fun testLoadMeteoritesAll() = runBlockingTest {
+
+        whenever(mockRepository.getMeteoritesCount()).doReturn(0)
 
         meteoriteNasaService.loadMeteorites(null)
 
@@ -42,26 +46,26 @@ class MeteoriteNasaServiceTest {
     @Test
     fun testLoadMeteoritesFilteredByLocation() = runBlockingTest {
 
-        whenever(meteoriteRepository.getMeteoritesCount()).doReturn(0)
+        whenever(mockRepository.getMeteoritesCount()).doReturn(0)
 
-        whenever(gpsTracker.isLocationServiceStarted()).doReturn(false)
-        whenever(gpsTracker.isGPSEnabled()).doReturn(false)
+        whenever(mockGpsTracker.isLocationServiceStarted()).doReturn(false)
+        whenever(mockGpsTracker.isGPSEnabled()).doReturn(false)
 
         val location = "us"
         meteoriteNasaService.loadMeteorites(location)
 
-        verify(meteoriteRepository).meteoriteOrdered(null, location)
+        verify(mockRepository).meteoriteOrdered(null, location)
 
     }
 
     @Test
     fun testLoadMeteoritesNoFilteredByLocation() = runBlockingTest {
 
-        whenever(meteoriteRepository.getMeteoritesCount()).doReturn(0)
+        whenever(mockRepository.getMeteoritesCount()).doReturn(0)
 
         meteoriteNasaService.loadMeteorites(null)
 
-        verify(meteoriteRepository).meteoriteOrdered(null, null)
+        verify(mockRepository, times(2)).meteoriteOrdered(null, null)
 
     }
 
@@ -69,14 +73,14 @@ class MeteoriteNasaServiceTest {
     @Test
     fun testFilterList() = runBlockingTest {
 
-        whenever(meteoriteRepository.getMeteoritesCount()).doReturn(0)
+        whenever(mockRepository.getMeteoritesCount()).doReturn(0)
 
         meteoriteNasaService.loadMeteorites(null)
 
         val filter = "us"
         meteoriteNasaService.filterList(filter)
 
-        verify(meteoriteRepository).meteoriteOrdered(null, filter)
+        verify(mockRepository).meteoriteOrdered(null, filter)
 
     }
 
