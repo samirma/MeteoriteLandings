@@ -10,8 +10,9 @@ import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.Meteorit
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.UNABLE_TO_FETCH
 import com.antonio.samir.meteoritelandingsspots.service.business.MeteoriteServiceInterface
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
+import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
 class MeteoriteListViewModel(
         private val meteoriteService: MeteoriteServiceInterface,
         private val gpsTracker: GPSTrackerInterface,
-        private val defaultDispatcher: CoroutineDispatcher
+        private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
 ) : ViewModel() {
 
     var recoveryAddressStatus: LiveData<String> = meteoriteService.addressStatus()
@@ -53,7 +54,7 @@ class MeteoriteListViewModel(
     }
 
     fun updateLocation() {
-        viewModelScope.launch(defaultDispatcher) { gpsTracker.startLocationService() }
+        viewModelScope.launch(dispatchers.default()) { gpsTracker.startLocationService() }
     }
 
     fun isAuthorizationRequested(): LiveData<Boolean> {
@@ -71,7 +72,7 @@ class MeteoriteListViewModel(
     }
 
     private fun launchDataLoad(block: suspend () -> Unit): Job {
-        return viewModelScope.launch(defaultDispatcher) {
+        return viewModelScope.launch(dispatchers.default()) {
             try {
                 if (loadingStatus.value != DONE) {
                     loadingStatus.value = LOADING

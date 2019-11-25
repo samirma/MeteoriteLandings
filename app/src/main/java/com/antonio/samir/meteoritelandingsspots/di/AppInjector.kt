@@ -11,7 +11,6 @@ import com.antonio.samir.meteoritelandingsspots.service.repository.remote.NasaRe
 import com.antonio.samir.meteoritelandingsspots.service.repository.remote.NasaRemoteRepositoryInterface
 import com.antonio.samir.meteoritelandingsspots.service.repository.remote.NasaServerEndPoint
 import com.antonio.samir.meteoritelandingsspots.util.*
-import kotlinx.coroutines.Dispatchers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -48,12 +47,12 @@ val databaseModule = module {
 val businessModule = module {
     single { GeoLocationUtil(get()) as GeoLocationUtilInterface }
     single { GPSTracker(get()) as GPSTrackerInterface }
-    single { AddressService(get(), get(), Dispatchers.Default) as AddressServiceInterface }
+    single { AddressService(get(), get()) as AddressServiceInterface }
     single { MeteoriteNasaService(get(), get(), get()) as MeteoriteServiceInterface }
 }
 
 val viewModelModule = module {
-    viewModel { MeteoriteListViewModel(get(), get(), Dispatchers.Main) }
+    viewModel { MeteoriteListViewModel(get(), get()) }
     viewModel { MeteoriteDetailViewModel(get()) }
 }
 

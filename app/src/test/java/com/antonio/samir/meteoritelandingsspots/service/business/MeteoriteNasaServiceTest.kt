@@ -1,6 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.service.business
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
 import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteRepositoryInterface
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import com.nhaarman.mockitokotlin2.doReturn
@@ -17,7 +17,7 @@ import org.junit.Test
 class MeteoriteNasaServiceTest {
 
     @get:Rule
-    val instantExecutorRule = InstantTaskExecutorRule()
+    var coroutinesTestRule = CoroutineTestRule()
 
     private val meteoriteRepository: MeteoriteRepositoryInterface = mock()
     private val addressService: AddressServiceInterface = mock()
@@ -28,7 +28,7 @@ class MeteoriteNasaServiceTest {
     @Before
     fun setUp() {
 
-        meteoriteNasaService = MeteoriteNasaService(meteoriteRepository, addressService, gpsTracker)
+        meteoriteNasaService = MeteoriteNasaService(meteoriteRepository, addressService, gpsTracker, coroutinesTestRule.testDispatcherProvider)
 
     }
 

@@ -1,18 +1,16 @@
 package com.antonio.samir.meteoritelandingsspots.features.list.viewmodel
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
+import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
 import com.antonio.samir.meteoritelandingsspots.service.business.MeteoriteServiceInterface
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import com.nhaarman.mockitokotlin2.mock
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TestRule
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
@@ -23,10 +21,7 @@ import kotlin.test.assertEquals
 class MeteoriteListViewModelTest {
 
     @get:Rule
-    val rule: TestRule = InstantTaskExecutorRule()
-
-    @get:Rule
-    val coroutineRule: TestRule = MainCoroutineRule()
+    var coroutinesTestRule = CoroutineTestRule()
 
     @Rule
     @JvmField
@@ -47,7 +42,7 @@ class MeteoriteListViewModelTest {
 
         gpsTracker = mock()
 
-        viewModel = MeteoriteListViewModel(meteoriteService, gpsTracker, Dispatchers.Default)
+        viewModel = MeteoriteListViewModel(meteoriteService, gpsTracker, coroutinesTestRule.testDispatcherProvider)
 
     }
 
