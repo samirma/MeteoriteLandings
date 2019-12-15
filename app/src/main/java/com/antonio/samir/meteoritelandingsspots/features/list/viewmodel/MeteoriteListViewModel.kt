@@ -7,13 +7,13 @@ import androidx.annotation.StringDef
 import androidx.lifecycle.*
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.DONE
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.LOADING
+import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.NO_RESULTS
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.UNABLE_TO_FETCH
 import com.antonio.samir.meteoritelandingsspots.service.business.MeteoriteServiceInterface
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 /**
@@ -31,23 +31,32 @@ class MeteoriteListViewModel(
 
     val loadingStatus: MutableLiveData<String> = MutableLiveData()
 
-    var loadMeteoritesCurrent: LiveData<List<Meteorite>>? = null
+    private var loadMeteoritesCurrent: LiveData<List<Meteorite>>? = null
 
     val TAG = MeteoriteListViewModel::class.java.simpleName
 
     @Retention(AnnotationRetention.SOURCE)
-    @StringDef(DONE, LOADING, UNABLE_TO_FETCH)
+    @StringDef(DONE, LOADING, UNABLE_TO_FETCH, NO_RESULTS)
     annotation class DownloadStatus {
         companion object {
             const val DONE = "DONE"
             const val LOADING = "LOADING"
             const val UNABLE_TO_FETCH = "UNABLE_TO_FETCH"
+            const val NO_RESULTS = "NO_RESULTS"
         }
     }
 
     fun loadMeteorites(location: String?) {
-        launchDataLoad {
-            updateFilter(location)
+        viewModelScope.launch(dispatchers.main()) {
+            try {
+                if (loadingStatus.value != DONE) {
+                    loadingStatus.value = LOADING
+                }
+                updateFilter(location)
+            } catch (error: Exception) {
+                Log.e(TAG, error.message, error)
+                loadingStatus.postValue(UNABLE_TO_FETCH)
+            }
         }
     }
 
@@ -61,6 +70,11 @@ class MeteoriteListViewModel(
 
         meteorites.addSource(loadMeteorites) { value ->
             meteorites.value = value
+            if (value.isEmpty()) {
+                loadingStatus.postValue(NO_RESULTS)
+            } else {
+                loadingStatus.postValue(DONE)
+            }
         }
     }
 
@@ -82,19 +96,4 @@ class MeteoriteListViewModel(
         return meteoriteService.location
     }
 
-    private fun launchDataLoad(block: suspend () -> Unit): Job {
-        return viewModelScope.launch(dispatchers.main()) {
-            try {
-                if (loadingStatus.value != DONE) {
-                    loadingStatus.value = LOADING
-                }
-                block()
-            } catch (error: Exception) {
-                Log.e(TAG, error.message, error)
-                loadingStatus.postValue(UNABLE_TO_FETCH)
-            } finally {
-                loadingStatus.postValue(DONE)
-            }
-        }
-    }
 }
