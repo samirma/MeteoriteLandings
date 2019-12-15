@@ -72,7 +72,7 @@ class MeteoriteListViewModel(
     }
 
     private fun launchDataLoad(block: suspend () -> Unit): Job {
-        return viewModelScope.launch(dispatchers.default()) {
+        return viewModelScope.launch(dispatchers.main()) {
             try {
                 if (loadingStatus.value != DONE) {
                     loadingStatus.value = LOADING
