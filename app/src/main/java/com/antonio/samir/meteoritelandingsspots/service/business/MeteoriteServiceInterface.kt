@@ -9,9 +9,7 @@ interface MeteoriteServiceInterface {
 
     val location: Location?
 
-    suspend fun loadMeteorites(location: String?): LiveData<List<Meteorite>>
-
-    suspend fun filterList(filter: String)
+    suspend fun loadMeteorites(filter: String?): LiveData<List<Meteorite>>
 
     fun getMeteoriteById(id: String): LiveData<Meteorite>?
 
