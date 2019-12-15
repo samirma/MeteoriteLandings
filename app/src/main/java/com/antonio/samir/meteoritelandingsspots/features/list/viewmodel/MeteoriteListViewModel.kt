@@ -31,6 +31,8 @@ class MeteoriteListViewModel(
 
     val loadingStatus: MutableLiveData<String> = MutableLiveData()
 
+    var loadMeteoritesCurrent: LiveData<List<Meteorite>>? = null
+
     val TAG = MeteoriteListViewModel::class.java.simpleName
 
     @Retention(AnnotationRetention.SOURCE)
@@ -45,11 +47,20 @@ class MeteoriteListViewModel(
 
     fun loadMeteorites(location: String?) {
         launchDataLoad {
-            val loadMeteorites = meteoriteService.loadMeteorites(location)
-            meteorites.removeSource(loadMeteorites)
-            meteorites.addSource(loadMeteorites) { value ->
-                meteorites.value = value
-            }
+            updateFilter(location)
+        }
+    }
+
+    suspend fun updateFilter(location: String?) {
+        loadMeteoritesCurrent?.let {
+            meteorites.removeSource(it)
+        }
+
+        val loadMeteorites = meteoriteService.loadMeteorites(location)
+        loadMeteoritesCurrent = loadMeteorites
+
+        meteorites.addSource(loadMeteorites) { value ->
+            meteorites.value = value
         }
     }
 
@@ -80,9 +91,9 @@ class MeteoriteListViewModel(
                 block()
             } catch (error: Exception) {
                 Log.e(TAG, error.message, error)
-                loadingStatus.value = UNABLE_TO_FETCH
+                loadingStatus.postValue(UNABLE_TO_FETCH)
             } finally {
-                loadingStatus.value = DONE
+                loadingStatus.postValue(DONE)
             }
         }
     }

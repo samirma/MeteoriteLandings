@@ -98,12 +98,16 @@ class MeteoriteListFragment : Fragment(),
         searchText.isIconified = false;
         searchText.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
-                listViewModel.loadMeteorites(newText)
+                lifecycleScope.launch {
+                    listViewModel.updateFilter(newText)
+                }
                 return false
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
-                listViewModel.loadMeteorites(query)
+                lifecycleScope.launch {
+                    listViewModel.updateFilter(query)
+                }
                 return false
             }
 
@@ -114,8 +118,11 @@ class MeteoriteListFragment : Fragment(),
     private fun observeMeteorites() {
 
         listViewModel.meteorites.observe(viewLifecycleOwner, Observer { meteorites ->
-            lifecycleScope.launch {
+            Log.i(TAG, "Meteorites received: ${meteorites.size}")
+            if (meteorites.isNotEmpty()) {
                 meteoriteAdapter.setData(meteorites)
+            } else {
+                error(getString(R.string.no_result_found))
             }
         })
 
@@ -183,7 +190,6 @@ class MeteoriteListFragment : Fragment(),
         meteoriteRV.visibility = View.GONE
         messageTV.visibility = View.VISIBLE
         messageTV.text = messageString
-        meteoriteLoadingStopped()
     }
 
     /**
@@ -265,7 +271,9 @@ class MeteoriteListFragment : Fragment(),
     private fun meteoriteLoadingStarted() {
         try {
             progressLoader.visibility = View.VISIBLE
-            groupContent.visibility = View.INVISIBLE
+            container?.visibility = View.INVISIBLE
+            meteoriteRV?.visibility = View.INVISIBLE
+
         } catch (e: Exception) {
             Log.e(TAG, e.message, e)
         }
@@ -275,7 +283,8 @@ class MeteoriteListFragment : Fragment(),
     private fun meteoriteLoadingStopped() {
         try {
             progressLoader.visibility = View.INVISIBLE
-            groupContent.visibility = View.VISIBLE
+            container?.visibility = View.VISIBLE
+            meteoriteRV?.visibility = View.VISIBLE
         } catch (e: Exception) {
             Log.e(TAG, e.message, e)
         }
