@@ -1,7 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.list.ui
 
 import android.Manifest
-import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -10,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.annotation.NonNull
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -40,8 +40,6 @@ class MeteoriteListFragment : Fragment(),
     private var sglm: GridLayoutManager? = null
     private lateinit var meteoriteAdapter: MeteoriteAdapter
     private var selectedMeteorite: Meteorite? = null
-
-    private var progressDialog: ProgressDialog? = null
 
     private var meteoriteDetailFragment: MeteoriteDetailFragment? = null
 
@@ -95,7 +93,21 @@ class MeteoriteListFragment : Fragment(),
 
         observeRequestPermission()
 
-        searchText
+        searchText.isActivated = true;
+        searchText.onActionViewExpanded();
+        searchText.isIconified = false;
+        searchText.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextChange(newText: String): Boolean {
+                listViewModel.loadMeteorites(newText)
+                return false
+            }
+
+            override fun onQueryTextSubmit(query: String): Boolean {
+                listViewModel.loadMeteorites(query)
+                return false
+            }
+
+        })
 
     }
 
@@ -252,9 +264,8 @@ class MeteoriteListFragment : Fragment(),
 
     private fun meteoriteLoadingStarted() {
         try {
-            if (progressDialog == null) {
-                progressDialog = ProgressDialog.show(requireContext(), "", getString(R.string.load), true)
-            }
+            progressLoader.visibility = View.VISIBLE
+            groupContent.visibility = View.INVISIBLE
         } catch (e: Exception) {
             Log.e(TAG, e.message, e)
         }
@@ -263,10 +274,8 @@ class MeteoriteListFragment : Fragment(),
 
     private fun meteoriteLoadingStopped() {
         try {
-            if (progressDialog != null && progressDialog!!.isShowing) {
-                progressDialog?.dismiss()
-                progressDialog = null
-            }
+            progressLoader.visibility = View.INVISIBLE
+            groupContent.visibility = View.VISIBLE
         } catch (e: Exception) {
             Log.e(TAG, e.message, e)
         }
