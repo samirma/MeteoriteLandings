@@ -57,12 +57,15 @@ class MeteoriteAdapter(
 
     fun setData(meteorites: List<Meteorite>) {
 
-        val meteoriteDiffCallback = MeteoriteDiffCallback(this@MeteoriteAdapter.meteorites, meteorites)
+        if (this@MeteoriteAdapter.meteorites.size == meteorites.size) {
+            val meteoriteDiffCallback = MeteoriteDiffCallback(this@MeteoriteAdapter.meteorites, meteorites)
 
-        val diffResult = DiffUtil.calculateDiff(meteoriteDiffCallback)
+            val diffResult = DiffUtil.calculateDiff(meteoriteDiffCallback)
 
-        diffResult.dispatchUpdatesTo(this@MeteoriteAdapter)
-
+            diffResult.dispatchUpdatesTo(this@MeteoriteAdapter)
+        } else {
+            notifyDataSetChanged()
+        }
         this@MeteoriteAdapter.meteorites = meteorites
 
     }

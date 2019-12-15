@@ -30,7 +30,7 @@ class MeteoriteNasaService(
 
     private val meteoritesByName = meteoriteRepository.meteoriteOrdered(null, null)
 
-    override suspend fun loadMeteorites(location: String?): LiveData<List<Meteorite>> = withContext(dispatchers.default()) {
+    override suspend fun loadMeteorites(filter: String?): LiveData<List<Meteorite>> = withContext(dispatchers.default()) {
 
         if (meteoriteRepository.getMeteoritesCount() == 0 && !isUpdateRequired.getAndSet(true)) {
             //If it is empty so load the data from internet
@@ -41,22 +41,12 @@ class MeteoriteNasaService(
             addressService.recoveryAddress()
         }
 
-        changeMeteoritesSourceSuspended(meteoriteRepository.meteoriteOrdered(null, location))
-
         if (!gpsTracker.isLocationServiceStarted() && gpsTracker.isGPSEnabled()) {
             updateLocation()
         }
 
-        return@withContext mediatorLiveData
+        return@withContext meteoriteRepository.meteoriteOrdered(location, filter)
 
-    }
-
-    override suspend fun filterList(filter: String) {
-        changeMeteoritesSourceSuspended(meteoriteRepository.meteoriteOrdered(location, filter))
-    }
-
-    private suspend fun changeMeteoritesSourceSuspended(source: LiveData<List<Meteorite>>) = withContext(dispatchers.main()) {
-        changeMeteoritesSource(source)
     }
 
     private fun changeMeteoritesSource(source: LiveData<List<Meteorite>>) {

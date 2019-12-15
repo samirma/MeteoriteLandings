@@ -69,16 +69,13 @@ class MeteoriteNasaServiceTest {
 
     }
 
-
     @Test
     fun testFilterList() = runBlockingTest {
 
         whenever(mockRepository.getMeteoritesCount()).doReturn(0)
 
-        meteoriteNasaService.loadMeteorites(null)
-
         val filter = "us"
-        meteoriteNasaService.filterList(filter)
+        meteoriteNasaService.loadMeteorites(filter)
 
         verify(mockRepository).meteoriteOrdered(null, filter)
 
