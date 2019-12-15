@@ -33,8 +33,6 @@ class MeteoriteListViewModelTest {
 
     private lateinit var viewModel: MeteoriteListViewModel
 
-    private var location: String? = null
-
     @Before
     fun setUp() {
 
@@ -51,15 +49,17 @@ class MeteoriteListViewModelTest {
 
         val data = MutableLiveData<List<Meteorite>>()
 
-        data.value = listOf(Meteorite().apply {
+        val element = Meteorite().apply {
             id = 123
-        })
+        }
+
+        data.postValue(listOf(element))
+
+        val location = "sa"
 
         Mockito.`when`(meteoriteService.loadMeteorites(location)).thenReturn(data)
 
         viewModel.loadMeteorites(location)
-
-        sleep(1000)
 
         val meteorite = viewModel.meteorites.apply {
             observeForever {}
@@ -85,6 +85,8 @@ class MeteoriteListViewModelTest {
         data.value = listOf(Meteorite().apply {
             id = 123
         })
+
+        val location = "sa"
 
         Mockito.`when`(meteoriteService.loadMeteorites(location)).thenThrow(Error("some error"))
 

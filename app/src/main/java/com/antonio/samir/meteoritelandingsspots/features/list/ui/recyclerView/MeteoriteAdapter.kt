@@ -13,8 +13,6 @@ import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.se
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.features.yearString
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.apache.commons.lang3.StringUtils
 import java.util.*
 
@@ -57,15 +55,13 @@ class MeteoriteAdapter(
         return meteorites.size
     }
 
-    suspend fun setData(meteorites: List<Meteorite>) = withContext(Dispatchers.Default) {
+    fun setData(meteorites: List<Meteorite>) {
 
         val meteoriteDiffCallback = MeteoriteDiffCallback(this@MeteoriteAdapter.meteorites, meteorites)
 
         val diffResult = DiffUtil.calculateDiff(meteoriteDiffCallback)
 
-        withContext(Dispatchers.Main) {
-            diffResult.dispatchUpdatesTo(this@MeteoriteAdapter)
-        }
+        diffResult.dispatchUpdatesTo(this@MeteoriteAdapter)
 
         this@MeteoriteAdapter.meteorites = meteorites
 

@@ -14,10 +14,10 @@ class MeteoriteRepository(
     override fun meteoriteOrdered(location: Location?, filter: String?): LiveData<List<Meteorite>> {
 
         return if (location == null) {
-            if (filter != null) {
-                meteoriteDao.meteoriteFiltered(filter)
-            } else {
+            if (filter.isNullOrEmpty()) {
                 meteoriteDao.meteoriteOrdered()
+            } else {
+                meteoriteDao.meteoriteFiltered(filter)
             }
         } else {
             val lng = location.longitude
