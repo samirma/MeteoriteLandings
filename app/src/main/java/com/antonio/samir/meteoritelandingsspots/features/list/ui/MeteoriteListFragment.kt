@@ -25,6 +25,7 @@ import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.se
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.DONE
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.LOADING
+import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.NO_RESULTS
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.UNABLE_TO_FETCH
 import com.antonio.samir.meteoritelandingsspots.service.business.AddressService
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
@@ -119,11 +120,7 @@ class MeteoriteListFragment : Fragment(),
 
         listViewModel.meteorites.observe(viewLifecycleOwner, Observer { meteorites ->
             Log.i(TAG, "Meteorites received: ${meteorites.size}")
-            if (meteorites.isNotEmpty()) {
-                meteoriteAdapter.setData(meteorites)
-            } else {
-                error(getString(R.string.no_result_found))
-            }
+            meteoriteAdapter.setData(meteorites)
         })
 
         listViewModel.loadMeteorites(null)
@@ -146,8 +143,13 @@ class MeteoriteListFragment : Fragment(),
                 DONE -> meteoriteLoadingStopped()
                 LOADING -> meteoriteLoadingStarted()
                 UNABLE_TO_FETCH -> unableToFetch()
+                NO_RESULTS -> noResult()
             }
         })
+    }
+
+    private fun noResult() {
+        error(getString(R.string.no_result_found))
     }
 
     /**
