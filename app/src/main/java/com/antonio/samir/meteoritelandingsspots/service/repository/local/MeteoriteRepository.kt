@@ -13,12 +13,21 @@ class MeteoriteRepository(
 
     override fun meteoriteOrdered(location: Location?, filter: String?): LiveData<List<Meteorite>> {
 
-        if (location == null) {
-            return meteoriteDao.meteoriteOrdered()
+        return if (location == null) {
+            if (filter != null) {
+                meteoriteDao.meteoriteFiltered(filter)
+            } else {
+                meteoriteDao.meteoriteOrdered()
+            }
         } else {
             val lng = location.longitude
             val lat = location.latitude
-            return meteoriteDao.meteoriteOrderedByLocationFilted(lat, lng, filter ?: "")
+
+            if (filter != null) {
+                meteoriteDao.meteoriteOrderedByLocationFiltered(lat, lng, filter)
+            } else {
+                meteoriteDao.meteoriteOrderedByLocation(lat, lng)
+            }
         }
 
     }
