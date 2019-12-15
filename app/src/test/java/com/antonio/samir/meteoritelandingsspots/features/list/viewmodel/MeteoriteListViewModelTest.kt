@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.list.viewmodel
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
 import com.antonio.samir.meteoritelandingsspots.service.business.MeteoriteServiceInterface
@@ -14,7 +15,6 @@ import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import java.lang.Thread.sleep
 import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
@@ -22,6 +22,9 @@ class MeteoriteListViewModelTest {
 
     @get:Rule
     var coroutinesTestRule = CoroutineTestRule()
+
+    @get:Rule
+    var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Rule
     @JvmField
@@ -90,21 +93,11 @@ class MeteoriteListViewModelTest {
 
         Mockito.`when`(meteoriteService.loadMeteorites(location)).thenThrow(Error("some error"))
 
-        viewModel.loadMeteorites(location)
-
-        sleep(1000)
-
-        val meteorite = viewModel.meteorites.apply {
-            observeForever {}
-        }
-
         val loadingStatus = viewModel.loadingStatus.apply {
             observeForever {}
         }
 
-        val actual = meteorite.value
-        val expected = data.value
-        assertEquals(expected, actual)
+        viewModel.loadMeteorites(location)
 
         assertEquals(MeteoriteListViewModel.DownloadStatus.UNABLE_TO_FETCH, loadingStatus.value)
 
