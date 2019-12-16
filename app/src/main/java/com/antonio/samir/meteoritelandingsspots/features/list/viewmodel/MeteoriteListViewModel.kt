@@ -31,6 +31,8 @@ class MeteoriteListViewModel(
 
     val loadingStatus: MutableLiveData<String> = MutableLiveData()
 
+    var filter = ""
+
     private var loadMeteoritesCurrent: LiveData<List<Meteorite>>? = null
 
     val TAG = MeteoriteListViewModel::class.java.simpleName
@@ -60,12 +62,13 @@ class MeteoriteListViewModel(
         }
     }
 
-    suspend fun updateFilter(location: String?) {
+    suspend fun updateFilter(filter: String?) {
+        filter?.let { this.filter = it }
         loadMeteoritesCurrent?.let {
             meteorites.removeSource(it)
         }
 
-        val loadMeteorites = meteoriteService.loadMeteorites(location)
+        val loadMeteorites = meteoriteService.loadMeteorites(filter)
         loadMeteoritesCurrent = loadMeteorites
 
         meteorites.addSource(loadMeteorites) { value ->
