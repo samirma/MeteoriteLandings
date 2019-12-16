@@ -11,7 +11,7 @@ import retrofit2.http.GET
 interface NasaServerEndPoint {
 
 
-    @get:GET("resource/y77d-th95.json")
+    @get:GET("resource/y77d-th95.json?$limit=50000")
     val publicMeteorites: Call<List<Meteorite>>
 
     companion object {
