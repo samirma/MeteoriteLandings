@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.annotation.NonNull
@@ -116,6 +117,12 @@ class MeteoriteListFragment : Fragment(),
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        searchText?.setQuery(listViewModel.filter, true);
+        searchText?.clearFocus();
+    }
+
     private fun observeMeteorites() {
 
         listViewModel.meteorites.observe(viewLifecycleOwner, Observer { meteorites ->
@@ -186,6 +193,8 @@ class MeteoriteListFragment : Fragment(),
 
     private fun unableToFetch() {
         error(getString(R.string.no_network))
+        progressLoader.visibility = GONE
+        searchText.visibility = GONE
     }
 
     private fun error(messageString: String) {

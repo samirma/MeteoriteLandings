@@ -10,6 +10,8 @@ import com.antonio.samir.meteoritelandingsspots.service.repository.local.Meteori
 import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -32,9 +34,11 @@ class MeteoriteNasaService(
 
     override suspend fun loadMeteorites(filter: String?): LiveData<List<Meteorite>> = withContext(dispatchers.default()) {
 
-        if (meteoriteRepository.getMeteoritesCount() == 0 && !isUpdateRequired.getAndSet(true)) {
-            //If it is empty so load the data from internet
-            recoverFromNetwork()
+        GlobalScope.launch(dispatchers.unconfined()) {
+            if (meteoriteRepository.getMeteoritesCount() == 0 && !isUpdateRequired.getAndSet(true)) {
+                //If it is empty so load the data from internet
+                recoverFromNetwork()
+            }
         }
 
         if (!addressServiceStarted.getAndSet(true)) {
@@ -89,12 +93,23 @@ class MeteoriteNasaService(
 
     private suspend fun recoverFromNetwork() = withContext(dispatchers.default()) {
 
-        val remoteMeteorites = meteoriteRepository.getRemoteMeteorites()
+        val limit = 5000
+        var currentPage = 0
+        var currentLoaded = -1
 
-        val filteredList = remoteMeteorites
-                ?.filter { it.reclong?.toDoubleOrNull() != null && it.reclat?.toDoubleOrNull() != null }
+        do {
+            val remoteMeteorites = meteoriteRepository.getRemoteMeteorites(limit, limit * currentPage)
 
-        filteredList?.let { meteoriteRepository.insertAll(it) }
+            val filteredList = remoteMeteorites
+                    .filter { it.reclong?.toDoubleOrNull() != null && it.reclat?.toDoubleOrNull() != null }
+
+            meteoriteRepository.insertAll(filteredList)
+
+            currentLoaded = remoteMeteorites.size
+
+            currentPage++
+        } while (currentLoaded == limit)
+
     }
 
     override fun getMeteoriteById(id: String): LiveData<Meteorite>? {

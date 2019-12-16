@@ -52,8 +52,8 @@ class MeteoriteRepository(
         return meteoriteDao.meteoritesWithOutAddress()
     }
 
-    override suspend fun getRemoteMeteorites(): List<Meteorite>? {
-        return nasaRemoteRepository.getMeteorites()
+    override suspend fun getRemoteMeteorites(limit: Int, offset: Int): List<Meteorite> {
+        return nasaRemoteRepository.getMeteorites(limit, offset)
     }
 
 }
