@@ -94,7 +94,7 @@ class MeteoriteListFragment : Fragment(),
 
         observeLoadingStatus()
 
-        observeRequestPermission()
+//        observeRequestPermission()
 
         searchText.isActivated = true;
         searchText.onActionViewExpanded();
