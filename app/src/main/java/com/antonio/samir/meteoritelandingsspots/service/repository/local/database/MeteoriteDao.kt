@@ -1,6 +1,7 @@
 package com.antonio.samir.meteoritelandingsspots.service.repository.local.database
 
 import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -13,16 +14,16 @@ import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 interface MeteoriteDao {
 
     @Query("SELECT * from meteorites ORDER BY name")
-    fun meteoriteOrdered(): LiveData<List<Meteorite>>
+    fun meteoriteOrdered(): DataSource.Factory<Int, Meteorite>
 
     @Query("SELECT * from meteorites ORDER BY ((reclat-:lat)*(reclat-:lat)) + ((reclong - :lng)*(reclong - :lng)) ASC")
-    fun meteoriteOrderedByLocation(lat: Double, lng: Double): LiveData<List<Meteorite>>
+    fun meteoriteOrderedByLocation(lat: Double, lng: Double): DataSource.Factory<Int, Meteorite>
 
     @Query("SELECT * from meteorites WHERE (LOWER(address) GLOB '*' || :filter|| '*') or (LOWER(name) GLOB '*' || :filter|| '*') ORDER BY ((reclat-:lat)*(reclat-:lat)) + ((reclong - :lng)*(reclong - :lng)) ASC")
-    fun meteoriteOrderedByLocationFiltered(lat: Double, lng: Double, filter: String): LiveData<List<Meteorite>>
+    fun meteoriteOrderedByLocationFiltered(lat: Double, lng: Double, filter: String): DataSource.Factory<Int, Meteorite>
 
     @Query("SELECT * from meteorites WHERE (LOWER(address) GLOB '*' || :filter|| '*') or (LOWER(name) GLOB '*' || :filter|| '*') ORDER BY name ASC")
-    fun meteoriteFiltered(filter: String): LiveData<List<Meteorite>>
+    fun meteoriteFiltered(filter: String): DataSource.Factory<Int, Meteorite>
 
     @Query("SELECT * from meteorites WHERE address IS NULL OR LENGTH(address) = 0 ORDER BY id")
     suspend fun meteoritesWithOutAddress(): List<Meteorite>

@@ -6,7 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DiffUtil
+import androidx.paging.PagedList
+import androidx.paging.PagedListAdapter
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.features.getDistanceFrom
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelector
@@ -22,12 +23,11 @@ import java.util.*
 class MeteoriteAdapter(
         private val context: Context,
         private val meteoriteSelector: MeteoriteSelector,
-        private val viewModel: MeteoriteListViewModel
-) : androidx.recyclerview.widget.RecyclerView.Adapter<ViewHolderMeteorite>() {
+        private val viewModel: MeteoriteListViewModel,
+        differ: MeteoriteDiffCallback
+) : PagedListAdapter<Meteorite, ViewHolderMeteorite>(differ) {
 
     private var selectedMeteorite: Meteorite? = null
-
-    private var meteorites: List<Meteorite> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderMeteorite {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_meteorite, parent, false)
@@ -46,63 +46,49 @@ class MeteoriteAdapter(
             val previousMet = selectedMeteorite
             selectedMeteorite = meteorite
 
-            notifyItemChanged(meteorites.indexOf(previousMet))
-            notifyItemChanged(meteorites.indexOf(meteorite))
+//            notifyItemChanged(meteorites.indexOf(previousMet))
+//            notifyItemChanged(meteorites.indexOf(meteorite))
         }
     }
 
-    override fun getItemCount(): Int {
-        return meteorites.size
-    }
-
-    fun setData(meteorites: List<Meteorite>) {
-
-        if (this@MeteoriteAdapter.meteorites.size == meteorites.size) {
-            val meteoriteDiffCallback = MeteoriteDiffCallback(this@MeteoriteAdapter.meteorites, meteorites)
-
-            val diffResult = DiffUtil.calculateDiff(meteoriteDiffCallback)
-
-            diffResult.dispatchUpdatesTo(this@MeteoriteAdapter)
-        } else {
+    fun setData(meteorites: PagedList<Meteorite>) {
+        if (itemCount != meteorites.size && currentList != meteorites) {
+            submitList(null)
             notifyDataSetChanged()
         }
-        this@MeteoriteAdapter.meteorites = meteorites
-
-    }
-
-    override fun getItemId(position: Int): Long {
-        return meteorites[position].id.toLong()
+        submitList(meteorites)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolderMeteorite, position: Int) {
-        val meteorite = meteorites[position]
 
-        val meteoriteName = meteorite.name
-        val year = meteorite.yearString
+        getItem(position)?.let { meteorite ->
 
-        viewHolder.name.text = context.getString(R.string.title, meteoriteName, year)
+            val meteoriteName = meteorite.name
+            val year = meteorite.yearString
 
-        viewHolder.name.contentDescription = meteoriteName
+            viewHolder.name.text = context.getString(R.string.title, meteoriteName, year)
 
-        setLocationText(meteorite, viewHolder)
+            viewHolder.name.contentDescription = meteoriteName
 
-        viewHolder.meteorite = meteorite
+            setLocationText(meteorite, viewHolder)
+
+            viewHolder.meteorite = meteorite
 
 
-        var color = R.color.unselected_item_color
-        var title_color = R.color.title_color
-        var elevation = R.dimen.unselected_item_elevation
+            var color = R.color.unselected_item_color
+            var title_color = R.color.title_color
+            var elevation = R.dimen.unselected_item_elevation
 
-        if (Objects.equals(meteorite, selectedMeteorite)) {
-            color = R.color.selected_item_color
-            title_color = R.color.selected_title_color
-            elevation = R.dimen.selected_item_elevation
+            if (Objects.equals(meteorite, selectedMeteorite)) {
+                color = R.color.selected_item_color
+                title_color = R.color.selected_title_color
+                elevation = R.dimen.selected_item_elevation
+            }
+
+            viewHolder.mCardview.setCardBackgroundColor(context.resources.getColor(color))
+            viewHolder.mCardview.cardElevation = context.resources.getDimensionPixelSize(elevation).toFloat()
+            viewHolder.name.setTextColor(context.resources.getColor(title_color))
         }
-
-        viewHolder.mCardview.setCardBackgroundColor(context.resources.getColor(color))
-        viewHolder.mCardview.cardElevation = context.resources.getDimensionPixelSize(elevation).toFloat()
-        viewHolder.name.setTextColor(context.resources.getColor(title_color))
-
     }
 
 
