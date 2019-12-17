@@ -22,7 +22,7 @@ interface MeteoriteDao {
     @Query("SELECT * from meteorites WHERE (LOWER(address) GLOB '*' || :filter|| '*') or (LOWER(name) GLOB '*' || :filter|| '*') ORDER BY name ASC")
     fun meteoriteFiltered(filter: String): DataSource.Factory<Int, Meteorite>
 
-    @Query("SELECT * from meteorites WHERE address IS NULL OR LENGTH(address) = 0 ORDER BY id")
+    @Query("SELECT * from meteorites WHERE address IS NULL OR LENGTH(address) = 0 ORDER BY id LIMIT 30")
     suspend fun meteoritesWithOutAddress(): List<Meteorite>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

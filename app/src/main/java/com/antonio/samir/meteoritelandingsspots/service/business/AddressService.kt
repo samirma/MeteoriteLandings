@@ -40,22 +40,27 @@ class AddressService(
 
         GlobalScope.launch(dispatchers.default()) {
             if (status.value == null || status.value === DONE) {
-                val meteorites = meteoriteRepository.meteoritesWithOutAddress()
-                try {
-                    if (meteorites.isNotEmpty()) {
-                        Log.i(TAG, "recoveryAddress $LOADING")
-                        status.postValue(LOADING)
+                var meteorites = meteoriteRepository.meteoritesWithOutAddress()
+
+                Log.i(TAG, "recoveryAddress $LOADING")
+
+                status.postValue(LOADING)
+
+                while (meteorites.isNotEmpty()) {
+                    try {
 
                         meteorites.onEach { meteorite ->
                             recoverAddress(meteorite)
                         }
+                        Log.i(TAG, "recoveryAddress ${meteorites.size}")
 
-                        Log.i(TAG, "recoveryAddress $DONE")
-                        status.postValue(DONE)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Fail to retrieve address", e)
                     }
-                } catch (e: Exception) {
-                    Log.e(TAG, "Fail to retrieve address", e)
+                    meteorites = meteoriteRepository.meteoritesWithOutAddress()
                 }
+
+                status.postValue(DONE)
 
             }
 
@@ -75,7 +80,7 @@ class AddressService(
                 meteorite.address = address
             }
             meteoriteRepository.update(meteorite)
-            Log.v(TAG, "Address for id ${meteorite.id} recovered")
+//            Log.v(TAG, "Address for id ${meteorite.id} recovered")
         }
 
     }
