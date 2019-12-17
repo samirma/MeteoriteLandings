@@ -36,7 +36,8 @@ class MeteoriteNasaService(
     override suspend fun loadMeteorites(filter: String?): DataSource.Factory<Int, Meteorite> = withContext(dispatchers.default()) {
 
         GlobalScope.launch(dispatchers.unconfined()) {
-            if (meteoriteRepository.getMeteoritesCount() < 100 && !isUpdateRequired.getAndSet(true)) {
+            val meteoritesCount = meteoriteRepository.getMeteoritesCount()
+            if (meteoritesCount < 1000 && !isUpdateRequired.getAndSet(true)) {
                 //If it is empty so load the data from internet
                 recoverFromNetwork()
             }
