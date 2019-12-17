@@ -134,5 +134,13 @@ class MeteoriteAdapter(
         viewHolder.location.visibility = View.VISIBLE
     }
 
+    override fun getItemId(position: Int): Long {
+        val item = getItem(position)
+        return if (item != null) {
+            (item.id.hashCode() + item.name.hashCode()).toLong()
+        } else {
+            super.getItemId(position)
+        }
+    }
 
 }
