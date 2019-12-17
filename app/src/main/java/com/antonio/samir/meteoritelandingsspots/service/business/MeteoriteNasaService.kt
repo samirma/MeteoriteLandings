@@ -46,9 +46,9 @@ class MeteoriteNasaService(
             addressService.recoveryAddress()
         }
 
-        if (!gpsTracker.isLocationServiceStarted() && gpsTracker.isGPSEnabled()) {
-            updateLocation()
-        }
+//        if (!gpsTracker.isLocationServiceStarted() && gpsTracker.isGPSEnabled()) {
+//            updateLocation()
+//        }
 
         return@withContext meteoriteRepository.meteoriteOrdered(location, filter)
 
