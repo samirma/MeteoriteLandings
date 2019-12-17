@@ -6,6 +6,7 @@ import androidx.paging.DataSource
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.repository.local.database.MeteoriteDao
 import com.antonio.samir.meteoritelandingsspots.service.repository.remote.NasaRemoteRepositoryInterface
+import java.util.*
 
 class MeteoriteRepository(
         val meteoriteDao: MeteoriteDao,
@@ -18,14 +19,14 @@ class MeteoriteRepository(
             if (filter.isNullOrEmpty()) {
                 meteoriteDao.meteoriteOrdered()
             } else {
-                meteoriteDao.meteoriteFiltered(filter)
+                meteoriteDao.meteoriteFiltered(filter.toLowerCase(Locale.getDefault()))
             }
         } else {
             val lng = location.longitude
             val lat = location.latitude
 
             if (filter != null) {
-                meteoriteDao.meteoriteOrderedByLocationFiltered(lat, lng, filter)
+                meteoriteDao.meteoriteOrderedByLocationFiltered(lat, lng, filter.toLowerCase(Locale.getDefault()))
             } else {
                 meteoriteDao.meteoriteOrderedByLocation(lat, lng)
             }
