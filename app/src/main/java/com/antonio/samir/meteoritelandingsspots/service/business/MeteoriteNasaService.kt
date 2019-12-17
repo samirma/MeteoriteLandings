@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.paging.DataSource
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteRepositoryInterface
 import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
@@ -32,7 +33,7 @@ class MeteoriteNasaService(
 
     private val meteoritesByName = meteoriteRepository.meteoriteOrdered(null, null)
 
-    override suspend fun loadMeteorites(filter: String?): LiveData<List<Meteorite>> = withContext(dispatchers.default()) {
+    override suspend fun loadMeteorites(filter: String?): DataSource.Factory<Int, Meteorite> = withContext(dispatchers.default()) {
 
         GlobalScope.launch(dispatchers.unconfined()) {
             if (meteoriteRepository.getMeteoritesCount() == 0 && !isUpdateRequired.getAndSet(true)) {
@@ -53,16 +54,16 @@ class MeteoriteNasaService(
 
     }
 
-    private fun changeMeteoritesSource(source: LiveData<List<Meteorite>>) {
+    private fun changeMeteoritesSource(source: DataSource.Factory<Int, Meteorite>) {
 
-        mediatorLiveData.apply {
-            removeSource(meteoritesByName)
-
-            addSource(source) { value ->
-                mediatorLiveData.value = value
-            }
-
-        }
+//        mediatorLiveData.apply {
+//            removeSource(meteoritesByName)
+//
+//            addSource(source) { value ->
+//                mediatorLiveData.value = value
+//            }
+//
+//        }
     }
 
     override fun addressStatus(): MutableLiveData<String> {

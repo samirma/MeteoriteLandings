@@ -2,6 +2,7 @@ package com.antonio.samir.meteoritelandingsspots.service.repository.local
 
 import android.location.Location
 import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.repository.local.database.MeteoriteDao
 import com.antonio.samir.meteoritelandingsspots.service.repository.remote.NasaRemoteRepositoryInterface
@@ -11,7 +12,7 @@ class MeteoriteRepository(
         val nasaRemoteRepository: NasaRemoteRepositoryInterface
 ) : MeteoriteRepositoryInterface {
 
-    override fun meteoriteOrdered(location: Location?, filter: String?): LiveData<List<Meteorite>> {
+    override fun meteoriteOrdered(location: Location?, filter: String?): DataSource.Factory<Int, Meteorite> {
 
         return if (location == null) {
             if (filter.isNullOrEmpty()) {

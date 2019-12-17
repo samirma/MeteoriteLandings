@@ -2,11 +2,12 @@ package com.antonio.samir.meteoritelandingsspots.service.repository.local
 
 import android.location.Location
 import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 
 interface MeteoriteRepositoryInterface {
 
-    fun meteoriteOrdered(location: Location?, filter: String?): LiveData<List<Meteorite>>
+    fun meteoriteOrdered(location: Location?, filter: String?): DataSource.Factory<Int, Meteorite>
 
     suspend fun meteoritesWithOutAddress(): List<Meteorite>
 

@@ -5,6 +5,8 @@ import android.location.Location
 import android.util.Log
 import androidx.annotation.StringDef
 import androidx.lifecycle.*
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.DONE
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.LOADING
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.NO_RESULTS
@@ -27,13 +29,13 @@ class MeteoriteListViewModel(
 
     var recoveryAddressStatus: LiveData<String> = meteoriteService.addressStatus()
 
-    val meteorites: MediatorLiveData<List<Meteorite>> = MediatorLiveData()
+    val meteorites: MediatorLiveData<PagedList<Meteorite>> = MediatorLiveData()
+
+    private var loadMeteoritesCurrent: LiveData<PagedList<Meteorite>>? = null
 
     val loadingStatus: MutableLiveData<String> = MutableLiveData()
 
     var filter = ""
-
-    private var loadMeteoritesCurrent: LiveData<List<Meteorite>>? = null
 
     val TAG = MeteoriteListViewModel::class.java.simpleName
 
@@ -49,6 +51,9 @@ class MeteoriteListViewModel(
     }
 
     fun loadMeteorites(location: String?) {
+        if (location == filter) {
+            return
+        }
         viewModelScope.launch(dispatchers.main()) {
             try {
                 if (loadingStatus.value != DONE) {
@@ -68,7 +73,9 @@ class MeteoriteListViewModel(
             meteorites.removeSource(it)
         }
 
-        val loadMeteorites = meteoriteService.loadMeteorites(filter)
+        val loadMeteorites = LivePagedListBuilder<Int, Meteorite>(meteoriteService.loadMeteorites(filter), 1000)
+                .build()
+
         loadMeteoritesCurrent = loadMeteorites
 
         meteorites.addSource(loadMeteorites) { value ->

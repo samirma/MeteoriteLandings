@@ -21,6 +21,7 @@ import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailFragment
 import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailFragment.Companion.METEORITE
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.MeteoriteAdapter
+import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.MeteoriteDiffCallback
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelectorFactory
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelectorView
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel
@@ -68,7 +69,7 @@ class MeteoriteListFragment : Fragment(),
                 this
         )
 
-        meteoriteAdapter = MeteoriteAdapter(requireContext(), meteoriteSelector, listViewModel).apply {
+        meteoriteAdapter = MeteoriteAdapter(requireContext(), meteoriteSelector, listViewModel, MeteoriteDiffCallback()).apply {
             setHasStableIds(true)
         }
 
