@@ -2,10 +2,7 @@ package com.antonio.samir.meteoritelandingsspots.service.repository.local.databa
 
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 
@@ -28,7 +25,7 @@ interface MeteoriteDao {
     @Query("SELECT * from meteorites WHERE address IS NULL OR LENGTH(address) = 0 ORDER BY id")
     suspend fun meteoritesWithOutAddress(): List<Meteorite>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(items: List<Meteorite>)
 
     @Update
