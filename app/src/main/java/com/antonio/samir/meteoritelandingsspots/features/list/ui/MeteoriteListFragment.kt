@@ -122,6 +122,7 @@ class MeteoriteListFragment : Fragment(),
         super.onResume()
         searchText?.setQuery(listViewModel.filter, true);
         searchText?.clearFocus();
+        Log.v(TAG, "onResume")
     }
 
     private fun observeMeteorites() {
