@@ -15,4 +15,6 @@ interface MeteoriteServiceInterface {
     fun getMeteoriteById(id: String): LiveData<Meteorite>?
 
     fun addressStatus(): MutableLiveData<String>
+
+    suspend fun requestAddressUpdate(id: Meteorite)
 }
