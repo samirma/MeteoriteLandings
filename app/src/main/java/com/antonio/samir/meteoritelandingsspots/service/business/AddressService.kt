@@ -48,11 +48,11 @@ class AddressService(
 
                 while (meteorites.isNotEmpty()) {
                     try {
-
                         meteorites.onEach { meteorite ->
                             recoverAddress(meteorite)
                         }
-                        Log.i(TAG, "recoveryAddress ${meteorites.size}")
+                        val meteoritesWithoutAddressCount: Int = meteoriteRepository.getMeteoritesWithoutAddressCount()
+                        Log.i(TAG, "recoveryAddress ${meteorites.size} $meteoritesWithoutAddressCount")
 
                     } catch (e: Exception) {
                         Log.e(TAG, "Fail to retrieve address", e)
@@ -68,16 +68,14 @@ class AddressService(
 
     }
 
-    private suspend fun recoverAddress(meteorite: Meteorite) = withContext(dispatchers.default()) {
+    override suspend fun recoverAddress(meteorite: Meteorite) = withContext(dispatchers.default()) {
         val recLat = meteorite.reclat
         val recLong = meteorite.reclong
 
         var metAddress = " "
         if (recLat != null && recLong != null) {
             val address = getAddress(recLat.toDouble(), recLong.toDouble())
-            if (address.isNotBlank()) {
-                metAddress = address
-            }
+            metAddress = address ?: " "
         }
         meteorite.address = metAddress
 
@@ -85,8 +83,8 @@ class AddressService(
     }
 
 
-    private fun getAddress(recLat: Double, recLong: Double): String {
-        var addressString = ""
+    private fun getAddress(recLat: Double, recLong: Double): String? {
+        var addressString: String? = null
         val address = geoLocationUtil.getAddress(recLat, recLong)
         if (address != null) {
             val finalAddress = ArrayList<String>()
