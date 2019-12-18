@@ -20,12 +20,8 @@ class MeteoriteDetailViewModel(
         val meteorite = meteoriteService.getMeteoriteById(meteoriteRef.id.toString())
         meteorite?.let {
             this@MeteoriteDetailViewModel.meteorite.addSource(it) { value ->
-                val currentValue = this@MeteoriteDetailViewModel.meteorite.value
-                if (value.id != currentValue?.id || value.address != currentValue.address) {
-                    this@MeteoriteDetailViewModel.meteorite.postValue(value)
-                }
+                this@MeteoriteDetailViewModel.meteorite.postValue(value)
             }
-            currentMeteorite?.let { this@MeteoriteDetailViewModel.meteorite.removeSource(it) }
             currentMeteorite = meteorite
         }
     }
@@ -36,6 +32,10 @@ class MeteoriteDetailViewModel(
 
     fun getLocation(): Location? {
         return meteoriteService.location
+    }
+
+    suspend fun requestAddressUpdate(meteorite: Meteorite) {
+        meteoriteService.requestAddressUpdate(meteorite)
     }
 
 }

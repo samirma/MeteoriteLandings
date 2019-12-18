@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.features.detail.viewmodel.MeteoriteDetailViewModel
@@ -22,6 +23,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.meteorite_detail.*
 import kotlinx.android.synthetic.main.meteorite_detail_grid.*
+import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -151,6 +153,9 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
             setText(null, text, finalAddress)
             View.VISIBLE
         } else {
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.requestAddressUpdate(meteorite)
+            }
             View.GONE
         }
     }
