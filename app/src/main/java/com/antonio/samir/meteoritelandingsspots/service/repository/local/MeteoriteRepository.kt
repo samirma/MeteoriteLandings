@@ -38,6 +38,10 @@ class MeteoriteRepository(
         return meteoriteDao.getMeteoritesCount()
     }
 
+    override suspend fun getMeteoritesWithoutAddressCount(): Int {
+        return meteoriteDao.getMeteoritesWithoutAddressCount()
+    }
+
     override suspend fun insertAll(meteorites: List<Meteorite>) {
         meteoriteDao.insertAll(meteorites)
     }
