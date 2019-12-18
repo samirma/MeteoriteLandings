@@ -16,7 +16,9 @@ import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Layer responsible for manage the interactions between the activity and the services
@@ -39,6 +41,8 @@ class MeteoriteListViewModel(
 
     val TAG = MeteoriteListViewModel::class.java.simpleName
 
+    var currentJob: Job? = null
+
     @Retention(AnnotationRetention.SOURCE)
     @StringDef(DONE, LOADING, UNABLE_TO_FETCH, NO_RESULTS)
     annotation class DownloadStatus {
@@ -54,26 +58,39 @@ class MeteoriteListViewModel(
         if (location == filter) {
             return
         }
-        viewModelScope.launch(dispatchers.main()) {
+
+        location?.let { this.filter = it }
+
+        loadMeteoritesCurrent?.let {
+            meteorites.removeSource(it)
+        }
+
+        currentJob?.let {
+            Log.v(TAG, "isActive: ${it.isActive} isCompleted: ${it.isCompleted}")
+            if (!it.isCompleted) {
+                it.cancel()
+            }
+        }
+
+        val launch = viewModelScope.launch(dispatchers.default()) {
             try {
-                if (loadingStatus.value != DONE) {
-                    loadingStatus.value = LOADING
-                }
+                loadingStatus.postValue(LOADING)
                 updateFilter(location)
             } catch (error: Exception) {
                 Log.e(TAG, error.message, error)
                 loadingStatus.postValue(UNABLE_TO_FETCH)
             }
         }
+        
+        currentJob = launch
+
     }
 
-    suspend fun updateFilter(filter: String?) {
-        filter?.let { this.filter = it }
-        loadMeteoritesCurrent?.let {
-            meteorites.removeSource(it)
-        }
+    private suspend fun updateFilter(filter: String?) = withContext(dispatchers.main()) {
 
-        val loadMeteorites = LivePagedListBuilder<Int, Meteorite>(meteoriteService.loadMeteorites(filter), 1000)
+        val dataSourceFactory = meteoriteService.loadMeteorites(filter)
+
+        val loadMeteorites = LivePagedListBuilder<Int, Meteorite>(dataSourceFactory, 1000)
                 .build()
 
         loadMeteoritesCurrent = loadMeteorites
