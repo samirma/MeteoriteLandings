@@ -67,7 +67,7 @@ class MeteoriteListFragment : Fragment(),
                 this
         )
 
-        meteoriteAdapter = MeteoriteAdapter(requireContext(), meteoriteSelector, listViewModel, MeteoriteDiffCallback()).apply {
+        meteoriteAdapter = MeteoriteAdapter(meteoriteSelector, listViewModel, MeteoriteDiffCallback()).apply {
             setHasStableIds(true)
         }
 
