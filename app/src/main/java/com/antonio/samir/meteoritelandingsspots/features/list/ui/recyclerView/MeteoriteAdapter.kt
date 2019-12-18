@@ -38,8 +38,8 @@ class MeteoriteAdapter(
             val previousMet = selectedMeteorite
             selectedMeteorite = meteorite
 
-//            notifyItemChanged(meteorites.indexOf(previousMet))
-//            notifyItemChanged(meteorites.indexOf(meteorite))
+            currentList?.indexOf(previousMet)?.let { notifyItemChanged(it) }
+            currentList?.indexOf(meteorite)?.let { notifyItemChanged(it) }
         }
     }
 
@@ -52,7 +52,6 @@ class MeteoriteAdapter(
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolderMeteorite, position: Int) {
-
         getItem(position)?.let { meteorite ->
             viewHolder.onBind(meteorite, selectedMeteorite, viewModel.getLocation())
         }
