@@ -37,7 +37,7 @@ class MeteoriteNasaService(
                 recoverFromNetwork()
             }
             if (!addressServiceStarted.getAndSet(true)) {
-                addressService.recoveryAddress()
+//                addressService.recoveryAddress()
             }
         }
 
@@ -64,6 +64,10 @@ class MeteoriteNasaService(
 
     override fun addressStatus(): MutableLiveData<String> {
         return addressService.status
+    }
+
+    override suspend fun requestAddressUpdate(meteorite: Meteorite) {
+        addressService.recoverAddress(meteorite)
     }
 
     private suspend fun updateLocation() = withContext(dispatchers.main()) {
