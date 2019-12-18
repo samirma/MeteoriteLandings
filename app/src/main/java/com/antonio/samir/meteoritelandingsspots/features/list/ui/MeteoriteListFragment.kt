@@ -14,7 +14,6 @@ import android.widget.SearchView
 import androidx.annotation.NonNull
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.antonio.samir.meteoritelandingsspots.R
@@ -32,7 +31,6 @@ import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.Meteorit
 import com.antonio.samir.meteoritelandingsspots.service.business.AddressService
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import kotlinx.android.synthetic.main.fragment_meteorite_list.*
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MeteoriteListFragment : Fragment(),
@@ -100,17 +98,13 @@ class MeteoriteListFragment : Fragment(),
         searchText.onActionViewExpanded();
         searchText.isIconified = false;
         searchText.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextChange(newText: String): Boolean {
-                lifecycleScope.launch {
-                    listViewModel.updateFilter(newText)
-                }
+            override fun onQueryTextChange(query: String): Boolean {
+                listViewModel.loadMeteorites(query)
                 return false
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
-                lifecycleScope.launch {
-                    listViewModel.updateFilter(query)
-                }
+                listViewModel.loadMeteorites(query)
                 return false
             }
 
@@ -200,6 +194,7 @@ class MeteoriteListFragment : Fragment(),
     }
 
     private fun error(messageString: String) {
+        progressLoader.visibility = View.INVISIBLE
         meteoriteRV.visibility = View.GONE
         messageTV.visibility = View.VISIBLE
         messageTV.text = messageString
@@ -286,7 +281,7 @@ class MeteoriteListFragment : Fragment(),
             progressLoader.visibility = View.VISIBLE
             container?.visibility = View.INVISIBLE
             meteoriteRV?.visibility = View.INVISIBLE
-
+            messageTV.visibility = View.INVISIBLE
         } catch (e: Exception) {
             Log.e(TAG, e.message, e)
         }
