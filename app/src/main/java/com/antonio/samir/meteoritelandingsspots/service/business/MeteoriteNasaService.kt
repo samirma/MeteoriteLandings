@@ -2,7 +2,6 @@ package com.antonio.samir.meteoritelandingsspots.service.business
 
 import android.location.Location
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.paging.DataSource
@@ -27,11 +26,7 @@ class MeteoriteNasaService(
 
     private val addressServiceStarted = AtomicBoolean(false)
 
-    private var mediatorLiveData: MediatorLiveData<List<Meteorite>> = MediatorLiveData()
-
     override var location: Location? = null
-
-    private val meteoritesByName = meteoriteRepository.meteoriteOrdered(null, null)
 
     override suspend fun loadMeteorites(filter: String?): DataSource.Factory<Int, Meteorite> = withContext(dispatchers.default()) {
 
@@ -41,11 +36,11 @@ class MeteoriteNasaService(
                 //If it is empty so load the data from internet
                 recoverFromNetwork()
             }
+            if (!addressServiceStarted.getAndSet(true)) {
+                addressService.recoveryAddress()
+            }
         }
 
-        if (!addressServiceStarted.getAndSet(true)) {
-            addressService.recoveryAddress()
-        }
 
 //        if (!gpsTracker.isLocationServiceStarted() && gpsTracker.isGPSEnabled()) {
 //            updateLocation()
