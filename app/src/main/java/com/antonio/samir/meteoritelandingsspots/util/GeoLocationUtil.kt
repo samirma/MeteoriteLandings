@@ -4,7 +4,6 @@ import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import android.util.Log
-import java.io.IOException
 import java.util.*
 
 
@@ -24,7 +23,7 @@ class GeoLocationUtil(val context: Context) : GeoLocationUtilInterface {
                 address = addresses[0]
 
             }
-        } catch (e: IOException) {
+        } catch (e: Throwable) {
             Log.e(GeoLocationUtil::class.java.simpleName, e.message, e)
         }
 
