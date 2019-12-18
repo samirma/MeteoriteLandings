@@ -10,7 +10,7 @@ import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 @Dao
 interface MeteoriteDao {
 
-    @Query("SELECT * from meteorites ORDER BY name")
+    @Query("SELECT * from meteorites ORDER BY name LIMIT 5000")
     fun meteoriteOrdered(): DataSource.Factory<Int, Meteorite>
 
     @Query("SELECT * from meteorites ORDER BY ((reclat-:lat)*(reclat-:lat)) + ((reclong - :lng)*(reclong - :lng)) ASC")
@@ -19,7 +19,7 @@ interface MeteoriteDao {
     @Query("SELECT * from meteorites WHERE (LOWER(address) GLOB '*' || :filter|| '*') or (LOWER(name) GLOB '*' || :filter|| '*') ORDER BY ((reclat-:lat)*(reclat-:lat)) + ((reclong - :lng)*(reclong - :lng)) ASC")
     fun meteoriteOrderedByLocationFiltered(lat: Double, lng: Double, filter: String): DataSource.Factory<Int, Meteorite>
 
-    @Query("SELECT * from meteorites WHERE (LOWER(address) GLOB '*' || :filter|| '*') or (LOWER(name) GLOB '*' || :filter|| '*') ORDER BY name ASC")
+    @Query("SELECT * from meteorites WHERE (LOWER(address) GLOB '*' || :filter|| '*') or (LOWER(name) GLOB '*' || :filter|| '*') ORDER BY name ASC LIMIT 5000")
     fun meteoriteFiltered(filter: String): DataSource.Factory<Int, Meteorite>
 
     @Query("SELECT * from meteorites WHERE address IS NULL OR LENGTH(address) = 0 ORDER BY id LIMIT 30")
