@@ -21,4 +21,6 @@ interface MeteoriteRepositoryInterface {
 
     suspend fun getMeteoritesCount(): Int
 
+    suspend fun getMeteoritesWithoutAddressCount(): Int
+
 }
