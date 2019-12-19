@@ -114,7 +114,7 @@ class MeteoriteListFragment : Fragment(),
 
     override fun onResume() {
         super.onResume()
-        searchText?.setQuery(listViewModel.filter, true);
+
         searchText?.clearFocus();
         Log.v(TAG, "onResume")
     }
@@ -126,7 +126,11 @@ class MeteoriteListFragment : Fragment(),
             meteoriteAdapter.setData(meteorites)
         })
 
-        listViewModel.loadMeteorites(null)
+        if (listViewModel.filter == null) {
+            listViewModel.loadMeteorites(null)
+        } else {
+            searchText?.setQuery(listViewModel.filter, true)
+        }
 
     }
 
