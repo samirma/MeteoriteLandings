@@ -87,9 +87,14 @@ class MeteoriteListViewModel(
             try {
                 loadingStatus.postValue(LOADING)
                 updateFilter(location, emptyStatus)
-            } catch (error: Exception) {
-                Log.e(TAG, error.message, error)
-                loadingStatus.postValue(UNABLE_TO_FETCH)
+            }
+            catch (error: Exception) {
+                if (error.message == "Job was cancelled") {
+                    Log.v(TAG, error.message)
+                } else {
+                    Log.e(TAG, error.message, error)
+                    loadingStatus.postValue(UNABLE_TO_FETCH)
+                }
             }
         }
 

@@ -72,7 +72,8 @@ class MeteoriteService(
 
     override fun requestAddressUpdate(list: List<Meteorite>) {
         GlobalScope.launch(dispatchers.default()) {
-            val firstWithOutAddress = list.filter { it.address == null }.take(30)
+            val firstWithOutAddress = list
+                    .filter { it.address == null }.take(30)
             if (firstWithOutAddress.isNotEmpty()) {
                 addressService.recoverAddress(firstWithOutAddress)
             }
