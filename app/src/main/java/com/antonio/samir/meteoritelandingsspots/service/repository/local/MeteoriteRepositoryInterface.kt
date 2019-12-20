@@ -15,12 +15,14 @@ interface MeteoriteRepositoryInterface {
 
     suspend fun update(meteorite: Meteorite)
 
-    suspend fun insertAll(meteorites: List<Meteorite>)
-
     suspend fun getRemoteMeteorites(limit: Int, offset: Int): List<Meteorite>
 
     suspend fun getMeteoritesCount(): Int
 
     suspend fun getMeteoritesWithoutAddressCount(): Int
+
+    suspend fun insertAll(meteorites: List<Meteorite>)
+
+    suspend fun updateAll(meteorites: List<Meteorite>)
 
 }

@@ -54,6 +54,10 @@ class MeteoriteListViewModel(
         }
     }
 
+    fun loadMeteorites() {
+        loadList(null, null)
+    }
+
     fun loadMeteorites(location: String?) {
         if (location == filter) {
             return
@@ -61,6 +65,13 @@ class MeteoriteListViewModel(
 
         location?.let { this.filter = it }
 
+        val emptyStatus = NO_RESULTS
+
+        loadList(location, emptyStatus)
+
+    }
+
+    private fun loadList(location: String?, emptyStatus: String?) {
         loadMeteoritesCurrent?.let {
             meteorites.removeSource(it)
         }
@@ -75,20 +86,19 @@ class MeteoriteListViewModel(
         val launch = viewModelScope.launch(dispatchers.default()) {
             try {
                 loadingStatus.postValue(LOADING)
-                updateFilter(location)
+                updateFilter(location, emptyStatus)
             } catch (error: Exception) {
                 Log.e(TAG, error.message, error)
                 loadingStatus.postValue(UNABLE_TO_FETCH)
             }
         }
-        
-        currentJob = launch
 
+        currentJob = launch
     }
 
-    private suspend fun updateFilter(filter: String?) = withContext(dispatchers.main()) {
+    private suspend fun updateFilter(filter: String?, emptyStatus: String?) = withContext(dispatchers.main()) {
 
-        val dataSourceFactory = meteoriteService.loadMeteorites(filter)
+        val dataSourceFactory = meteoriteService.loadMeteorites(filter?.trim())
 
         val loadMeteorites = LivePagedListBuilder<Int, Meteorite>(dataSourceFactory, 1000)
                 .build()
@@ -98,8 +108,9 @@ class MeteoriteListViewModel(
         meteorites.addSource(loadMeteorites) { value ->
             meteorites.value = value
             if (value.isEmpty()) {
-                loadingStatus.postValue(NO_RESULTS)
+                emptyStatus?.let(loadingStatus::postValue)
             } else {
+                if (filter != null && filter.isNotBlank()) { meteoriteService.requestAddressUpdate(value) }
                 loadingStatus.postValue(DONE)
             }
         }
@@ -122,5 +133,6 @@ class MeteoriteListViewModel(
     fun getLocation(): Location? {
         return meteoriteService.location
     }
+
 
 }

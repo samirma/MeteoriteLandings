@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
 
-class MeteoriteNasaService(
+class MeteoriteService(
         private val meteoriteRepository: MeteoriteRepositoryInterface,
         private val addressService: AddressServiceInterface,
         private val gpsTracker: GPSTrackerInterface,
@@ -37,7 +37,7 @@ class MeteoriteNasaService(
                 recoverFromNetwork()
             }
             if (!addressServiceStarted.getAndSet(true)) {
-//                addressService.recoveryAddress()
+                addressService.recoveryAddress()
             }
         }
 
@@ -70,6 +70,15 @@ class MeteoriteNasaService(
         addressService.recoverAddress(meteorite)
     }
 
+    override fun requestAddressUpdate(list: List<Meteorite>) {
+        GlobalScope.launch(dispatchers.default()) {
+            val firstWithOutAddress = list.filter { it.address == null }.take(30)
+            if (firstWithOutAddress.isNotEmpty()) {
+                addressService.recoverAddress(firstWithOutAddress)
+            }
+        }
+    }
+
     private suspend fun updateLocation() = withContext(dispatchers.main()) {
 
         gpsTracker.startLocationService()
@@ -79,7 +88,7 @@ class MeteoriteNasaService(
             override fun onChanged(location: Location?) {
                 if (location != null) {
 
-                    this@MeteoriteNasaService.location = location
+                    this@MeteoriteService.location = location
 
                     changeMeteoritesSource(meteoriteRepository.meteoriteOrdered(location, null))
 

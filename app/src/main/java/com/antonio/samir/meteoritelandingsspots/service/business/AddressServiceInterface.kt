@@ -10,4 +10,6 @@ interface AddressServiceInterface {
     fun recoveryAddress()
 
     suspend fun recoverAddress(meteorite: Meteorite)
+
+    suspend fun recoverAddress(list: List<Meteorite>)
 }

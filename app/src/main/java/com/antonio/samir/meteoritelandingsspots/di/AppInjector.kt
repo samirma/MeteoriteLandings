@@ -2,7 +2,7 @@ import com.antonio.samir.meteoritelandingsspots.features.detail.viewmodel.Meteor
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.service.business.AddressService
 import com.antonio.samir.meteoritelandingsspots.service.business.AddressServiceInterface
-import com.antonio.samir.meteoritelandingsspots.service.business.MeteoriteNasaService
+import com.antonio.samir.meteoritelandingsspots.service.business.MeteoriteService
 import com.antonio.samir.meteoritelandingsspots.service.business.MeteoriteServiceInterface
 import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteDaoFactory
 import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteRepository
@@ -48,7 +48,7 @@ val businessModule = module {
     single { GeoLocationUtil(get()) as GeoLocationUtilInterface }
     single { GPSTracker(get()) as GPSTrackerInterface }
     single { AddressService(get(), get()) as AddressServiceInterface }
-    single { MeteoriteNasaService(get(), get(), get()) as MeteoriteServiceInterface }
+    single { MeteoriteService(get(), get(), get()) as MeteoriteServiceInterface }
 }
 
 val viewModelModule = module {

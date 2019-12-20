@@ -42,10 +42,6 @@ class MeteoriteRepository(
         return meteoriteDao.getMeteoritesWithoutAddressCount()
     }
 
-    override suspend fun insertAll(meteorites: List<Meteorite>) {
-        meteoriteDao.insertAll(meteorites)
-    }
-
     override suspend fun update(meteorite: Meteorite) {
         meteoriteDao.update(meteorite)
     }
@@ -60,6 +56,14 @@ class MeteoriteRepository(
 
     override suspend fun getRemoteMeteorites(limit: Int, offset: Int): List<Meteorite> {
         return nasaRemoteRepository.getMeteorites(limit, offset)
+    }
+
+    override suspend fun insertAll(meteorites: List<Meteorite>) {
+        meteoriteDao.insertAll(meteorites)
+    }
+
+    override suspend fun updateAll(meteorites: List<Meteorite>) {
+        meteoriteDao.updateAll(meteorites)
     }
 
 }
