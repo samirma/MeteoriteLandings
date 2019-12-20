@@ -38,7 +38,7 @@ class AddressService(
 
     override fun recoveryAddress() {
 
-        GlobalScope.launch(dispatchers.default()) {
+        GlobalScope.launch(dispatchers.unconfined()) {
             if (status.value == null || status.value === DONE) {
                 var meteorites = meteoriteRepository.meteoritesWithOutAddress()
 
@@ -47,16 +47,7 @@ class AddressService(
                 status.postValue(LOADING)
 
                 while (meteorites.isNotEmpty()) {
-                    try {
-                        meteorites.onEach { meteorite ->
-                            recoverAddress(meteorite)
-                        }
-                        val meteoritesWithoutAddressCount: Int = meteoriteRepository.getMeteoritesWithoutAddressCount()
-                        Log.i(TAG, "recoveryAddress ${meteorites.size} $meteoritesWithoutAddressCount")
-
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Fail to retrieve address", e)
-                    }
+                    recoverAddress(meteorites)
                     meteorites = meteoriteRepository.meteoritesWithOutAddress()
                 }
 
@@ -68,7 +59,26 @@ class AddressService(
 
     }
 
+    override suspend fun recoverAddress(list: List<Meteorite>) {
+        try {
+            list.onEach { meteorite ->
+                meteorite.address = getAddressFromMeteorite(meteorite)
+            }
+            val meteoritesWithoutAddressCount: Int = meteoriteRepository.getMeteoritesWithoutAddressCount()
+            Log.i(TAG, "recoveryAddress ${list.size} $meteoritesWithoutAddressCount")
+
+        } catch (e: Exception) {
+            Log.e(TAG, "Fail to retrieve address", e)
+        }
+        meteoriteRepository.updateAll(list)
+    }
+
     override suspend fun recoverAddress(meteorite: Meteorite) = withContext(dispatchers.default()) {
+        meteorite.address = getAddressFromMeteorite(meteorite)
+        meteoriteRepository.update(meteorite)
+    }
+
+    private fun getAddressFromMeteorite(meteorite: Meteorite): String {
         val recLat = meteorite.reclat
         val recLong = meteorite.reclong
 
@@ -77,9 +87,7 @@ class AddressService(
             val address = getAddress(recLat.toDouble(), recLong.toDouble())
             metAddress = address ?: " "
         }
-        meteorite.address = metAddress
-
-        meteoriteRepository.update(meteorite)
+        return metAddress
     }
 
 

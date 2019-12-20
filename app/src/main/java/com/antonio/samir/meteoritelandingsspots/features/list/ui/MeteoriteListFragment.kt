@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
+import android.view.View.*
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.annotation.NonNull
@@ -114,7 +114,6 @@ class MeteoriteListFragment : Fragment(),
 
     override fun onResume() {
         super.onResume()
-
         searchText?.clearFocus();
         Log.v(TAG, "onResume")
     }
@@ -126,8 +125,8 @@ class MeteoriteListFragment : Fragment(),
             meteoriteAdapter.setData(meteorites)
         })
 
-        if (listViewModel.filter == null) {
-            listViewModel.loadMeteorites(null)
+        if (listViewModel.filter.isBlank()) {
+            listViewModel.loadMeteorites()
         } else {
             searchText?.setQuery(listViewModel.filter, true)
         }
@@ -171,11 +170,11 @@ class MeteoriteListFragment : Fragment(),
     }
 
     private fun showAddressLoading() {
-        statusTV?.visibility = View.VISIBLE
+        statusTV?.visibility = VISIBLE
     }
 
     private fun hideAddressLoading() {
-        statusTV?.visibility = View.GONE
+        statusTV?.visibility = GONE
     }
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
@@ -198,9 +197,9 @@ class MeteoriteListFragment : Fragment(),
     }
 
     private fun error(messageString: String) {
-        progressLoader.visibility = View.INVISIBLE
-        meteoriteRV.visibility = View.GONE
-        messageTV.visibility = View.VISIBLE
+        progressLoader.visibility = INVISIBLE
+        meteoriteRV.visibility = GONE
+        messageTV.visibility = VISIBLE
         messageTV.text = messageString
     }
 
@@ -230,7 +229,7 @@ class MeteoriteListFragment : Fragment(),
 
         if (meteoriteDetailFragment == null) {
 
-            fragment?.visibility = View.VISIBLE
+            fragment?.visibility = VISIBLE
 
             var fragmentTransaction = fragmentManager?.beginTransaction()
 
@@ -282,10 +281,10 @@ class MeteoriteListFragment : Fragment(),
 
     private fun meteoriteLoadingStarted() {
         try {
-            progressLoader.visibility = View.VISIBLE
-            container?.visibility = View.INVISIBLE
-            meteoriteRV?.visibility = View.INVISIBLE
-            messageTV.visibility = View.INVISIBLE
+            progressLoader.visibility = VISIBLE
+            container?.visibility = INVISIBLE
+            meteoriteRV?.visibility = INVISIBLE
+            messageTV.visibility = INVISIBLE
         } catch (e: Exception) {
             Log.e(TAG, e.message, e)
         }
@@ -294,9 +293,9 @@ class MeteoriteListFragment : Fragment(),
 
     private fun meteoriteLoadingStopped() {
         try {
-            progressLoader.visibility = View.INVISIBLE
-            container?.visibility = View.VISIBLE
-            meteoriteRV?.visibility = View.VISIBLE
+            progressLoader.visibility = INVISIBLE
+            container?.visibility = VISIBLE
+            meteoriteRV?.visibility = VISIBLE
         } catch (e: Exception) {
             Log.e(TAG, e.message, e)
         }

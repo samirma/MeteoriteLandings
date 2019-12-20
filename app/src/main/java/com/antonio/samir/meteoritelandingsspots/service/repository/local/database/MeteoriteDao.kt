@@ -10,7 +10,7 @@ import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 @Dao
 interface MeteoriteDao {
 
-    @Query("SELECT * from meteorites ORDER BY name LIMIT 5000")
+    @Query("SELECT * from meteorites ORDER BY name LIMIT 1000")
     fun meteoriteOrdered(): DataSource.Factory<Int, Meteorite>
 
     @Query("SELECT * from meteorites ORDER BY ((reclat-:lat)*(reclat-:lat)) + ((reclong - :lng)*(reclong - :lng)) ASC")
@@ -25,12 +25,6 @@ interface MeteoriteDao {
     @Query("SELECT * from meteorites WHERE address IS NULL OR LENGTH(address) = 0 ORDER BY id LIMIT 30")
     suspend fun meteoritesWithOutAddress(): List<Meteorite>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(items: List<Meteorite>)
-
-    @Update
-    suspend fun update(meteorite: Meteorite)
-
     @Query("SELECT * from meteorites where id = :meteoriteId LIMIT 1")
     fun getMeteoriteById(meteoriteId: String): LiveData<Meteorite>
 
@@ -39,6 +33,15 @@ interface MeteoriteDao {
 
     @Query("SELECT count(id) from meteorites WHERE address IS NULL OR LENGTH(address) = 0")
     suspend fun getMeteoritesWithoutAddressCount(): Int
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(items: List<Meteorite>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateAll(items: List<Meteorite>)
+
+    @Update
+    suspend fun update(meteorite: Meteorite)
 
 
 }
