@@ -44,11 +44,8 @@ class MeteoriteAdapter(
     }
 
     fun setData(meteorites: PagedList<Meteorite>) {
-        if (itemCount != meteorites.size && currentList != meteorites) {
-            submitList(null)
-            notifyDataSetChanged()
-        }
         submitList(meteorites)
+        notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolderMeteorite, position: Int) {

@@ -87,8 +87,7 @@ class MeteoriteListViewModel(
             try {
                 loadingStatus.postValue(LOADING)
                 updateFilter(location, emptyStatus)
-            }
-            catch (error: Exception) {
+            } catch (error: Exception) {
                 if (error.message == "Job was cancelled") {
                     Log.v(TAG, error.message)
                 } else {
@@ -115,9 +114,15 @@ class MeteoriteListViewModel(
             if (value.isEmpty()) {
                 emptyStatus?.let(loadingStatus::postValue)
             } else {
-                if (filter != null && filter.isNotBlank()) { meteoriteService.requestAddressUpdate(value) }
+                updateMeteoritesWithoutAddress(filter, value)
                 loadingStatus.postValue(DONE)
             }
+        }
+    }
+
+    private fun updateMeteoritesWithoutAddress(filter: String?, value: PagedList<Meteorite>) {
+        if (filter != null && filter.isNotBlank()) {
+            meteoriteService.requestAddressUpdate(value)
         }
     }
 
@@ -127,12 +132,6 @@ class MeteoriteListViewModel(
 
     fun isAuthorizationRequested(): LiveData<Boolean> {
         return gpsTracker.needAuthorization
-    }
-
-    fun getMeteorite(meteorite: Meteorite): LiveData<Meteorite>? {
-
-        return meteoriteService.getMeteoriteById(meteorite.id.toString())
-
     }
 
     fun getLocation(): Location? {

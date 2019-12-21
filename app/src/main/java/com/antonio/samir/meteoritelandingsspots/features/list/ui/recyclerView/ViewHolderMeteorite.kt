@@ -2,11 +2,8 @@ package com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView
 
 import android.location.Location
 import android.view.View
-import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.features.getDistanceFrom
@@ -26,25 +23,17 @@ class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
 
     var cardView: CardView = view.findViewById(R.id.cardview)
 
-    var addressObserver: Observer<Meteorite>? = null
-
-    var liveMet: LiveData<Meteorite>? = null
-
     var meteorite: Meteorite? = null
 
-    fun onBind(meteorite: Meteorite, selectedMeteorite: Meteorite?, location: Location?) {
+    fun onBind(
+            meteorite: Meteorite,
+            selectedMeteorite: Meteorite?,
+            location: Location?
+    ) {
+        
+        this.meteorite = meteorite
 
-        if (this.meteorite != meteorite) {
-            this.meteorite = meteorite
-            populateViewHolder(meteorite, location, selectedMeteorite)
-        } else {
-            val newAddress = this.meteorite?.address
-            if (StringUtils.isNotEmpty(newAddress)) {
-                showAddress(newAddress!!, meteorite, location)
-                this.addressTV.startAnimation(AnimationUtils.loadAnimation(context, R.anim.view_show))
-                liveMet?.removeObserver(addressObserver!!)
-            }
-        }
+        populateViewHolder(meteorite, location, selectedMeteorite)
 
     }
 
@@ -77,13 +66,6 @@ class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
 
     private fun setLocationText(meteorite: Meteorite, location: Location?) {
         val address = meteorite.address
-
-        //Always remove the previous observer
-        if (liveMet != null && addressObserver != null) {
-            liveMet?.removeObserver(addressObserver!!)
-            liveMet = null
-            addressObserver = null
-        }
 
         if (StringUtils.isNotEmpty(address)) {
             showAddress(address, meteorite, location)
