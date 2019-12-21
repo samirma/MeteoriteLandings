@@ -30,29 +30,12 @@ class Meteorite : Parcelable {
         other as Meteorite
 
         if (id != other.id) return false
-        if (mass != other.mass) return false
-        if (nametype != other.nametype) return false
-        if (recclass != other.recclass) return false
-        if (name != other.name) return false
-        if (fall != other.fall) return false
-        if (year != other.year) return false
-        if (reclong != other.reclong) return false
-        if (reclat != other.reclat) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = id
-        result = 31 * result + (mass?.hashCode() ?: 0)
-        result = 31 * result + (nametype?.hashCode() ?: 0)
-        result = 31 * result + (recclass?.hashCode() ?: 0)
-        result = 31 * result + (name?.hashCode() ?: 0)
-        result = 31 * result + (fall?.hashCode() ?: 0)
-        result = 31 * result + (year?.hashCode() ?: 0)
-        result = 31 * result + (reclong?.hashCode() ?: 0)
-        result = 31 * result + (reclat?.hashCode() ?: 0)
-        return result
+        return id
     }
 
 }

@@ -13,6 +13,7 @@ import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jetbrains.annotations.NotNull
 import java.util.concurrent.atomic.AtomicBoolean
 
 class MeteoriteService(
@@ -28,11 +29,15 @@ class MeteoriteService(
 
     override var location: Location? = null
 
+    private val FIRST_WITHOUT_ADDRESS = 30
+
+    private val OLD_DATABASE_COUNT = 1000
+
     override suspend fun loadMeteorites(filter: String?): DataSource.Factory<Int, Meteorite> = withContext(dispatchers.default()) {
 
         GlobalScope.launch(dispatchers.unconfined()) {
             val meteoritesCount = meteoriteRepository.getMeteoritesCount()
-            if (meteoritesCount < 1000 && !isUpdateRequired.getAndSet(true)) {
+            if (meteoritesCount < OLD_DATABASE_COUNT && !isUpdateRequired.getAndSet(true)) {
                 //If it is empty so load the data from internet
                 recoverFromNetwork()
             }
@@ -70,10 +75,14 @@ class MeteoriteService(
         addressService.recoverAddress(meteorite)
     }
 
-    override fun requestAddressUpdate(list: List<Meteorite>) {
+    /**
+     * Select the first meteorites without address and update them
+     */
+    override fun requestAddressUpdate(@NotNull list: List<Meteorite>) {
         GlobalScope.launch(dispatchers.default()) {
             val firstWithOutAddress = list
-                    .filter { it.address == null }.take(30)
+                    .filterNotNull()
+                    .filter { it.address == null }.take(FIRST_WITHOUT_ADDRESS)
             if (firstWithOutAddress.isNotEmpty()) {
                 addressService.recoverAddress(firstWithOutAddress)
             }
@@ -112,7 +121,7 @@ class MeteoriteService(
             val remoteMeteorites = meteoriteRepository.getRemoteMeteorites(limit, limit * currentPage)
 
             val filteredList = remoteMeteorites
-                    .filter { it.reclong?.toDoubleOrNull() != null && it.reclat?.toDoubleOrNull() != null }
+                    .filter { it.reclong?.toDoubleOrNull() != null && it.reclat?.toDoubleOrNull() != null && !it.year.isNullOrEmpty() }
 
             meteoriteRepository.insertAll(filteredList)
 

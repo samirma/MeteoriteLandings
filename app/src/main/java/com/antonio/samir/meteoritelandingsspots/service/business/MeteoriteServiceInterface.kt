@@ -18,5 +18,5 @@ interface MeteoriteServiceInterface {
 
     suspend fun requestAddressUpdate(meteorite: Meteorite)
 
-    fun requestAddressUpdate(meteorite: List<Meteorite>)
+    fun requestAddressUpdate(list: List<Meteorite>)
 }
