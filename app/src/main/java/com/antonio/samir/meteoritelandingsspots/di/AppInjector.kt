@@ -1,3 +1,4 @@
+import android.location.Geocoder
 import com.antonio.samir.meteoritelandingsspots.features.detail.viewmodel.MeteoriteDetailViewModel
 import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.service.business.AddressService
@@ -45,6 +46,7 @@ val databaseModule = module {
 }
 
 val businessModule = module {
+    single { Geocoder(get()) }
     single { GeoLocationUtil(get()) as GeoLocationUtilInterface }
     single { GPSTracker(get()) as GPSTrackerInterface }
     single { AddressService(get(), get()) as AddressServiceInterface }
