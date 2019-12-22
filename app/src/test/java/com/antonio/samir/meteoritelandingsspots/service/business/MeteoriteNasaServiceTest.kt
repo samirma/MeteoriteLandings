@@ -1,6 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.service.business
 
-import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
 import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteRepositoryInterface
@@ -21,7 +21,7 @@ class MeteoriteNasaServiceTest {
     private val mockRepository: MeteoriteRepositoryInterface = mock()
     private val mockAddressService: AddressServiceInterface = mock()
     private val mockGpsTracker: GPSTrackerInterface = mock()
-    private val mockLiveDataListMeteorite: LiveData<List<Meteorite>> = mock()
+    private val mockLiveDataListMeteorite: DataSource.Factory<Int, Meteorite> = mock()
 
     private lateinit var meteoriteNasaService: MeteoriteServiceInterface
 
@@ -30,7 +30,7 @@ class MeteoriteNasaServiceTest {
 
         whenever(mockRepository.meteoriteOrdered(null, null)).thenReturn(mockLiveDataListMeteorite)
 
-        meteoriteNasaService = MeteoriteNasaService(mockRepository, mockAddressService, mockGpsTracker, coroutinesTestRule.testDispatcherProvider)
+        meteoriteNasaService = MeteoriteService(mockRepository, mockAddressService, mockGpsTracker, coroutinesTestRule.testDispatcherProvider)
 
     }
 

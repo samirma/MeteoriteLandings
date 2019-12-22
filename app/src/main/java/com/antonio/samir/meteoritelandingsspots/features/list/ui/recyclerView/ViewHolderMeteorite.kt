@@ -73,7 +73,7 @@ class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
         if (StringUtils.isNotEmpty(address)) {
             showAddress(address, meteorite, location)
         } else {
-            this.addressTV.visibility = View.INVISIBLE
+            addressTV.text = context.getString(R.string.without_address_placeholder)
         }
     }
 
@@ -84,6 +84,5 @@ class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
             ""
         }
         addressTV.text = finalAddress
-        addressTV.visibility = View.VISIBLE
     }
 }
