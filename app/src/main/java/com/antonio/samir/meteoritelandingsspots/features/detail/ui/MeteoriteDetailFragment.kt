@@ -83,8 +83,15 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
     private fun observeMeteorite() {
 
         viewModel.getMeteorite().observe(viewLifecycleOwner, Observer {
-            setMeteorite(it)
-            (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
+            if (it == meteorite) {
+                if (it.address != meteorite?.address) {
+                    meteorite = it
+                    setLocationText(it.address, it)
+                }
+            } else {
+                setMeteorite(it)
+                (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
+            }
         })
 
         meteoriteId?.let { setCurrentMeteorite(it) }
@@ -126,7 +133,7 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
 
     private fun setMeteorite(meteorite: Meteorite) {
 
-        setLocationText(meteorite.address, locationTxt, meteorite)
+        setLocationText(meteorite.address, meteorite)
 
         val meteoriteName = meteorite.name
         setText(null, this.title, meteoriteName)
@@ -141,16 +148,16 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
 
     }
 
-    private fun setLocationText(address: String?, text: TextView?, meteorite: Meteorite) {
+    private fun setLocationText(address: String?, meteorite: Meteorite) {
 
-        text?.visibility = if (StringUtils.isNotEmpty(address)) {
+        locationTxt?.visibility = if (StringUtils.isNotEmpty(address)) {
             val location = viewModel.getLocation()
             val finalAddress = address + if (location != null) {
                 " - ${meteorite.getDistanceFrom(location.latitude, location.longitude)}"
             } else {
                 ""
             }
-            setText(null, text, finalAddress)
+            setText(null, locationTxt, finalAddress)
             View.VISIBLE
         } else {
             viewLifecycleOwner.lifecycleScope.launch {
