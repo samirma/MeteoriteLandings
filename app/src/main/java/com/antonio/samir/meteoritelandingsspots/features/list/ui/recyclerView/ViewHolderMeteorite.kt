@@ -30,10 +30,13 @@ class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
             selectedMeteorite: Meteorite?,
             location: Location?
     ) {
-        
-        this.meteorite = meteorite
 
-        populateViewHolder(meteorite, location, selectedMeteorite)
+        if (this.meteorite == meteorite) {
+            setLocationText(meteorite, location)
+        } else {
+            this.meteorite = meteorite
+            populateViewHolder(meteorite, location, selectedMeteorite)
+        }
 
     }
 
