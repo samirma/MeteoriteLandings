@@ -1,19 +1,19 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardview"
-    android:transitionName="cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/cardMargin"
-    android:layout_marginEnd="@dimen/cardMargin"
     android:layout_marginStart="@dimen/cardMargin"
     android:layout_marginTop="@dimen/cardMargin"
+    android:layout_marginEnd="@dimen/cardMargin"
+    android:layout_marginBottom="@dimen/cardMargin"
     android:clickable="true"
     android:focusable="true"
+    android:transitionName="cardView"
     app:cardBackgroundColor="@color/unselected_item_color"
     app:cardCornerRadius="2dp"
     app:cardElevation="@dimen/unselected_item_elevation">
 
-    <include layout="@layout/meteorite_detail_item" />
+    <include layout="@layout/meteorites_info" />
 
 </androidx.cardview.widget.CardView>
