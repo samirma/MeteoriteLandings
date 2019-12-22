@@ -18,6 +18,9 @@ class MeteoriteDetailViewModel(
 
     fun loadMeteorite(meteoriteRef: Meteorite) {
         val meteorite = meteoriteService.getMeteoriteById(meteoriteRef.id.toString())
+
+        currentMeteorite?.let { this@MeteoriteDetailViewModel.meteorite.removeSource(it) }
+
         meteorite?.let {
             this@MeteoriteDetailViewModel.meteorite.addSource(it) { value ->
                 this@MeteoriteDetailViewModel.meteorite.postValue(value)
