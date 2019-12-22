@@ -1,14 +1,22 @@
 package com.antonio.samir.meteoritelandingsspots
 
+import appModules
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
-import com.antonio.samir.meteoritelandingsspots.util.analytics.AnalyticsUtil
 
 open class Application : android.app.Application() {
 
+
     override fun onCreate() {
         super.onCreate()
-
-        AnalyticsUtil.start(this)
-
+        // start Koin!
+        startKoin {
+            // declare used Android context
+            androidContext(this@Application)
+            // declare modules
+            modules(appModules)
+        }
     }
+
 }
