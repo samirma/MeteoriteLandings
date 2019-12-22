@@ -99,7 +99,10 @@ class MeteoriteListFragment : Fragment(),
         searchText.isIconified = false;
         searchText.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(query: String): Boolean {
-                listViewModel.loadMeteorites(query)
+                val min_lenght_to_search = 2
+                if (query.length > min_lenght_to_search) {
+                    listViewModel.loadMeteorites(query)
+                }
                 return false
             }
 
