@@ -1,13 +1,11 @@
 package com.antonio.samir.meteoritelandingsspots.util
 
-import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import android.util.Log
-import java.util.*
 
 
-class GeoLocationUtil(val context: Context) : GeoLocationUtilInterface {
+class GeoLocationUtil(private val geoCoder: Geocoder) : GeoLocationUtilInterface {
 
     override fun getAddress(latitude: Double, longitude: Double): Address? {
 
@@ -15,8 +13,7 @@ class GeoLocationUtil(val context: Context) : GeoLocationUtilInterface {
 
         try {
 
-            val geocoder = Geocoder(context, Locale.getDefault())
-            val addresses = geocoder.getFromLocation(latitude, longitude, 1)
+            val addresses = geoCoder.getFromLocation(latitude, longitude, 1)
 
             if (addresses.isNotEmpty()) {
 
