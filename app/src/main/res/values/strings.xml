@@ -12,4 +12,10 @@
     <string name="loading_addresses">Loading all meteorites addresses from its geolocation</string>
     <string name="title">%s, %s</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="no_result_found">No results found</string>
+    <string name="searchView_query_hint">Title, places, countries</string>
+    <string name="without_address_placeholder">Loading address...</string>
+
 </resources>
