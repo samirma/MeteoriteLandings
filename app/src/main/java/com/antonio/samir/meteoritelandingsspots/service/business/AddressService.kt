@@ -111,7 +111,9 @@ class AddressService(
                 finalAddress.add(countryName)
             }
 
-            addressString = StringUtils.join(finalAddress, ", ")
+            if (finalAddress.isNotEmpty()) {
+                addressString = finalAddress.joinToString(", ")
+            }
 
         }
 
