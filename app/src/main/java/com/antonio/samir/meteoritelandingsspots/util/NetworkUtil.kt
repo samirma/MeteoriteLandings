@@ -3,24 +3,20 @@ package com.antonio.samir.meteoritelandingsspots.util
 import android.content.Context
 import android.net.ConnectivityManager
 
-object NetworkUtil {
+class NetworkUtil(context: Context) : NetworkUtilInterface {
 
-    internal var hasConnectivity: Boolean? = null
+    private var appContext: Context = context.applicationContext
 
     /**
-     * Static method to return whatever network is available or not
+     * A method to return whatever network is available or not
      * @param context
      * @return hasConnectivity
      */
-    fun hasConnectivity(context: Context?): Boolean {
+    override fun hasConnectivity(): Boolean {
 
-        if (hasConnectivity != null) {
-            return hasConnectivity!!
-        }
-
-        val cm = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val cm = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = cm.activeNetworkInfo
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting
+        return activeNetwork != null && activeNetwork.isConnected
     }
 
 }
