@@ -11,9 +11,8 @@ import android.widget.RemoteViewsService
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 class DetailWidgetRemoteViewsService : RemoteViewsService() {
 
-    override fun onGetViewFactory(intent: Intent): RemoteViewsService.RemoteViewsFactory {
-        return MeteoriteRemoteViewsFactory(packageName, applicationContext
-        )
+    override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
+        return MeteoriteRemoteViewsFactory(packageName)
     }
 
 }
