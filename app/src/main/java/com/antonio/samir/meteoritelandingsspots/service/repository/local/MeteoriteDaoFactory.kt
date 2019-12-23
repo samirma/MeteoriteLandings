@@ -20,6 +20,12 @@ object MeteoriteDaoFactory {
         }
     }
 
+    private val MIGRATION_2_3 = object : Migration(2, 3) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+
+        }
+    }
+
     fun getMeteoriteDao(context: Context): MeteoriteDao {
         if (appDatabase == null) {
             appDatabase = getAppDatabase(context)
@@ -29,6 +35,9 @@ object MeteoriteDaoFactory {
 
     private fun getAppDatabase(context: Context): AppDataBase {
         return Room.databaseBuilder(context,
-                AppDataBase::class.java, "meteorites").addMigrations(MIGRATION_1_2).build()
+                AppDataBase::class.java, "meteorites")
+                .addMigrations(MIGRATION_1_2)
+                .addMigrations(MIGRATION_2_3)
+                .build()
     }
 }

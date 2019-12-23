@@ -16,6 +16,7 @@ import kotlinx.coroutines.withContext
 import org.jetbrains.annotations.NotNull
 import java.util.concurrent.atomic.AtomicBoolean
 
+
 class MeteoriteService(
         private val meteoriteRepository: MeteoriteRepositoryInterface,
         private val addressService: AddressServiceInterface,
@@ -37,7 +38,7 @@ class MeteoriteService(
 
         GlobalScope.launch(dispatchers.unconfined()) {
             val meteoritesCount = meteoriteRepository.getMeteoritesCount()
-            if (meteoritesCount < OLD_DATABASE_COUNT && !isUpdateRequired.getAndSet(true)) {
+            if (meteoritesCount <= OLD_DATABASE_COUNT && !isUpdateRequired.getAndSet(true)) {
                 //If it is empty so load the data from internet
                 recoverFromNetwork()
             }
