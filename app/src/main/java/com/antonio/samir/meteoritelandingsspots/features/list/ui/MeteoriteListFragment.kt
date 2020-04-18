@@ -17,19 +17,18 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.antonio.samir.meteoritelandingsspots.R
+import com.antonio.samir.meteoritelandingsspots.data.Result
+import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailFragment
 import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailFragment.Companion.METEORITE
+import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListViewModel.DownloadStatus.Companion.DONE
+import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListViewModel.DownloadStatus.Companion.LOADING
+import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListViewModel.DownloadStatus.Companion.NO_RESULTS
+import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListViewModel.DownloadStatus.Companion.UNABLE_TO_FETCH
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.MeteoriteAdapter
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.MeteoriteDiffCallback
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelectorFactory
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelectorView
-import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel
-import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.DONE
-import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.LOADING
-import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.NO_RESULTS
-import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.UNABLE_TO_FETCH
-import com.antonio.samir.meteoritelandingsspots.service.business.AddressService
-import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import kotlinx.android.synthetic.main.fragment_meteorite_list.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -94,9 +93,9 @@ class MeteoriteListFragment : Fragment(),
 
 //        observeRequestPermission()
 
-        searchText.isActivated = true;
-        searchText.onActionViewExpanded();
-        searchText.isIconified = false;
+        searchText.isActivated = true
+        searchText.onActionViewExpanded()
+        searchText.isIconified = false
         searchText.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(query: String): Boolean {
                 val min_lenght_to_search = 2
@@ -117,7 +116,7 @@ class MeteoriteListFragment : Fragment(),
 
     override fun onResume() {
         super.onResume()
-        searchText?.clearFocus();
+        searchText?.clearFocus()
         Log.v(TAG, "onResume")
     }
 
@@ -138,10 +137,9 @@ class MeteoriteListFragment : Fragment(),
 
     private fun observeRecoveryAddressStatus() {
         listViewModel.recoveryAddressStatus.observe(viewLifecycleOwner, Observer { status ->
-            if (status == null || status === AddressService.Status.DONE) {
-                this.hideAddressLoading()
-            } else if (status === AddressService.Status.LOADING) {
-                this.showAddressLoading()
+            when (status) {
+                is Result.InProgress -> showAddressLoading()
+                is Result.Success -> hideAddressLoading()
             }
         })
     }
