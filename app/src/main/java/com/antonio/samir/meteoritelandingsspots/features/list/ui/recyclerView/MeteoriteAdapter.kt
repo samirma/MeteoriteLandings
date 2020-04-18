@@ -50,7 +50,7 @@ class MeteoriteAdapter(
 
     override fun onBindViewHolder(viewHolder: ViewHolderMeteorite, position: Int) {
         getItem(position)?.let { meteorite ->
-            viewHolder.onBind(meteorite, selectedMeteorite, viewModel.getLocation())
+            viewHolder.onBind(meteorite, selectedMeteorite, null)
         }
     }
 
