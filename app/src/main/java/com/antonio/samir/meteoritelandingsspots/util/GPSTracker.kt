@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
@@ -37,14 +38,17 @@ class GPSTracker(
 
     private val isLocationServiceStarted = AtomicBoolean(false)
 
-    private var currentLocation = ConflatedBroadcastChannel<Location>()
+    private var currentLocation = ConflatedBroadcastChannel<Location?>(null)
 
     /**
      * Function to get the user's current liveLocation
      *
      * @return Location
      */
-    override val location = currentLocation.asFlow()
+    override val location: Flow<Location?>
+        get() {
+            return currentLocation.asFlow()
+        }
 
     private var currentNeedAuthorization = ConflatedBroadcastChannel<Boolean>()
 
@@ -53,8 +57,10 @@ class GPSTracker(
      *
      * @return Boolean
      */
-    override val needAuthorization = currentNeedAuthorization.asFlow()
-
+    override val needAuthorization: Flow<Boolean>
+        get() {
+            return currentNeedAuthorization.asFlow()
+        }
 
     companion object {
 
