@@ -87,11 +87,7 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
 
         viewModel.meteorite.observe(viewLifecycleOwner, Observer {
             val meteoriteResult = it.first
-            val location = when (val locationResult: Result<Location> = it.second) {
-                is Result.Success -> locationResult.data
-                is Result.InProgress -> locationResult.data
-                else -> null
-            }
+            val location = it.second
             when (meteoriteResult) {
                 is Result.Success -> {
                     val meteorite = meteoriteResult.data
