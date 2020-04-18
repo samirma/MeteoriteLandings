@@ -11,7 +11,7 @@ interface MeteoriteRepository {
 
     fun getMeteoriteById(id: String): Flow<Result<Meteorite>>
 
-    suspend fun requestAddressUpdate(meteorite: Meteorite)
+    suspend fun updateAddress(meteorite: Meteorite)
 
-    fun requestAddressUpdate(list: List<Meteorite>)
+    suspend fun updateAddress(list: List<Meteorite>)
 }
