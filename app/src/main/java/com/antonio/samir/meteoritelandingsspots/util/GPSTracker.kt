@@ -11,58 +11,66 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
 
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class GPSTracker(
         private val context: Context
 ) : GPSTrackerInterface {
 
     // flag for GPS status
     private var isGPSEnabled = false
+
     // Declaring a Location Manager
     private var locationManager: LocationManager? = null
+
     // flag for network status
     private var isNetworkEnabled = false
 
     private val isLocationServiceStarted = AtomicBoolean(false)
 
-    private val liveLocation: MutableLiveData<Location> = MutableLiveData() // liveLocation
-
-    /**
-     * Function to know if the authorization is required or not
-     *
-     * @return Boolean
-     */
-    override val needAuthorization: MutableLiveData<Boolean> = MutableLiveData()
-
-    companion object {
-
-        // The minimum distance to change Updates in meters
-        private const val MIN_DISTANCE_CHANGE_FOR_UPDATES: Long = 1 // 10 meters
-        // The minimum time between updates in milliseconds
-        private const val MIN_TIME_BW_UPDATES: Long = 1 // 1 minute
-        private val TAG = GPSTracker::class.java.simpleName
-    }
+    private var currentLocation = ConflatedBroadcastChannel<Location>()
 
     /**
      * Function to get the user's current liveLocation
      *
      * @return Location
      */
-    override val location: MutableLiveData<Location>
-        get() {
-            return liveLocation
-        }
+    override val location = currentLocation.asFlow()
+
+    private var currentNeedAuthorization = ConflatedBroadcastChannel<Boolean>()
+
+    /**
+     * Function to know if the authorization is required or not
+     *
+     * @return Boolean
+     */
+    override val needAuthorization = currentNeedAuthorization.asFlow()
+
+
+    companion object {
+
+        // The minimum distance to change Updates in meters
+        private const val MIN_DISTANCE_CHANGE_FOR_UPDATES: Long = 1 // 10 meters
+
+        // The minimum time between updates in milliseconds
+        private const val MIN_TIME_BW_UPDATES: Long = 1 // 1 minute
+        private val TAG = GPSTracker::class.java.simpleName
+    }
 
     override fun isLocationServiceStarted(): Boolean {
         return isLocationServiceStarted.get()
     }
 
-    override val isLocationAutorized: Boolean
+    override val isLocationAuthorized: Boolean
         get() {
             val hasFine = ActivityCompat.checkSelfPermission(
                     context,
@@ -78,20 +86,18 @@ class GPSTracker(
         }
 
 
-    override fun stopUpdates() {
+    override suspend fun stopUpdates() {
         isLocationServiceStarted.set(false)
         locationManager?.removeUpdates(this)
     }
 
-    override suspend fun startLocationService() = withContext(Dispatchers.Main) {
+    override suspend fun startLocationService(): Unit = withContext(Dispatchers.Main) {
         try {
 
-            if (isLocationAutorized) {
+            if (isLocationAuthorized) {
                 startLocation()
             }
-
-            needAuthorization.value = !isLocationAutorized
-
+            currentNeedAuthorization.offer(!isLocationAuthorized)
         } catch (e: Exception) {
             Log.e(TAG, e.message, e)
         }
@@ -151,7 +157,7 @@ class GPSTracker(
 
 
     override fun onLocationChanged(location: Location?) {
-        liveLocation.value = location
+        location?.let { currentLocation.offer(it) }
     }
 
     override fun onProviderDisabled(provider: String) {
