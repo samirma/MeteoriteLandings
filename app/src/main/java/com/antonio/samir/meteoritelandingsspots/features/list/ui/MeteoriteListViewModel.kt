@@ -1,37 +1,52 @@
-package com.antonio.samir.meteoritelandingsspots.features.list.viewmodel
+package com.antonio.samir.meteoritelandingsspots.features.list.ui
 
 
-import android.location.Location
 import android.util.Log
 import androidx.annotation.StringDef
 import androidx.lifecycle.*
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.DONE
-import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.LOADING
-import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.NO_RESULTS
-import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel.DownloadStatus.Companion.UNABLE_TO_FETCH
-import com.antonio.samir.meteoritelandingsspots.service.business.MeteoriteServiceInterface
-import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.data.repository.AddressServiceInterface
+import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
+import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListViewModel.DownloadStatus.Companion.DONE
+import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListViewModel.DownloadStatus.Companion.LOADING
+import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListViewModel.DownloadStatus.Companion.NO_RESULTS
+import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListViewModel.DownloadStatus.Companion.UNABLE_TO_FETCH
 import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.map
 
 /**
  * Layer responsible for manage the interactions between the activity and the services
  */
+@FlowPreview
+@ExperimentalCoroutinesApi
 class MeteoriteListViewModel(
-        private val meteoriteService: MeteoriteServiceInterface,
+        private val meteoriteRepository: MeteoriteRepository,
         private val gpsTracker: GPSTrackerInterface,
-        private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
+        private val dispatchers: DispatcherProvider = DefaultDispatcherProvider(),
+        addressService: AddressServiceInterface
 ) : ViewModel() {
 
-    var recoveryAddressStatus: LiveData<String> = meteoriteService.addressStatus()
+    val location = gpsTracker.location
 
-    val meteorites: MediatorLiveData<PagedList<Meteorite>> = MediatorLiveData()
+    private var currentFilter = ConflatedBroadcastChannel<String>()
+
+    var recoveryAddressStatus = addressService.recoveryAddress().asLiveData()
+
+    val meteorites: LiveData<PagedList<Meteorite>> = currentFilter.asFlow()
+            .map {
+                LivePagedListBuilder(meteoriteRepository.loadMeteorites(filter.trim()), 1000)
+            }
+            .asLiveData()
+            .switchMap {
+                it.build()
+            }
 
     private var loadMeteoritesCurrent: LiveData<PagedList<Meteorite>>? = null
 
@@ -72,9 +87,6 @@ class MeteoriteListViewModel(
     }
 
     private fun loadList(location: String?, emptyStatus: String?) {
-        loadMeteoritesCurrent?.let {
-            meteorites.removeSource(it)
-        }
 
         currentJob?.let {
             Log.v(TAG, "isActive: ${it.isActive} isCompleted: ${it.isCompleted}")
@@ -101,29 +113,7 @@ class MeteoriteListViewModel(
     }
 
     private suspend fun updateFilter(filter: String?, emptyStatus: String?) = withContext(dispatchers.main()) {
-
-        val dataSourceFactory = meteoriteService.loadMeteorites(filter?.trim())
-
-        val loadMeteorites = LivePagedListBuilder<Int, Meteorite>(dataSourceFactory, 1000)
-                .build()
-
-        loadMeteoritesCurrent = loadMeteorites
-
-        meteorites.addSource(loadMeteorites) { value ->
-            meteorites.value = value
-            if (value.isEmpty()) {
-                emptyStatus?.let(loadingStatus::postValue)
-            } else {
-                updateMeteoritesWithoutAddress(filter, value)
-                loadingStatus.postValue(DONE)
-            }
-        }
-    }
-
-    private fun updateMeteoritesWithoutAddress(filter: String?, value: PagedList<Meteorite>) {
-        if (filter != null && filter.isNotBlank()) {
-            meteoriteService.requestAddressUpdate(value)
-        }
+        filter?.let { currentFilter::offer }
     }
 
     fun updateLocation() {
@@ -131,12 +121,7 @@ class MeteoriteListViewModel(
     }
 
     fun isAuthorizationRequested(): LiveData<Boolean> {
-        return gpsTracker.needAuthorization
+        return gpsTracker.needAuthorization.asLiveData()
     }
-
-    fun getLocation(): Location? {
-        return meteoriteService.location
-    }
-
 
 }
