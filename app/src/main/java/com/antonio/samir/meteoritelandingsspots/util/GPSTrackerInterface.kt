@@ -8,7 +8,7 @@ interface GPSTrackerInterface : LocationListener {
 
     val isLocationAuthorized: Boolean
 
-    val location: Flow<Location>
+    val location: Flow<Location?>
 
     suspend fun startLocationService()
 
