@@ -1,13 +1,13 @@
-package com.antonio.samir.meteoritelandingsspots.data.repository
+package com.antonio.samir.meteoritelandingsspots.service
 
 import android.util.Log
 import androidx.annotation.StringDef
 import com.antonio.samir.meteoritelandingsspots.data.Result.InProgress
 import com.antonio.samir.meteoritelandingsspots.data.Result.Success
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
-import com.antonio.samir.meteoritelandingsspots.data.repository.AddressService.Status.Companion.DONE
-import com.antonio.samir.meteoritelandingsspots.data.repository.AddressService.Status.Companion.LOADING
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.service.AddressService.Status.Companion.DONE
+import com.antonio.samir.meteoritelandingsspots.service.AddressService.Status.Companion.LOADING
 import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import org.apache.commons.lang3.StringUtils
 import java.util.*
-
 
 class AddressService(
         private val meteoriteLocalRepository: MeteoriteLocalRepository,

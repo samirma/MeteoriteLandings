@@ -1,9 +1,9 @@
-package com.antonio.samir.meteoritelandingsspots.service.business
+package com.antonio.samir.meteoritelandingsspots.service
 
 import android.location.Address
+import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
+import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
-import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteRepositoryInterface
 import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
@@ -21,7 +21,7 @@ class AddressServiceTest {
     @get:Rule
     var coroutinesTestRule = CoroutineTestRule()
 
-    private val mockRepository: MeteoriteRepositoryInterface = mock()
+    private val mockLocalRepository: MeteoriteLocalRepository = mock()
     private val mockGeoLocationUtil: GeoLocationUtilInterface = mock()
     private val address: Address = mock()
 
@@ -31,7 +31,7 @@ class AddressServiceTest {
     @Before
     fun setUp() {
 
-        addressService = AddressService(mockRepository, mockGeoLocationUtil, coroutinesTestRule.testDispatcherProvider)
+        addressService = AddressService(mockLocalRepository, mockGeoLocationUtil, coroutinesTestRule.testDispatcherProvider)
 
     }
 
@@ -43,7 +43,7 @@ class AddressServiceTest {
             reclong = "0"
             reclat = "1"
         }
-        whenever(mockRepository.meteoritesWithOutAddress()).thenReturn(listOf(meteorite))
+        whenever(mockLocalRepository.meteoritesWithOutAddress()).thenReturn(listOf(meteorite))
 
         whenever(address.locality).thenReturn("city")
         whenever(address.adminArea).thenReturn("adminArea")
@@ -53,8 +53,8 @@ class AddressServiceTest {
 
         addressService.recoveryAddress()
 
-        verify(mockRepository).meteoritesWithOutAddress()
-        verify(mockRepository).update(meteorite)
+        verify(mockLocalRepository).meteoritesWithOutAddress()
+        verify(mockLocalRepository).update(meteorite)
         verify(mockGeoLocationUtil).getAddress(any(), any())
 
     }

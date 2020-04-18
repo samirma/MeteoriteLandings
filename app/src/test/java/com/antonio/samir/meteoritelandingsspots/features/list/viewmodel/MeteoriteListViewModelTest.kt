@@ -2,12 +2,15 @@ package com.antonio.samir.meteoritelandingsspots.features.list.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
+import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
+import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
-import com.antonio.samir.meteoritelandingsspots.service.business.MeteoriteServiceInterface
-import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import com.nhaarman.mockitokotlin2.mock
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
@@ -17,6 +20,7 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import kotlin.test.assertEquals
 
+@FlowPreview
 @ExperimentalCoroutinesApi
 class MeteoriteListViewModelTest {
 
@@ -30,20 +34,18 @@ class MeteoriteListViewModelTest {
     @JvmField
     val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-    private lateinit var meteoriteService: MeteoriteServiceInterface
+    private val meteoriteService: MeteoriteRepository = mock()
 
-    private lateinit var gpsTracker: GPSTrackerInterface
+    private val gpsTracker: GPSTrackerInterface = mock()
 
     private lateinit var viewModel: MeteoriteListViewModel
+
+    private val mockAddressService: AddressServiceInterface = mock()
 
     @Before
     fun setUp() {
 
-        meteoriteService = mock()
-
-        gpsTracker = mock()
-
-        viewModel = MeteoriteListViewModel(meteoriteService, gpsTracker, coroutinesTestRule.testDispatcherProvider)
+        viewModel = MeteoriteListViewModel(meteoriteService, gpsTracker, coroutinesTestRule.testDispatcherProvider, mockAddressService)
 
     }
 

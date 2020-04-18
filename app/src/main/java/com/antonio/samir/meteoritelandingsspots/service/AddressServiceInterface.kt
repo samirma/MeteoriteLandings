@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.data.repository
+package com.antonio.samir.meteoritelandingsspots.service
 
 import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
