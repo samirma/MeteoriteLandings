@@ -1,21 +1,20 @@
-package com.antonio.samir.meteoritelandingsspots.service.repository.local
+package com.antonio.samir.meteoritelandingsspots.data.local
 
 import android.location.Location
-import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
-import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.data.Result
+import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import kotlinx.coroutines.flow.Flow
 
-interface MeteoriteRepositoryInterface {
+interface MeteoriteLocalRepository {
 
     fun meteoriteOrdered(location: Location?, filter: String?): DataSource.Factory<Int, Meteorite>
 
     suspend fun meteoritesWithOutAddress(): List<Meteorite>
 
-    fun getMeteoriteById(id: String): LiveData<Meteorite>?
+    fun getMeteoriteById(id: String): Flow<Result<Meteorite>>
 
     suspend fun update(meteorite: Meteorite)
-
-    suspend fun getRemoteMeteorites(limit: Int, offset: Int): List<Meteorite>
 
     suspend fun getMeteoritesCount(): Int
 

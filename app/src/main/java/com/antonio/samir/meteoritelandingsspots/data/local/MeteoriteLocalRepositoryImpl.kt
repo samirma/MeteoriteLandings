@@ -1,17 +1,22 @@
-package com.antonio.samir.meteoritelandingsspots.service.repository.local
+package com.antonio.samir.meteoritelandingsspots.data.local
 
 import android.location.Location
-import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
-import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.service.repository.local.database.MeteoriteDao
-import com.antonio.samir.meteoritelandingsspots.service.repository.remote.NasaRemoteRepositoryInterface
+import com.antonio.samir.meteoritelandingsspots.data.Result
+import com.antonio.samir.meteoritelandingsspots.data.local.database.MeteoriteDao
+import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteServerException
+import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import java.io.IOException
 import java.util.*
 
-class MeteoriteRepository(
-        val meteoriteDao: MeteoriteDao,
-        val nasaRemoteRepository: NasaRemoteRepositoryInterface
-) : MeteoriteRepositoryInterface {
+class MeteoriteLocalRepositoryImpl(
+        val meteoriteDao: MeteoriteDao
+) : MeteoriteLocalRepository {
 
     override fun meteoriteOrdered(location: Location?, filter: String?): DataSource.Factory<Int, Meteorite> {
 
@@ -46,16 +51,18 @@ class MeteoriteRepository(
         meteoriteDao.update(meteorite)
     }
 
-    override fun getMeteoriteById(id: String): LiveData<Meteorite> {
-        return meteoriteDao.getMeteoriteById(id)
+    @ExperimentalCoroutinesApi
+    override fun getMeteoriteById(id: String): Flow<Result<Meteorite>> = flow {
+        emit(Result.InProgress<Meteorite>())
+        try {
+            emitAll(meteoriteDao.getMeteoriteById(id).map { Result.Success(it) })
+        } catch (e: IOException) {
+            emit(Result.Error(MeteoriteServerException(e)))
+        }
     }
 
     override suspend fun meteoritesWithOutAddress(): List<Meteorite> {
         return meteoriteDao.meteoritesWithOutAddress()
-    }
-
-    override suspend fun getRemoteMeteorites(limit: Int, offset: Int): List<Meteorite> {
-        return nasaRemoteRepository.getMeteorites(limit, offset)
     }
 
     override suspend fun insertAll(meteorites: List<Meteorite>) {
