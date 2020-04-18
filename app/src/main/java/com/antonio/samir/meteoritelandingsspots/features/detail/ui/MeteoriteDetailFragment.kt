@@ -1,6 +1,7 @@
 package com.antonio.samir.meteoritelandingsspots.features.detail.ui
 
 import android.content.res.Configuration
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,13 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.features.detail.viewmodel.MeteoriteDetailViewModel
+import com.antonio.samir.meteoritelandingsspots.data.Result
+import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.getDistanceFrom
 import com.antonio.samir.meteoritelandingsspots.features.yearString
-import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -23,10 +23,13 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.meteorite_detail.*
 import kotlinx.android.synthetic.main.meteorite_detail_grid.*
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import org.apache.commons.lang3.StringUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCallback {
 
     private var meteorite: Meteorite? = null
@@ -82,15 +85,26 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
 
     private fun observeMeteorite() {
 
-        viewModel.getMeteorite().observe(viewLifecycleOwner, Observer {
-            if (it == meteorite) {
-                if (it.address != meteorite?.address) {
-                    meteorite = it
-                    setLocationText(it.address, it)
+        viewModel.meteorite.observe(viewLifecycleOwner, Observer {
+            val meteoriteResult = it.first
+            val location = when (val locationResult: Result<Location> = it.second) {
+                is Result.Success -> locationResult.data
+                is Result.InProgress -> locationResult.data
+                else -> null
+            }
+            when (meteoriteResult) {
+                is Result.Success -> {
+                    val meteorite = meteoriteResult.data
+                    if (meteorite == this.meteorite) {
+                        if (meteorite.address != this.meteorite?.address) {
+                            this.meteorite = meteorite
+                            setLocationText(meteorite, location)
+                        }
+                    } else {
+                        setMeteorite(meteorite)
+                        (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
+                    }
                 }
-            } else {
-                setMeteorite(it)
-                (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
             }
         })
 
@@ -133,7 +147,7 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
 
     private fun setMeteorite(meteorite: Meteorite) {
 
-        setLocationText(meteorite.address, meteorite)
+        setLocationText(meteorite)
 
         val meteoriteName = meteorite.name
         setText(null, this.title, meteoriteName)
@@ -148,10 +162,9 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
 
     }
 
-    private fun setLocationText(address: String?, meteorite: Meteorite) {
-
+    private fun setLocationText(meteorite: Meteorite, location: Location? = null) {
+        val address = meteorite.address
         locationTxt?.visibility = if (StringUtils.isNotEmpty(address)) {
-            val location = viewModel.getLocation()
             val finalAddress = address + if (location != null) {
                 " - ${meteorite.getDistanceFrom(location.latitude, location.longitude)}"
             } else {
@@ -160,9 +173,7 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
             setText(null, locationTxt, finalAddress)
             View.VISIBLE
         } else {
-            viewLifecycleOwner.lifecycleScope.launch {
-                viewModel.requestAddressUpdate(meteorite)
-            }
+            viewModel.requestAddressUpdate(meteorite)
             View.GONE
         }
     }
