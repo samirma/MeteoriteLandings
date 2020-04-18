@@ -1,17 +1,17 @@
-package com.antonio.samir.meteoritelandingsspots.service.business
+package com.antonio.samir.meteoritelandingsspots.data.repository
 
 import android.util.Log
 import androidx.annotation.StringDef
-import androidx.lifecycle.MutableLiveData
-import com.antonio.samir.meteoritelandingsspots.service.business.AddressService.Status.Companion.DONE
-import com.antonio.samir.meteoritelandingsspots.service.business.AddressService.Status.Companion.LOADING
-import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteRepositoryInterface
+import com.antonio.samir.meteoritelandingsspots.data.Result.InProgress
+import com.antonio.samir.meteoritelandingsspots.data.Result.Success
+import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteRepositoryInterface
+import com.antonio.samir.meteoritelandingsspots.data.repository.AddressService.Status.Companion.DONE
+import com.antonio.samir.meteoritelandingsspots.data.repository.AddressService.Status.Companion.LOADING
+import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import org.apache.commons.lang3.StringUtils
 import java.util.*
@@ -25,8 +25,6 @@ class AddressService(
 
     val TAG = AddressService::class.java.simpleName
 
-    override val status = MutableLiveData<String>()
-
     @Retention(AnnotationRetention.SOURCE)
     @StringDef(DONE, LOADING)
     annotation class Status {
@@ -36,27 +34,20 @@ class AddressService(
         }
     }
 
-    override fun recoveryAddress() {
+    override fun recoveryAddress() = flow {
 
-        GlobalScope.launch(dispatchers.unconfined()) {
-            if (status.value == null || status.value === DONE) {
-                var meteorites = meteoriteRepository.meteoritesWithOutAddress()
+        Log.i(TAG, "recoveryAddress $LOADING")
 
-                Log.i(TAG, "recoveryAddress $LOADING")
+        emit(InProgress(LOADING))
 
-                status.postValue(LOADING)
+        var meteorites = meteoriteRepository.meteoritesWithOutAddress()
 
-                while (meteorites.isNotEmpty()) {
-                    recoverAddress(meteorites)
-                    meteorites = meteoriteRepository.meteoritesWithOutAddress()
-                }
-
-                status.postValue(DONE)
-
-            }
-
+        while (meteorites.isNotEmpty()) {
+            recoverAddress(meteorites)
+            meteorites = meteoriteRepository.meteoritesWithOutAddress()
         }
 
+        emit(Success(LOADING))
     }
 
     override suspend fun recoverAddress(list: List<Meteorite>) {
