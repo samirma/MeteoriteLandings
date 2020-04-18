@@ -28,11 +28,11 @@ class MeteoriteDetailViewModel(
 
     val location = gpsTracker.location
 
-    val meteorite: LiveData<Pair<Result<Meteorite>, Result<Location>>> = currentMeteorite.asFlow()
+    val meteorite: LiveData<Pair<Result<Meteorite>, Location?>> = currentMeteorite.asFlow()
             .flatMapLatest {
                 meteoriteRepository.getMeteoriteById(it.id.toString())
             }
-            .combine(gpsTracker.location) { meteorite, location -> //Add location
+            .combine(location) { meteorite, location -> //Add location
                 Pair(meteorite, location)
             }
             .asLiveData()
