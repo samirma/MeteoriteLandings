@@ -3,7 +3,7 @@ package com.antonio.samir.meteoritelandingsspots.features
 import android.annotation.SuppressLint
 import android.text.TextUtils
 import android.util.Log
-import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
