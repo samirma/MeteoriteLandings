@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.detail.ui
 
+import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
@@ -12,6 +13,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
@@ -26,9 +28,12 @@ class MeteoriteDetailViewModel(
 
     val location = gpsTracker.location
 
-    val meteorite: LiveData<Result<Meteorite>> = currentMeteorite.asFlow()
+    val meteorite: LiveData<Pair<Result<Meteorite>, Result<Location>>> = currentMeteorite.asFlow()
             .flatMapLatest {
                 meteoriteRepository.getMeteoriteById(it.id.toString())
+            }
+            .combine(gpsTracker.location) { meteorite, location -> //Add location
+                Pair(meteorite, location)
             }
             .asLiveData()
 
@@ -36,10 +41,9 @@ class MeteoriteDetailViewModel(
         currentMeteorite.offer(meteoriteRef)
     }
 
-
     fun requestAddressUpdate(meteorite: Meteorite) {
         viewModelScope.launch {
-            meteoriteRepository.requestAddressUpdate(meteorite)
+            meteoriteRepository.updateAddress(meteorite)
         }
     }
 
