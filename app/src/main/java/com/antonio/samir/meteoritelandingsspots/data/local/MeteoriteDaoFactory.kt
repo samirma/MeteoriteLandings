@@ -1,11 +1,11 @@
-package com.antonio.samir.meteoritelandingsspots.service.repository.local
+package com.antonio.samir.meteoritelandingsspots.data.local
 
 import android.content.Context
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.antonio.samir.meteoritelandingsspots.service.repository.local.database.AppDataBase
-import com.antonio.samir.meteoritelandingsspots.service.repository.local.database.MeteoriteDao
+import com.antonio.samir.meteoritelandingsspots.data.local.database.AppDataBase
+import com.antonio.samir.meteoritelandingsspots.data.local.database.MeteoriteDao
 
 object MeteoriteDaoFactory {
 

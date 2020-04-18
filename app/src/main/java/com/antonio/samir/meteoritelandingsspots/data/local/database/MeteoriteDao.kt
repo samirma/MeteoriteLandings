@@ -1,10 +1,9 @@
-package com.antonio.samir.meteoritelandingsspots.service.repository.local.database
+package com.antonio.samir.meteoritelandingsspots.data.local.database
 
-import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.room.*
-
-import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import kotlinx.coroutines.flow.Flow
 
 
 @Dao
@@ -26,7 +25,7 @@ interface MeteoriteDao {
     suspend fun meteoritesWithOutAddress(): List<Meteorite>
 
     @Query("SELECT * from meteorites where id = :meteoriteId LIMIT 1")
-    fun getMeteoriteById(meteoriteId: String): LiveData<Meteorite>
+    fun getMeteoriteById(meteoriteId: String): Flow<Meteorite>
 
     @Query("SELECT count(id) from meteorites")
     suspend fun getMeteoritesCount(): Int
