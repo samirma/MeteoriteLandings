@@ -1,6 +1,5 @@
 package com.antonio.samir.meteoritelandingsspots.util
 
-
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
@@ -19,7 +18,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
-
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -97,17 +95,18 @@ class GPSTracker(
         locationManager?.removeUpdates(this)
     }
 
-    override suspend fun startLocationService(): Unit = withContext(Dispatchers.Main) {
-        try {
+    override suspend fun startLocationService() {
+        withContext(Dispatchers.Main) {
+            try {
 
-            if (isLocationAuthorized) {
-                startLocation()
+                if (isLocationAuthorized) {
+                    startLocation()
+                }
+                currentNeedAuthorization.offer(!isLocationAuthorized)
+            } catch (e: Exception) {
+                Log.e(TAG, e.message, e)
             }
-            currentNeedAuthorization.offer(!isLocationAuthorized)
-        } catch (e: Exception) {
-            Log.e(TAG, e.message, e)
         }
-
     }
 
     @SuppressLint("MissingPermission")
