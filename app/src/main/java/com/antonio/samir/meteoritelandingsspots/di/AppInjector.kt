@@ -1,17 +1,17 @@
 import android.location.Geocoder
-import com.antonio.samir.meteoritelandingsspots.features.detail.viewmodel.MeteoriteDetailViewModel
-import com.antonio.samir.meteoritelandingsspots.features.list.viewmodel.MeteoriteListViewModel
-import com.antonio.samir.meteoritelandingsspots.service.business.AddressService
-import com.antonio.samir.meteoritelandingsspots.service.business.AddressServiceInterface
-import com.antonio.samir.meteoritelandingsspots.service.business.MeteoriteService
-import com.antonio.samir.meteoritelandingsspots.service.business.MeteoriteServiceInterface
-import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteDaoFactory
-import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteRepository
-import com.antonio.samir.meteoritelandingsspots.service.repository.local.MeteoriteRepositoryInterface
-import com.antonio.samir.meteoritelandingsspots.service.repository.remote.NasaRemoteRepository
-import com.antonio.samir.meteoritelandingsspots.service.repository.remote.NasaRemoteRepositoryInterface
-import com.antonio.samir.meteoritelandingsspots.service.repository.remote.NasaServerEndPoint
+import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteDaoFactory
+import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
+import com.antonio.samir.meteoritelandingsspots.data.remote.NasaNetworkService
+import com.antonio.samir.meteoritelandingsspots.data.remote.NasaServerEndPoint
+import com.antonio.samir.meteoritelandingsspots.data.remote.NetworkService
+import com.antonio.samir.meteoritelandingsspots.data.repository.AddressService
+import com.antonio.samir.meteoritelandingsspots.data.repository.AddressServiceInterface
+import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepositoryImpl
+import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailViewModel
+import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.util.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -25,37 +25,44 @@ private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(NasaServerEndPoint.URL)
         .addConverterFactory(GsonConverterFactory.create())
         .client(OkHttpClient.Builder()
-                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .addInterceptor(run {
+                    val httpLoggingInterceptor = HttpLoggingInterceptor()
+                    httpLoggingInterceptor.apply { httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY }
+                })
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS).build()
         )
         .build()
 
 val repositoryModule = module {
-    single { MeteoriteRepository(get(), get()) as MeteoriteRepositoryInterface }
+    single { MeteoriteRepositoryImpl(get(), get()) as MeteoriteLocalRepository }
 }
 
 val networkModule = module {
     single { retrofit.create(NasaServerEndPoint::class.java) }
     single { NetworkUtil(get()) as NetworkUtilInterface }
-    single { NasaRemoteRepository(get()) as NasaRemoteRepositoryInterface }
+    single { NasaNetworkService(get()) as NetworkService }
 }
 
 val databaseModule = module {
     single { MeteoriteDaoFactory.getMeteoriteDao(get()) }
 }
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 val businessModule = module {
     single { Geocoder(get()) }
     single { GeoLocationUtil(get()) as GeoLocationUtilInterface }
     single { GPSTracker(get()) as GPSTrackerInterface }
     single { AddressService(get(), get()) as AddressServiceInterface }
-    single { MeteoriteService(get(), get(), get()) as MeteoriteServiceInterface }
+    single { MeteoriteRepositoryImpl(get(), get()) as com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository }
 }
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 val viewModelModule = module {
-    viewModel { MeteoriteListViewModel(get(), get()) }
-    viewModel { MeteoriteDetailViewModel(get()) }
+    viewModel { MeteoriteListViewModel(get(), get(), get(), get()) }
+    viewModel { MeteoriteDetailViewModel(get(), get()) }
 }
 
 
