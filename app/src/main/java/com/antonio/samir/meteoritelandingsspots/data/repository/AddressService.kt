@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.annotation.StringDef
 import com.antonio.samir.meteoritelandingsspots.data.Result.InProgress
 import com.antonio.samir.meteoritelandingsspots.data.Result.Success
-import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteRepositoryInterface
+import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.AddressService.Status.Companion.DONE
 import com.antonio.samir.meteoritelandingsspots.data.repository.AddressService.Status.Companion.LOADING
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
@@ -18,7 +18,7 @@ import java.util.*
 
 
 class AddressService(
-        private val meteoriteRepository: MeteoriteRepositoryInterface,
+        private val meteoriteLocalRepository: MeteoriteLocalRepository,
         private val geoLocationUtil: GeoLocationUtilInterface,
         private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
 ) : AddressServiceInterface {
@@ -40,11 +40,11 @@ class AddressService(
 
         emit(InProgress(LOADING))
 
-        var meteorites = meteoriteRepository.meteoritesWithOutAddress()
+        var meteorites = meteoriteLocalRepository.meteoritesWithOutAddress()
 
         while (meteorites.isNotEmpty()) {
             recoverAddress(meteorites)
-            meteorites = meteoriteRepository.meteoritesWithOutAddress()
+            meteorites = meteoriteLocalRepository.meteoritesWithOutAddress()
         }
 
         emit(Success(LOADING))
@@ -55,18 +55,18 @@ class AddressService(
             list.onEach { meteorite ->
                 meteorite.address = getAddressFromMeteorite(meteorite)
             }
-            val meteoritesWithoutAddressCount: Int = meteoriteRepository.getMeteoritesWithoutAddressCount()
+            val meteoritesWithoutAddressCount: Int = meteoriteLocalRepository.getMeteoritesWithoutAddressCount()
             Log.i(TAG, "recoveryAddress ${list.size} $meteoritesWithoutAddressCount")
 
         } catch (e: Exception) {
             Log.e(TAG, "Fail to retrieve address", e)
         }
-        meteoriteRepository.updateAll(list)
+        meteoriteLocalRepository.updateAll(list)
     }
 
     override suspend fun recoverAddress(meteorite: Meteorite) = withContext(dispatchers.default()) {
         meteorite.address = getAddressFromMeteorite(meteorite)
-        meteoriteRepository.update(meteorite)
+        meteoriteLocalRepository.update(meteorite)
     }
 
     private fun getAddressFromMeteorite(meteorite: Meteorite): String {
