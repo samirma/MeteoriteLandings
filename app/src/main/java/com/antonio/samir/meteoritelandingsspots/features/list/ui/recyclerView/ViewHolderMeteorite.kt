@@ -6,9 +6,9 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.antonio.samir.meteoritelandingsspots.R
+import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.getDistanceFrom
 import com.antonio.samir.meteoritelandingsspots.features.yearString
-import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
 import org.apache.commons.lang3.StringUtils
 import java.util.*
 

@@ -1,6 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector
 
-import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 
 
 class MeteoriteSelectorLandscape(private val view: MeteoriteSelectorView) : MeteoriteSelector {

@@ -1,6 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector
 
-import com.antonio.samir.meteoritelandingsspots.service.business.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 
 /**
  * Interface used by view activity to implement proper commands for each meteorite selection case
