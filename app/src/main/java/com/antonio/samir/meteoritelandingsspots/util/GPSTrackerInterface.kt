@@ -2,22 +2,22 @@ package com.antonio.samir.meteoritelandingsspots.util
 
 import android.location.Location
 import android.location.LocationListener
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import com.antonio.samir.meteoritelandingsspots.data.Result
+import kotlinx.coroutines.flow.Flow
 
 interface GPSTrackerInterface : LocationListener {
 
-    val isLocationAutorized: Boolean
+    val isLocationAuthorized: Boolean
 
-    val location: MutableLiveData<Location>
+    val location: Flow<Result<Location>>
 
-    suspend fun startLocationService(): Any
+    suspend fun startLocationService()
 
     fun isLocationServiceStarted(): Boolean
 
     fun isGPSEnabled(): Boolean
 
-    fun stopUpdates()
+    suspend fun stopUpdates()
 
-    val needAuthorization: LiveData<Boolean>
+    val needAuthorization: Flow<Boolean>
 }
