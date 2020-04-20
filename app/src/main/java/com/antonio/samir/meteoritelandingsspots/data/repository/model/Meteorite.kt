@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
-@Entity(tableName = "meteorites", indices = arrayOf(Index("id")))
+@Entity(tableName = "meteorites", indices = [Index("id")])
 @Parcelize
 class Meteorite : Parcelable {
     @PrimaryKey
