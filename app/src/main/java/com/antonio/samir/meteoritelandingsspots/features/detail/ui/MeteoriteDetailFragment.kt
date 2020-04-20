@@ -90,16 +90,18 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
             val location = it.second
             when (meteoriteResult) {
                 is Result.Success -> {
-                    val meteorite = meteoriteResult.data
-                    if (meteorite == this.meteorite) {
-                        if (meteorite.address != this.meteorite?.address) {
-                            this.meteorite = meteorite
-                            setLocationText(meteorite, location)
+                    meteoriteResult.data?.let { meteorite ->
+                        if (meteorite == this.meteorite) {
+                            if (meteorite.address != this.meteorite?.address) {
+                                this.meteorite = meteorite
+                                setLocationText(meteorite, location)
+                            }
+                        } else {
+                            setMeteorite(meteorite)
+                            (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
                         }
-                    } else {
-                        setMeteorite(meteorite)
-                        (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
                     }
+
                 }
             }
         })
