@@ -1,13 +1,10 @@
 package com.antonio.samir.meteoritelandingsspots.service
 
 import android.util.Log
-import androidx.annotation.StringDef
 import com.antonio.samir.meteoritelandingsspots.data.Result.InProgress
 import com.antonio.samir.meteoritelandingsspots.data.Result.Success
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.service.AddressService.Status.Companion.DONE
-import com.antonio.samir.meteoritelandingsspots.service.AddressService.Status.Companion.LOADING
 import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
@@ -24,20 +21,10 @@ class AddressService(
 
     val TAG = AddressService::class.java.simpleName
 
-    @Retention(AnnotationRetention.SOURCE)
-    @StringDef(DONE, LOADING)
-    annotation class Status {
-        companion object {
-            const val DONE = "DONE"
-            const val LOADING = "LOADING"
-        }
-    }
 
     override fun recoveryAddress() = flow {
 
-        Log.i(TAG, "recoveryAddress $LOADING")
-
-        emit(InProgress(LOADING))
+        emit(InProgress<Nothing>())
 
         var meteorites = meteoriteLocalRepository.meteoritesWithOutAddress()
 
@@ -47,7 +34,7 @@ class AddressService(
             meteorites = meteoriteLocalRepository.meteoritesWithOutAddress()
         }
 
-        emit(Success(DONE))
+        emit(Success<Nothing>())
     }
 
     override suspend fun recoverAddress(list: List<Meteorite>) {

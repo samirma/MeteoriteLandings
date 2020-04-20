@@ -56,7 +56,7 @@ class AddressServiceTest {
 
         whenever(mockGeoLocationUtil.getAddress(any(), any())).thenReturn(address)
 
-        val expected = listOf(Result.InProgress(AddressService.Status.LOADING), Result.Success(AddressService.Status.DONE))
+        val expected: List<Result<Nothing>> = listOf(Result.InProgress(), Result.Success())
         val actual = addressService.recoveryAddress().toList()
         assertEquals(expected, actual)
 
