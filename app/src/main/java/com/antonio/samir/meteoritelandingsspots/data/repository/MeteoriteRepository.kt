@@ -7,11 +7,13 @@ import kotlinx.coroutines.flow.Flow
 
 interface MeteoriteRepository {
 
-    suspend fun loadMeteorites(filter: String?): DataSource.Factory<Int, Meteorite>
+    suspend fun loadMeteorites(filter: String?, longitude: Double?, latitude: Double?): DataSource.Factory<Int, Meteorite>
 
     fun getMeteoriteById(id: String): Flow<Result<Meteorite>>
 
-    suspend fun updateAddress(meteorite: Meteorite)
+    suspend fun update(meteorite: Meteorite)
 
-    suspend fun updateAddress(list: List<Meteorite>)
+    suspend fun update(list: List<Meteorite>)
+
+    fun loadDatabase(): Flow<Result<Nothing>>
 }
