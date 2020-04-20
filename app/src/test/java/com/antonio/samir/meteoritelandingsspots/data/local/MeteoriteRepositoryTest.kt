@@ -32,34 +32,47 @@ class MeteoriteRepositoryTest {
     }
 
     @Test
-    fun meteoriteOrderedWithLocationAndFilter() {
+    fun `test meteoriteOrdered with filter and location`() {
 
         val filter = "aa"
 
-        whenever(location.latitude).thenReturn(2.0)
-        whenever(location.longitude).thenReturn(1.0)
+        val latitude = 2.0
+        val longitude = 1.0
 
-        meteoriteLocalRepository.meteoriteOrdered(location, filter)
+        whenever(location.latitude).thenReturn(latitude)
+        whenever(location.longitude).thenReturn(longitude)
 
-        verify(meteoriteDao).meteoriteOrderedByLocationFiltered(2.0, 1.0, filter)
+        meteoriteLocalRepository.meteoriteOrdered(filter, latitude, longitude)
+
+        verify(meteoriteDao).meteoriteOrderedByLocationFiltered(latitude, longitude, filter)
     }
 
     @Test
-    fun meteoriteOrderedWithOutLocationAndWithFilter() {
+    fun `test meteoriteOrdered with filter and invalid location`() {
 
         val filter = "aa"
 
-        meteoriteLocalRepository.meteoriteOrdered(null, filter)
+        meteoriteLocalRepository.meteoriteOrdered(filter, null, 1.0)
 
         verify(meteoriteDao).meteoriteFiltered(filter)
     }
 
     @Test
-    fun meteoriteNoFilterNoLocation() {
+    fun `test meteoriteOrdered without filter and invalid location`() {
 
-        meteoriteLocalRepository.meteoriteOrdered(null, null)
+        meteoriteLocalRepository.meteoriteOrdered(null, 1.0, null)
 
         verify(meteoriteDao).meteoriteOrdered()
+    }
+
+    @Test
+    fun `test meteoriteOrdered without filter and location`() {
+
+        val latitude = 1.0
+        val longitude = 1.3
+        meteoriteLocalRepository.meteoriteOrdered(null, latitude, longitude)
+
+        verify(meteoriteDao).meteoriteOrderedByLocation(latitude, longitude)
     }
 
 }
