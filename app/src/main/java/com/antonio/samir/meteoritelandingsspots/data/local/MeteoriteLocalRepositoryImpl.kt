@@ -1,6 +1,5 @@
 package com.antonio.samir.meteoritelandingsspots.data.local
 
-import android.location.Location
 import androidx.paging.DataSource
 import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.data.local.database.MeteoriteDao
@@ -15,25 +14,23 @@ import java.io.IOException
 import java.util.*
 
 class MeteoriteLocalRepositoryImpl(
-        val meteoriteDao: MeteoriteDao
+        private val meteoriteDao: MeteoriteDao
 ) : MeteoriteLocalRepository {
 
-    override fun meteoriteOrdered(location: Location?, filter: String?): DataSource.Factory<Int, Meteorite> {
+    override fun meteoriteOrdered(filter: String?, latitude: Double?, longitude: Double?): DataSource.Factory<Int, Meteorite> {
 
-        return if (location == null) {
+        return if (latitude == null || longitude == null) {
             if (filter.isNullOrEmpty()) {
                 meteoriteDao.meteoriteOrdered()
             } else {
                 meteoriteDao.meteoriteFiltered(filter.toLowerCase(Locale.getDefault()))
             }
         } else {
-            val lng = location.longitude
-            val lat = location.latitude
 
             if (filter != null) {
-                meteoriteDao.meteoriteOrderedByLocationFiltered(lat, lng, filter.toLowerCase(Locale.getDefault()))
+                meteoriteDao.meteoriteOrderedByLocationFiltered(latitude, longitude, filter.toLowerCase(Locale.getDefault()))
             } else {
-                meteoriteDao.meteoriteOrderedByLocation(lat, lng)
+                meteoriteDao.meteoriteOrderedByLocation(latitude, longitude)
             }
         }
 
