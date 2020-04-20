@@ -15,7 +15,6 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import kotlin.test.assertEquals
@@ -62,7 +61,7 @@ class MeteoriteListViewModelTest {
 
         val location = "sa"
 
-        Mockito.`when`(meteoriteService.loadMeteorites(location)).thenReturn(data)
+//        Mockito.`when`(meteoriteService.loadMeteorites(location)).thenReturn(data)
 
         viewModel.loadMeteorites(location)
 
@@ -93,7 +92,7 @@ class MeteoriteListViewModelTest {
 
         val location = "sa"
 
-        Mockito.`when`(meteoriteService.loadMeteorites(location)).thenThrow(Error("some error"))
+//        Mockito.`when`(meteoriteService.loadMeteorites(location, it.second?.longitude, it.second?.latitude)).thenThrow(Error("some error"))
 
         val loadingStatus = viewModel.loadingStatus.apply {
             observeForever {}
