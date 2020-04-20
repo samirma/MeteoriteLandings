@@ -7,7 +7,6 @@ import com.antonio.samir.meteoritelandingsspots.data.Result.Success
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.remote.NetworkService
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -17,7 +16,7 @@ import kotlinx.coroutines.withContext
 class MeteoriteRepositoryImpl(
         private val meteoriteLocalRepository: MeteoriteLocalRepository,
         private val meteoriteRepository: NetworkService,
-        private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
+        private val dispatchers: DispatcherProvider
 ) : MeteoriteRepository {
 
     private val OLD_DATABASE_COUNT = 1000
