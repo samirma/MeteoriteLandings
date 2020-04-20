@@ -43,7 +43,7 @@ class MeteoriteDetailViewModel(
 
     fun requestAddressUpdate(meteorite: Meteorite) {
         viewModelScope.launch {
-            meteoriteRepository.updateAddress(meteorite)
+            meteoriteRepository.update(meteorite)
         }
     }
 
