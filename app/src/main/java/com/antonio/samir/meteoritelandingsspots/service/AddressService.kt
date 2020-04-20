@@ -43,23 +43,22 @@ class AddressService(
 
         while (meteorites.isNotEmpty()) {
             recoverAddress(meteorites)
+
             meteorites = meteoriteLocalRepository.meteoritesWithOutAddress()
         }
 
-        emit(Success(LOADING))
+        emit(Success(DONE))
     }
 
     override suspend fun recoverAddress(list: List<Meteorite>) {
-        try {
-            list.onEach { meteorite ->
+        list.onEach { meteorite ->
+            try {
                 meteorite.address = getAddressFromMeteorite(meteorite)
+            } catch (e: Exception) {
+                Log.e(TAG, "Fail to retrieve address", e)
             }
-            val meteoritesWithoutAddressCount: Int = meteoriteLocalRepository.getMeteoritesWithoutAddressCount()
-            Log.i(TAG, "recoveryAddress ${list.size} $meteoritesWithoutAddressCount")
-
-        } catch (e: Exception) {
-            Log.e(TAG, "Fail to retrieve address", e)
         }
+
         meteoriteLocalRepository.updateAll(list)
     }
 
