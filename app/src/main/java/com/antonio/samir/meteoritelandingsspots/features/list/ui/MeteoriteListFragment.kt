@@ -17,7 +17,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.data.Result
+import com.antonio.samir.meteoritelandingsspots.data.Result.InProgress
+import com.antonio.samir.meteoritelandingsspots.data.Result.Success
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailFragment
 import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailFragment.Companion.METEORITE
@@ -138,8 +139,8 @@ class MeteoriteListFragment : Fragment(),
     private fun observeRecoveryAddressStatus() {
         listViewModel.recoveryAddressStatus.observe(viewLifecycleOwner, Observer { status ->
             when (status) {
-                is Result.InProgress -> showAddressLoading()
-                is Result.Success -> hideAddressLoading()
+                is InProgress -> showAddressLoading()
+                is Success -> hideAddressLoading()
             }
         })
     }

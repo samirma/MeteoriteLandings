@@ -1,9 +1,11 @@
 import android.location.Geocoder
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteDaoFactory
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
+import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepositoryImpl
 import com.antonio.samir.meteoritelandingsspots.data.remote.NasaNetworkService
 import com.antonio.samir.meteoritelandingsspots.data.remote.NasaServerEndPoint
 import com.antonio.samir.meteoritelandingsspots.data.remote.NetworkService
+import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepositoryImpl
 import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailViewModel
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListViewModel
@@ -34,8 +36,8 @@ private val retrofit: Retrofit = Retrofit.Builder()
         )
         .build()
 
-val repositoryModule = module {
-    single { MeteoriteRepositoryImpl(get(), get()) as MeteoriteLocalRepository }
+val localRepositoryModule = module {
+    single { MeteoriteLocalRepositoryImpl(get()) as MeteoriteLocalRepository }
 }
 
 val networkModule = module {
@@ -51,11 +53,12 @@ val databaseModule = module {
 @ExperimentalCoroutinesApi
 @FlowPreview
 val businessModule = module {
+    single { DefaultDispatcherProvider() as DispatcherProvider }
     single { Geocoder(get()) }
     single { GeoLocationUtil(get()) as GeoLocationUtilInterface }
     single { GPSTracker(get()) as GPSTrackerInterface }
     single { AddressService(get(), get()) as AddressServiceInterface }
-    single { MeteoriteRepositoryImpl(get(), get()) as com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository }
+    single { MeteoriteRepositoryImpl(get(), get(), get()) as MeteoriteRepository }
 }
 
 @ExperimentalCoroutinesApi
@@ -66,4 +69,4 @@ val viewModelModule = module {
 }
 
 
-val appModules = listOf(viewModelModule, repositoryModule, networkModule, databaseModule, businessModule)
+val appModules = listOf(viewModelModule, localRepositoryModule, networkModule, databaseModule, businessModule)

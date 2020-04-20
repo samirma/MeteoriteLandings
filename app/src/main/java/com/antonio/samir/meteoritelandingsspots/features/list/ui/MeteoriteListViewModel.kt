@@ -1,7 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.list.ui
 
 
-import android.util.Log
 import androidx.annotation.StringDef
 import androidx.lifecycle.*
 import androidx.paging.LivePagedListBuilder
@@ -16,10 +15,13 @@ import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 /**
  * Layer responsible for manage the interactions between the activity and the services
@@ -33,30 +35,29 @@ class MeteoriteListViewModel(
         addressService: AddressServiceInterface
 ) : ViewModel() {
 
-    val location = gpsTracker.location
+    val TAG = MeteoriteListViewModel::class.java.simpleName
 
-    private var currentFilter = ConflatedBroadcastChannel<String>()
+    private var currentFilter = ConflatedBroadcastChannel<String?>(null)
+
+    private var currentPosition = gpsTracker.location
 
     var recoveryAddressStatus = addressService.recoveryAddress().asLiveData()
 
     val meteorites: LiveData<PagedList<Meteorite>> = currentFilter.asFlow()
+            .combine(currentPosition) { filter, location ->
+                Pair(filter, location)
+            }
             .map {
-                LivePagedListBuilder(meteoriteRepository.loadMeteorites(filter.trim()), 1000)
+                LivePagedListBuilder(meteoriteRepository.loadMeteorites(it.first, it.second?.longitude, it.second?.latitude), 1000)
             }
             .asLiveData()
             .switchMap {
                 it.build()
             }
 
-    private var loadMeteoritesCurrent: LiveData<PagedList<Meteorite>>? = null
-
     val loadingStatus: MutableLiveData<String> = MutableLiveData()
 
     var filter = ""
-
-    val TAG = MeteoriteListViewModel::class.java.simpleName
-
-    var currentJob: Job? = null
 
     @Retention(AnnotationRetention.SOURCE)
     @StringDef(DONE, LOADING, UNABLE_TO_FETCH, NO_RESULTS)
@@ -70,7 +71,7 @@ class MeteoriteListViewModel(
     }
 
     fun loadMeteorites() {
-        loadList(null, null)
+        loadMeteorites(null)
     }
 
     fun loadMeteorites(location: String?) {
@@ -80,40 +81,8 @@ class MeteoriteListViewModel(
 
         location?.let { this.filter = it }
 
-        val emptyStatus = NO_RESULTS
+        currentFilter.offer(location)
 
-        loadList(location, emptyStatus)
-
-    }
-
-    private fun loadList(location: String?, emptyStatus: String?) {
-
-        currentJob?.let {
-            Log.v(TAG, "isActive: ${it.isActive} isCompleted: ${it.isCompleted}")
-            if (!it.isCompleted) {
-                it.cancel()
-            }
-        }
-
-        val launch = viewModelScope.launch(dispatchers.default()) {
-            try {
-                loadingStatus.postValue(LOADING)
-                updateFilter(location, emptyStatus)
-            } catch (error: Exception) {
-                if (error.message == "Job was cancelled") {
-                    Log.v(TAG, error.message)
-                } else {
-                    Log.e(TAG, error.message, error)
-                    loadingStatus.postValue(UNABLE_TO_FETCH)
-                }
-            }
-        }
-
-        currentJob = launch
-    }
-
-    private suspend fun updateFilter(filter: String?, emptyStatus: String?) = withContext(dispatchers.main()) {
-        filter?.let { currentFilter::offer }
     }
 
     fun updateLocation() {
