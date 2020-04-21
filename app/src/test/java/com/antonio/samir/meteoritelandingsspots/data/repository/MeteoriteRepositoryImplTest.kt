@@ -84,6 +84,39 @@ class MeteoriteRepositoryImplTest {
 
 
     @Test
+    fun `test update`() = runBlockingTest {
+
+        val meteorite = Meteorite().apply {
+            id = 43
+            reclong = "0"
+            reclat = "1"
+        }
+
+        mockLocalRepository.update(meteorite)
+
+        verify(mockLocalRepository).update(meteorite)
+
+    }
+
+    @Test
+    fun `test update from list`() = runBlockingTest {
+
+        val meteorite = Meteorite().apply {
+            id = 43
+            reclong = "0"
+            reclat = "1"
+        }
+
+        val meteorites = listOf(meteorite)
+
+        mockLocalRepository.updateAll(meteorites)
+
+        verify(mockLocalRepository).updateAll(meteorites)
+
+    }
+
+
+    @Test
     fun `test getMeteoriteById`() = runBlockingTest {
 
         val meteorite = Meteorite().apply {
