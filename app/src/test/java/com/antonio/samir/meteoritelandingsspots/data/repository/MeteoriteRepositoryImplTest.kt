@@ -9,6 +9,7 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
@@ -53,4 +54,25 @@ class MeteoriteRepositoryImplTest {
         assertEquals(expected, actual)
 
     }
+
+
+    @Test
+    fun `test getMeteoriteById`() = runBlockingTest {
+
+        val meteorite = Meteorite().apply {
+            id = 43
+            reclong = "0"
+            reclat = "1"
+        }
+
+        whenever(mockLocalRepository.getMeteoriteById(43.toString())).thenReturn(flow {
+            emit(meteorite)
+        })
+
+        val expected: List<Result<Meteorite>> = listOf(Result.InProgress(), Result.Success(meteorite))
+        val actual = repository.getMeteoriteById(meteorite.id.toString()).toList()
+        assertEquals(expected, actual)
+
+    }
+    
 }
