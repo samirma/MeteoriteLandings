@@ -35,8 +35,6 @@ class MeteoriteListViewModel(
         addressService: AddressServiceInterface
 ) : ViewModel() {
 
-    val TAG = MeteoriteListViewModel::class.java.simpleName
-
     private var currentFilter = ConflatedBroadcastChannel<String?>(null)
 
     private var currentPosition = gpsTracker.location
@@ -54,6 +52,8 @@ class MeteoriteListViewModel(
             .switchMap {
                 it.build()
             }
+
+    val networkLoadingStatus = meteoriteRepository.loadDatabase().asLiveData()
 
     val loadingStatus: MutableLiveData<String> = MutableLiveData()
 
