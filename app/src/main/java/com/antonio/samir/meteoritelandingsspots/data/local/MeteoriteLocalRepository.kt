@@ -1,7 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.data.local
 
 import androidx.paging.DataSource
-import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import kotlinx.coroutines.flow.Flow
 
@@ -11,7 +10,7 @@ interface MeteoriteLocalRepository {
 
     suspend fun meteoritesWithOutAddress(): List<Meteorite>
 
-    fun getMeteoriteById(id: String): Flow<Result<Meteorite>>
+    fun getMeteoriteById(id: String): Flow<Meteorite>
 
     suspend fun update(meteorite: Meteorite)
 

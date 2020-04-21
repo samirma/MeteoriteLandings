@@ -1,16 +1,10 @@
 package com.antonio.samir.meteoritelandingsspots.data.local
 
 import androidx.paging.DataSource
-import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.data.local.database.MeteoriteDao
-import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteServerException
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import java.io.IOException
 import java.util.*
 
 class MeteoriteLocalRepositoryImpl(
@@ -49,13 +43,8 @@ class MeteoriteLocalRepositoryImpl(
     }
 
     @ExperimentalCoroutinesApi
-    override fun getMeteoriteById(id: String): Flow<Result<Meteorite>> = flow {
-        emit(Result.InProgress<Meteorite>())
-        try {
-            emitAll(meteoriteDao.getMeteoriteById(id).map { Result.Success(it) })
-        } catch (e: IOException) {
-            emit(Result.Error(MeteoriteServerException(e)))
-        }
+    override fun getMeteoriteById(id: String): Flow<Meteorite> {
+        return meteoriteDao.getMeteoriteById(id)
     }
 
     override suspend fun meteoritesWithOutAddress(): List<Meteorite> {

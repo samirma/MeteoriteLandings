@@ -2,17 +2,21 @@ package com.antonio.samir.meteoritelandingsspots.data.repository
 
 import androidx.paging.DataSource
 import com.antonio.samir.meteoritelandingsspots.data.Result
-import com.antonio.samir.meteoritelandingsspots.data.Result.InProgress
-import com.antonio.samir.meteoritelandingsspots.data.Result.Success
+import com.antonio.samir.meteoritelandingsspots.data.Result.*
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.remote.NetworkService
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import java.io.IOException
 
 
+@ExperimentalCoroutinesApi
 class MeteoriteRepositoryImpl(
         private val meteoriteLocalRepository: MeteoriteLocalRepository,
         private val meteoriteRepository: NetworkService,
@@ -25,8 +29,13 @@ class MeteoriteRepositoryImpl(
         return meteoriteLocalRepository.meteoriteOrdered(filter, latitude, longitude)
     }
 
-    override fun getMeteoriteById(id: String): Flow<Result<Meteorite>> {
-        return meteoriteLocalRepository.getMeteoriteById(id)
+    override fun getMeteoriteById(id: String): Flow<Result<Meteorite>> = flow {
+        emit(InProgress<Meteorite>())
+        try {
+            emitAll(meteoriteLocalRepository.getMeteoriteById(id).map { Success(it) })
+        } catch (e: IOException) {
+            emit(Error(MeteoriteServerException(e)))
+        }
     }
 
     override suspend fun update(meteorite: Meteorite) {

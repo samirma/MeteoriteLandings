@@ -5,9 +5,7 @@ import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalReposit
 import com.antonio.samir.meteoritelandingsspots.data.remote.NetworkService
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
@@ -36,7 +34,7 @@ class MeteoriteRepositoryImplTest {
     }
 
     @Test
-    fun `test loadDatabase`() = runBlockingTest {
+    fun `test loadDatabase with invalid meteorite`() = runBlockingTest {
 
         val meteorite = Meteorite().apply {
             reclong = "0"
@@ -52,6 +50,35 @@ class MeteoriteRepositoryImplTest {
         val expected: List<Result<Nothing>> = listOf(Result.InProgress(), Result.Success())
         val actual = repository.loadDatabase().toList()
         assertEquals(expected, actual)
+
+        verify(mockLocalRepository).getMeteoritesCount()
+        verify(mockLocalRepository).insertAll(emptyList())
+        verify(mockRemoteRepository, times(2)).getMeteorites(any(), any())
+
+    }
+
+    @Test
+    fun `test loadDatabase with valid meteorite`() = runBlockingTest {
+
+        val meteorite = Meteorite().apply {
+            reclong = "0"
+            reclat = "1"
+            year = "2020"
+        }
+
+        val meteorites = listOf(meteorite)
+
+        whenever(mockLocalRepository.getMeteoritesCount()).thenReturn(1)
+
+        whenever(mockRemoteRepository.getMeteorites(any(), any())).thenReturn(meteorites)
+
+        val expected: List<Result<Nothing>> = listOf(Result.InProgress(), Result.Success())
+        val actual = repository.loadDatabase().toList()
+        assertEquals(expected, actual)
+
+        verify(mockLocalRepository).getMeteoritesCount()
+        verify(mockLocalRepository).insertAll(meteorites)
+        verify(mockRemoteRepository, times(2)).getMeteorites(any(), any())
 
     }
 
@@ -74,5 +101,5 @@ class MeteoriteRepositoryImplTest {
         assertEquals(expected, actual)
 
     }
-    
+
 }
