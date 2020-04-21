@@ -56,7 +56,7 @@ class MeteoriteRepositoryImplTest {
         verify(mockRemoteRepository, times(2)).getMeteorites(any(), any())
 
     }
-    
+
     @Test
     fun `test loadDatabase already loaded`() = runBlockingTest {
 
@@ -118,7 +118,7 @@ class MeteoriteRepositoryImplTest {
             reclat = "1"
         }
 
-        mockLocalRepository.update(meteorite)
+        repository.update(meteorite)
 
         verify(mockLocalRepository).update(meteorite)
 
@@ -135,7 +135,7 @@ class MeteoriteRepositoryImplTest {
 
         val meteorites = listOf(meteorite)
 
-        mockLocalRepository.updateAll(meteorites)
+        repository.update(meteorites)
 
         verify(mockLocalRepository).updateAll(meteorites)
 

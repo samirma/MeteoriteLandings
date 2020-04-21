@@ -23,7 +23,7 @@ class MeteoriteRepositoryImpl(
         private val dispatchers: DispatcherProvider
 ) : MeteoriteRepository {
 
-    private val OLD_DATABASE_COUNT = 1000
+    private val OLDDATABASE_COUNT = 1000
 
     override suspend fun loadMeteorites(filter: String?, longitude: Double?, latitude: Double?): DataSource.Factory<Int, Meteorite> {
         return meteoriteLocalRepository.meteoriteOrdered(filter, latitude, longitude)
@@ -48,7 +48,7 @@ class MeteoriteRepositoryImpl(
 
     override fun loadDatabase(): Flow<Result<Nothing>> = flow {
         val meteoritesCount = meteoriteLocalRepository.getMeteoritesCount()
-        if (meteoritesCount <= OLD_DATABASE_COUNT) {
+        if (meteoritesCount <= OLDDATABASE_COUNT) {
             emit(InProgress())
             //If it is empty so load the data from internet
             recoverFromNetwork()
@@ -60,7 +60,7 @@ class MeteoriteRepositoryImpl(
 
         val limit = 5000
         var currentPage = 0
-        var currentLoaded = -1
+        var currentLoaded: Int
 
         do {
 
