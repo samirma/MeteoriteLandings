@@ -56,6 +56,32 @@ class MeteoriteRepositoryImplTest {
         verify(mockRemoteRepository, times(2)).getMeteorites(any(), any())
 
     }
+    
+    @Test
+    fun `test loadDatabase already loaded`() = runBlockingTest {
+
+        val meteorites = mutableListOf<Meteorite>()
+
+        for (i in 1..1001) {
+            meteorites += Meteorite().apply {
+                id = i
+                reclong = "0"
+                reclat = "1"
+                year = "2020"
+            }
+        }
+
+        whenever(mockLocalRepository.getMeteoritesCount()).thenReturn(meteorites.size)
+
+        whenever(mockRemoteRepository.getMeteorites(any(), any())).thenReturn(meteorites)
+
+        val expected: List<Result<Nothing>> = listOf(Result.Success())
+        val actual = repository.loadDatabase().toList()
+        assertEquals(expected, actual)
+
+        verify(mockLocalRepository).getMeteoritesCount()
+
+    }
 
     @Test
     fun `test loadDatabase with valid meteorite`() = runBlockingTest {
