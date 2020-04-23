@@ -4,7 +4,7 @@ import androidx.paging.DataSource
 import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.data.Result.*
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
-import com.antonio.samir.meteoritelandingsspots.data.remote.NetworkService
+import com.antonio.samir.meteoritelandingsspots.data.remote.MeteoriteRemoteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,11 +19,14 @@ import java.io.IOException
 @ExperimentalCoroutinesApi
 class MeteoriteRepositoryImpl(
         private val meteoriteLocalRepository: MeteoriteLocalRepository,
-        private val meteoriteRepository: NetworkService,
+        private val meteoriteRemoteRepository: MeteoriteRemoteRepository,
         private val dispatchers: DispatcherProvider
 ) : MeteoriteRepository {
 
     private val OLDDATABASE_COUNT = 1000
+
+    override val pageSize: Int
+        get() = 5000
 
     override suspend fun loadMeteorites(filter: String?, longitude: Double?, latitude: Double?): DataSource.Factory<Int, Meteorite> {
         return meteoriteLocalRepository.meteoriteOrdered(filter, latitude, longitude)
@@ -48,31 +51,31 @@ class MeteoriteRepositoryImpl(
 
     override fun loadDatabase(): Flow<Result<Nothing>> = flow {
         val meteoritesCount = meteoriteLocalRepository.getMeteoritesCount()
-        if (meteoritesCount <= OLDDATABASE_COUNT) {
-            emit(InProgress())
-            //If it is empty so load the data from internet
-            recoverFromNetwork()
-        }
+        emit(InProgress())
+        recoverFromNetwork(if (meteoritesCount <= OLDDATABASE_COUNT) {
+            0 //Download from beginner
+        } else {
+            meteoritesCount
+        })
         emit(Success())
     }
 
-    private suspend fun recoverFromNetwork() = withContext(dispatchers.default()) {
+    private suspend fun recoverFromNetwork(offset: Int) = withContext(dispatchers.default()) {
 
-        val limit = 5000
         var currentPage = 0
-        var currentLoaded: Int
 
         do {
 
-            val filteredList = meteoriteRepository.getMeteorites(limit, limit * currentPage)
-                    .filter { isValid(it) }
+            val serviceOffset = (pageSize * currentPage) + offset
+            val meteorites = meteoriteRemoteRepository.getMeteorites(
+                    offset = serviceOffset,
+                    limit = pageSize
+            )
 
-            meteoriteLocalRepository.insertAll(filteredList)
-
-            currentLoaded = meteoriteRepository.getMeteorites(limit, limit * currentPage).size
+            meteoriteLocalRepository.insertAll(meteorites.filter { isValid(it) })
 
             currentPage++
-        } while (currentLoaded == limit)
+        } while (meteorites.size == pageSize)
 
     }
 
