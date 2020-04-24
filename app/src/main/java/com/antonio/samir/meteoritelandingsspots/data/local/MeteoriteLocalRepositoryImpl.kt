@@ -3,7 +3,6 @@ package com.antonio.samir.meteoritelandingsspots.data.local
 import androidx.paging.DataSource
 import com.antonio.samir.meteoritelandingsspots.data.local.database.MeteoriteDao
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -12,7 +11,7 @@ import java.util.*
 
 class MeteoriteLocalRepositoryImpl(
         private val meteoriteDao: MeteoriteDao,
-        private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
+        private val dispatchers: DispatcherProvider
 
 ) : MeteoriteLocalRepository {
 

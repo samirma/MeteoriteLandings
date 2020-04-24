@@ -7,10 +7,10 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-
 
 @ExperimentalCoroutinesApi
 class MeteoriteRepositoryTest {
@@ -21,18 +21,18 @@ class MeteoriteRepositoryTest {
     private val meteoriteDao: MeteoriteDao = mock()
     private val location: Location = mock()
 
-    private lateinit var meteoriteLocalRepository: MeteoriteLocalRepositoryImpl
+    private lateinit var meteoriteLocalRepository: MeteoriteLocalRepository
 
 
     @Before
     fun setUp() {
 
-        meteoriteLocalRepository = MeteoriteLocalRepositoryImpl(meteoriteDao)
+        meteoriteLocalRepository = MeteoriteLocalRepositoryImpl(meteoriteDao, coroutinesTestRule.testDispatcherProvider)
 
     }
 
     @Test
-    fun `test meteoriteOrdered with filter and location`() {
+    fun `test meteoriteOrdered with filter and location`() = runBlockingTest {
 
         val filter = "aa"
 
@@ -48,7 +48,7 @@ class MeteoriteRepositoryTest {
     }
 
     @Test
-    fun `test meteoriteOrdered with filter and invalid location`() {
+    fun `test meteoriteOrdered with filter and invalid location`() = runBlockingTest {
 
         val filter = "aa"
 
@@ -58,7 +58,7 @@ class MeteoriteRepositoryTest {
     }
 
     @Test
-    fun `test meteoriteOrdered without filter and invalid location`() {
+    fun `test meteoriteOrdered without filter and invalid location`() = runBlockingTest {
 
         meteoriteLocalRepository.meteoriteOrdered(null, 1.0, null)
 
@@ -66,7 +66,7 @@ class MeteoriteRepositoryTest {
     }
 
     @Test
-    fun `test meteoriteOrdered without filter and location`() {
+    fun `test meteoriteOrdered without filter and location`() = runBlockingTest {
 
         val latitude = 1.0
         val longitude = 1.3
