@@ -6,6 +6,48 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:animateLayoutChanges="true"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/statusTV">
+
+        <FrameLayout
+            android:id="@+id/fragment"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/meteoriteRV"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:clipToPadding="false"
+            android:paddingLeft="@dimen/list_side_margin"
+            android:paddingRight="@dimen/list_side_margin"
+            android:paddingBottom="28dp"
+            android:scrollbarStyle="outsideOverlay" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/networkStatusLoading"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:indeterminate="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <ProgressBar
         android:id="@+id/progressLoader"
         style="?android:attr/progressBarStyle"
@@ -29,22 +71,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/statusTV"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@color/alert_bg"
-        android:gravity="center"
-        android:text="@string/loading_addresses"
-        android:textStyle="bold"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/container"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchText"
-        tools:visibility="visible" />
-
 
     <TextView
         android:id="@+id/messageTV"
@@ -60,36 +86,20 @@
         tools:visibility="visible" />
 
 
-    <LinearLayout
-        android:id="@+id/container"
+    <TextView
+        android:id="@+id/statusTV"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:animateLayoutChanges="true"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="wrap_content"
+        android:background="@color/alert_bg"
+        android:gravity="center"
+        android:text="@string/loading_addresses"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/statusTV">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/meteoriteRV"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:clipToPadding="false"
-            android:paddingLeft="@dimen/list_side_margin"
-            android:paddingRight="@dimen/list_side_margin"
-            android:paddingBottom="28dp"
-            android:scrollbarStyle="outsideOverlay" />
-
-        <FrameLayout
-            android:id="@+id/fragment"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:visibility="gone" />
-
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/searchText"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
