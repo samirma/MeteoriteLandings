@@ -22,7 +22,7 @@ interface MeteoriteDao {
     fun meteoriteFiltered(filter: String): DataSource.Factory<Int, Meteorite>
 
     @Query("SELECT * from meteorites WHERE address IS NULL OR LENGTH(address) = 0 ORDER BY id LIMIT 30")
-    suspend fun meteoritesWithOutAddress(): List<Meteorite>
+    fun meteoritesWithOutAddress(): Flow<List<Meteorite>>
 
     @Query("SELECT * from meteorites where id = :meteoriteId LIMIT 1")
     fun getMeteoriteById(meteoriteId: String): Flow<Meteorite>
