@@ -25,8 +25,8 @@ import kotlinx.coroutines.launch
 class MeteoriteListViewModel(
         private val meteoriteRepository: MeteoriteRepository,
         private val gpsTracker: GPSTrackerInterface,
-        private val dispatchers: DispatcherProvider = DefaultDispatcherProvider(),
-        addressService: AddressServiceInterface
+        addressService: AddressServiceInterface,
+        private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
 ) : ViewModel() {
 
     private var currentFilter = ConflatedBroadcastChannel<String?>(null)
@@ -34,8 +34,6 @@ class MeteoriteListViewModel(
     private var currentPosition = gpsTracker.location
 
     var recoveryAddressStatus = addressService.recoveryAddress().asLiveData()
-
-    val networkLoadStatus = meteoriteRepository.loadDatabase().asLiveData()
 
     val meteorites: LiveData<PagedList<Meteorite>> = currentFilter.asFlow()
             .combine(currentPosition) { filter, location ->
