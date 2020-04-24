@@ -6,9 +6,13 @@ import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalReposit
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
 import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
@@ -47,8 +51,10 @@ class AddressServiceTest {
 
         val meteorites = listOf(meteorite)
         whenever(mockLocalRepository.meteoritesWithOutAddress())
-                .thenReturn(meteorites)
-                .thenReturn(emptyList())
+                .thenReturn(flow {
+                    emit(meteorites)
+                    emit(emptyList())
+                })
 
         whenever(address.locality).thenReturn("city")
         whenever(address.adminArea).thenReturn("adminArea")
@@ -56,11 +62,10 @@ class AddressServiceTest {
 
         whenever(mockGeoLocationUtil.getAddress(any(), any())).thenReturn(address)
 
-        val expected: List<Result<Nothing>> = listOf(Result.InProgress(), Result.Success())
-        val actual = addressService.recoveryAddress().toList()
-        assertEquals(expected, actual)
+        val expected: List<Result<Nothing>> = listOf(Result.InProgress(), Result.InProgress(), Result.InProgress(), Result.Success())
+        assertEquals(expected, addressService.recoveryAddress().toList())
 
-        verify(mockLocalRepository, times(2)).meteoritesWithOutAddress()
+        verify(mockLocalRepository).meteoritesWithOutAddress()
         verify(mockLocalRepository).updateAll(meteorites)
         verify(mockGeoLocationUtil).getAddress(any(), any())
 
@@ -77,8 +82,10 @@ class AddressServiceTest {
 
         val meteorites = listOf(meteorite)
         whenever(mockLocalRepository.meteoritesWithOutAddress())
-                .thenReturn(meteorites)
-                .thenReturn(emptyList())
+                .thenReturn(flow {
+                    emit(meteorites)
+                    emit(emptyList())
+                })
 
         whenever(address.locality).thenReturn("city")
         whenever(address.adminArea).thenReturn("adminArea")
