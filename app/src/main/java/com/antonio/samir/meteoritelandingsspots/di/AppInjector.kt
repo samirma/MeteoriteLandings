@@ -2,9 +2,9 @@ import android.location.Geocoder
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteDaoFactory
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepositoryImpl
+import com.antonio.samir.meteoritelandingsspots.data.remote.MeteoriteRemoteRepository
 import com.antonio.samir.meteoritelandingsspots.data.remote.NasaNetworkService
 import com.antonio.samir.meteoritelandingsspots.data.remote.NasaServerEndPoint
-import com.antonio.samir.meteoritelandingsspots.data.remote.NetworkService
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepositoryImpl
 import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailViewModel
@@ -43,7 +43,7 @@ val localRepositoryModule = module {
 val networkModule = module {
     single { retrofit.create(NasaServerEndPoint::class.java) }
     single { NetworkUtil(get()) as NetworkUtilInterface }
-    single { NasaNetworkService(get()) as NetworkService }
+    single { NasaNetworkService(get()) as MeteoriteRemoteRepository }
 }
 
 val databaseModule = module {
@@ -69,4 +69,6 @@ val viewModelModule = module {
 }
 
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 val appModules = listOf(viewModelModule, localRepositoryModule, networkModule, databaseModule, businessModule)
