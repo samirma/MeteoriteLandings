@@ -3,17 +3,22 @@ package com.antonio.samir.meteoritelandingsspots.data.local
 import androidx.paging.DataSource
 import com.antonio.samir.meteoritelandingsspots.data.local.database.MeteoriteDao
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
+import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class MeteoriteLocalRepositoryImpl(
-        private val meteoriteDao: MeteoriteDao
+        private val meteoriteDao: MeteoriteDao,
+        private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
+
 ) : MeteoriteLocalRepository {
 
-    override fun meteoriteOrdered(filter: String?, latitude: Double?, longitude: Double?): DataSource.Factory<Int, Meteorite> {
+    override suspend fun meteoriteOrdered(filter: String?, latitude: Double?, longitude: Double?): DataSource.Factory<Int, Meteorite> = withContext(dispatchers.io()) {
 
-        return if (latitude == null || longitude == null) {
+        return@withContext if (latitude == null || longitude == null) {
             if (filter.isNullOrEmpty()) {
                 meteoriteDao.meteoriteOrdered()
             } else {
@@ -47,7 +52,7 @@ class MeteoriteLocalRepositoryImpl(
         return meteoriteDao.getMeteoriteById(id)
     }
 
-    override suspend fun meteoritesWithOutAddress(): List<Meteorite> {
+    override fun meteoritesWithOutAddress(): Flow<List<Meteorite>> {
         return meteoriteDao.meteoritesWithOutAddress()
     }
 

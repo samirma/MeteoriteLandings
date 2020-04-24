@@ -6,9 +6,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface MeteoriteLocalRepository {
 
-    fun meteoriteOrdered(filter: String?, latitude: Double?, longitude: Double?): DataSource.Factory<Int, Meteorite>
+    suspend fun meteoriteOrdered(filter: String?, latitude: Double?, longitude: Double?): DataSource.Factory<Int, Meteorite>
 
-    suspend fun meteoritesWithOutAddress(): List<Meteorite>
+    fun meteoritesWithOutAddress(): Flow<List<Meteorite>>
 
     fun getMeteoriteById(id: String): Flow<Meteorite>
 
