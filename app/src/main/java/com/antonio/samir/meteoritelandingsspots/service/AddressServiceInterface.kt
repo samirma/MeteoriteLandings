@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface AddressServiceInterface {
 
-    fun recoveryAddress(): Flow<Result<Nothing>>
+    fun recoveryAddress(): Flow<Result<Int>>
 
     suspend fun recoverAddress(meteorite: Meteorite)
 
