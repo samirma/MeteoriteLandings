@@ -1,18 +1,19 @@
 package com.antonio.samir.meteoritelandingsspots.service
 
 import android.util.Log
-import com.antonio.samir.meteoritelandingsspots.data.Result.InProgress
-import com.antonio.samir.meteoritelandingsspots.data.Result.Success
+import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import org.apache.commons.lang3.StringUtils
 import java.util.*
 
+@ExperimentalCoroutinesApi
 class AddressService(
         private val meteoriteLocalRepository: MeteoriteLocalRepository,
         private val geoLocationUtil: GeoLocationUtilInterface,
@@ -22,22 +23,15 @@ class AddressService(
     val TAG = AddressService::class.java.simpleName
 
 
-    override fun recoveryAddress() = flow {
+    override fun recoveryAddress(): Flow<Result<Nothing>> = meteoriteLocalRepository.meteoritesWithOutAddress()
+            .onEach { recoverAddress(it) }
+            .map { Result.InProgress<Nothing>() as Result<Nothing> }
+            .onStart {
+                emit(Result.InProgress())
+            }
+            .onCompletion { emit(Result.Success()) }
 
-        emit(InProgress<Nothing>())
-
-        var meteorites = meteoriteLocalRepository.meteoritesWithOutAddress()
-
-        while (meteorites.isNotEmpty()) {
-            recoverAddress(meteorites)
-
-            meteorites = meteoriteLocalRepository.meteoritesWithOutAddress()
-        }
-
-        emit(Success<Nothing>())
-    }
-
-    override suspend fun recoverAddress(list: List<Meteorite>) {
+    override suspend fun recoverAddress(list: List<Meteorite>) = withContext(dispatchers.default()) {
         list.onEach { meteorite ->
             try {
                 meteorite.address = getAddressFromMeteorite(meteorite)
