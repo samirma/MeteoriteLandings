@@ -1,16 +1,10 @@
 package com.antonio.samir.meteoritelandingsspots.features.list.ui
 
-
-import androidx.annotation.StringDef
 import androidx.lifecycle.*
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListViewModel.DownloadStatus.Companion.DONE
-import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListViewModel.DownloadStatus.Companion.LOADING
-import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListViewModel.DownloadStatus.Companion.NO_RESULTS
-import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListViewModel.DownloadStatus.Companion.UNABLE_TO_FETCH
 import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
@@ -41,6 +35,8 @@ class MeteoriteListViewModel(
 
     var recoveryAddressStatus = addressService.recoveryAddress().asLiveData()
 
+    val networkLoadStatus = meteoriteRepository.loadDatabase().asLiveData()
+
     val meteorites: LiveData<PagedList<Meteorite>> = currentFilter.asFlow()
             .combine(currentPosition) { filter, location ->
                 Pair(filter, location)
@@ -55,20 +51,7 @@ class MeteoriteListViewModel(
 
     val networkLoadingStatus = meteoriteRepository.loadDatabase().asLiveData()
 
-    val loadingStatus: MutableLiveData<String> = MutableLiveData()
-
     var filter = ""
-
-    @Retention(AnnotationRetention.SOURCE)
-    @StringDef(DONE, LOADING, UNABLE_TO_FETCH, NO_RESULTS)
-    annotation class DownloadStatus {
-        companion object {
-            const val DONE = "DONE"
-            const val LOADING = "LOADING"
-            const val UNABLE_TO_FETCH = "UNABLE_TO_FETCH"
-            const val NO_RESULTS = "NO_RESULTS"
-        }
-    }
 
     fun loadMeteorites() {
         loadMeteorites(null)
