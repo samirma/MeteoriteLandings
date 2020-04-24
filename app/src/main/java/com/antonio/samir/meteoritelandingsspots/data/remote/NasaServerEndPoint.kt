@@ -15,6 +15,6 @@ interface NasaServerEndPoint {
     }
 
     @GET("resource/y77d-th95.json")
-    suspend fun publicMeteorites(@Query("\$limit") limit: Int, @Query("\$offset") offset: Int): List<Meteorite>
+    suspend fun publicMeteorites(@Query("\$offset") offset: Int, @Query("\$limit") limit: Int): List<Meteorite>
 
 }
