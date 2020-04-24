@@ -37,7 +37,7 @@ private val retrofit: Retrofit = Retrofit.Builder()
         .build()
 
 val localRepositoryModule = module {
-    single { MeteoriteLocalRepositoryImpl(get()) as MeteoriteLocalRepository }
+    single { MeteoriteLocalRepositoryImpl(get(), get()) as MeteoriteLocalRepository }
 }
 
 val networkModule = module {
