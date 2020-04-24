@@ -22,17 +22,17 @@ import com.antonio.samir.meteoritelandingsspots.data.Result.Success
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailFragment
 import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailFragment.Companion.METEORITE
-import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListViewModel.DownloadStatus.Companion.DONE
-import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListViewModel.DownloadStatus.Companion.LOADING
-import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListViewModel.DownloadStatus.Companion.NO_RESULTS
-import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListViewModel.DownloadStatus.Companion.UNABLE_TO_FETCH
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.MeteoriteAdapter
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.MeteoriteDiffCallback
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelectorFactory
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelectorView
 import kotlinx.android.synthetic.main.fragment_meteorite_list.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class MeteoriteListFragment : Fragment(),
         MeteoriteSelectorView {
 
@@ -90,7 +90,7 @@ class MeteoriteListFragment : Fragment(),
 
         observeRecoveryAddressStatus()
 
-        observeLoadingStatus()
+        observeNetworkLoadingStatus()
 
 //        observeRequestPermission()
 
@@ -99,10 +99,7 @@ class MeteoriteListFragment : Fragment(),
         searchText.isIconified = false
         searchText.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(query: String): Boolean {
-                val min_lenght_to_search = 2
-                if (query.length > min_lenght_to_search) {
-                    listViewModel.loadMeteorites(query)
-                }
+                listViewModel.loadMeteorites(query)
                 return false
             }
 
@@ -125,7 +122,12 @@ class MeteoriteListFragment : Fragment(),
 
         listViewModel.meteorites.observe(viewLifecycleOwner, Observer { meteorites ->
             Log.i(TAG, "Meteorites received: ${meteorites.size}")
-            meteoriteAdapter.setData(meteorites)
+            if (meteorites.isEmpty()) {
+                noResult()
+            } else {
+                showContent()
+                meteoriteAdapter.setData(meteorites)
+            }
         })
 
         if (listViewModel.filter.isBlank()) {
@@ -145,19 +147,19 @@ class MeteoriteListFragment : Fragment(),
         })
     }
 
-    private fun observeLoadingStatus() {
-        listViewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
+    private fun observeNetworkLoadingStatus() {
+        listViewModel.networkLoadingStatus.observe(viewLifecycleOwner, Observer {
             when (it) {
-                DONE -> meteoriteLoadingStopped()
-                LOADING -> meteoriteLoadingStarted()
-                UNABLE_TO_FETCH -> unableToFetch()
-                NO_RESULTS -> noResult()
+                is InProgress -> networkLoadingStarted()
+                is Success -> networkLoadingStopped()
+                is Error -> unableToFetch()
             }
         })
     }
 
     private fun noResult() {
         error(getString(R.string.no_result_found))
+        hideContent()
     }
 
     /**
@@ -194,13 +196,12 @@ class MeteoriteListFragment : Fragment(),
 
     private fun unableToFetch() {
         error(getString(R.string.no_network))
-        progressLoader.visibility = GONE
         searchText.visibility = GONE
     }
 
     private fun error(messageString: String) {
+        hideContent()
         progressLoader.visibility = INVISIBLE
-        meteoriteRV.visibility = GONE
         messageTV.visibility = VISIBLE
         messageTV.text = messageString
     }
@@ -281,27 +282,36 @@ class MeteoriteListFragment : Fragment(),
         return meteorite
     }
 
-    private fun meteoriteLoadingStarted() {
+    private fun networkLoadingStarted() {
         try {
-            progressLoader.visibility = VISIBLE
-            container?.visibility = INVISIBLE
-            meteoriteRV?.visibility = INVISIBLE
-            messageTV.visibility = INVISIBLE
+            showContent()
+
         } catch (e: Exception) {
             Log.e(TAG, e.message, e)
         }
 
     }
 
-    private fun meteoriteLoadingStopped() {
+    private fun networkLoadingStopped() {
         try {
+            networkStatusLoading.visibility = INVISIBLE
             progressLoader.visibility = INVISIBLE
-            container?.visibility = VISIBLE
-            meteoriteRV?.visibility = VISIBLE
+            showContent()
         } catch (e: Exception) {
             Log.e(TAG, e.message, e)
         }
 
+    }
+
+    private fun showContent() {
+        container?.visibility = VISIBLE
+        meteoriteRV?.visibility = VISIBLE
+        messageTV.visibility = INVISIBLE
+    }
+
+    private fun hideContent() {
+        container?.visibility = INVISIBLE
+        meteoriteRV?.visibility = INVISIBLE
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, @NonNull permissions: Array<String>, @NonNull grantResults: IntArray) {
