@@ -29,11 +29,11 @@ class MeteoriteListViewModel(
         private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
 ) : ViewModel() {
 
-    private var currentFilter = ConflatedBroadcastChannel<String?>(null)
+    private val currentFilter = ConflatedBroadcastChannel<String?>(null)
 
-    private var currentPosition = gpsTracker.location
+    private val currentPosition = gpsTracker.location
 
-    var recoveryAddressStatus = addressService.recoveryAddress().asLiveData()
+    val recoveryAddressStatus = addressService.recoveryAddress().asLiveData()
 
     val meteorites: LiveData<PagedList<Meteorite>> = currentFilter.asFlow()
             .combine(currentPosition) { filter, location ->
