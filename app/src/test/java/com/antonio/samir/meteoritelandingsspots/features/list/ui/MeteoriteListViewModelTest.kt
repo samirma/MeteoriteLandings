@@ -13,6 +13,7 @@ import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -75,10 +76,6 @@ class MeteoriteListViewModelTest {
     }
 
     @Test
-    fun getNetworkLoadingStatus() {
-    }
-
-    @Test
     fun loadMeteorites() {
     }
 
@@ -87,7 +84,12 @@ class MeteoriteListViewModelTest {
     }
 
     @Test
-    fun updateLocation() {
+    fun updateLocation() = runBlockingTest {
+
+        viewModel.updateLocation()
+
+        verify(mockGPSTracker).startLocationService()
+
     }
 
     @Test
