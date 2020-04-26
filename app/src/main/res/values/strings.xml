@@ -9,7 +9,7 @@
     <string name="mass">Mass (g)</string>
     <string name="nametype">Name Type</string>
     <string name="year">Year</string>
-    <string name="loading_addresses">Loading addresses: %s</string>
+    <string name="loading_addresses">Loading addresses</string>
     <string name="title">%s, %s</string>
 
     <!-- TODO: Remove or change this placeholder text -->
