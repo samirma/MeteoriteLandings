@@ -30,7 +30,6 @@ import kotlinx.android.synthetic.main.fragment_meteorite_list.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import kotlin.math.roundToInt
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -111,7 +110,7 @@ class MeteoriteListFragment : Fragment(),
 
             private fun loadMeteorites(query: String) {
                 val min_query_lenght = 3
-                if (query.isNullOrBlank() || query.length > min_query_lenght) {
+                if (query.isBlank() || query.length > min_query_lenght) {
                     showProgressLoader()
                     listViewModel.loadMeteorites(query)
                 }
@@ -187,7 +186,7 @@ class MeteoriteListFragment : Fragment(),
             addressRecoverProgress.progress = it
             addressRecoverProgress.secondaryProgress = it + 10
         }
-        addressRecoverProgress.progressText = getString(R.string.loading_addresses, progress?.roundToInt().toString())
+        addressRecoverProgress.progressText = getString(R.string.loading_addresses)
         addressRecoverProgress?.visibility = VISIBLE
     }
 
@@ -248,17 +247,14 @@ class MeteoriteListFragment : Fragment(),
 
             fragment?.visibility = VISIBLE
 
-            var fragmentTransaction = fragmentManager?.beginTransaction()
-
-            if (fragmentTransaction != null) {
-                fragmentTransaction = fragmentTransaction.setCustomAnimations(
-                        R.anim.fragment_slide_left_enter,
-                        R.anim.fragment_slide_left_exit)
-
-                meteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteorite)
-                fragmentTransaction.replace(R.id.fragment, meteoriteDetailFragment!!)
-                fragmentTransaction.commit()
-            }
+            parentFragmentManager.beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.fragment_slide_left_enter,
+                            R.anim.fragment_slide_left_exit).apply {
+                        meteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteorite)
+                        replace(R.id.fragment, meteoriteDetailFragment!!)
+                        commit()
+                    }
 
         } else {
             meteoriteDetailFragment?.setCurrentMeteorite(meteorite)
