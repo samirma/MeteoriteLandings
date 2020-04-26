@@ -11,7 +11,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.withContext
 import org.apache.commons.lang3.StringUtils
 import java.util.*
@@ -26,18 +25,22 @@ class AddressService(
     val TAG = AddressService::class.java.simpleName
 
 
-    override fun recoveryAddress(): Flow<Result<Nothing>> = meteoriteLocalRepository.meteoritesWithOutAddress()
+    override fun recoveryAddress(): Flow<Result<Float>> = meteoriteLocalRepository.meteoritesWithOutAddress()
             .onEach { recoverAddress(it) }
             .map {
-                if (!it.isNullOrEmpty()) {
-                    Result.InProgress<Nothing>()
-                } else {
-                    Result.Success<Nothing>()
-                }
+                getReturn(it)
             }
-            .onStart {
-                emit(Result.InProgress())
-            }
+
+    private suspend fun getReturn(it: List<Meteorite>): Result<Float> {
+        return if (!it.isNullOrEmpty()) {
+            val meteoritesWithoutAddressCount = meteoriteLocalRepository.getMeteoritesWithoutAddressCount()
+            val meteoritesCount = meteoriteLocalRepository.getMeteoritesCount()
+            val progress = (1 - (meteoritesWithoutAddressCount.toFloat() / meteoritesCount)) * 100
+            Result.InProgress(progress)
+        } else {
+            Result.Success()
+        }
+    }
 
     override suspend fun recoverAddress(list: List<Meteorite>) = withContext(dispatchers.default()) {
         list.onEach { meteorite ->

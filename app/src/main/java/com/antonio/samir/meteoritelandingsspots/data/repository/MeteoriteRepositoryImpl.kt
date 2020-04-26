@@ -72,14 +72,11 @@ class MeteoriteRepositoryImpl(
                     limit = pageSize
             )
 
-            meteoriteLocalRepository.insertAll(meteorites.filter { isValid(it) })
+            meteoriteLocalRepository.insertAll(meteorites)
 
             currentPage++
         } while (meteorites.size == pageSize)
 
     }
-
-    private fun isValid(it: Meteorite) =
-            it.reclong?.toDoubleOrNull() != null && it.reclat?.toDoubleOrNull() != null && !it.year.isNullOrEmpty()
 
 }

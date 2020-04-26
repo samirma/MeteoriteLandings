@@ -35,31 +35,7 @@ class MeteoriteRepositoryImplTest {
         repository = MeteoriteRepositoryImpl(mockLocalRepository, mockRemoteRepository, coroutinesTestRule.testDispatcherProvider)
 
     }
-
-    @Test
-    fun `test loadDatabase with invalid meteorite`() = runBlockingTest {
-
-        val meteorite = Meteorite().apply {
-            reclong = "0"
-            reclat = "1"
-        }
-
-        val meteorites = listOf(meteorite)
-
-        whenever(mockLocalRepository.getMeteoritesCount()).thenReturn(1)
-
-        whenever(mockRemoteRepository.getMeteorites(any(), any())).thenReturn(meteorites)
-
-        val expected: List<Result<Nothing>> = listOf(Result.InProgress(), Result.Success())
-        val actual = repository.loadDatabase().toList()
-        assertEquals(expected, actual)
-
-        verify(mockLocalRepository).getMeteoritesCount()
-        verify(mockLocalRepository).insertAll(emptyList())
-        verify(mockRemoteRepository).getMeteorites(any(), any())
-
-    }
-
+    
     @Test
     fun `test loadDatabase already loaded`() = runBlockingTest {
 
