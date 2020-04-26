@@ -18,7 +18,7 @@ https://www.norio.be/android-feature-graphic-generator/
 
 ## Build with
 - Kotlin
-- Coroutines - Rx free
+- Coroutines/Flow - Rx free
 - Koin - Dagger free
 - LiveData
 - Room
