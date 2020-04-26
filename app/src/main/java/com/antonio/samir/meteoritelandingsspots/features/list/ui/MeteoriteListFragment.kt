@@ -100,13 +100,21 @@ class MeteoriteListFragment : Fragment(),
         searchText.isIconified = false
         searchText.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(query: String): Boolean {
-                listViewModel.loadMeteorites(query)
+                loadMeteorites(query)
                 return false
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
-                listViewModel.loadMeteorites(query)
+                loadMeteorites(query)
                 return false
+            }
+
+            private fun loadMeteorites(query: String) {
+                val min_query_lenght = 3
+                if (query.isNullOrBlank() || query.length > min_query_lenght) {
+                    showProgressLoader()
+                    listViewModel.loadMeteorites(query)
+                }
             }
 
         })
@@ -291,7 +299,6 @@ class MeteoriteListFragment : Fragment(),
     private fun networkLoadingStarted() {
         try {
             showContent()
-
         } catch (e: Exception) {
             Log.e(TAG, e.message, e)
         }
@@ -301,7 +308,6 @@ class MeteoriteListFragment : Fragment(),
     private fun networkLoadingStopped() {
         try {
             networkStatusLoading.visibility = INVISIBLE
-            progressLoader.visibility = INVISIBLE
             showContent()
         } catch (e: Exception) {
             Log.e(TAG, e.message, e)
@@ -310,6 +316,7 @@ class MeteoriteListFragment : Fragment(),
     }
 
     private fun showContent() {
+        progressLoader.visibility = INVISIBLE
         container?.visibility = VISIBLE
         meteoriteRV?.visibility = VISIBLE
         messageTV.visibility = INVISIBLE
@@ -318,6 +325,12 @@ class MeteoriteListFragment : Fragment(),
     private fun hideContent() {
         container?.visibility = INVISIBLE
         meteoriteRV?.visibility = INVISIBLE
+    }
+
+    private fun showProgressLoader() {
+        progressLoader.visibility = VISIBLE
+        messageTV.visibility = INVISIBLE
+        hideContent()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, @NonNull permissions: Array<String>, @NonNull grantResults: IntArray) {

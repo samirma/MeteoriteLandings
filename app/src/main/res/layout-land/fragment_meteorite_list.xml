@@ -44,9 +44,10 @@
         android:layout_width="0dp"
         android:layout_height="30dp"
         android:indeterminate="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/searchText" />
 
     <ProgressBar
         android:id="@+id/progressLoader"
@@ -89,7 +90,8 @@
     <com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar
         android:id="@+id/addressRecoverProgress"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

@@ -60,7 +60,7 @@ class MeteoriteRepositoryImpl(
         emit(Success())
     }
 
-    private suspend fun recoverFromNetwork(offset: Int) = withContext(dispatchers.default()) {
+    private suspend fun recoverFromNetwork(offset: Int) = withContext(dispatchers.io()) {
 
         var currentPage = 0
 
