@@ -30,6 +30,7 @@ import kotlinx.android.synthetic.main.fragment_meteorite_list.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.math.roundToInt
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -120,7 +121,7 @@ class MeteoriteListFragment : Fragment(),
 
     private fun observeMeteorites() {
 
-        listViewModel.meteorites.observe(viewLifecycleOwner, Observer { meteorites ->
+        listViewModel.getMeteorites().observe(viewLifecycleOwner, Observer { meteorites ->
             Log.i(TAG, "Meteorites received: ${meteorites.size}")
             if (meteorites.isEmpty()) {
                 noResult()
@@ -139,16 +140,16 @@ class MeteoriteListFragment : Fragment(),
     }
 
     private fun observeRecoveryAddressStatus() {
-        listViewModel.recoveryAddressStatus.observe(viewLifecycleOwner, Observer { status ->
+        listViewModel.getRecoverAddressStatus().observe(viewLifecycleOwner, Observer { status ->
             when (status) {
-                is InProgress -> showAddressLoading()
+                is InProgress -> showAddressLoading(status.data)
                 is Success -> hideAddressLoading()
             }
         })
     }
 
     private fun observeNetworkLoadingStatus() {
-        listViewModel.networkLoadingStatus.observe(viewLifecycleOwner, Observer {
+        listViewModel.getNetworkLoadingStatus().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is InProgress -> networkLoadingStarted()
                 is Success -> networkLoadingStopped()
@@ -173,12 +174,17 @@ class MeteoriteListFragment : Fragment(),
         })
     }
 
-    private fun showAddressLoading() {
-        statusTV?.visibility = VISIBLE
+    private fun showAddressLoading(progress: Float?) {
+        progress?.let {
+            addressRecoverProgress.progress = it
+            addressRecoverProgress.secondaryProgress = it + 10
+        }
+        addressRecoverProgress.progressText = getString(R.string.loading_addresses, progress?.roundToInt().toString())
+        addressRecoverProgress?.visibility = VISIBLE
     }
 
     private fun hideAddressLoading() {
-        statusTV?.visibility = GONE
+        addressRecoverProgress?.visibility = GONE
     }
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {

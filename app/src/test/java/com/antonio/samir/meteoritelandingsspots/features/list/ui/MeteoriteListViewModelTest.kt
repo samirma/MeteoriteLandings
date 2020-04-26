@@ -38,37 +38,52 @@ class MeteoriteListViewModelTest {
     @Before
     fun setUp() {
 
+        viewModel = MeteoriteListViewModel(mockRepository, mockGPSTracker, addressService, coroutinesTestRule.testDispatcherProvider)
+    }
+
+    @Test
+    fun `test getRecoveryAddressStatus success`() {
+
         whenever(addressService.recoveryAddress()).thenReturn(flow {
             emit(Result.InProgress<Nothing>())
             emit(Result.Success<Nothing>())
         })
+
+        val observer: Observer<Result<Float>> = mock()
+        viewModel.getRecoverAddressStatus().observeForever(observer)
+
+        verify(observer).onChanged(Result.InProgress<Float>())
+        verify(observer).onChanged(Result.Success<Nothing>())
+    }
+
+    @Test
+    fun `test getNetworkLoadStatus success`() {
 
         whenever(mockRepository.loadDatabase()).thenReturn(flow {
             emit(Result.InProgress<Nothing>())
             emit(Result.Success<Nothing>())
         })
 
-        viewModel = MeteoriteListViewModel(mockRepository, mockGPSTracker, addressService, coroutinesTestRule.testDispatcherProvider)
-    }
-
-    @Test
-    fun getRecoveryAddressStatus() {
-
         val observer: Observer<Result<Int>> = mock()
-        viewModel.recoveryAddressStatus.observeForever(observer)
+        viewModel.getNetworkLoadingStatus().observeForever(observer)
 
         verify(observer).onChanged(Result.InProgress<Nothing>())
         verify(observer).onChanged(Result.Success<Nothing>())
     }
 
     @Test
-    fun getNetworkLoadStatus() {
+    fun `test getNetworkLoadStatus error`() {
+
+        val value = Result.Error(Exception("test"))
+
+        whenever(mockRepository.loadDatabase()).thenReturn(flow {
+            emit(value)
+        })
 
         val observer: Observer<Result<Int>> = mock()
-        viewModel.networkLoadingStatus.observeForever(observer)
+        viewModel.getNetworkLoadingStatus().observeForever(observer)
 
-        verify(observer).onChanged(Result.InProgress<Nothing>())
-        verify(observer).onChanged(Result.Success<Nothing>())
+        verify(observer).onChanged(value)
     }
 
     @Test

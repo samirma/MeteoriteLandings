@@ -4,7 +4,6 @@ import androidx.paging.DataSource
 import com.antonio.samir.meteoritelandingsspots.data.local.database.MeteoriteDao
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -46,7 +45,6 @@ class MeteoriteLocalRepositoryImpl(
         meteoriteDao.update(meteorite)
     }
 
-    @ExperimentalCoroutinesApi
     override fun getMeteoriteById(id: String): Flow<Meteorite> {
         return meteoriteDao.getMeteoriteById(id)
     }

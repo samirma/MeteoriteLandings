@@ -14,6 +14,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -25,29 +26,11 @@ import kotlinx.coroutines.launch
 class MeteoriteListViewModel(
         private val meteoriteRepository: MeteoriteRepository,
         private val gpsTracker: GPSTrackerInterface,
-        addressService: AddressServiceInterface,
+        private val addressService: AddressServiceInterface,
         private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
 ) : ViewModel() {
 
     private val currentFilter = ConflatedBroadcastChannel<String?>(null)
-
-    private val currentPosition = gpsTracker.location
-
-    val recoveryAddressStatus = addressService.recoveryAddress().asLiveData()
-
-    val meteorites: LiveData<PagedList<Meteorite>> = currentFilter.asFlow()
-            .combine(currentPosition) { filter, location ->
-                Pair(filter, location)
-            }
-            .map {
-                LivePagedListBuilder(meteoriteRepository.loadMeteorites(it.first, it.second?.longitude, it.second?.latitude), 1000)
-            }
-            .asLiveData()
-            .switchMap {
-                it.build()
-            }
-
-    val networkLoadingStatus = meteoriteRepository.loadDatabase().asLiveData()
 
     var filter = ""
 
@@ -73,5 +56,22 @@ class MeteoriteListViewModel(
     fun isAuthorizationRequested(): LiveData<Boolean> {
         return gpsTracker.needAuthorization.asLiveData()
     }
+
+    fun getRecoverAddressStatus() = addressService.recoveryAddress().asLiveData()
+
+    fun getMeteorites(): LiveData<PagedList<Meteorite>> = currentFilter.asFlow()
+            .flowOn(dispatchers.default())
+            .combine(gpsTracker.location) { filter, location ->
+                Pair(filter, location)
+            }
+            .map {
+                LivePagedListBuilder(meteoriteRepository.loadMeteorites(it.first, it.second?.longitude, it.second?.latitude), 1000)
+            }
+            .asLiveData(dispatchers.default())
+            .switchMap {
+                it.build()
+            }
+
+    fun getNetworkLoadingStatus() = meteoriteRepository.loadDatabase().asLiveData()
 
 }
