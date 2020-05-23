@@ -34,11 +34,7 @@ class MeteoriteListViewModel(
 
     var filter = ""
 
-    fun loadMeteorites() {
-        loadMeteorites(null)
-    }
-
-    fun loadMeteorites(location: String?) {
+    fun loadMeteorites(location: String? = null) {
         if (location == filter) {
             return
         }

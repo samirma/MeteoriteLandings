@@ -2,11 +2,15 @@ package com.antonio.samir.meteoritelandingsspots.features.list.ui
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import androidx.paging.DataSource
+import androidx.paging.PagedList
 import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
+import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
 import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -87,15 +91,23 @@ class MeteoriteListViewModelTest {
     }
 
     @Test
-    fun getMeteorites() {
-    }
+    fun getMeteorites() = runBlockingTest {
 
-    @Test
-    fun loadMeteorites() {
-    }
+        whenever(mockGPSTracker.location).thenReturn(flow {
+            emit(null)
+        })
 
-    @Test
-    fun testLoadMeteorites() {
+        val mockMet: DataSource.Factory<Int, Meteorite> = mock()
+
+        whenever(mockRepository.loadMeteorites(any(), any(), any())).thenReturn(mockMet)
+
+        viewModel.loadMeteorites()
+
+        val observer: Observer<PagedList<Meteorite>> = mock()
+        viewModel.getMeteorites().observeForever(observer)
+
+        verify(observer).onChanged(isRequired)
+
     }
 
     @Test
@@ -108,6 +120,32 @@ class MeteoriteListViewModelTest {
     }
 
     @Test
-    fun isAuthorizationRequested() {
+    fun `test isAuthorizationRequested required`() {
+
+        val isRequired = true
+        whenever(mockGPSTracker.needAuthorization).thenReturn(flow {
+            emit(isRequired)
+        })
+
+        val observer: Observer<Boolean> = mock()
+        viewModel.isAuthorizationRequested().observeForever(observer)
+
+        verify(observer).onChanged(isRequired)
+
+    }
+
+    @Test
+    fun `test isAuthorizationRequested not required`() {
+
+        val isRequired = false
+        whenever(mockGPSTracker.needAuthorization).thenReturn(flow {
+            emit(isRequired)
+        })
+
+        val observer: Observer<Boolean> = mock()
+        viewModel.isAuthorizationRequested().observeForever(observer)
+
+        verify(observer).onChanged(isRequired)
+
     }
 }
