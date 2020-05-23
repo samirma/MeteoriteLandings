@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.data.repository
 
+import android.util.Log
 import androidx.paging.DataSource
 import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.data.Result.*
@@ -23,7 +24,12 @@ class MeteoriteRepositoryImpl(
         private val dispatchers: DispatcherProvider
 ) : MeteoriteRepository {
 
-    private val OLDDATABASE_COUNT = 1000
+    companion object {
+
+        private const val OLDDATABASE_COUNT = 1000
+
+        private val TAG = MeteoriteRepository::class.java.simpleName
+    }
 
     override val pageSize: Int
         get() = 5000
@@ -37,7 +43,8 @@ class MeteoriteRepositoryImpl(
         try {
             emitAll(meteoriteLocalRepository.getMeteoriteById(id).map { Success(it) })
         } catch (e: IOException) {
-            emit(Error(MeteoriteServerException(e)))
+            Log.e(TAG, e.message, e)
+            emit(Error(MeteoriteLocalException(e)))
         }
     }
 
@@ -52,11 +59,16 @@ class MeteoriteRepositoryImpl(
     override fun loadDatabase(): Flow<Result<Nothing>> = flow {
         val meteoritesCount = meteoriteLocalRepository.getMeteoritesCount()
         emit(InProgress())
-        recoverFromNetwork(if (meteoritesCount <= OLDDATABASE_COUNT) {
-            0 //Download from beginner
-        } else {
-            meteoritesCount
-        })
+        try {
+            recoverFromNetwork(if (meteoritesCount <= OLDDATABASE_COUNT) {
+                0 //Download from beginner
+            } else {
+                meteoritesCount
+            })
+        } catch (e: Exception) {
+            Log.e(TAG, e.message, e)
+            emit(Error(MeteoriteServerException(e)))
+        }
         emit(Success())
     }
 
