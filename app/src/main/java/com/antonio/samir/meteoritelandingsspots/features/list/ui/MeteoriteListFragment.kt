@@ -163,7 +163,7 @@ class MeteoriteListFragment : Fragment(),
             when (it) {
                 is InProgress -> networkLoadingStarted()
                 is Success -> networkLoadingStopped()
-                is Error -> unableToFetch()
+                else -> unableToFetch()
             }
         })
     }
