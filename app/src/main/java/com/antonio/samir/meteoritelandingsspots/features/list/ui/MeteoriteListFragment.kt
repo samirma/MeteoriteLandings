@@ -24,6 +24,7 @@ import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDeta
 import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailFragment.Companion.METEORITE
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.MeteoriteAdapter
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.MeteoriteDiffCallback
+import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.SpacesItemDecoration
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelectorFactory
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelectorView
 import kotlinx.android.synthetic.main.fragment_meteorite_list.*
@@ -72,6 +73,8 @@ class MeteoriteListFragment : Fragment(),
         }
 
         meteoriteRV?.adapter = meteoriteAdapter
+
+        meteoriteRV.addItemDecoration(SpacesItemDecoration(resources.getDimensionPixelSize(R.dimen.spacing)))
 
         setupGridLayout()
 

@@ -30,6 +30,8 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="selected_item_elevation">8dp</dimen>
     <dimen name="font_detail_size">20sp</dimen>
 
+    <dimen name="spacing">4dp</dimen>
+
 
 </resources>
 
