@@ -9,9 +9,7 @@
 
     <application xmlns:tools="http://schemas.android.com/tools"
         android:name=".ApplicationDebug"
-        tools:replace="android:name">
-
-
-    </application>
+        tools:replace="android:name"
+        android:allowBackup="true" />
 
 </manifest>

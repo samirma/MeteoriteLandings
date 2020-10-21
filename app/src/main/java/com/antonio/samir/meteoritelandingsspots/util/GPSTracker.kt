@@ -140,7 +140,7 @@ class GPSTracker(
             if (locationManager != null) {
                 location = locationManager!!
                         .getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                onLocationChanged(location)
+                location?.let { onLocationChanged(it) }
             }
         }
     }
@@ -161,7 +161,7 @@ class GPSTracker(
     }
 
 
-    override fun onLocationChanged(location: Location?) {
+    override fun onLocationChanged(location: Location) {
         location?.let { currentLocation.offer(it) }
     }
 

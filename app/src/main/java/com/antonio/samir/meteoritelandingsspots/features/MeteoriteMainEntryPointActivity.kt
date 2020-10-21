@@ -10,5 +10,4 @@ class MeteoriteMainEntryPointActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_meteorite_list)
     }
-
 }

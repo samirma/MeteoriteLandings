@@ -1,3 +1,5 @@
+package com.antonio.samir.meteoritelandingsspots.di
+
 import android.location.Geocoder
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteDaoFactory
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository

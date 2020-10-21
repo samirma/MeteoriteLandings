@@ -3,7 +3,6 @@
     <string name="title_activity_main">@string/app_name</string>
 
     <string name="no_network">Please check you network connection!</string>
-    <string name="load">Loading Meteorites</string>
     <string name="general_error">Sorry, some kind of error has occurred</string>
 
     <string name="mass">Mass (g)</string>
@@ -13,7 +12,6 @@
     <string name="title">%s, %s</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="no_result_found">No results found</string>
     <string name="searchView_query_hint">Title, places, countries</string>
     <string name="without_address_placeholder">Address not loaded yet</string>

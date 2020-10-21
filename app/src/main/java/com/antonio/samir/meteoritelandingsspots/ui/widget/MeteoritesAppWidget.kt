@@ -1,13 +1,10 @@
 package com.antonio.samir.meteoritelandingsspots.ui.widget
 
-import android.annotation.TargetApi
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.widget.RemoteViews
 import com.antonio.samir.meteoritelandingsspots.R
 
 /**
@@ -46,28 +43,7 @@ class MeteoritesAppWidget : AppWidgetProvider() {
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list)
         }
     }
-
-    /**
-     * Sets the remote adapter used to fill in the list items
-     *
-     * @param views RemoteViews to set the RemoteAdapter
-     */
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    private fun setRemoteAdapter(context: Context, views: RemoteViews) {
-        views.setRemoteAdapter(R.id.widget_list,
-                Intent(context, DetailWidgetRemoteViewsService::class.java))
-    }
-
-    /**
-     * Sets the remote adapter used to fill in the list items
-     *
-     * @param views RemoteViews to set the RemoteAdapter
-     */
-    private fun setRemoteAdapterV11(context: Context, views: RemoteViews) {
-        views.setRemoteAdapter(0, R.id.widget_list,
-                Intent(context, DetailWidgetRemoteViewsService::class.java))
-    }
-
+    
     companion object {
         val ACTION_DATA_UPDATED = "com.sam_chordas.android.stockhawk.widget.ACTION_DATA_UPDATED"
     }

@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView
 
+import android.content.Context
 import android.location.Location
 import android.view.View
 import android.widget.TextView
@@ -15,7 +16,7 @@ import java.util.*
 
 class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
 
-    val context = view.context
+    val context: Context = view.context
 
     var name: TextView = view.findViewById(R.id.title)
 
@@ -52,18 +53,18 @@ class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
         setLocationText(meteorite, location)
 
         var color = R.color.unselected_item_color
-        var title_color = R.color.title_color
+        var titleColor = R.color.title_color
         var elevation = R.dimen.unselected_item_elevation
 
         if (Objects.equals(meteorite, selectedMeteorite)) {
             color = R.color.selected_item_color
-            title_color = R.color.selected_title_color
+            titleColor = R.color.selected_title_color
             elevation = R.dimen.selected_item_elevation
         }
 
         cardView.setCardBackgroundColor(context.resources.getColor(color))
         cardView.cardElevation = context.resources.getDimensionPixelSize(elevation).toFloat()
-        name.setTextColor(context.resources.getColor(title_color))
+        name.setTextColor(context.resources.getColor(titleColor))
     }
 
 

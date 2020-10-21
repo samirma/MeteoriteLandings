@@ -1,6 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots
 
-import appModules
+import com.antonio.samir.meteoritelandingsspots.di.appModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 

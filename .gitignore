@@ -39,7 +39,6 @@ project.properties
 *.iws
 
 ##Gradle-based build
-.gradle
 build/
 google-services.json
 /captures/

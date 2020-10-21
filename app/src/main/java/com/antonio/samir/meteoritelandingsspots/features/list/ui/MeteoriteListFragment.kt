@@ -13,10 +13,10 @@ import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.annotation.NonNull
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.antonio.samir.meteoritelandingsspots.R
+import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.data.Result.InProgress
 import com.antonio.samir.meteoritelandingsspots.data.Result.Success
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
@@ -68,7 +68,7 @@ class MeteoriteListFragment : Fragment(),
                 this
         )
 
-        meteoriteAdapter = MeteoriteAdapter(meteoriteSelector, listViewModel, MeteoriteDiffCallback()).apply {
+        meteoriteAdapter = MeteoriteAdapter(meteoriteSelector, MeteoriteDiffCallback()).apply {
             setHasStableIds(true)
         }
 
@@ -115,8 +115,8 @@ class MeteoriteListFragment : Fragment(),
             }
 
             private fun loadMeteorites(query: String) {
-                val min_query_lenght = 3
-                if (query.isBlank() || query.length > min_query_lenght) {
+                val minQueryLenght = 3
+                if (query.isBlank() || query.length > minQueryLenght) {
                     showProgressLoader()
                     listViewModel.loadMeteorites(query)
                 }
@@ -134,7 +134,7 @@ class MeteoriteListFragment : Fragment(),
 
     private fun observeMeteorites() {
 
-        listViewModel.getMeteorites().observe(viewLifecycleOwner, Observer { meteorites ->
+        listViewModel.getMeteorites().observe(viewLifecycleOwner, { meteorites ->
             Log.i(TAG, "Meteorites received: ${meteorites.size}")
             if (meteorites.isEmpty()) {
                 noResult()
@@ -153,16 +153,17 @@ class MeteoriteListFragment : Fragment(),
     }
 
     private fun observeRecoveryAddressStatus() {
-        listViewModel.getRecoverAddressStatus().observe(viewLifecycleOwner, Observer { status ->
+        listViewModel.getRecoverAddressStatus().observe(viewLifecycleOwner, { status ->
             when (status) {
                 is InProgress -> showAddressLoading(status.data)
                 is Success -> hideAddressLoading()
+                is Result.Error -> error(getString(R.string.general_error))
             }
         })
     }
 
     private fun observeNetworkLoadingStatus() {
-        listViewModel.getNetworkLoadingStatus().observe(viewLifecycleOwner, Observer {
+        listViewModel.getNetworkLoadingStatus().observe(viewLifecycleOwner, {
             when (it) {
                 is InProgress -> networkLoadingStarted()
                 is Success -> networkLoadingStopped()
@@ -180,7 +181,7 @@ class MeteoriteListFragment : Fragment(),
      * Request user permission
      */
     private fun observeRequestPermission() {
-        listViewModel.isAuthorizationRequested().observe(viewLifecycleOwner, Observer {
+        listViewModel.isAuthorizationRequested().observe(viewLifecycleOwner, {
             if (it) {
                 requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_REQUEST_CODE)
             }
