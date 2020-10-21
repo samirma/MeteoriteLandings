@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.Result
@@ -85,7 +84,7 @@ class MeteoriteDetailFragment : androidx.fragment.app.Fragment(), OnMapReadyCall
 
     private fun observeMeteorite() {
 
-        viewModel.meteorite.observe(viewLifecycleOwner, Observer {
+        viewModel.meteorite.observe(viewLifecycleOwner, {
             val meteoriteResult = it.first
             val location = it.second
             when (meteoriteResult) {

@@ -9,7 +9,6 @@ class NetworkUtil(context: Context) : NetworkUtilInterface {
 
     /**
      * A method to return whatever network is available or not
-     * @param context
      * @return hasConnectivity
      */
     override fun hasConnectivity(): Boolean {

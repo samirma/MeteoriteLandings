@@ -37,7 +37,6 @@
             tools:listitem="@layout/meteorite_widget_item" />
 
         <TextView
-            android:id="@+id/widget_empty"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fontFamily="sans-serif-condensed"

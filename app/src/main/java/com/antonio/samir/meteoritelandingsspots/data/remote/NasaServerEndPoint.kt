@@ -5,7 +5,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 /**
- * Interface needed by retrofit library in order to request from the server
+ * Interface needed by com.antonio.samir.meteoritelandingsspots.di.retrofit library in order to request from the server
  */
 interface NasaServerEndPoint {
 

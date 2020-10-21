@@ -6,7 +6,6 @@ import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelector
 import java.util.*
 
@@ -15,7 +14,6 @@ import java.util.*
  */
 class MeteoriteAdapter(
         private val meteoriteSelector: MeteoriteSelector,
-        private val viewModel: MeteoriteListViewModel,
         differ: MeteoriteDiffCallback
 ) : PagedListAdapter<Meteorite, ViewHolderMeteorite>(differ) {
 
