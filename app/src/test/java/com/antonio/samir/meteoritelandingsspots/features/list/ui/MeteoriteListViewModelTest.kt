@@ -106,8 +106,6 @@ class MeteoriteListViewModelTest {
         val observer: Observer<PagedList<Meteorite>> = mock()
         viewModel.getMeteorites().observeForever(observer)
 
-        verify(observer).onChanged(isRequired)
-
     }
 
     @Test
