@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView
+package com.antonio.samir.meteoritelandingsspots.features.list.recyclerView
 
 import androidx.recyclerview.widget.DiffUtil
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite

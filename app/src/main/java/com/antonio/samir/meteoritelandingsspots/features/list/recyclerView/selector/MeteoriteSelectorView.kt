@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector
+package com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.selector
 
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 

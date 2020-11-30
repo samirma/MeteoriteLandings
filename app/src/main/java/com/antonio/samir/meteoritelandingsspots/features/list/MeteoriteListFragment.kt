@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.features.list.ui
+package com.antonio.samir.meteoritelandingsspots.features.list
 
 import android.Manifest
 import android.content.Intent
@@ -20,13 +20,13 @@ import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.data.Result.InProgress
 import com.antonio.samir.meteoritelandingsspots.data.Result.Success
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailFragment
-import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailFragment.Companion.METEORITE
-import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.MeteoriteAdapter
-import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.MeteoriteDiffCallback
-import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.SpacesItemDecoration
-import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelectorFactory
-import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelectorView
+import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailFragment
+import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailFragment.Companion.METEORITE
+import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.MeteoriteAdapter
+import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.MeteoriteDiffCallback
+import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.SpacesItemDecoration
+import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.selector.MeteoriteSelectorFactory
+import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.selector.MeteoriteSelectorView
 import kotlinx.android.synthetic.main.fragment_meteorite_list.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -100,30 +100,31 @@ class MeteoriteListFragment : Fragment(),
 
         setupLocation()
 
-        searchText.isActivated = true
-        searchText.onActionViewExpanded()
-        searchText.isIconified = false
-        searchText.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextChange(query: String): Boolean {
-                loadMeteorites(query)
-                return false
-            }
-
-            override fun onQueryTextSubmit(query: String): Boolean {
-                loadMeteorites(query)
-                return false
-            }
-
-            private fun loadMeteorites(query: String) {
-                val minQueryLenght = 3
-                if (query.isBlank() || query.length > minQueryLenght) {
-                    showProgressLoader()
-                    listViewModel.loadMeteorites(query)
+        with(searchText) {
+            isActivated = true
+            onActionViewExpanded()
+            isIconified = false
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextChange(query: String): Boolean {
+                    loadMeteorites(query)
+                    return false
                 }
-            }
 
-        })
+                override fun onQueryTextSubmit(query: String): Boolean {
+                    loadMeteorites(query)
+                    return false
+                }
 
+                private fun loadMeteorites(query: String) {
+                    val minQueryLenght = 3
+                    if (query.isBlank() || query.length > minQueryLenght) {
+                        showProgressLoader()
+                        listViewModel.loadMeteorites(query)
+                    }
+                }
+
+            })
+        }
     }
 
     private fun setupLocation() {
