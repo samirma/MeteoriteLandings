@@ -9,8 +9,8 @@ import com.antonio.samir.meteoritelandingsspots.data.remote.NasaNetworkService
 import com.antonio.samir.meteoritelandingsspots.data.remote.NasaServerEndPoint
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepositoryImpl
-import com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailViewModel
-import com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListViewModel
+import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailViewModel
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.service.AddressService
 import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.util.*

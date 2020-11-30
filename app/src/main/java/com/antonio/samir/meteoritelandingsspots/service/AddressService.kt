@@ -38,7 +38,7 @@ class AddressService(
             val progress = (1 - (meteoritesWithoutAddressCount.toFloat() / meteoritesCount)) * 100
             Result.InProgress(progress)
         } else {
-            Result.Success()
+            Result.Success(100f)
         }
     }
 

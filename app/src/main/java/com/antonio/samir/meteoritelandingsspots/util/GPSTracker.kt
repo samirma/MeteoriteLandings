@@ -21,9 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class GPSTracker(
-        private val context: Context
-) : GPSTrackerInterface {
+class GPSTracker(private val context: Context) : GPSTrackerInterface {
 
     // flag for GPS status
     private var isGPSEnabled = false
@@ -96,7 +94,7 @@ class GPSTracker(
     }
 
     override suspend fun startLocationService() {
-        withContext(Dispatchers.Main) {
+        if (isGPSEnabled()) {
             try {
                 if (isLocationAuthorized) {
                     startLocation()
@@ -161,7 +159,8 @@ class GPSTracker(
 
 
     override fun onLocationChanged(location: Location) {
-        location?.let { currentLocation.offer(it) }
+        Log.i(TAG, "Location received $location")
+        location.let { currentLocation.offer(it) }
     }
 
     override fun onProviderDisabled(provider: String) {
