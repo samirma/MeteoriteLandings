@@ -12,7 +12,12 @@ import java.util.*
 import kotlin.math.*
 
 fun Meteorite.getDistanceFrom(currentLocation: Location?): String {
-    val distance = currentLocation?.distanceTo(getLocation()) ?: 0.0f
+    val meteoriteLocation = getLocation()
+    val distance = if (currentLocation != null && meteoriteLocation != null) {
+        currentLocation.distanceTo(meteoriteLocation)
+    } else {
+        0.0f
+    }
     return formatDistance(distance)
 }
 
@@ -24,7 +29,7 @@ private fun formatDistance(distance: Float) = if (distance > 0) {
         val meters = distance.roundToInt()
         "$meters m"
     }
-    "- $distanceTo from you"
+    "$distanceTo from you"
 } else {
     StringUtils.EMPTY
 }
@@ -52,9 +57,14 @@ val Meteorite.yearString: String?
         return yearParsed
     }
 
-fun Meteorite.getLocation(): Location = Location("").apply {
-    latitude = reclat!!.toDouble()
-    longitude = reclong!!.toDouble()
+fun Meteorite.getLocation(): Location? = try {
+    Location("").apply {
+        latitude = reclat!!.toDouble()
+        longitude = reclong!!.toDouble()
+    }
+} catch (e: Exception) {
+    null
 }
+
 
 private const val SHOW_IN_METERS = 999
