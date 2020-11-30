@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.list.ui
 
+import android.location.Location
 import androidx.lifecycle.*
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
@@ -12,10 +13,7 @@ import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 /**
@@ -46,11 +44,17 @@ class MeteoriteListViewModel(
     }
 
     fun updateLocation() {
-        viewModelScope.launch(dispatchers.default()) { gpsTracker.startLocationService() }
+        viewModelScope.launch(dispatchers.default()) {
+            gpsTracker.startLocationService()
+        }
     }
 
     fun isAuthorizationRequested(): LiveData<Boolean> {
         return gpsTracker.needAuthorization.asLiveData()
+    }
+
+    fun getLocation(): LiveData<Location?> {
+        return gpsTracker.location.asLiveData()
     }
 
     fun getRecoverAddressStatus() = addressService.recoveryAddress().asLiveData()

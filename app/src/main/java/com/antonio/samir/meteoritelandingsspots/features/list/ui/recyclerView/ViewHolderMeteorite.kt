@@ -79,11 +79,6 @@ class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
     }
 
     private fun showAddress(address: String?, meteorite: Meteorite, location: Location?) {
-        val finalAddress = address + if (location != null) {
-            " - ${meteorite.getDistanceFrom(location.latitude, location.longitude)}"
-        } else {
-            ""
-        }
-        addressTV.text = finalAddress
+        addressTV.text = address + meteorite.getDistanceFrom(location)
     }
 }

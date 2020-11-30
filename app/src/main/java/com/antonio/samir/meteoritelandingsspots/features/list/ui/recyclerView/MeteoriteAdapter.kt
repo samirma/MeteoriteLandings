@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView
 
+import android.location.Location
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagedList
@@ -16,6 +17,8 @@ class MeteoriteAdapter(
         private val meteoriteSelector: MeteoriteSelector,
         differ: MeteoriteDiffCallback
 ) : PagedListAdapter<Meteorite, ViewHolderMeteorite>(differ) {
+
+    var location: Location? = null
 
     private var selectedMeteorite: Meteorite? = null
 
@@ -48,7 +51,7 @@ class MeteoriteAdapter(
 
     override fun onBindViewHolder(viewHolder: ViewHolderMeteorite, position: Int) {
         getItem(position)?.let { meteorite ->
-            viewHolder.onBind(meteorite, selectedMeteorite, null)
+            viewHolder.onBind(meteorite, selectedMeteorite, location)
         }
     }
 
