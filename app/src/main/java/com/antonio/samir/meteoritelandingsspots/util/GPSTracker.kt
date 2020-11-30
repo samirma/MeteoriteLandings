@@ -98,7 +98,6 @@ class GPSTracker(
     override suspend fun startLocationService() {
         withContext(Dispatchers.Main) {
             try {
-
                 if (isLocationAuthorized) {
                     startLocation()
                 }

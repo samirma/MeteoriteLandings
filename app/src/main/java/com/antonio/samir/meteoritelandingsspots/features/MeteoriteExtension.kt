@@ -1,19 +1,32 @@
 package com.antonio.samir.meteoritelandingsspots.features
 
 import android.annotation.SuppressLint
+import android.location.Location
 import android.text.TextUtils
 import android.util.Log
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import org.apache.commons.lang3.StringUtils
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.acos
-import kotlin.math.cos
-import kotlin.math.roundToLong
-import kotlin.math.sin
+import kotlin.math.*
 
-fun Meteorite.getDistanceFrom(latitude: Double, longitude: Double): String {
-    return "${betweenLatlong(latitude, longitude, reclat!!.toDouble(), reclong!!.toDouble())} km from you"
+fun Meteorite.getDistanceFrom(currentLocation: Location?): String {
+    val distance = currentLocation?.distanceTo(getLocation()) ?: 0.0f
+    return formatDistance(distance)
+}
+
+private fun formatDistance(distance: Float) = if (distance > 0) {
+    val distanceTo = if (distance > SHOW_IN_METERS) {
+        val kilometers = (distance / 1000).roundToInt()
+        "$kilometers km"
+    } else {
+        val meters = distance.roundToInt()
+        "$meters m"
+    }
+    "- $distanceTo from you"
+} else {
+    StringUtils.EMPTY
 }
 
 @SuppressLint("SimpleDateFormat")
@@ -39,13 +52,9 @@ val Meteorite.yearString: String?
         return yearParsed
     }
 
-private fun betweenLatlong(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Long {
-
-    val lat1Rad = Math.toRadians(lat1)
-    val lon1Rad = Math.toRadians(lon1)
-    val lat2Rad = Math.toRadians(lat2)
-    val lon2Rad = Math.toRadians(lon2)
-
-    val earthRadius = 6371.01 //Kilometers
-    return (earthRadius * acos(sin(lat1Rad) * sin(lat2Rad) + cos(lat1Rad) * cos(lat2Rad) * cos(lon1Rad - lon2Rad))).roundToLong()
+fun Meteorite.getLocation(): Location = Location("").apply {
+    latitude = reclat!!.toDouble()
+    longitude = reclong!!.toDouble()
 }
+
+private const val SHOW_IN_METERS = 999

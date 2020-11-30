@@ -98,7 +98,7 @@ class MeteoriteListFragment : Fragment(),
 
         observeNetworkLoadingStatus()
 
-//        observeRequestPermission()
+        setupLocation()
 
         searchText.isActivated = true
         searchText.onActionViewExpanded()
@@ -124,6 +124,18 @@ class MeteoriteListFragment : Fragment(),
 
         })
 
+    }
+
+    private fun setupLocation() {
+        listViewModel.isAuthorizationRequested().observe(viewLifecycleOwner, {
+            if (it) {
+                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_REQUEST_CODE)
+            }
+        })
+        listViewModel.updateLocation()
+        listViewModel.getLocation().observe(viewLifecycleOwner, {
+            meteoriteAdapter.location = it
+        })
     }
 
     override fun onResume() {
@@ -175,17 +187,6 @@ class MeteoriteListFragment : Fragment(),
     private fun noResult() {
         error(getString(R.string.no_result_found))
         hideContent()
-    }
-
-    /**
-     * Request user permission
-     */
-    private fun observeRequestPermission() {
-        listViewModel.isAuthorizationRequested().observe(viewLifecycleOwner, {
-            if (it) {
-                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_REQUEST_CODE)
-            }
-        })
     }
 
     private fun showAddressLoading(progress: Float?) {
