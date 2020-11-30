@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.features.list.ui
+package com.antonio.samir.meteoritelandingsspots.features.list
 
 import android.location.Location
 import androidx.lifecycle.*
@@ -65,7 +65,7 @@ class MeteoriteListViewModel(
                 Pair(filter, location)
             }
             .map {
-                LivePagedListBuilder(meteoriteRepository.loadMeteorites(it.first, it.second?.longitude, it.second?.latitude), 1000)
+                LivePagedListBuilder(meteoriteRepository.loadMeteorites(it.first, it.second?.longitude, it.second?.latitude), 30)
             }
             .asLiveData(dispatchers.default())
             .switchMap {

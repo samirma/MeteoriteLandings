@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView
+package com.antonio.samir.meteoritelandingsspots.features.list.recyclerView
 
 import android.location.Location
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.features.list.ui.recyclerView.selector.MeteoriteSelector
+import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.selector.MeteoriteSelector
 import java.util.*
 
 /**
