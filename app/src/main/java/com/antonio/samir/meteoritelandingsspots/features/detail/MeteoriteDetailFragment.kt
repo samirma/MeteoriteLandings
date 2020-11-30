@@ -116,9 +116,7 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
 
             Log.d(TAG, "Show meteorite: ${it.id} $lat $log")
 
-            if (lat != null && log != null) {
-                setupMap(it.name, lat, log, map)
-            }
+            setupMap(it.name, lat, log, map)
         }
     }
 

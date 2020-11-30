@@ -5,7 +5,7 @@
 
     <fragment
         android:id="@+id/meteoriteListFragment"
-        android:name="com.antonio.samir.meteoritelandingsspots.features.list.ui.MeteoriteListFragment"
+        android:name="com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListFragment"
         android:label="MeteoriteListFragment">
         <action
             android:id="@+id/toDetail"
@@ -20,6 +20,6 @@
     </fragment>
     <fragment
         android:id="@+id/meteoriteDetailFragment"
-        android:name="com.antonio.samir.meteoritelandingsspots.features.detail.ui.MeteoriteDetailFragment"
+        android:name="com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailFragment"
         android:label="MeteoriteDetailFragment" />
 </navigation>
