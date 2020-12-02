@@ -17,13 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/addressRecoverProgress">
 
-        <FrameLayout
-            android:id="@+id/fragment"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:visibility="gone" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/meteoriteRV"
             android:layout_width="0dp"
@@ -34,6 +27,13 @@
             android:paddingRight="@dimen/list_side_margin"
             android:paddingBottom="28dp"
             android:scrollbarStyle="outsideOverlay" />
+
+        <FrameLayout
+            android:id="@+id/fragment"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:visibility="gone" />
 
     </LinearLayout>
 

@@ -17,5 +17,5 @@ interface MeteoriteRepository {
 
     suspend fun update(list: List<Meteorite>)
 
-    fun loadDatabase(): Flow<Result<Nothing>>
+    fun loadDatabase(): Flow<Result<Unit>>
 }

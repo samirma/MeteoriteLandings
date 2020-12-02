@@ -7,6 +7,7 @@ import androidx.paging.PagedList
 import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
 import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
@@ -47,32 +48,33 @@ class MeteoriteListViewModelTest {
 
     @Test
     fun `test getRecoveryAddressStatus success`() {
-
+        val success = Result.Success(100f)
+        val inProgress = Result.InProgress(50f)
         whenever(addressService.recoveryAddress()).thenReturn(flow {
-            emit(Result.InProgress<Nothing>())
-            emit(Result.Success<Nothing>())
+            emit(inProgress)
+            emit(success)
         })
 
         val observer: Observer<Result<Float>> = mock()
         viewModel.getRecoverAddressStatus().observeForever(observer)
 
-        verify(observer).onChanged(Result.InProgress<Float>())
-        verify(observer).onChanged(Result.Success<Nothing>())
+        verify(observer).onChanged(inProgress)
+        verify(observer).onChanged(success)
     }
 
     @Test
     fun `test getNetworkLoadStatus success`() {
 
         whenever(mockRepository.loadDatabase()).thenReturn(flow {
-            emit(Result.InProgress<Nothing>())
-            emit(Result.Success<Nothing>())
+            emit(Result.InProgress())
+            emit(Result.Success(Unit))
         })
 
-        val observer: Observer<Result<Int>> = mock()
+        val observer: Observer<Result<Unit>> = mock()
         viewModel.getNetworkLoadingStatus().observeForever(observer)
 
-        verify(observer).onChanged(Result.InProgress<Nothing>())
-        verify(observer).onChanged(Result.Success<Nothing>())
+        verify(observer).onChanged(Result.InProgress())
+        verify(observer).onChanged(Result.Success(Unit))
     }
 
     @Test
@@ -84,7 +86,7 @@ class MeteoriteListViewModelTest {
             emit(value)
         })
 
-        val observer: Observer<Result<Int>> = mock()
+        val observer: Observer<Result<Unit>> = mock()
         viewModel.getNetworkLoadingStatus().observeForever(observer)
 
         verify(observer).onChanged(value)
