@@ -28,7 +28,7 @@ class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
 
     fun onBind(
             meteorite: Meteorite,
-            selectedMeteorite: Meteorite?,
+            selectedMeteorite: Boolean,
             location: Location?
     ) {
 
@@ -41,7 +41,7 @@ class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
 
     }
 
-    private fun populateViewHolder(meteorite: Meteorite, location: Location?, selectedMeteorite: Meteorite?) {
+    private fun populateViewHolder(meteorite: Meteorite, location: Location?, selectedMeteorite: Boolean) {
         val meteoriteName = meteorite.name
 
         val year = meteorite.yearString
@@ -56,7 +56,7 @@ class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
         var titleColor = R.color.title_color
         var elevation = R.dimen.unselected_item_elevation
 
-        if (Objects.equals(meteorite, selectedMeteorite)) {
+        if (selectedMeteorite) {
             color = R.color.selected_item_color
             titleColor = R.color.selected_title_color
             elevation = R.dimen.selected_item_elevation
