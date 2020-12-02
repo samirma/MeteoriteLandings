@@ -29,7 +29,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 @FlowPreview
 class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
 
-    private lateinit var meteorite: MeteoriteView
+    private var meteorite: MeteoriteView? = null
 
     private val viewModel: MeteoriteDetailViewModel by viewModel()
 
@@ -87,7 +87,7 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
                 is Result.Success -> {
                     result.data.let { meteorite ->
                         if (meteorite == this.meteorite) {
-                            if (meteorite.address != this.meteorite.address) {
+                            if (meteorite.address != this.meteorite?.address) {
                                 this.meteorite = meteorite
                                 setLocationText(meteorite)
                             }

@@ -34,8 +34,9 @@ class MeteoriteRepositoryImpl(
     override val pageSize: Int
         get() = 5000
 
-    override suspend fun loadMeteorites(filter: String?, longitude: Double?, latitude: Double?): DataSource.Factory<Int, Meteorite> {
-        return meteoriteLocalRepository.meteoriteOrdered(filter, latitude, longitude)
+    override suspend fun loadMeteorites(filter: String?, longitude: Double?, latitude: Double?):
+            DataSource.Factory<Int, Meteorite> {
+        return meteoriteLocalRepository.meteoriteOrdered(filter, null, null)
     }
 
     override fun getMeteoriteById(id: String): Flow<Result<Meteorite>> = flow {
@@ -56,7 +57,7 @@ class MeteoriteRepositoryImpl(
         meteoriteLocalRepository.updateAll(list)
     }
 
-    override fun loadDatabase(): Flow<Result<Nothing>> = flow {
+    override fun loadDatabase(): Flow<Result<Unit>> = flow {
         val meteoritesCount = meteoriteLocalRepository.getMeteoritesCount()
         emit(InProgress())
         try {
@@ -69,7 +70,7 @@ class MeteoriteRepositoryImpl(
             Log.e(TAG, e.message, e)
             emit(Error(MeteoriteServerException(e)))
         }
-        emit(Success())
+        emit(Success(Unit))
     }
 
     private suspend fun recoverFromNetwork(offset: Int) = withContext(dispatchers.io()) {
