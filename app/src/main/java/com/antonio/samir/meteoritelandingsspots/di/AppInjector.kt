@@ -65,12 +65,4 @@ val businessModule = module {
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-val viewModelModule = module {
-    viewModel { MeteoriteListViewModel(get(), get(), get(), get()) }
-    viewModel { MeteoriteDetailViewModel(get(), get()) }
-}
-
-
-@ExperimentalCoroutinesApi
-@FlowPreview
-val appModules = listOf(viewModelModule, localRepositoryModule, networkModule, databaseModule, businessModule)
+val appModules = listOf(localRepositoryModule, networkModule, databaseModule, businessModule)

@@ -3,24 +3,21 @@ package com.antonio.samir.meteoritelandingsspots.features.list.recyclerView
 import android.location.Location
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.selector.MeteoriteSelector
 import java.util.*
 
 /**
  * Custom RecyclerView.Adapter to deal with meteorites cursor
  */
-class MeteoriteAdapter(
-        private val meteoriteSelector: MeteoriteSelector,
-        differ: MeteoriteDiffCallback
-) : PagedListAdapter<Meteorite, ViewHolderMeteorite>(differ) {
+class MeteoriteAdapter : PagedListAdapter<Meteorite, ViewHolderMeteorite>(MeteoriteDiffCallback()) {
 
     var location: Location? = null
 
-    private var selectedMeteorite: Meteorite? = null
+    var selectedMeteorite = MutableLiveData<Meteorite>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderMeteorite {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_meteorite, parent, false)
@@ -28,19 +25,18 @@ class MeteoriteAdapter(
 
         //On view click use MeteoriteSelector to do execute the proper according the current layout
         view.setOnClickListener {
-            vh.meteorite?.let { meteoriteSelector.selectItem(it) }
+            val previous = selectedMeteorite.value
+            val current = vh.meteorite
+            selectedMeteorite.value = current
+            updateListUI(current, previous)
         }
         return vh
     }
 
-    fun updateListUI(meteorite: Meteorite) {
-        if (!Objects.equals(meteorite, selectedMeteorite)) {
-
-            val previousMet = selectedMeteorite
-            selectedMeteorite = meteorite
-
-            currentList?.indexOf(previousMet)?.let { notifyItemChanged(it) }
-            currentList?.indexOf(meteorite)?.let { notifyItemChanged(it) }
+    private fun updateListUI(current: Meteorite?, previous: Meteorite?) {
+        if (!Objects.equals(previous, current)) {
+            currentList?.indexOf(current)?.let { notifyItemChanged(it) }
+            currentList?.indexOf(previous)?.let { notifyItemChanged(it) }
         }
     }
 
@@ -51,7 +47,8 @@ class MeteoriteAdapter(
 
     override fun onBindViewHolder(viewHolder: ViewHolderMeteorite, position: Int) {
         getItem(position)?.let { meteorite ->
-            viewHolder.onBind(meteorite, selectedMeteorite, location)
+            val isSelected = selectedMeteorite.value == meteorite
+            viewHolder.onBind(meteorite, isSelected, location)
         }
     }
 

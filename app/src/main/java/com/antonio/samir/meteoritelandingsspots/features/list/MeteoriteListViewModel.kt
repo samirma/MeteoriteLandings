@@ -13,7 +13,10 @@ import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 /**
@@ -25,10 +28,15 @@ class MeteoriteListViewModel(
         private val meteoriteRepository: MeteoriteRepository,
         private val gpsTracker: GPSTrackerInterface,
         private val addressService: AddressServiceInterface,
-        private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
+        private val dispatchers: DispatcherProvider = DefaultDispatcherProvider(),
+        private val state: SavedStateHandle
 ) : ViewModel() {
 
     private val currentFilter = ConflatedBroadcastChannel<String?>(null)
+
+    private val meteorite = ConflatedBroadcastChannel(state.get<Meteorite>(METEORITE))
+
+    val selectedMeteorite = meteorite.asFlow().asLiveData()
 
     var filter = ""
 
@@ -41,6 +49,11 @@ class MeteoriteListViewModel(
 
         currentFilter.offer(location)
 
+    }
+
+    fun selectMeteorite(meteorite: Meteorite) {
+        state[METEORITE] = meteorite
+        this.meteorite.offer(meteorite)
     }
 
     fun updateLocation() {
@@ -73,5 +86,10 @@ class MeteoriteListViewModel(
             }
 
     fun getNetworkLoadingStatus() = meteoriteRepository.loadDatabase().asLiveData()
+
+    companion object {
+        private val TAG = MeteoriteListViewModel::class.java.simpleName
+        const val METEORITE = "METEORITE"
+    }
 
 }
