@@ -6,5 +6,6 @@
     <dimen name="font_detail_size">15sp</dimen>
     <dimen name="detail_padding_left">20dp</dimen>
     <dimen name="detail_padding_right">20dp</dimen>
+    <dimen name="horizontal_spacing" >@dimen/spacing</dimen>
 
 </resources>

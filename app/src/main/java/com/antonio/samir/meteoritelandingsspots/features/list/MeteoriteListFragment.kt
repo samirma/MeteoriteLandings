@@ -76,7 +76,8 @@ class MeteoriteListFragment : Fragment(),
 
         meteoriteRV.addItemDecoration(SpacesItemDecoration(
                 context = requireContext(),
-                verticalMargin = R.dimen.spacing
+                verticalMargin = R.dimen.spacing,
+                horizontalMargin = R.dimen.horizontal_spacing
         ))
 
         setupGridLayout()

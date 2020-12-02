@@ -29,7 +29,7 @@ private fun formatDistance(distance: Float) = if (distance > 0) {
         val meters = distance.roundToInt()
         "$meters m"
     }
-    "$distanceTo from you"
+    "$distanceTo away"
 } else {
     StringUtils.EMPTY
 }
