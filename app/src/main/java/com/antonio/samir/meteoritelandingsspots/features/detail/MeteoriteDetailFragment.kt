@@ -132,7 +132,7 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 30f))
 
         // Zoom in, animating the camera.
-        map.animateCamera(CameraUpdateFactory.zoomTo(10f), 2000, null)
+        map.animateCamera(CameraUpdateFactory.zoomTo(5f), 2000, null)
     }
 
 
