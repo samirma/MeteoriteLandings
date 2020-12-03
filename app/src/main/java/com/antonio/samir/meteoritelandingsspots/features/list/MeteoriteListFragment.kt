@@ -114,9 +114,9 @@ class MeteoriteListFragment : Fragment() {
         viewModel.selectedMeteorite.observe(viewLifecycleOwner) { meteorite ->
             if (meteorite != null) {
                 if (isLandscape()) {
-                    selectLandscape(meteorite)
+                    showMeteoriteLandscape(meteorite)
                 } else if (shouldLoad.getAndSet(true)) {
-                    selectPortrait(meteorite)
+                    showMeteoritePortrait(meteorite)
                 }
             }
         }
@@ -214,7 +214,7 @@ class MeteoriteListFragment : Fragment() {
         messageTV.text = messageString
     }
 
-    private fun selectLandscape(meteorite: Meteorite) {
+    private fun showMeteoriteLandscape(meteorite: Meteorite) {
 
         sglm?.spanCount = 1
 
@@ -238,7 +238,7 @@ class MeteoriteListFragment : Fragment() {
 
     }
 
-    private fun selectPortrait(meteorite: Meteorite) {
+    private fun showMeteoritePortrait(meteorite: Meteorite) {
         findNavController().navigate(R.id.toDetail, Bundle().apply {
             putString(METEORITE_ID, meteorite.id.toString())
         })

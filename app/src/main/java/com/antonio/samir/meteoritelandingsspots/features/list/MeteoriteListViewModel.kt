@@ -8,7 +8,6 @@ import androidx.paging.PagedList
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
-import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
