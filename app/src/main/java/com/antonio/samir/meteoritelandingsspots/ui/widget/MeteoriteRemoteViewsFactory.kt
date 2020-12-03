@@ -9,11 +9,10 @@ import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.yearString
 import org.apache.commons.lang3.StringUtils
-import org.koin.core.KoinComponent
 
 class MeteoriteRemoteViewsFactory(
         private val mPackageName: String
-) : RemoteViewsService.RemoteViewsFactory, KoinComponent {
+) : RemoteViewsService.RemoteViewsFactory {
 
     private var meteorites: List<Meteorite>? = null
 

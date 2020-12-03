@@ -9,6 +9,7 @@ import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
@@ -27,6 +28,7 @@ class AddressService(
 
     override fun recoveryAddress(): Flow<Result<Float>> = meteoriteLocalRepository.meteoritesWithOutAddress()
             .onEach { recoverAddress(it) }
+            .flowOn(dispatchers.default())
             .map {
                 getReturn(it)
             }

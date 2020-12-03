@@ -20,26 +20,31 @@ import com.antonio.samir.meteoritelandingsspots.data.Result.InProgress
 import com.antonio.samir.meteoritelandingsspots.data.Result.Success
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailFragment
-import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailFragment.Companion.METEORITE
-import com.antonio.samir.meteoritelandingsspots.features.list.di.meteoriteListModule
+import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailFragment.Companion.METEORITE_ID
 import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.MeteoriteAdapter
 import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.SpacesItemDecoration
 import kotlinx.android.synthetic.main.fragment_meteorite_list.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import org.koin.androidx.viewmodel.ext.android.stateViewModel
-import org.koin.core.context.loadKoinModules
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.concurrent.atomic.AtomicBoolean
+
 
 @FlowPreview
 @ExperimentalCoroutinesApi
 class MeteoriteListFragment : Fragment() {
 
     private var sglm: GridLayoutManager? = null
-    private lateinit var meteoriteAdapter: MeteoriteAdapter
+
+    private var meteoriteAdapter = MeteoriteAdapter().apply {
+        setHasStableIds(true)
+    }
+
+    private val shouldLoad = AtomicBoolean(true)
 
     private var meteoriteDetailFragment: MeteoriteDetailFragment? = null
 
-    private val viewModel by stateViewModel<MeteoriteListViewModel>()
+    private val viewModel: MeteoriteListViewModel by viewModel()
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -52,12 +57,6 @@ class MeteoriteListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        loadKoinModules(meteoriteListModule)
-
-        meteoriteAdapter = MeteoriteAdapter().apply {
-            setHasStableIds(true)
-        }
 
         meteoriteRV?.adapter = meteoriteAdapter
 
@@ -109,13 +108,14 @@ class MeteoriteListFragment : Fragment() {
 
         meteoriteAdapter.selectedMeteorite.observe(viewLifecycleOwner) {
             viewModel.selectMeteorite(it)
+            shouldLoad.set(false)
         }
 
         viewModel.selectedMeteorite.observe(viewLifecycleOwner) { meteorite ->
             if (meteorite != null) {
                 if (isLandscape()) {
                     selectLandscape(meteorite)
-                } else {
+                } else if (shouldLoad.getAndSet(true)) {
                     selectPortrait(meteorite)
                 }
             }
@@ -226,22 +226,22 @@ class MeteoriteListFragment : Fragment() {
                     .setCustomAnimations(
                             R.anim.fragment_slide_left_enter,
                             R.anim.fragment_slide_left_exit).apply {
-                        meteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteorite)
+                        val meteoriteId: String = meteorite.id.toString()
+                        meteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteoriteId)
                         replace(R.id.fragment, meteoriteDetailFragment!!)
                         commit()
                     }
 
         } else {
-            meteoriteDetailFragment?.setCurrentMeteorite(meteorite)
+            meteoriteDetailFragment?.setCurrentMeteorite(meteorite.id.toString())
         }
 
     }
 
     private fun selectPortrait(meteorite: Meteorite) {
-        val bundle = Bundle().apply {
-            putParcelable(METEORITE, meteorite)
-        }
-        findNavController().navigate(R.id.toDetail, bundle)
+        findNavController().navigate(R.id.toDetail, Bundle().apply {
+            putString(METEORITE_ID, meteorite.id.toString())
+        })
     }
 
     private fun setupGridLayout() {

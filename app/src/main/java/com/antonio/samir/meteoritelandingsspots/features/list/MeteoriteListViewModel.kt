@@ -1,6 +1,7 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
 import android.location.Location
+import android.util.Log
 import androidx.lifecycle.*
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
@@ -25,20 +26,24 @@ import kotlinx.coroutines.launch
 @FlowPreview
 @ExperimentalCoroutinesApi
 class MeteoriteListViewModel(
+        private val handle: SavedStateHandle,
         private val meteoriteRepository: MeteoriteRepository,
         private val gpsTracker: GPSTrackerInterface,
         private val addressService: AddressServiceInterface,
-        private val dispatchers: DispatcherProvider = DefaultDispatcherProvider(),
-        private val state: SavedStateHandle
+        private val dispatchers: DispatcherProvider
 ) : ViewModel() {
 
     private val currentFilter = ConflatedBroadcastChannel<String?>(null)
 
-    private val meteorite = ConflatedBroadcastChannel(state.get<Meteorite>(METEORITE))
+    private val meteorite = ConflatedBroadcastChannel(handle.get<Meteorite>(METEORITE))
 
     val selectedMeteorite = meteorite.asFlow().asLiveData()
 
     var filter = ""
+
+    init {
+        Log.i(TAG, "Created $this ${meteorite.value?.id} $handle")
+    }
 
     fun loadMeteorites(location: String? = null) {
         if (location == filter) {
@@ -52,7 +57,7 @@ class MeteoriteListViewModel(
     }
 
     fun selectMeteorite(meteorite: Meteorite) {
-        state[METEORITE] = meteorite
+        handle[METEORITE] = meteorite
         this.meteorite.offer(meteorite)
     }
 
