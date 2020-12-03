@@ -54,7 +54,7 @@ class MeteoriteDetailViewModel(
                 mass = meteorite.mass,
                 reclat = meteorite.reclat?.toDouble() ?: 0.0,
                 reclong = meteorite.reclong?.toDouble() ?: 0.0,
-                hasAddress = meteorite.address.isNullOrEmpty()
+                hasAddress = !meteorite.address.isNullOrEmpty()
         )
     }
 
