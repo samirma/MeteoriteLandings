@@ -11,9 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.Result
-import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.features.detail.di.meteoriteDetailModule
-import com.antonio.samir.meteoritelandingsspots.features.list.di.meteoriteListModule
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -25,8 +22,8 @@ import kotlinx.android.synthetic.main.meteorite_detail_grid.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.StringUtils.EMPTY
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.context.loadKoinModules
 
 @ExperimentalCoroutinesApi
 @FlowPreview
@@ -36,33 +33,22 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
 
     private val viewModel: MeteoriteDetailViewModel by viewModel()
 
-    private var meteoriteId: Meteorite? = null
-
-    val TAG = MeteoriteDetailFragment::class.java.simpleName
-
     companion object {
 
-        const val METEORITE = "METEORITE"
-        const val OPENED_INSIDE_NAVIGATOR = "OPENED_INSIDE_NAVIGATOR"
+        const val METEORITE_ID = "METEORITE"
 
-        fun newInstance(meteorite: Meteorite): MeteoriteDetailFragment {
+        val TAG = MeteoriteDetailFragment::class.java.simpleName
+
+        fun newInstance(meteoriteId: String): MeteoriteDetailFragment {
             val fragment = MeteoriteDetailFragment()
-            val args = Bundle()
-            args.putParcelable(METEORITE, meteorite)
-            args.putBoolean(OPENED_INSIDE_NAVIGATOR, false)
-            fragment.arguments = args
+            fragment.arguments = Bundle().apply {
+                putString(METEORITE_ID, meteoriteId)
+            }
             return fragment
         }
 
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            //Recovering the meteorite to work on it
-            meteoriteId = arguments?.getParcelable(METEORITE)
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -74,15 +60,19 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loadKoinModules(meteoriteDetailModule)
-
         val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-        if (isLandscape && arguments?.getBoolean(OPENED_INSIDE_NAVIGATOR) == false) {
+        //Exit from full meteorite detail screen to list view
+        if (isLandscape) {
             findNavController().popBackStack()
         }
 
         observeMeteorite()
+
+        if (arguments != null) {
+            val meteoriteId = arguments?.getString(METEORITE_ID) ?: EMPTY
+            viewModel.loadMeteorite(meteoriteId)
+        }
     }
 
     private fun observeMeteorite() {
@@ -106,11 +96,10 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
             }
         })
 
-        meteoriteId?.let { setCurrentMeteorite(it) }
     }
 
-    fun setCurrentMeteorite(meteorite: Meteorite) {
-        viewModel.loadMeteorite(meteorite)
+    fun setCurrentMeteorite(meteoriteId: String) {
+        viewModel.loadMeteorite(meteoriteId)
     }
 
     override fun onMapReady(map: GoogleMap) {
