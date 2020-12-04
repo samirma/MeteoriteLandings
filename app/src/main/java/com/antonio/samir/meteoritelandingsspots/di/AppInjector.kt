@@ -71,7 +71,6 @@ val viewModelModule = module {
     }
     viewModel {
         MeteoriteListViewModel(
-                handle = get(),
                 meteoriteRepository = get(),
                 gpsTracker = get(),
                 addressService = get(),

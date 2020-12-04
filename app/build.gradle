@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'koin'
+apply plugin: "androidx.navigation.safeargs.kotlin"
 
 android {
     Properties properties = new Properties()
@@ -11,11 +12,6 @@ android {
     def prop_keyAlias = new String(properties.getProperty('keyAlias'))
     def prop_keyPassword = new String(properties.getProperty('keyStorePassword'))
     def prop_storeFile = file(new String(properties.getProperty('keyStore')))
-
-
-    androidExtensions {
-        experimental = true
-    }
 
     signingConfigs {
         config {
@@ -63,6 +59,10 @@ android {
 
     testOptions {
         unitTests.returnDefaultValues = true
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 
 }
