@@ -43,7 +43,7 @@ class MeteoriteListViewModelTest {
     @Before
     fun setUp() {
 
-        viewModel = MeteoriteListViewModel(mockRepository, mockGPSTracker, addressService, coroutinesTestRule.testDispatcherProvider, get())
+        viewModel = MeteoriteListViewModel(mockGPSTracker, addressService, coroutinesTestRule.testDispatcherProvider, get())
     }
 
     @Test

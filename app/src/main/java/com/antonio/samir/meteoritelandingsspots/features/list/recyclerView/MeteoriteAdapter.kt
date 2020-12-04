@@ -25,8 +25,8 @@ class MeteoriteAdapter : PagedListAdapter<Meteorite, ViewHolderMeteorite>(Meteor
 
         //On view click use MeteoriteSelector to do execute the proper according the current layout
         view.setOnClickListener {
-            val previous = selectedMeteorite.value
             val current = vh.meteorite
+            val previous = selectedMeteorite.value
             selectedMeteorite.value = current
             updateListUI(current, previous)
         }
