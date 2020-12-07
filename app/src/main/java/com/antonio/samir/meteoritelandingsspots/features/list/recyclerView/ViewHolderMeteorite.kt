@@ -8,11 +8,9 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.features.getDistanceFrom
+import com.antonio.samir.meteoritelandingsspots.features.finalAddress
 import com.antonio.samir.meteoritelandingsspots.features.yearString
 import org.apache.commons.lang3.StringUtils
-import java.util.*
-
 
 class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -69,16 +67,13 @@ class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
 
 
     private fun setLocationText(meteorite: Meteorite, location: Location?) {
-        val address = meteorite.address
+        val address = meteorite.finalAddress(location)
 
-        if (StringUtils.isNotEmpty(address)) {
-            showAddress(address, meteorite, location)
+        if (!address.isNullOrEmpty()) {
+            addressTV.text = address
         } else {
             addressTV.text = context.getString(R.string.without_address_placeholder)
         }
     }
 
-    private fun showAddress(address: String?, meteorite: Meteorite, location: Location?) {
-        addressTV.text = address + meteorite.getDistanceFrom(location)
-    }
 }

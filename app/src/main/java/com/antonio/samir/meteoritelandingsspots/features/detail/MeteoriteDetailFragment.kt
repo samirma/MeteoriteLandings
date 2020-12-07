@@ -6,14 +6,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteDetailBinding
-import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailFragmentDirections.Companion.actionMeteoriteDetailFragmentToMeteoriteListFragment
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -22,7 +20,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import org.apache.commons.lang3.StringUtils.EMPTY
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalCoroutinesApi
@@ -34,22 +31,6 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
     private val viewModel: MeteoriteDetailViewModel by viewModel()
 
     val args: MeteoriteDetailFragmentArgs by navArgs()
-
-    companion object {
-
-        const val METEORITE_ID = "METEORITE"
-
-        val TAG = MeteoriteDetailFragment::class.java.simpleName
-
-        fun newInstance(meteoriteId: String): MeteoriteDetailFragment {
-            val fragment = MeteoriteDetailFragment()
-            fragment.arguments = Bundle().apply {
-                putString(METEORITE_ID, meteoriteId)
-            }
-            return fragment
-        }
-
-    }
 
     private var _binding: FragmentMeteoriteDetailBinding? = null
 
@@ -79,18 +60,10 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
             findNavController().popBackStack()
         }
 
-        if (!isLandscape) {
-            val navDirections = actionMeteoriteDetailFragmentToMeteoriteListFragment(true)
-            requireActivity().onBackPressedDispatcher.addCallback(this) {
-                findNavController().navigate(navDirections)
-            }
-        }
-
         observeMeteorite()
 
         if (arguments != null) {
-            val meteoriteId = arguments?.getString(METEORITE_ID) ?: EMPTY
-            viewModel.loadMeteorite(meteoriteId)
+            viewModel.loadMeteorite(args.meteoriteId)
         }
     }
 
@@ -107,7 +80,8 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
                             }
                         } else {
                             setMeteorite(meteorite)
-                            (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
+                            (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment)
+                                    .getMapAsync(this)
                         }
                     }
 
@@ -150,27 +124,41 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
 
     private fun setMeteorite(meteorite: MeteoriteView) {
 
+        this.meteorite = meteorite
+
         setLocationText(meteorite)
 
-        binding.detail?.title?.text = meteorite.name
+        binding.title?.text = meteorite.name
 
-        binding.detail?.detail?.year?.text = meteorite.yearString
+        binding.detail.detail.year.text = meteorite.yearString
 
-        binding.detail?.detail?.recclass?.text = meteorite.recclass
+        binding.detail.detail.recclass.text = meteorite.recclass
 
-        binding.detail?.detail?.mass?.text = meteorite.mass
+        binding.detail.detail.mass.text = meteorite.mass
 
     }
 
     private fun setLocationText(meteorite: MeteoriteView) {
         val address = meteorite.address
-        binding.detail?.locationTxt?.text = address
-        binding.detail?.locationTxt?.visibility = if (meteorite.hasAddress) {
+        binding.locationTxt?.text = address
+        binding.locationTxt?.visibility = if (meteorite.hasAddress) {
             View.VISIBLE
         } else {
             viewModel.requestAddressUpdate(meteorite)
             View.GONE
         }
+    }
+
+    companion object {
+
+        val TAG = MeteoriteDetailFragment::class.java.simpleName
+
+        fun newInstance(meteoriteId: String): MeteoriteDetailFragment {
+            return MeteoriteDetailFragment().apply {
+                arguments = MeteoriteDetailFragmentArgs(meteoriteId).toBundle()
+            }
+        }
+
     }
 
 }
