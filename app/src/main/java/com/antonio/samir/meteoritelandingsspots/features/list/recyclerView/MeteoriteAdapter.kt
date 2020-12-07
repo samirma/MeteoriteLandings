@@ -17,7 +17,8 @@ class MeteoriteAdapter : PagedListAdapter<Meteorite, ViewHolderMeteorite>(Meteor
 
     var location: Location? = null
 
-    var selectedMeteorite = MutableLiveData<Meteorite>()
+    var openMeteorite = MutableLiveData<Meteorite>()
+    var selectedMeteorite: Meteorite? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderMeteorite {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_meteorite, parent, false)
@@ -25,19 +26,17 @@ class MeteoriteAdapter : PagedListAdapter<Meteorite, ViewHolderMeteorite>(Meteor
 
         //On view click use MeteoriteSelector to do execute the proper according the current layout
         view.setOnClickListener {
-            val current = vh.meteorite
-            val previous = selectedMeteorite.value
-            selectedMeteorite.value = current
-            updateListUI(current, previous)
+            openMeteorite.value = vh.meteorite
         }
         return vh
     }
 
-    private fun updateListUI(current: Meteorite?, previous: Meteorite?) {
+    fun updateListUI(current: Meteorite?, previous: Meteorite? = selectedMeteorite) {
         if (!Objects.equals(previous, current)) {
             currentList?.indexOf(current)?.let { notifyItemChanged(it) }
             currentList?.indexOf(previous)?.let { notifyItemChanged(it) }
         }
+        selectedMeteorite = current
     }
 
     fun setData(meteorites: PagedList<Meteorite>) {
@@ -47,7 +46,7 @@ class MeteoriteAdapter : PagedListAdapter<Meteorite, ViewHolderMeteorite>(Meteor
 
     override fun onBindViewHolder(viewHolder: ViewHolderMeteorite, position: Int) {
         getItem(position)?.let { meteorite ->
-            val isSelected = selectedMeteorite.value == meteorite
+            val isSelected = selectedMeteorite == meteorite
             viewHolder.onBind(meteorite, isSelected, location)
         }
     }
