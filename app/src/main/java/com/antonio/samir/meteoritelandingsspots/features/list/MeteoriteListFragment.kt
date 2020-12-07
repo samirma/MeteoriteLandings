@@ -1,4 +1,4 @@
- package com.antonio.samir.meteoritelandingsspots.features.list
+package com.antonio.samir.meteoritelandingsspots.features.list
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -28,7 +28,7 @@ import kotlinx.coroutines.FlowPreview
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.concurrent.atomic.AtomicBoolean
 
- @FlowPreview
+@FlowPreview
 @ExperimentalCoroutinesApi
 class MeteoriteListFragment : Fragment() {
 
@@ -46,7 +46,7 @@ class MeteoriteListFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    val shouldOpenMeteorite = AtomicBoolean(true)
+    private val shouldOpenMeteorite = AtomicBoolean(true)
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -114,7 +114,7 @@ class MeteoriteListFragment : Fragment() {
 
         observeNetworkLoadingStatus()
 
-        meteoriteAdapter.selectedMeteorite.observe(viewLifecycleOwner) {
+        meteoriteAdapter.openMeteorite.observe(viewLifecycleOwner) {
             viewModel.selectMeteorite(it)
             shouldOpenMeteorite.set(false)
         }
@@ -123,6 +123,7 @@ class MeteoriteListFragment : Fragment() {
             if (meteorite != null) {
                 if (isLandscape()) {
                     showMeteoriteLandscape(meteorite)
+                    meteoriteAdapter.updateListUI(meteorite)
                 } else {
                     if (shouldOpenMeteorite.get()) {
                         showMeteoritePortrait(meteorite)
@@ -311,13 +312,13 @@ class MeteoriteListFragment : Fragment() {
     }
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        super.onSaveInstanceState(savedInstanceState)
 
         val currentMeteorite = viewModel.selectedMeteorite.value
         if (currentMeteorite != null) {
             savedInstanceState.putParcelable(ITEM_SELECTED, currentMeteorite)
         }
 
-        super.onSaveInstanceState(savedInstanceState)
     }
 
     companion object {

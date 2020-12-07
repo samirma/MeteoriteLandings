@@ -30,7 +30,7 @@ class MeteoriteListViewModel(
         private val dispatchers: DispatcherProvider
 ) : ViewModel() {
 
-    private val currentFilter = ConflatedBroadcastChannel<String?>(null)
+    private val currentFilter = ConflatedBroadcastChannel<String?>()
 
     private val meteorite = ConflatedBroadcastChannel<Meteorite?>()
 
@@ -86,6 +86,7 @@ class MeteoriteListViewModel(
 
     companion object {
         private val TAG = MeteoriteListViewModel::class.java.simpleName
+        const val METEORITE = "METEORITE"
     }
 
 }
