@@ -86,7 +86,6 @@ class MeteoriteListViewModel(
 
     companion object {
         private val TAG = MeteoriteListViewModel::class.java.simpleName
-        const val METEORITE = "METEORITE"
     }
 
 }

@@ -7,7 +7,7 @@ import androidx.lifecycle.asLiveData
 import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.features.getDistanceFrom
+import com.antonio.samir.meteoritelandingsspots.features.finalAddress
 import com.antonio.samir.meteoritelandingsspots.features.yearString
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -41,15 +41,11 @@ class MeteoriteDetailViewModel(
 
     private fun getMeteoriteView(meteorite: Meteorite, location: Location?): MeteoriteView {
 
-        val finalAddress = listOf(meteorite.address, meteorite.getDistanceFrom(location)).joinToString(
-                separator = " - "
-        )
-
         return MeteoriteView(
                 id = meteorite.id.toString(),
                 name = meteorite.name,
                 yearString = meteorite.yearString,
-                address = finalAddress,
+                address = meteorite.finalAddress(location),
                 recclass = meteorite.recclass,
                 mass = meteorite.mass,
                 reclat = meteorite.reclat?.toDouble() ?: 0.0,

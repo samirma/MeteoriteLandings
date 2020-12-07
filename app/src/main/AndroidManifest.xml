@@ -23,6 +23,7 @@
             android:name="com.antonio.samir.meteoritelandingsspots.features.MeteoriteMainEntryPointActivity"
             android:label="@string/title_activity_main"
             android:launchMode="standard"
+            android:windowSoftInputMode="stateHidden|adjustResize"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

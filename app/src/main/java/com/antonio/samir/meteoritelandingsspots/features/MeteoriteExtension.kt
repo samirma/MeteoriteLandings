@@ -5,13 +5,12 @@ import android.location.Location
 import android.text.TextUtils
 import android.util.Log
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
-import org.apache.commons.lang3.StringUtils
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.*
 
-fun Meteorite.getDistanceFrom(currentLocation: Location?): String {
+fun Meteorite.getDistanceFrom(currentLocation: Location?): String? {
     val meteoriteLocation = getLocation()
     val distance = if (currentLocation != null && meteoriteLocation != null) {
         currentLocation.distanceTo(meteoriteLocation)
@@ -31,7 +30,7 @@ private fun formatDistance(distance: Float) = if (distance > 0) {
     }
     "$distanceTo away"
 } else {
-    StringUtils.EMPTY
+    null
 }
 
 @SuppressLint("SimpleDateFormat")
@@ -66,5 +65,19 @@ fun Meteorite.getLocation(): Location? = try {
     null
 }
 
+fun Meteorite.finalAddress(location: Location?): String? {
+    val list = mutableListOf<String>()
+
+    if (!this.address.isNullOrBlank()) {
+        list += this.address!!
+    }
+
+    val distance = getDistanceFrom(location)
+    if (!distance.isNullOrBlank()) {
+        list += distance
+    }
+
+    return list.joinToString(separator = " - ")
+}
 
 private const val SHOW_IN_METERS = 999
