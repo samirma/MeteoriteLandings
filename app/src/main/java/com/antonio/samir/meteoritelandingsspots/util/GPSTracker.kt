@@ -1,14 +1,12 @@
 package com.antonio.samir.meteoritelandingsspots.util
 
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
-import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Context.LOCATION_SERVICE
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.location.Location
 import android.location.LocationManager
-import android.os.Bundle
 import android.util.Log
 import androidx.core.app.ActivityCompat.checkSelfPermission
 import kotlinx.coroutines.Dispatchers
@@ -56,13 +54,8 @@ class GPSTracker(private val context: Context) : GPSTrackerInterface {
 
     override val isLocationAuthorized: Boolean
         get() {
-            val hasFine = checkSelfPermission(context, ACCESS_FINE_LOCATION)
-
-            val hasCoarse = checkSelfPermission(context, ACCESS_COARSE_LOCATION)
-
-            return hasFine == PERMISSION_GRANTED || hasCoarse == PERMISSION_GRANTED
+            return checkSelfPermission(context, ACCESS_COARSE_LOCATION) == PERMISSION_GRANTED
         }
-
 
     override suspend fun stopUpdates() {
         isLocationServiceStarted.set(false)
@@ -84,45 +77,33 @@ class GPSTracker(private val context: Context) : GPSTrackerInterface {
 
     @SuppressLint("MissingPermission")
     private suspend fun startLocation() = withContext(Dispatchers.Main) {
-        val location: Location?
-
         // if GPS Enabled get lat/long using GPS Services
         if (isGPSEnabled) {
-            locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER,
-                    MIN_TIME_BW_UPDATES,
-                    MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
-                    this@GPSTracker)
+//            locationManager.requestLocationUpdates(
+//                    LocationManager.GPS_PROVIDER,
+//                    MIN_TIME_BW_UPDATES,
+//                    MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
+//                    this@GPSTracker)
             Log.d(TAG, "GPS Enabled")
-            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            location?.let { onLocationChanged(it) }
+            locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)?.let { onLocationChanged(it) }
         }
     }
 
     override fun isGPSEnabled(): Boolean {
 
         // getting GPS status
-        isGPSEnabled = locationManager!!
-                .isProviderEnabled(LocationManager.GPS_PROVIDER)
+        isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 
         return isGPSEnabled
     }
 
 
     override fun onLocationChanged(location: Location) {
-        Log.i(TAG, "Location received $location")
-        location.let { currentLocation.offer(it) }
+        if (currentLocation.value == null) {
+            Log.i(TAG, "Location received $location")
+            location.let { currentLocation.offer(it) }
+        }
     }
-
-    override fun onProviderDisabled(provider: String) {
-        isLocationServiceStarted.set(false)
-    }
-
-    override fun onProviderEnabled(provider: String) {
-        isLocationServiceStarted.set(true)
-    }
-
-    override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
 
     companion object {
 
