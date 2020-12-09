@@ -51,13 +51,4 @@ class MeteoriteAdapter : PagedListAdapter<Meteorite, ViewHolderMeteorite>(Meteor
         }
     }
 
-    override fun getItemId(position: Int): Long {
-        val item = getItem(position)
-        return if (item != null) {
-            (item.id.hashCode() + item.name.hashCode()).toLong()
-        } else {
-            super.getItemId(position)
-        }
-    }
-
 }
