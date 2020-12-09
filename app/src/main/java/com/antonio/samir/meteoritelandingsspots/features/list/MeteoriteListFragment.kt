@@ -3,6 +3,7 @@ package com.antonio.samir.meteoritelandingsspots.features.list
 import android.Manifest
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -32,10 +33,12 @@ import java.util.concurrent.atomic.AtomicBoolean
 @ExperimentalCoroutinesApi
 class MeteoriteListFragment : Fragment() {
 
+    private var loadedDetail: Pair<String?, Location?>? = null
+
     private var layoutManager: GridLayoutManager? = null
 
     private var meteoriteAdapter = MeteoriteAdapter().apply {
-        setHasStableIds(true)
+        setHasStableIds(false)
     }
 
     private var meteoriteDetailFragment: MeteoriteDetailFragment? = null
@@ -103,6 +106,7 @@ class MeteoriteListFragment : Fragment() {
                 }
 
             })
+            clearFocus()
         }
 
     }
@@ -158,14 +162,18 @@ class MeteoriteListFragment : Fragment() {
 
     private fun observeMeteorites() {
 
-        viewModel.getMeteorites().observe(viewLifecycleOwner, { meteorites ->
+        viewModel.loadedDetail.observe(viewLifecycleOwner) {
+            loadedDetail = it
+        }
+
+        viewModel.getMeteorites(loadedDetail).observe(viewLifecycleOwner) { meteorites ->
             if (meteorites.isEmpty()) {
                 noResult()
             } else {
                 showContent()
                 meteoriteAdapter.setData(meteorites)
             }
-        })
+        }
 
         if (viewModel.filter.isBlank()) {
             viewModel.loadMeteorites()
