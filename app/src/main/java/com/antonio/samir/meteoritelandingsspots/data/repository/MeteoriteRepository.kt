@@ -7,8 +7,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface MeteoriteRepository {
 
-    val pageSize: Int
-
     suspend fun loadMeteorites(filter: String?, longitude: Double?, latitude: Double?): DataSource.Factory<Int, Meteorite>
 
     fun getMeteoriteById(id: String): Flow<Result<Meteorite>>
