@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.detail
 
+import android.content.Context
 import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,7 @@ import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.finalAddress
+import com.antonio.samir.meteoritelandingsspots.features.getLocationText
 import com.antonio.samir.meteoritelandingsspots.features.yearString
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,6 +22,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 @FlowPreview
 @ExperimentalCoroutinesApi
 class MeteoriteDetailViewModel(
+        private val context: Context,
         private val meteoriteRepository: MeteoriteRepository,
         gpsTracker: GPSTrackerInterface
 ) : ViewModel() {
@@ -45,7 +48,10 @@ class MeteoriteDetailViewModel(
                 id = meteorite.id.toString(),
                 name = meteorite.name,
                 yearString = meteorite.yearString,
-                address = meteorite.finalAddress(location),
+                address = meteorite.getLocationText(
+                        context = context,
+                        location = location
+                ),
                 recclass = meteorite.recclass,
                 mass = meteorite.mass,
                 reclat = meteorite.reclat?.toDouble() ?: 0.0,

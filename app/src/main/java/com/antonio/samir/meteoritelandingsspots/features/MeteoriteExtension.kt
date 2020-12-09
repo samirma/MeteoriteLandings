@@ -1,9 +1,11 @@
 package com.antonio.samir.meteoritelandingsspots.features
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.location.Location
 import android.text.TextUtils
 import android.util.Log
+import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -65,11 +67,11 @@ fun Meteorite.getLocation(): Location? = try {
     null
 }
 
-fun Meteorite.finalAddress(location: Location?): String? {
+fun Meteorite.finalAddress(location: Location?, currentAddress :String? = this.address): String {
     val list = mutableListOf<String>()
 
-    if (!this.address.isNullOrBlank()) {
-        list += this.address!!
+    if (!currentAddress.isNullOrBlank()) {
+        list += currentAddress
     }
 
     val distance = getDistanceFrom(location)
@@ -79,5 +81,12 @@ fun Meteorite.finalAddress(location: Location?): String? {
 
     return list.joinToString(separator = " - ")
 }
+
+fun Meteorite.getLocationText(context: Context, location: Location?): String? =
+        finalAddress(location, if (!this.address.isNullOrEmpty()) {
+            this.address
+        } else {
+            context.getString(R.string.without_address_placeholder)
+        })
 
 private const val SHOW_IN_METERS = 999

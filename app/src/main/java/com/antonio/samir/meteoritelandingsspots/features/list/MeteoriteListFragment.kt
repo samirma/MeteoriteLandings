@@ -85,6 +85,7 @@ class MeteoriteListFragment : Fragment() {
         with(binding.searchText) {
             isActivated = true
             onActionViewExpanded()
+            clearFocus()
             isIconified = false
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextChange(query: String): Boolean {
@@ -100,13 +101,13 @@ class MeteoriteListFragment : Fragment() {
                 private fun loadMeteorites(query: String) {
                     val minQueryLenght = 3
                     if (query.isBlank() || query.length > minQueryLenght) {
+                        loadedDetail = null
                         showProgressLoader()
                         viewModel.loadMeteorites(query)
                     }
                 }
 
             })
-            clearFocus()
         }
 
     }
