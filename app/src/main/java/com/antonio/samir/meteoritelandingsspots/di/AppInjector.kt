@@ -67,7 +67,7 @@ val businessModule = module {
 @FlowPreview
 val viewModelModule = module {
     viewModel {
-        MeteoriteDetailViewModel(get(), get())
+        MeteoriteDetailViewModel(get(), get(), get())
     }
     viewModel {
         MeteoriteListViewModel(

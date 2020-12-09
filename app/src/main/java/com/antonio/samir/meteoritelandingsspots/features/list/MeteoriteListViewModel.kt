@@ -72,7 +72,7 @@ class MeteoriteListViewModel(
     fun getMeteorites(loadedDetail: Pair<String?, Location?>?): LiveData<PagedList<Meteorite>> {
         return currentFilter.asFlow()
                 .flowOn(dispatchers.default())
-                .combine<String?, Location?, Pair<String?, Location?>>(gpsTracker.location) { filter, location ->
+                .combine<String?, Location?, Pair<String?, Location?>>(gpsTracker.location) { _, location ->
                     Pair(this.filter, location)
                 }
                 .filter {
@@ -80,7 +80,11 @@ class MeteoriteListViewModel(
                 }
                 .onEach { this.loadedDetail.postValue(it) }
                 .map<Pair<String?, Location?>, LivePagedListBuilder<Int, Meteorite>> {
-                    LivePagedListBuilder(meteoriteRepository.loadMeteorites(it.first, it.second?.longitude, it.second?.latitude), 30)
+                    LivePagedListBuilder(meteoriteRepository.loadMeteorites(
+                            filter = it.first,
+                            longitude = it.second?.longitude,
+                            latitude = it.second?.latitude
+                    ), PAGE_SIZE)
                 }
                 .asLiveData(dispatchers.default())
                 .switchMap {
@@ -89,5 +93,9 @@ class MeteoriteListViewModel(
     }
 
     fun getNetworkLoadingStatus() = meteoriteRepository.loadDatabase().asLiveData()
+
+    companion object {
+        const val PAGE_SIZE = 1000
+    }
 
 }
