@@ -15,24 +15,17 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.io.IOException
+import java.util.concurrent.atomic.AtomicBoolean
 
 
 @ExperimentalCoroutinesApi
 class MeteoriteRepositoryImpl(
         private val meteoriteLocalRepository: MeteoriteLocalRepository,
         private val meteoriteRemoteRepository: MeteoriteRemoteRepository,
-        private val dispatchers: DispatcherProvider
+        private val dispatchers: DispatcherProvider,
 ) : MeteoriteRepository {
 
-    companion object {
-
-        private const val OLDDATABASE_COUNT = 1000
-
-        private val TAG = MeteoriteRepository::class.java.simpleName
-    }
-
-    override val pageSize: Int
-        get() = 5000
+    val shouldLoad = AtomicBoolean(true)
 
     override suspend fun loadMeteorites(filter: String?, longitude: Double?, latitude: Double?):
             DataSource.Factory<Int, Meteorite> {
@@ -58,17 +51,19 @@ class MeteoriteRepositoryImpl(
     }
 
     override fun loadDatabase(): Flow<Result<Unit>> = flow {
-        val meteoritesCount = meteoriteLocalRepository.getMeteoritesCount()
-        emit(InProgress())
-        try {
-            recoverFromNetwork(if (meteoritesCount <= OLDDATABASE_COUNT) {
-                0 //Download from beginner
-            } else {
-                meteoritesCount
-            })
-        } catch (e: Exception) {
-            Log.e(TAG, e.message, e)
-            emit(Error(MeteoriteServerException(e)))
+        if (shouldLoad.getAndSet(false)) {
+            val meteoritesCount = meteoriteLocalRepository.getMeteoritesCount()
+            emit(InProgress())
+            try {
+                recoverFromNetwork(if (meteoritesCount <= OLDDATABASE_COUNT) {
+                    0 //Download from beginner
+                } else {
+                    meteoritesCount
+                })
+            } catch (e: Exception) {
+                Log.e(TAG, e.message, e)
+                emit(Error(MeteoriteServerException(e)))
+            }
         }
         emit(Success(Unit))
     }
@@ -79,17 +74,27 @@ class MeteoriteRepositoryImpl(
 
         do {
 
-            val serviceOffset = (pageSize * currentPage) + offset
+            val serviceOffset = (PAGE_SIZE * currentPage) + offset
             val meteorites = meteoriteRemoteRepository.getMeteorites(
                     offset = serviceOffset,
-                    limit = pageSize
+                    limit = PAGE_SIZE
             )
 
             meteoriteLocalRepository.insertAll(meteorites)
 
             currentPage++
-        } while (meteorites.size == pageSize)
+        } while (meteorites.isNotEmpty())
 
+
+    }
+
+    companion object {
+
+        private const val OLDDATABASE_COUNT = 1000
+
+        private const val PAGE_SIZE = 5000
+
+        private val TAG = MeteoriteRepository::class.java.simpleName
     }
 
 }
