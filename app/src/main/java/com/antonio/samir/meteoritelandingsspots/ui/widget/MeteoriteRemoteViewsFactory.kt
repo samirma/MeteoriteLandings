@@ -47,8 +47,6 @@ class MeteoriteRemoteViewsFactory(
         val meteoriteName = meteorite.name
         val year = meteorite.yearString
 
-        val idString = meteorite.id.toString()
-
         views.setTextViewText(R.id.title, meteoriteName)
         views.setTextViewText(R.id.year, year)
         setLocationText(meteorite.address, views)

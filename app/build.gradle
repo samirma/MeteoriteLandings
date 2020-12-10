@@ -74,11 +74,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    //Compat
-    implementation "androidx.appcompat:appcompat:$appcompat_version"
-
     // Architecture Components
-    implementation "androidx.lifecycle:lifecycle-extensions:$androidx_lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$androidx_lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$androidx_lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$androidx_lifecycle_version"
@@ -94,14 +90,12 @@ dependencies {
     implementation "androidx.paging:paging-runtime-ktx:2.1.2"
 
     //Room
-    implementation "androidx.room:room-runtime:2.2.5"
-    kapt "androidx.room:room-compiler:2.2.5"
-    implementation "androidx.room:room-ktx:2.2.5"
+    implementation "androidx.room:room-runtime:$androidx_room_version"
+    kapt "androidx.room:room-compiler:$androidx_room_version"
+    implementation "androidx.room:room-ktx:$androidx_room_version"
 
     //Play services
-    implementation 'com.google.android.gms:play-services-analytics:17.0.0'
-    implementation 'com.google.android.gms:play-services-location:17.1.0'
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation "com.google.android.gms:play-services-maps:$map_version"
 
     //insert-koin.io
     implementation "org.koin:koin-androidx-scope:$koin_version"
@@ -118,7 +112,6 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.8.6'
 
-    implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
