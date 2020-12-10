@@ -1,6 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
-import android.Manifest
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.location.Location
@@ -29,6 +29,7 @@ import kotlinx.coroutines.FlowPreview
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.concurrent.atomic.AtomicBoolean
 
+
 @FlowPreview
 @ExperimentalCoroutinesApi
 class MeteoriteListFragment : Fragment() {
@@ -54,19 +55,14 @@ class MeteoriteListFragment : Fragment() {
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
-            savedInstanceState: Bundle?
+            savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentMeteoriteListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onViewCreated(view, savedInstanceState)
 
         binding.meteoriteRV.adapter = meteoriteAdapter
 
@@ -83,9 +79,8 @@ class MeteoriteListFragment : Fragment() {
         setupLocation()
 
         with(binding.searchText) {
-            isActivated = true
+            isActivated = false
             onActionViewExpanded()
-            clearFocus()
             isIconified = false
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextChange(query: String): Boolean {
@@ -126,6 +121,7 @@ class MeteoriteListFragment : Fragment() {
 
         viewModel.selectedMeteorite.observe(viewLifecycleOwner) { meteorite ->
             if (meteorite != null) {
+                binding.searchText.clearFocus()
                 if (isLandscape()) {
                     showMeteoriteLandscape(meteorite)
                     meteoriteAdapter.updateListUI(meteorite)
@@ -147,7 +143,7 @@ class MeteoriteListFragment : Fragment() {
     private fun setupLocation() {
         viewModel.isAuthorizationRequested().observe(viewLifecycleOwner, {
             if (it) {
-                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_REQUEST_CODE)
+                requestPermissions(arrayOf(ACCESS_FINE_LOCATION), LOCATION_REQUEST_CODE)
             }
         })
         viewModel.updateLocation()
@@ -158,7 +154,7 @@ class MeteoriteListFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        Log.v(TAG, "onResume")
+        binding.searchText.clearFocus()
     }
 
     private fun observeMeteorites() {
@@ -328,6 +324,11 @@ class MeteoriteListFragment : Fragment() {
             savedInstanceState.putParcelable(ITEM_SELECTED, currentMeteorite)
         }
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {
