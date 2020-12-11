@@ -39,9 +39,6 @@ class MeteoriteListViewModel(
     var filter = ""
 
     fun loadMeteorites(location: String? = null) {
-        if (location == filter) {
-            return
-        }
 
         location?.let { this.filter = it }
 

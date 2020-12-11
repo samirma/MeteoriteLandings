@@ -45,8 +45,7 @@
         android:indeterminate="true"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/searchText" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ProgressBar
         android:id="@+id/progressLoader"
@@ -57,17 +56,6 @@
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <SearchView
-        android:id="@+id/searchText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:queryHint="@string/searchView_query_hint"
-        app:layout_constraintBottom_toTopOf="@+id/addressRecoverProgress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -95,7 +83,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchText"
+        app:layout_constraintTop_toTopOf="parent"
         app:rcBackgroundColor="#0A000000"
         app:rcBackgroundPadding="2dp"
         app:rcMax="100"

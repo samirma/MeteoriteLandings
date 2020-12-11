@@ -12,6 +12,8 @@ import androidx.navigation.fragment.navArgs
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteDetailBinding
+import com.antonio.samir.meteoritelandingsspots.ui.extension.hideActionBar
+import com.antonio.samir.meteoritelandingsspots.ui.extension.showActionBar
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -45,11 +47,6 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
         return binding.root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -66,6 +63,7 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
             viewModel.loadMeteorite(args.meteoriteId)
         }
     }
+
 
     private fun observeMeteorite() {
 
@@ -128,25 +126,30 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
 
         setLocationText(meteorite)
 
-        binding.title?.text = meteorite.name
+        showActionBar(meteorite.name)
 
-        binding.detail.detail.year.text = meteorite.yearString
+        binding.year.text = meteorite.yearString
 
-        binding.detail.detail.recclass.text = meteorite.recclass
+        binding.recclass.text = meteorite.recclass
 
-        binding.detail.detail.mass.text = meteorite.mass
+        binding.mass.text = meteorite.mass
 
     }
 
     private fun setLocationText(meteorite: MeteoriteView) {
         val address = meteorite.address
-        binding.locationTxt?.text = address
-        binding.locationTxt?.visibility = if (meteorite.hasAddress) {
+        binding.locationTxt.text = address
+        binding.locationTxt.visibility = if (meteorite.hasAddress) {
             View.VISIBLE
         } else {
             viewModel.requestAddressUpdate(meteorite)
             View.GONE
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {
