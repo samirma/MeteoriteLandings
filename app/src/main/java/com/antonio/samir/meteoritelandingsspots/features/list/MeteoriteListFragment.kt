@@ -107,6 +107,8 @@ class MeteoriteListFragment : Fragment() {
 //            })
 //        }
 
+        showProgressLoader()
+
     }
 
     private fun observeLiveData() {
