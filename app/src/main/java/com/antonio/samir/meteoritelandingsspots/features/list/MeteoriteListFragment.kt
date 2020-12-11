@@ -12,6 +12,7 @@ import android.view.View.*
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.annotation.NonNull
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,6 +25,9 @@ import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteLis
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailFragment
 import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.MeteoriteAdapter
 import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.SpacesItemDecoration
+import com.antonio.samir.meteoritelandingsspots.ui.extension.hideActionBar
+import com.antonio.samir.meteoritelandingsspots.ui.extension.showActionBar
+import com.google.android.material.appbar.AppBarLayout
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -64,6 +68,8 @@ class MeteoriteListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        showActionBar("Search over more than 45k meteorites")
+
         binding.meteoriteRV.adapter = meteoriteAdapter
 
         binding.meteoriteRV.addItemDecoration(SpacesItemDecoration(
@@ -78,32 +84,28 @@ class MeteoriteListFragment : Fragment() {
 
         setupLocation()
 
-        with(binding.searchText) {
-            isActivated = false
-            onActionViewExpanded()
-            isIconified = false
-            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                override fun onQueryTextChange(query: String): Boolean {
-                    loadMeteorites(query)
-                    return false
-                }
-
-                override fun onQueryTextSubmit(query: String): Boolean {
-                    loadMeteorites(query)
-                    return false
-                }
-
-                private fun loadMeteorites(query: String) {
-                    val minQueryLenght = 3
-                    if (query.isBlank() || query.length > minQueryLenght) {
-                        loadedDetail = null
-                        showProgressLoader()
-                        viewModel.loadMeteorites(query)
-                    }
-                }
-
-            })
-        }
+//        with(binding.searchText) {
+//            onActionViewExpanded()
+//            doOnLayout {
+//                clearFocus()
+//            }
+//            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+//                override fun onQueryTextChange(query: String): Boolean {
+//                    loadMeteorites(query)
+//                    return false
+//                }
+//
+//                override fun onQueryTextSubmit(query: String): Boolean {
+//                    loadMeteorites(query)
+//                    return false
+//                }
+//
+//                private fun loadMeteorites(query: String) {
+//                    viewModel.loadMeteorites(query)
+//                }
+//
+//            })
+//        }
 
     }
 
@@ -121,7 +123,7 @@ class MeteoriteListFragment : Fragment() {
 
         viewModel.selectedMeteorite.observe(viewLifecycleOwner) { meteorite ->
             if (meteorite != null) {
-                binding.searchText.clearFocus()
+//                binding.searchText?.clearFocus()
                 if (isLandscape()) {
                     showMeteoriteLandscape(meteorite)
                     meteoriteAdapter.updateListUI(meteorite)
@@ -152,11 +154,6 @@ class MeteoriteListFragment : Fragment() {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        binding.searchText.clearFocus()
-    }
-
     private fun observeMeteorites() {
 
         viewModel.loadedDetail.observe(viewLifecycleOwner) {
@@ -175,7 +172,7 @@ class MeteoriteListFragment : Fragment() {
         if (viewModel.filter.isBlank()) {
             viewModel.loadMeteorites()
         } else {
-            binding.searchText.setQuery(viewModel.filter, true)
+//            binding.searchText?.setQuery(viewModel.filter, true)
         }
 
     }
@@ -221,7 +218,7 @@ class MeteoriteListFragment : Fragment() {
 
     private fun unableToFetch() {
         error(getString(R.string.no_network))
-        binding.searchText.visibility = GONE
+//        binding.searchText?.visibility = GONE
     }
 
     private fun error(messageString: String) {

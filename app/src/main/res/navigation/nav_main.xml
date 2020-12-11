@@ -9,24 +9,12 @@
         android:label="MeteoriteListFragment">
         <action
             android:id="@+id/toDetail"
-            app:destination="@id/meteoriteDetailFragment"
-            app:enterAnim="@anim/nav_default_pop_enter_anim"
-            app:exitAnim="@anim/nav_default_pop_exit_anim"
-            app:launchSingleTop="false"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            app:popUpTo="@+id/meteoriteListFragment"
-            app:popUpToInclusive="false" />
+            app:destination="@id/meteoriteDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/meteoriteDetailFragment"
         android:name="com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailFragment"
         android:label="MeteoriteDetailFragment">
-        <action
-            android:id="@+id/action_meteoriteDetailFragment_to_meteoriteListFragment"
-            app:destination="@id/meteoriteListFragment"
-            app:popUpTo="@id/meteoriteListFragment"
-            app:popUpToInclusive="true" />
         <argument
             android:name="meteoriteId"
             app:argType="string" />

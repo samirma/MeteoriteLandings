@@ -1,43 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/detail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:context=".MapsActivity" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/detail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="@color/meta_bar_background_color"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/detail_inner_horiz_margin"
-        android:paddingTop="@dimen/detail_metabar_vert_padding"
-        android:paddingRight="@dimen/detail_inner_horiz_margin"
-        android:paddingBottom="@dimen/detail_metabar_vert_padding"
-        android:transitionName="cardView">
-
-        <TextView
-            android:id="@+id/title"
-            style="?android:attr/textAppearanceLarge"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-condensed"
-            android:lineSpacingMultiplier="0.9"
-            android:paddingBottom="@dimen/detail_metabar_title_bottom_padding"
-            android:textColor="@color/title_color"
-            android:textSize="@dimen/detail_title_text_size"
-            android:transitionName="title" />
+        android:layout_height="0dp"
+        android:background="@color/detail_accent_pane_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:padding="12dp"
+        tools:showIn="@layout/fragment_meteorite_detail">
 
         <TextView
             android:id="@+id/locationTxt"
-            style="?android:attr/textAppearanceSmall"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="TextView" />
+
+        <TextView
+            android:id="@+id/mass_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:gravity="center_vertical"
+            android:text="@string/mass"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
             android:textColor="@color/detail_accent_label"
-            android:transitionName="location" />
+            android:textSize="@dimen/font_detail_size"
+            app:layout_columnWeight="1"
+            app:layout_constraintBottom_toTopOf="@+id/recclass_label"
+            app:layout_constraintEnd_toStartOf="@+id/mass"
+            app:layout_constraintHorizontal_bias="0.48"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/locationTxt"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/mass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_detail_size"
+            app:layout_constraintBaseline_toBaselineOf="@+id/mass_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/mass_label"
+            app:layout_gravity="fill"
+            tools:text="999" />
 
-    <include layout="@layout/meteorite_detail" android:id="@+id/detail" />
+        <TextView
+            android:id="@+id/recclass_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:gravity="center_vertical"
+            android:text="@string/nametype"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textColor="@color/detail_accent_label"
+            android:textSize="@dimen/font_detail_size"
+            app:layout_columnWeight="1"
+            app:layout_constraintBottom_toTopOf="@+id/year_label"
+            app:layout_constraintEnd_toStartOf="@+id/recclass"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mass_label"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/recclass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_detail_size"
+            app:layout_constraintBaseline_toBaselineOf="@+id/recclass_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/recclass_label"
+            app:layout_gravity="fill"
+            tools:text="B1" />
+
+        <TextView
+            android:id="@+id/year_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:gravity="center_vertical"
+            android:text="@string/year"
+            android:textColor="@color/detail_accent_label"
+            android:textSize="@dimen/font_detail_size"
+            app:layout_columnWeight="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/year"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recclass_label"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1" />
+
+
+        <TextView
+            android:id="@+id/year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_detail_size"
+            android:transitionName="year"
+            app:layout_constraintBaseline_toBaselineOf="@+id/year_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/year_label"
+            app:layout_gravity="fill"
+            tools:text="1983" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
