@@ -10,9 +10,9 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.antonio.samir.meteoritelandingsspots.R
 
-class MeteoriteMainEntryPointActivity : AppCompatActivity(R.layout.activity_meteorite_list) {
+class MeteoriteMainEntryPointActivity : AppCompatActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
+    private val appBarConfiguration = AppBarConfiguration(setOf(R.id.meteoriteListFragment))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,9 +24,6 @@ class MeteoriteMainEntryPointActivity : AppCompatActivity(R.layout.activity_mete
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        val appBarConfiguration = AppBarConfiguration(
-                setOf(R.id.meteoriteListFragment)
-        )
 
         val navController = getNavController()
 
@@ -36,8 +33,11 @@ class MeteoriteMainEntryPointActivity : AppCompatActivity(R.layout.activity_mete
 
     }
 
-    private fun getNavController() =
+    private fun getNavController(): NavController =
             (supportFragmentManager.findFragmentById(R.id.main_fragment_container_view)
                     as NavHostFragment).navController
 
+    override fun onSupportNavigateUp(): Boolean {
+        return getNavController().navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
 }
