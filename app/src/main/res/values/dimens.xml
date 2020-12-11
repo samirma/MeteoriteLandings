@@ -32,6 +32,7 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
 
     <dimen name="spacing">4dp</dimen>
     <dimen name="horizontal_spacing">0dp</dimen>
+    <dimen name="detail_margin">12dp</dimen>
 
 
 </resources>

@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.ui.extension
 
+import android.content.res.Configuration
 import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -22,4 +23,8 @@ fun Fragment.showActionBar(title: CharSequence? = null) {
         }
         appBarLayoutFlowMain?.visibility = View.VISIBLE
     }
+}
+
+fun Fragment.isLandscape(): Boolean {
+    return resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 }

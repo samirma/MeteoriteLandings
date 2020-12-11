@@ -13,6 +13,7 @@ import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteDetailBinding
 import com.antonio.samir.meteoritelandingsspots.ui.extension.hideActionBar
+import com.antonio.samir.meteoritelandingsspots.ui.extension.isLandscape
 import com.antonio.samir.meteoritelandingsspots.ui.extension.showActionBar
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -50,10 +51,8 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-
         //Exit from full meteorite detail screen to list view
-        if (isLandscape) {
+        if (isLandscape()) {
             findNavController().popBackStack()
         }
 

@@ -10,9 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
-import android.widget.SearchView
 import androidx.annotation.NonNull
-import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -25,9 +23,7 @@ import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteLis
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailFragment
 import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.MeteoriteAdapter
 import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.SpacesItemDecoration
-import com.antonio.samir.meteoritelandingsspots.ui.extension.hideActionBar
 import com.antonio.samir.meteoritelandingsspots.ui.extension.showActionBar
-import com.google.android.material.appbar.AppBarLayout
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -124,8 +120,8 @@ class MeteoriteListFragment : Fragment() {
         }
 
         viewModel.selectedMeteorite.observe(viewLifecycleOwner) { meteorite ->
+            Log.i(TAG, "selectedMeteorite ${meteorite} ${isLandscape()}")
             if (meteorite != null) {
-//                binding.searchText?.clearFocus()
                 if (isLandscape()) {
                     showMeteoriteLandscape(meteorite)
                     meteoriteAdapter.updateListUI(meteorite)

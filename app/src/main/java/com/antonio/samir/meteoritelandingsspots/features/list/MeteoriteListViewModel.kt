@@ -22,6 +22,7 @@ import java.util.*
 @FlowPreview
 @ExperimentalCoroutinesApi
 class MeteoriteListViewModel(
+        private val stateHandle: SavedStateHandle,
         private val meteoriteRepository: MeteoriteRepository,
         private val gpsTracker: GPSTrackerInterface,
         private val addressService: AddressServiceInterface,
@@ -30,7 +31,7 @@ class MeteoriteListViewModel(
 
     private val currentFilter = ConflatedBroadcastChannel<String?>()
 
-    private val meteorite = ConflatedBroadcastChannel<Meteorite?>()
+    private val meteorite = ConflatedBroadcastChannel<Meteorite?>(stateHandle[METEORITE])
 
     val selectedMeteorite = meteorite.asFlow().asLiveData()
 
@@ -47,6 +48,7 @@ class MeteoriteListViewModel(
     }
 
     fun selectMeteorite(meteorite: Meteorite) {
+        stateHandle[METEORITE] = meteorite
         this.meteorite.offer(meteorite)
     }
 
@@ -93,6 +95,7 @@ class MeteoriteListViewModel(
 
     companion object {
         const val PAGE_SIZE = 1000
+        const val METEORITE = "METEORITE"
     }
 
 }
