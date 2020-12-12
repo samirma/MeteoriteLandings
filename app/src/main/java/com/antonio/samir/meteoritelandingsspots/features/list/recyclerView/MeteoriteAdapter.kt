@@ -18,6 +18,7 @@ class MeteoriteAdapter : PagedListAdapter<Meteorite, ViewHolderMeteorite>(Meteor
     var location: Location? = null
 
     var openMeteorite = MutableLiveData<Meteorite>()
+
     var selectedMeteorite: Meteorite? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderMeteorite {
@@ -33,10 +34,14 @@ class MeteoriteAdapter : PagedListAdapter<Meteorite, ViewHolderMeteorite>(Meteor
 
     fun updateListUI(current: Meteorite?, previous: Meteorite? = selectedMeteorite) {
         if (!Objects.equals(previous, current)) {
-            currentList?.indexOf(current)?.let { notifyItemChanged(it) }
-            currentList?.indexOf(previous)?.let { notifyItemChanged(it) }
+            getPosition(current)?.let { notifyItemChanged(it) }
+            getPosition(previous)?.let { notifyItemChanged(it) }
         }
         selectedMeteorite = current
+    }
+
+    fun getPosition(current: Meteorite?): Int? {
+        return currentList?.indexOf(current)
     }
 
     fun setData(meteorites: PagedList<Meteorite>) {
@@ -49,6 +54,10 @@ class MeteoriteAdapter : PagedListAdapter<Meteorite, ViewHolderMeteorite>(Meteor
             val isSelected = selectedMeteorite == meteorite
             viewHolder.onBind(meteorite, isSelected, location)
         }
+    }
+
+    fun clearSelectedMeteorite() {
+        openMeteorite = MutableLiveData<Meteorite>()
     }
 
 }

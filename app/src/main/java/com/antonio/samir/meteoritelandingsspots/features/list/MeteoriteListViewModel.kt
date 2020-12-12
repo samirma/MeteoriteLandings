@@ -14,7 +14,6 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.util.*
 
 /**
  * Layer responsible for manage the interactions between the activity and the services
@@ -34,8 +33,6 @@ class MeteoriteListViewModel(
     private val meteorite = ConflatedBroadcastChannel<Meteorite?>(stateHandle[METEORITE])
 
     val selectedMeteorite = meteorite.asFlow().asLiveData()
-
-    val loadedDetail = MutableLiveData<Pair<String?, Location?>>()
 
     var filter = ""
 
@@ -68,16 +65,12 @@ class MeteoriteListViewModel(
 
     fun getRecoverAddressStatus() = addressService.recoveryAddress().asLiveData()
 
-    fun getMeteorites(loadedDetail: Pair<String?, Location?>?): LiveData<PagedList<Meteorite>> {
+    fun getMeteorites(): LiveData<PagedList<Meteorite>> {
         return currentFilter.asFlow()
                 .flowOn(dispatchers.default())
                 .combine<String?, Location?, Pair<String?, Location?>>(gpsTracker.location) { _, location ->
                     Pair(this.filter, location)
                 }
-                .filter {
-                    !Objects.equals(it, loadedDetail)
-                }
-                .onEach { this.loadedDetail.postValue(it) }
                 .map<Pair<String?, Location?>, LivePagedListBuilder<Int, Meteorite>> {
                     LivePagedListBuilder(meteoriteRepository.loadMeteorites(
                             filter = it.first,
