@@ -51,7 +51,7 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
 
         //Exit from full meteorite detail screen to list view
         if (isLandscape()) {
-            findNavController().popBackStack()
+            findNavController().navigateUp()
         }
 
         observeMeteorite()
@@ -123,7 +123,9 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
 
         setLocationText(meteorite)
 
-        showActionBar(meteorite.name)
+        if (!isLandscape()) {
+            showActionBar(meteorite.name)
+        }
 
         binding.year.text = meteorite.yearString
 
