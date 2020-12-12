@@ -1,6 +1,5 @@
 package com.antonio.samir.meteoritelandingsspots.features.detail
 
-import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,7 +11,6 @@ import androidx.navigation.fragment.navArgs
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteDetailBinding
-import com.antonio.samir.meteoritelandingsspots.ui.extension.hideActionBar
 import com.antonio.samir.meteoritelandingsspots.ui.extension.isLandscape
 import com.antonio.samir.meteoritelandingsspots.ui.extension.showActionBar
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -42,7 +40,7 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
-            savedInstanceState: Bundle?
+            savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentMeteoriteDetailBinding.inflate(inflater, container, false)
         return binding.root
