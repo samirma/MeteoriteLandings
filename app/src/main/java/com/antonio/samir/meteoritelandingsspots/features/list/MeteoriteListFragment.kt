@@ -19,7 +19,6 @@ import com.antonio.samir.meteoritelandingsspots.data.Result.InProgress
 import com.antonio.samir.meteoritelandingsspots.data.Result.Success
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteListBinding
-import com.antonio.samir.meteoritelandingsspots.features.BlankFragment
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailFragment
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListFragmentDirections.Companion.toDetail
 import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.MeteoriteAdapter
@@ -30,7 +29,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.concurrent.atomic.AtomicBoolean
-
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -101,7 +99,6 @@ class MeteoriteListFragment : Fragment() {
         }
 
         viewModel.selectedMeteorite.observe(viewLifecycleOwner) { meteorite ->
-            Log.i(TAG, "selectedMeteorite ${meteorite} ${isLandscape()}")
             if (meteorite != null) {
                 if (isLandscape()) {
                     showMeteoriteLandscape(meteorite)
@@ -111,6 +108,9 @@ class MeteoriteListFragment : Fragment() {
                 } else {
                     if (shouldOpenMeteorite.get()) {
                         showMeteoritePortrait(meteorite)
+                    } else {
+                        //Should clean the selected meteorite when it is not shown
+                        viewModel.clearSelectedMeteorite()
                     }
                     shouldOpenMeteorite.set(false)
                 }
@@ -209,16 +209,13 @@ class MeteoriteListFragment : Fragment() {
 
             binding.fragment?.visibility = VISIBLE
 
-            BlankFragment.newInstance()
-
             parentFragmentManager.beginTransaction()
                     .setCustomAnimations(
                             R.anim.fragment_slide_left_enter,
                             R.anim.fragment_slide_left_exit).apply {
                         val meteoriteId: String = meteorite.id.toString()
                         meteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteoriteId)
-//                        replace(R.id.fragment, meteoriteDetailFragment!!)
-                        replace(R.id.fragment, BlankFragment.newInstance())
+                        replace(R.id.fragment, meteoriteDetailFragment!!)
                         commit()
                     }
 

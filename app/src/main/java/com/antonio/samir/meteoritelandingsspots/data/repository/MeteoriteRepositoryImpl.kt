@@ -27,9 +27,14 @@ class MeteoriteRepositoryImpl(
 
     val shouldLoad = AtomicBoolean(true)
 
-    override suspend fun loadMeteorites(filter: String?, longitude: Double?, latitude: Double?):
+    override suspend fun loadMeteorites(
+            filter: String?,
+            longitude: Double?,
+            latitude: Double?,
+            limit: Long,
+    ):
             DataSource.Factory<Int, Meteorite> {
-        return meteoriteLocalRepository.meteoriteOrdered(filter, null, null)
+        return meteoriteLocalRepository.meteoriteOrdered(filter, null, null, limit)
     }
 
     override fun getMeteoriteById(id: String): Flow<Result<Meteorite>> = flow {

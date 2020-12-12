@@ -14,11 +14,16 @@ class MeteoriteLocalRepositoryImpl(
 
 ) : MeteoriteLocalRepository {
 
-    override suspend fun meteoriteOrdered(filter: String?, latitude: Double?, longitude: Double?): DataSource.Factory<Int, Meteorite> = withContext(dispatchers.io()) {
+    override suspend fun meteoriteOrdered(
+            filter: String?,
+            latitude: Double?,
+            longitude: Double?,
+            limit: Long,
+    ) = withContext(dispatchers.io()) {
 
         return@withContext if (latitude == null || longitude == null) {
             if (filter.isNullOrEmpty()) {
-                meteoriteDao.meteoriteOrdered()
+                meteoriteDao.meteoriteOrdered(limit)
             } else {
                 meteoriteDao.meteoriteFiltered(filter.toLowerCase(Locale.getDefault()))
             }

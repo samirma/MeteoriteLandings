@@ -12,7 +12,10 @@ import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 /**
@@ -25,7 +28,7 @@ class MeteoriteListViewModel(
         private val meteoriteRepository: MeteoriteRepository,
         private val gpsTracker: GPSTrackerInterface,
         private val addressService: AddressServiceInterface,
-        private val dispatchers: DispatcherProvider
+        private val dispatchers: DispatcherProvider,
 ) : ViewModel() {
 
     private val currentFilter = ConflatedBroadcastChannel<String?>()
@@ -44,7 +47,7 @@ class MeteoriteListViewModel(
 
     }
 
-    fun selectMeteorite(meteorite: Meteorite) {
+    fun selectMeteorite(meteorite: Meteorite?) {
         stateHandle[METEORITE] = meteorite
         this.meteorite.offer(meteorite)
     }
@@ -75,7 +78,8 @@ class MeteoriteListViewModel(
                     LivePagedListBuilder(meteoriteRepository.loadMeteorites(
                             filter = it.first,
                             longitude = it.second?.longitude,
-                            latitude = it.second?.latitude
+                            latitude = it.second?.latitude,
+                            limit = LIMIT
                     ), PAGE_SIZE)
                 }
                 .asLiveData(dispatchers.default())
@@ -86,8 +90,13 @@ class MeteoriteListViewModel(
 
     fun getNetworkLoadingStatus() = meteoriteRepository.loadDatabase().asLiveData()
 
+    fun clearSelectedMeteorite() {
+        selectMeteorite(null)
+    }
+
     companion object {
         const val PAGE_SIZE = 1000
+        const val LIMIT = 1000L
         const val METEORITE = "METEORITE"
     }
 
