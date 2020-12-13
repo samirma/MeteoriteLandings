@@ -23,6 +23,7 @@ import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListFragm
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel.ContentStatus.*
 import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.MeteoriteAdapter
 import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.SpacesItemDecoration
+import com.antonio.samir.meteoritelandingsspots.ui.CustomSearchView
 import com.antonio.samir.meteoritelandingsspots.ui.extension.isLandscape
 import com.antonio.samir.meteoritelandingsspots.ui.extension.showActionBar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,7 +35,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 @ExperimentalCoroutinesApi
 class MeteoriteListFragment : Fragment() {
 
-    private var searchView: SearchView? = null
+    private var searchView: CustomSearchView? = null
 
     private var layoutManager: GridLayoutManager? = null
 
@@ -85,6 +86,10 @@ class MeteoriteListFragment : Fragment() {
         setupLocation()
 
         setHasOptionsMenu(true)
+
+        if (viewModel.filter.isBlank()) {
+            viewModel.loadMeteorites()
+        }
 
     }
 
@@ -145,13 +150,6 @@ class MeteoriteListFragment : Fragment() {
 
         viewModel.getMeteorites().observe(viewLifecycleOwner) { meteorites ->
             onSuccess(meteorites)
-        }
-
-        val filter = viewModel.filter
-        if (filter.isBlank()) {
-            viewModel.loadMeteorites()
-        } else {
-            searchView?.setQuery(filter, true)
         }
 
     }
@@ -306,22 +304,23 @@ class MeteoriteListFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main, menu)
 
-        searchView = menu.findItem(R.id.action_search).actionView as SearchView
+        searchView = menu.findItem(R.id.action_search).actionView as CustomSearchView
 
         setup(searchView)
 
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    private fun setup(searchView: SearchView?) {
+    private fun setup(searchView: CustomSearchView?) {
         if (searchView != null) {
             with(searchView) {
                 isActivated = true
                 onActionViewExpanded()
                 isIconified = false
+                savedQuery = viewModel.filter
                 setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
-                    override fun onQueryTextChange(query: String): Boolean = false
+                    override fun onQueryTextChange(query: String): Boolean = true
 
                     override fun onQueryTextSubmit(query: String): Boolean {
                         loadMeteorites(query)
