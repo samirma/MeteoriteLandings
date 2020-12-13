@@ -10,6 +10,7 @@ import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.getLocationText
 import com.antonio.samir.meteoritelandingsspots.features.yearString
+import org.apache.commons.lang3.StringUtils
 
 class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -43,7 +44,11 @@ class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
 
         val year = meteorite.yearString
 
-        name.text = context.getString(R.string.title, meteoriteName, year)
+        name.text = if (!year.isNullOrBlank()) {
+            context.getString(R.string.name, meteoriteName, year)
+        } else {
+            meteoriteName
+        }
 
         name.contentDescription = meteoriteName
 

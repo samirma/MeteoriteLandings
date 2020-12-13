@@ -23,7 +23,6 @@ import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListFragm
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel.ContentStatus.*
 import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.MeteoriteAdapter
 import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.SpacesItemDecoration
-import com.antonio.samir.meteoritelandingsspots.ui.CustomSearchView
 import com.antonio.samir.meteoritelandingsspots.ui.extension.isLandscape
 import com.antonio.samir.meteoritelandingsspots.ui.extension.showActionBar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,8 +33,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 @FlowPreview
 @ExperimentalCoroutinesApi
 class MeteoriteListFragment : Fragment() {
-
-    private var searchView: CustomSearchView? = null
 
     private var layoutManager: GridLayoutManager? = null
 
@@ -53,6 +50,8 @@ class MeteoriteListFragment : Fragment() {
 
     private val shouldOpenMeteorite = AtomicBoolean(true)
 
+    private val redirectedToPortrait = AtomicBoolean(false)
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -65,9 +64,7 @@ class MeteoriteListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.i(TAG, "onViewCreated ${isLandscape()}")
-
-        showActionBar("Search over more than 45k meteorites")
+        showActionBar(getString(R.string.title))
 
         meteoriteAdapter.clearSelectedMeteorite()
 
@@ -90,6 +87,8 @@ class MeteoriteListFragment : Fragment() {
         if (viewModel.filter.isBlank()) {
             viewModel.loadMeteorites()
         }
+
+        redirectedToPortrait.set(false)
 
     }
 
@@ -237,6 +236,7 @@ class MeteoriteListFragment : Fragment() {
     }
 
     private fun showMeteoritePortrait(meteorite: Meteorite) {
+        redirectedToPortrait.set(true)
         findNavController().navigate(toDetail(meteorite.id.toString()))
     }
 
@@ -304,23 +304,28 @@ class MeteoriteListFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main, menu)
 
-        searchView = menu.findItem(R.id.action_search).actionView as CustomSearchView
+        val searchView = menu.findItem(R.id.action_search).actionView as SearchView
 
         setup(searchView)
 
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    private fun setup(searchView: CustomSearchView?) {
+    private fun setup(searchView: SearchView?) {
         if (searchView != null) {
             with(searchView) {
                 isActivated = true
                 onActionViewExpanded()
                 isIconified = false
-                savedQuery = viewModel.filter
+                setQuery(viewModel.filter, false)
                 setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
-                    override fun onQueryTextChange(query: String): Boolean = true
+                    override fun onQueryTextChange(query: String): Boolean {
+                        if (!redirectedToPortrait.get() && query.isBlank()) {
+                            onQueryTextSubmit(query)
+                        }
+                        return false
+                    }
 
                     override fun onQueryTextSubmit(query: String): Boolean {
                         loadMeteorites(query)
@@ -332,9 +337,11 @@ class MeteoriteListFragment : Fragment() {
                     }
 
                 })
+
             }
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
