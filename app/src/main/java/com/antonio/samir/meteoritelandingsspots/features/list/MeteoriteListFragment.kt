@@ -2,16 +2,15 @@ package com.antonio.samir.meteoritelandingsspots.features.list
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
+import android.view.*
 import android.view.View.*
-import android.view.ViewGroup
 import androidx.annotation.NonNull
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.Result
@@ -21,6 +20,7 @@ import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteListBinding
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailFragment
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListFragmentDirections.Companion.toDetail
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel.ContentStatus.*
 import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.MeteoriteAdapter
 import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.SpacesItemDecoration
 import com.antonio.samir.meteoritelandingsspots.ui.extension.isLandscape
@@ -33,6 +33,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 @FlowPreview
 @ExperimentalCoroutinesApi
 class MeteoriteListFragment : Fragment() {
+
+    private var searchView: SearchView? = null
 
     private var layoutManager: GridLayoutManager? = null
 
@@ -82,7 +84,7 @@ class MeteoriteListFragment : Fragment() {
 
         setupLocation()
 
-        showProgressLoader()
+        setHasOptionsMenu(true)
 
     }
 
@@ -133,21 +135,33 @@ class MeteoriteListFragment : Fragment() {
 
     private fun observeMeteorites() {
 
-        viewModel.getMeteorites().observe(viewLifecycleOwner) { meteorites ->
-            if (meteorites.isEmpty()) {
-                noResult()
-            } else {
-                showContent()
-                meteoriteAdapter.setData(meteorites)
+        viewModel.contentStatus.observe(viewLifecycleOwner) { contentStatus ->
+            when (contentStatus) {
+                ShowContent -> showContent()
+                NoContent -> noResult()
+                Loading -> showProgressLoader()
             }
         }
 
-        if (viewModel.filter.isBlank()) {
-            viewModel.loadMeteorites()
-        } else {
-//            binding.searchText?.setQuery(viewModel.filter, true)
+        viewModel.getMeteorites().observe(viewLifecycleOwner) { meteorites ->
+            onSuccess(meteorites)
         }
 
+        val filter = viewModel.filter
+        if (filter.isBlank()) {
+            viewModel.loadMeteorites()
+        } else {
+            searchView?.setQuery(filter, true)
+        }
+
+    }
+
+    private fun onSuccess(meteorites: PagedList<Meteorite>) {
+        if (meteorites.isEmpty()) {
+            noResult()
+        } else {
+            meteoriteAdapter.submitList(meteorites)
+        }
     }
 
     private fun observeRecoveryAddressStatus() {
@@ -191,7 +205,6 @@ class MeteoriteListFragment : Fragment() {
 
     private fun unableToFetch() {
         error(getString(R.string.no_network))
-//        binding.searchText?.visibility = GONE
     }
 
     private fun error(messageString: String) {
@@ -286,6 +299,40 @@ class MeteoriteListFragment : Fragment() {
                 if (isPermitted) {
                     viewModel.updateLocation()
                 }
+            }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main, menu)
+
+        searchView = menu.findItem(R.id.action_search).actionView as SearchView
+
+        setup(searchView)
+
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    private fun setup(searchView: SearchView?) {
+        if (searchView != null) {
+            with(searchView) {
+                isActivated = true
+                onActionViewExpanded()
+                isIconified = false
+                setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+                    override fun onQueryTextChange(query: String): Boolean = false
+
+                    override fun onQueryTextSubmit(query: String): Boolean {
+                        loadMeteorites(query)
+                        return true
+                    }
+
+                    private fun loadMeteorites(query: String) {
+                        viewModel.loadMeteorites(query)
+                    }
+
+                })
             }
         }
     }
