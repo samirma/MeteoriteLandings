@@ -62,7 +62,7 @@ class AddressServiceTest {
 
         whenever(mockGeoLocationUtil.getAddress(any(), any())).thenReturn(address)
 
-        val expected: List<Result<Nothing>> = listOf(Result.InProgress(), Result.InProgress(), Result.Success())
+        val expected: List<Result<Unit>> = listOf(Result.InProgress(), Result.InProgress(), Result.Success(Unit))
         assertEquals(expected, addressService.recoveryAddress().toList())
 
         verify(mockLocalRepository).meteoritesWithOutAddress()
