@@ -2,6 +2,7 @@ package com.antonio.samir.meteoritelandingsspots.features.list.ui
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import androidx.lifecycle.SavedStateHandle
 import androidx.paging.DataSource
 import androidx.paging.PagedList
 import com.antonio.samir.meteoritelandingsspots.data.Result
@@ -39,11 +40,18 @@ class MeteoriteListViewModelTest {
     private val mockRepository: MeteoriteRepository = mock()
     private val mockGPSTracker: GPSTrackerInterface = mock()
     private val addressService: AddressServiceInterface = mock()
+    private val mockSavedStateHandle: SavedStateHandle = mock()
 
     @Before
     fun setUp() {
 
-        viewModel = MeteoriteListViewModel(mockGPSTracker, addressService, coroutinesTestRule.testDispatcherProvider, get())
+        viewModel = MeteoriteListViewModel(
+                stateHandle = mockSavedStateHandle,
+                meteoriteRepository = mockRepository,
+                gpsTracker = mockGPSTracker,
+                addressService = addressService,
+                dispatchers = coroutinesTestRule.testDispatcherProvider
+        )
     }
 
     @Test
@@ -101,7 +109,7 @@ class MeteoriteListViewModelTest {
 
         val mockMet: DataSource.Factory<Int, Meteorite> = mock()
 
-        whenever(mockRepository.loadMeteorites(any(), any(), any())).thenReturn(mockMet)
+        whenever(mockRepository.loadMeteorites(any(), any(), any(), any())).thenReturn(mockMet)
 
         viewModel.loadMeteorites()
 

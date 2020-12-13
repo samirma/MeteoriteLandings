@@ -4,7 +4,9 @@ import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.remote.MeteoriteRemoteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteView
 import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
+import com.flextrade.jfixture.annotations.Fixture
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
@@ -28,6 +30,8 @@ class MeteoriteRepositoryImplTest {
     private val mockRemoteRepository: MeteoriteRemoteRepository = mock()
 
     private lateinit var repository: MeteoriteRepository
+
+    val fixtPageSize: Int = 100
 
     @Before
     fun setUp() {
@@ -54,13 +58,13 @@ class MeteoriteRepositoryImplTest {
 
         whenever(mockRemoteRepository.getMeteorites(any(), any())).thenReturn(meteorites)
 
-        val expected: List<Result<Nothing>> = listOf(Result.InProgress(), Result.Success())
+        val expected: List<Result<Unit>> = listOf(Result.InProgress(), Result.Success(Unit))
         val actual = repository.loadDatabase().toList()
         assertEquals(expected, actual)
 
         verify(mockLocalRepository).getMeteoritesCount()
 
-        verify(mockRemoteRepository).getMeteorites(meteorites.size, repository.pageSize)
+        verify(mockRemoteRepository).getMeteorites(meteorites.size, fixtPageSize)
 
     }
 
@@ -79,7 +83,7 @@ class MeteoriteRepositoryImplTest {
 
         whenever(mockRemoteRepository.getMeteorites(any(), any())).thenReturn(meteorites)
 
-        val expected: List<Result<Nothing>> = listOf(Result.InProgress(), Result.Success())
+        val expected: List<Result<Unit>> = listOf(Result.InProgress(), Result.Success(Unit))
         val actual = repository.loadDatabase().toList()
         assertEquals(expected, actual)
 
