@@ -8,6 +8,6 @@
         android:icon="@drawable/ic_baseline_search_24"
         app:showAsAction="collapseActionView|always"
         app:queryHint="@string/searchView_query_hint"
-        app:actionViewClass="com.antonio.samir.meteoritelandingsspots.ui.CustomSearchView" />
+        app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
 </menu>
