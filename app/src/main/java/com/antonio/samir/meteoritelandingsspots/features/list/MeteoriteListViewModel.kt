@@ -12,11 +12,9 @@ import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel.ContentStatus.*
+import kotlinx.coroutines.flow.*
 
 /**
  * Layer responsible for manage the interactions between the activity and the services
@@ -37,9 +35,13 @@ class MeteoriteListViewModel(
 
     val selectedMeteorite = meteorite.asFlow().asLiveData()
 
+    val contentStatus = MutableLiveData<ContentStatus>(Loading)
+
     var filter = ""
 
     fun loadMeteorites(location: String? = null) {
+
+        contentStatus.postValue(Loading)
 
         location?.let { this.filter = it }
 
@@ -86,12 +88,27 @@ class MeteoriteListViewModel(
                 .switchMap {
                     it.build()
                 }
+                .map {
+                    if (it.isEmpty()) {
+                        contentStatus.postValue(NoContent)
+
+                    } else {
+                        contentStatus.postValue(ShowContent)
+                    }
+                    return@map it
+                }
     }
 
     fun getNetworkLoadingStatus() = meteoriteRepository.loadDatabase().asLiveData()
 
     fun clearSelectedMeteorite() {
         selectMeteorite(null)
+    }
+
+    sealed class ContentStatus {
+        object ShowContent : ContentStatus()
+        object NoContent : ContentStatus()
+        object Loading : ContentStatus()
     }
 
     companion object {

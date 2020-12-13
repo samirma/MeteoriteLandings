@@ -44,11 +44,6 @@ class MeteoriteAdapter : PagedListAdapter<Meteorite, ViewHolderMeteorite>(Meteor
         return currentList?.indexOf(current)
     }
 
-    fun setData(meteorites: PagedList<Meteorite>) {
-        submitList(meteorites)
-        notifyDataSetChanged()
-    }
-
     override fun onBindViewHolder(viewHolder: ViewHolderMeteorite, position: Int) {
         getItem(position)?.let { meteorite ->
             val isSelected = selectedMeteorite == meteorite
