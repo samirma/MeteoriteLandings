@@ -56,13 +56,18 @@ class AddressServiceTest {
                     emit(emptyList())
                 })
 
+        whenever(mockLocalRepository.getMeteoritesWithoutAddressCount()).thenReturn(meteorites.size)
+        whenever(mockLocalRepository.getMeteoritesCount()).thenReturn(meteorites.size*2)
+        whenever(mockLocalRepository.getMeteoritesWithoutAddressCount()).thenReturn(0)
+
+
         whenever(address.locality).thenReturn("city")
         whenever(address.adminArea).thenReturn("adminArea")
         whenever(address.countryName).thenReturn("countryName")
 
         whenever(mockGeoLocationUtil.getAddress(any(), any())).thenReturn(address)
 
-        val expected: List<Result<Unit>> = listOf(Result.InProgress(), Result.InProgress(), Result.Success(Unit))
+        val expected = listOf(Result.InProgress(100f), Result.Success(100f))
         assertEquals(expected, addressService.recoveryAddress().toList())
 
         verify(mockLocalRepository).meteoritesWithOutAddress()
