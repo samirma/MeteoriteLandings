@@ -4,9 +4,7 @@ import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.remote.MeteoriteRemoteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteView
 import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
-import com.flextrade.jfixture.annotations.Fixture
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
@@ -31,7 +29,7 @@ class MeteoriteRepositoryImplTest {
 
     private lateinit var repository: MeteoriteRepository
 
-    val fixtPageSize: Int = 100
+    val fixtPageSize: Int = 5000
 
     @Before
     fun setUp() {
@@ -39,7 +37,7 @@ class MeteoriteRepositoryImplTest {
         repository = MeteoriteRepositoryImpl(mockLocalRepository, mockRemoteRepository, coroutinesTestRule.testDispatcherProvider)
 
     }
-    
+
     @Test
     fun `test loadDatabase already loaded`() = runBlockingTest {
 
@@ -57,9 +55,11 @@ class MeteoriteRepositoryImplTest {
         whenever(mockLocalRepository.getMeteoritesCount()).thenReturn(meteorites.size)
 
         whenever(mockRemoteRepository.getMeteorites(any(), any())).thenReturn(meteorites)
+        whenever(mockRemoteRepository.getMeteorites(any(), any())).thenReturn(emptyList())
 
         val expected: List<Result<Unit>> = listOf(Result.InProgress(), Result.Success(Unit))
-        val actual = repository.loadDatabase().toList()
+        val loadDatabase = repository.loadDatabase()
+        val actual = loadDatabase.toList()
         assertEquals(expected, actual)
 
         verify(mockLocalRepository).getMeteoritesCount()
@@ -82,6 +82,7 @@ class MeteoriteRepositoryImplTest {
         whenever(mockLocalRepository.getMeteoritesCount()).thenReturn(1)
 
         whenever(mockRemoteRepository.getMeteorites(any(), any())).thenReturn(meteorites)
+        whenever(mockRemoteRepository.getMeteorites(any(), any())).thenReturn(emptyList())
 
         val expected: List<Result<Unit>> = listOf(Result.InProgress(), Result.Success(Unit))
         val actual = repository.loadDatabase().toList()

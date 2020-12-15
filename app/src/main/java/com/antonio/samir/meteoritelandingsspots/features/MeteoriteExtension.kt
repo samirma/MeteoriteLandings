@@ -42,7 +42,7 @@ val Meteorite.yearString: String?
     get() {
         val value = year
         var yearParsed = value
-        if (!TextUtils.isEmpty(value)) {
+        if (!value.isNullOrBlank()) {
             try {
                 val date = SIMPLE_DATE_FORMAT.parse(year!!.trim { it <= ' ' })
 

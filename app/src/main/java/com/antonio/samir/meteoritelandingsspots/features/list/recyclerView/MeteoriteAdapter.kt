@@ -4,7 +4,6 @@ import android.location.Location
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
@@ -23,13 +22,8 @@ class MeteoriteAdapter : PagedListAdapter<Meteorite, ViewHolderMeteorite>(Meteor
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderMeteorite {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_meteorite, parent, false)
-        val vh = ViewHolderMeteorite(view)
 
-        //On view click use MeteoriteSelector to do execute the proper according the current layout
-        view.setOnClickListener {
-            openMeteorite.value = vh.meteorite
-        }
-        return vh
+        return ViewHolderMeteorite(view)
     }
 
     fun updateListUI(current: Meteorite?, previous: Meteorite? = selectedMeteorite) {
@@ -47,7 +41,9 @@ class MeteoriteAdapter : PagedListAdapter<Meteorite, ViewHolderMeteorite>(Meteor
     override fun onBindViewHolder(viewHolder: ViewHolderMeteorite, position: Int) {
         getItem(position)?.let { meteorite ->
             val isSelected = selectedMeteorite == meteorite
-            viewHolder.onBind(meteorite, isSelected, location)
+            viewHolder.onBind(meteorite, isSelected, location) {
+                openMeteorite.value = meteorite
+            }
         }
     }
 
