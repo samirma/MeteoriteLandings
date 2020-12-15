@@ -10,9 +10,8 @@ import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.getLocationText
 import com.antonio.samir.meteoritelandingsspots.features.yearString
-import org.apache.commons.lang3.StringUtils
 
-class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
+class ViewHolderMeteorite(val view: View) : RecyclerView.ViewHolder(view) {
 
     val context: Context = view.context
 
@@ -27,7 +26,8 @@ class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
     fun onBind(
             meteorite: Meteorite,
             selectedMeteorite: Boolean,
-            location: Location?
+            location: Location?,
+            onClick: () -> Unit
     ) {
 
         if (this.meteorite?.id == meteorite.id) {
@@ -35,6 +35,10 @@ class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
         } else {
             this.meteorite = meteorite
             populateViewHolder(meteorite, location, selectedMeteorite)
+        }
+
+        view.setOnClickListener {
+            onClick()
         }
 
     }

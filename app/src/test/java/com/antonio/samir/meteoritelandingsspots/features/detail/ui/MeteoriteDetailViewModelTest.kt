@@ -4,6 +4,7 @@ import android.content.Context
 import android.location.Location
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.data.Result.InProgress
 import com.antonio.samir.meteoritelandingsspots.data.Result.Success
@@ -50,9 +51,12 @@ class MeteoriteDetailViewModelTest {
     @Fixture
     lateinit var fixtMeteoriteView: MeteoriteView
 
+    @Fixture
+    lateinit var fixtString: String
+
     private lateinit var viewModel: MeteoriteDetailViewModel
 
-    private val observer: Observer<Result<MeteoriteView>> = mock()
+    private val mockMeteoriteObserver: Observer<Result<MeteoriteView>> = mock()
 
     private var currentLocation = ConflatedBroadcastChannel<Location?>(null)
 
@@ -67,7 +71,11 @@ class MeteoriteDetailViewModelTest {
 
         whenever(mockGPSTracker.location).thenReturn(currentLocation.asFlow())
 
+        whenever(mockContext.getString(R.string.unkown)).thenReturn(fixtString)
+
         viewModel = MeteoriteDetailViewModel(mockContext, mockRepository, mockGPSTracker)
+
+        viewModel.meteorite.observeForever(mockMeteoriteObserver)
 
     }
 
@@ -81,17 +89,16 @@ class MeteoriteDetailViewModelTest {
         }
 
         whenever(mockRepository.getMeteoriteById(any())).thenReturn(flow {
+            emit(InProgress())
             emit(Success(meteorite))
         })
 
         viewModel.loadMeteorite(fixtMeteoriteView.id!!)
 
-        viewModel.meteorite.observeForever(observer)
-
         currentLocation.offer(mockLocation)
 
-        verify(observer).onChanged(Result.InProgress())
-        verify(observer).onChanged(Result.Success(fixtMeteoriteView))
+        verify(mockMeteoriteObserver).onChanged(InProgress())
+        verify(mockMeteoriteObserver).onChanged(Success(fixtMeteoriteView))
 
     }
 

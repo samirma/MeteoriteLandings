@@ -9,13 +9,11 @@ import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel.ContentStatus
 import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
 import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.flow
@@ -40,7 +38,10 @@ class MeteoriteListViewModelTest {
     private val mockRepository: MeteoriteRepository = mock()
     private val mockGPSTracker: GPSTrackerInterface = mock()
     private val addressService: AddressServiceInterface = mock()
-    private val mockSavedStateHandle: SavedStateHandle = mock()
+    private val mockSavedStateHandle = SavedStateHandle()
+
+    val mockObserverPageList: Observer<PagedList<Meteorite>> = mock()
+    val mockObserverContentStatus: Observer<ContentStatus> = mock()
 
     @Before
     fun setUp() {
@@ -52,6 +53,10 @@ class MeteoriteListViewModelTest {
                 addressService = addressService,
                 dispatchers = coroutinesTestRule.testDispatcherProvider
         )
+
+        viewModel.getMeteorites().observeForever(mockObserverPageList)
+        viewModel.contentStatus.observeForever(mockObserverContentStatus)
+
     }
 
     @Test
@@ -101,7 +106,7 @@ class MeteoriteListViewModelTest {
     }
 
     @Test
-    fun getMeteorites() = runBlockingTest {
+    fun `test loadMeteorites`() = runBlockingTest {
 
         whenever(mockGPSTracker.location).thenReturn(flow {
             emit(null)
@@ -111,10 +116,9 @@ class MeteoriteListViewModelTest {
 
         whenever(mockRepository.loadMeteorites(any(), any(), any(), any())).thenReturn(mockMet)
 
-        viewModel.loadMeteorites()
+        viewModel.loadMeteorites("test")
 
-        val observer: Observer<PagedList<Meteorite>> = mock()
-        viewModel.getMeteorites().observeForever(observer)
+        verify(mockObserverContentStatus, times(2)).onChanged(ContentStatus.Loading)
 
     }
 
