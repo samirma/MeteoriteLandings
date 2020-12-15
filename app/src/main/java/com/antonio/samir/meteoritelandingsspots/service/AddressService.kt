@@ -16,6 +16,9 @@ import kotlinx.coroutines.withContext
 import org.apache.commons.lang3.StringUtils
 import java.util.*
 
+/**
+ * Evaluate convert this class to work manager
+ */
 @ExperimentalCoroutinesApi
 class AddressService(
         private val meteoriteLocalRepository: MeteoriteLocalRepository,
@@ -24,7 +27,6 @@ class AddressService(
 ) : AddressServiceInterface {
 
     val TAG = AddressService::class.java.simpleName
-
 
     override fun recoveryAddress(): Flow<Result<Float>> = meteoriteLocalRepository.meteoritesWithOutAddress()
             .onEach { recoverAddress(it) }
