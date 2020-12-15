@@ -29,7 +29,7 @@ class MeteoriteRepositoryImplTest {
 
     private lateinit var repository: MeteoriteRepository
 
-    val fixtPageSize: Int = 5000
+    private val fixtPageSize: Int = 5000
 
     @Before
     fun setUp() {

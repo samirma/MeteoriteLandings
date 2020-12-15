@@ -11,6 +11,7 @@ import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteReposit
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.getLocationText
 import com.antonio.samir.meteoritelandingsspots.features.yearString
+import com.antonio.samir.meteoritelandingsspots.ui.extension.convertToNumberFormat
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -18,9 +19,6 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import java.lang.Exception
-import java.text.NumberFormat
-import java.util.*
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -45,37 +43,20 @@ class MeteoriteDetailViewModel(
             }
             .asLiveData()
 
-    fun getMeteoriteView(meteorite: Meteorite, location: Location?): MeteoriteView {
-
-        return MeteoriteView(
-                id = meteorite.id.toString(),
-                name = meteorite.name,
-                yearString = meteorite.yearString,
-                address = meteorite.getLocationText(
-                        context = context,
-                        location = location
-                ),
-                recclass = meteorite.recclass,
-                mass = getMass(meteorite),
-                reclat = meteorite.reclat?.toDouble() ?: 0.0,
-                reclong = meteorite.reclong?.toDouble() ?: 0.0,
-                hasAddress = !meteorite.address.isNullOrBlank()
-        )
-    }
-
-    private fun getMass(meteorite: Meteorite): String? {
-        val mass = meteorite.mass
-        val unknown = context.getString(R.string.unkown)
-        return if (mass.isNullOrBlank()) {
-            unknown
-        } else {
-            try {
-                NumberFormat.getInstance(Locale.getDefault()).format(mass.toDouble())
-            } catch (ex: Exception){
-                unknown
-            }
-        }
-    }
+    fun getMeteoriteView(meteorite: Meteorite, location: Location?) = MeteoriteView(
+            id = meteorite.id.toString(),
+            name = meteorite.name,
+            yearString = meteorite.yearString,
+            address = meteorite.getLocationText(
+                    context = context,
+                    location = location
+            ),
+            recclass = meteorite.recclass,
+            mass = meteorite.mass.convertToNumberFormat(context.getString(R.string.unkown)),
+            reclat = meteorite.reclat?.toDouble() ?: 0.0,
+            reclong = meteorite.reclong?.toDouble() ?: 0.0,
+            hasAddress = !meteorite.address.isNullOrBlank()
+    )
 
     fun loadMeteorite(meteoriteId: String) {
         currentMeteorite.offer(meteoriteId)
