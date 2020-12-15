@@ -24,3 +24,12 @@ https://www.norio.be/android-feature-graphic-generator/
 - Room
 - Navigation-ui
 - Retrofit2
+
+
+## My MAD Score (Modern Android Development)
+
+# Summary
+
+# Kotlin
+
+# Jetpack
