@@ -28,8 +28,15 @@ https://www.norio.be/android-feature-graphic-generator/
 
 ## My MAD Score (Modern Android Development)
 
-# Summary
+### Summary
 
-# Kotlin
+![Sumary](https://raw.githubusercontent.com/samirma/MeteoriteLandings/feature/1.4/madscore/summary.png)
 
-# Jetpack
+
+### Kotlin
+
+![Kotlin](https://raw.githubusercontent.com/samirma/MeteoriteLandings/feature/1.4/madscore/kotlin.png)
+
+### Jetpack
+
+![Kotlin](https://raw.githubusercontent.com/samirma/MeteoriteLandings/feature/1.4/madscore/jetpack.png)
