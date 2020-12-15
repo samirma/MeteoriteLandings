@@ -3,10 +3,10 @@ package com.antonio.samir.meteoritelandingsspots.features
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
-import android.text.TextUtils
 import android.util.Log
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.ui.extension.convertToNumberFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -23,14 +23,22 @@ fun Meteorite.getDistanceFrom(currentLocation: Location?): String? {
 }
 
 private fun formatDistance(distance: Float) = if (distance > 0) {
-    val distanceTo = if (distance > SHOW_IN_METERS) {
-        val kilometers = (distance / 1000).roundToInt()
-        "$kilometers km"
+    val distanceInKm = distance > SHOW_IN_METERS
+
+    val distance = if (distanceInKm) {
+        (distance / 1000).roundToInt().toString()
     } else {
-        val meters = distance.roundToInt()
-        "$meters m"
+        distance.roundToInt().toString()
     }
-    "$distanceTo away"
+
+
+    val distanceUnit = if (distanceInKm) {
+        "km"
+    } else {
+        "m"
+    }
+
+    "${distance.convertToNumberFormat(distance)} $distanceUnit away"
 } else {
     null
 }
