@@ -26,7 +26,13 @@ https://www.norio.be/android-feature-graphic-generator/
 - Retrofit2
 
 
+
+
+
 ## My MAD Score (Modern Android Development)
+
+
+
 
 ### Summary
 
