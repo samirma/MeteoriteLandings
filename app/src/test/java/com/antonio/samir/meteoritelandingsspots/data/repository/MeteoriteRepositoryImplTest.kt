@@ -5,10 +5,7 @@ import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalReposit
 import com.antonio.samir.meteoritelandingsspots.data.remote.MeteoriteRemoteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
@@ -55,7 +52,7 @@ class MeteoriteRepositoryImplTest {
         whenever(mockLocalRepository.getMeteoritesCount()).thenReturn(meteorites.size)
 
         whenever(mockRemoteRepository.getMeteorites(any(), any())).thenReturn(meteorites)
-        whenever(mockRemoteRepository.getMeteorites(any(), any())).thenReturn(emptyList())
+                .thenReturn(emptyList())
 
         val expected: List<Result<Unit>> = listOf(Result.InProgress(), Result.Success(Unit))
         val loadDatabase = repository.loadDatabase()
@@ -79,10 +76,10 @@ class MeteoriteRepositoryImplTest {
 
         val meteorites = listOf(meteorite)
 
-        whenever(mockLocalRepository.getMeteoritesCount()).thenReturn(1)
+        whenever(mockLocalRepository.getMeteoritesCount()).thenReturn(50001)
 
         whenever(mockRemoteRepository.getMeteorites(any(), any())).thenReturn(meteorites)
-        whenever(mockRemoteRepository.getMeteorites(any(), any())).thenReturn(emptyList())
+                .thenReturn(emptyList())
 
         val expected: List<Result<Unit>> = listOf(Result.InProgress(), Result.Success(Unit))
         val actual = repository.loadDatabase().toList()
@@ -90,7 +87,7 @@ class MeteoriteRepositoryImplTest {
 
         verify(mockLocalRepository).getMeteoritesCount()
         verify(mockLocalRepository).insertAll(meteorites)
-        verify(mockRemoteRepository).getMeteorites(any(), any())
+        verify(mockRemoteRepository, times(2)).getMeteorites(any(), any())
 
     }
 
