@@ -86,6 +86,7 @@ class MeteoriteDetailViewModelTest {
             id = 123
             reclong = "0"
             reclat = "1"
+            mass = "0"
         }
 
         whenever(mockRepository.getMeteoriteById(any())).thenReturn(flow {
@@ -93,12 +94,22 @@ class MeteoriteDetailViewModelTest {
             emit(Success(meteorite))
         })
 
-        viewModel.loadMeteorite(fixtMeteoriteView.id!!)
-
         currentLocation.offer(mockLocation)
 
+        viewModel.loadMeteorite(fixtMeteoriteView.id!!)
+
         verify(mockMeteoriteObserver).onChanged(InProgress())
-        verify(mockMeteoriteObserver).onChanged(Success(fixtMeteoriteView))
+        verify(mockMeteoriteObserver).onChanged(Success(MeteoriteView(
+                id = "123",
+                name = null,
+                yearString = null,
+                address = "",
+                recclass = null,
+                mass = meteorite.mass,
+                reclat = 1.0,
+                reclong = 0.0,
+                hasAddress = false
+        )))
 
     }
 
