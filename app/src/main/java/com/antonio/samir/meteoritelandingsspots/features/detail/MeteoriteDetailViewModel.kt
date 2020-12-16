@@ -43,7 +43,7 @@ class MeteoriteDetailViewModel(
             }
             .asLiveData()
 
-    fun getMeteoriteView(meteorite: Meteorite, location: Location?) = MeteoriteView(
+    private fun getMeteoriteView(meteorite: Meteorite, location: Location?) = MeteoriteView(
             id = meteorite.id.toString(),
             name = meteorite.name,
             yearString = meteorite.yearString,
