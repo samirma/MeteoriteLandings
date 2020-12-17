@@ -72,10 +72,11 @@ class MeteoriteDetailViewModelTest {
         whenever(mockGPSTracker.location).thenReturn(currentLocation.asFlow())
 
         whenever(mockContext.getString(R.string.unkown)).thenReturn(fixtString)
+        whenever(mockContext.getString(R.string.without_address_placeholder)).thenReturn(fixtString)
 
-        viewModel = MeteoriteDetailViewModel(mockContext, mockRepository, mockGPSTracker)
+        viewModel = MeteoriteDetailViewModel(mockRepository, mockGPSTracker)
 
-        viewModel.meteorite.observeForever(mockMeteoriteObserver)
+        viewModel.getMeteorite(mockContext).observeForever(mockMeteoriteObserver)
 
     }
 
@@ -103,7 +104,7 @@ class MeteoriteDetailViewModelTest {
                 id = "123",
                 name = null,
                 yearString = null,
-                address = "",
+                address = fixtString,
                 recclass = null,
                 mass = meteorite.mass,
                 reclat = 1.0,
