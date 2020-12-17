@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.Result
+import com.antonio.samir.meteoritelandingsspots.data.Result.*
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.getLocationText
@@ -23,33 +24,32 @@ import kotlinx.coroutines.flow.flatMapLatest
 @FlowPreview
 @ExperimentalCoroutinesApi
 class MeteoriteDetailViewModel(
-        private val context: Context,
         private val meteoriteRepository: MeteoriteRepository,
-        gpsTracker: GPSTrackerInterface
+        gpsTracker: GPSTrackerInterface,
 ) : ViewModel() {
 
     private var currentMeteorite = ConflatedBroadcastChannel<String>()
 
     val location = gpsTracker.location
 
-    val meteorite: LiveData<Result<MeteoriteView>> = currentMeteorite.asFlow()
+    fun getMeteorite(context: Context): LiveData<Result<MeteoriteView>> = currentMeteorite.asFlow()
             .flatMapLatest(meteoriteRepository::getMeteoriteById)
             .combine(location) { meteorite, location -> //Add location
                 when (meteorite) {
-                    is Result.Success -> Result.Success(getMeteoriteView(meteorite.data, location))
-                    is Result.Error -> Result.Error(meteorite.exception)
-                    is Result.InProgress -> Result.InProgress()
+                    is Success -> Success(getMeteoriteView(meteorite.data, location, context))
+                    is Error -> Error(meteorite.exception)
+                    is InProgress -> InProgress()
                 }
             }
             .asLiveData()
 
-    private fun getMeteoriteView(meteorite: Meteorite, location: Location?) = MeteoriteView(
+    private fun getMeteoriteView(meteorite: Meteorite, location: Location?, context: Context) = MeteoriteView(
             id = meteorite.id.toString(),
             name = meteorite.name,
             yearString = meteorite.yearString,
             address = meteorite.getLocationText(
-                    context = context,
-                    location = location
+                    location = location,
+                    noAddress = context.getString(R.string.without_address_placeholder)
             ),
             recclass = meteorite.recclass,
             mass = meteorite.mass.convertToNumberFormat(context.getString(R.string.unkown)),

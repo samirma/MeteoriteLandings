@@ -25,7 +25,7 @@ class MeteoriteRepositoryImpl(
         private val dispatchers: DispatcherProvider,
 ) : MeteoriteRepository {
 
-    val shouldLoad = AtomicBoolean(true)
+    private val shouldLoad = AtomicBoolean(true)
 
     override suspend fun loadMeteorites(
             filter: String?,

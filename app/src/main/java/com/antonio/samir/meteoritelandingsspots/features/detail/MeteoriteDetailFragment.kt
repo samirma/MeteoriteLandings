@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.data.Result
+import com.antonio.samir.meteoritelandingsspots.data.Result.*
 import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteDetailBinding
 import com.antonio.samir.meteoritelandingsspots.ui.extension.isLandscape
 import com.antonio.samir.meteoritelandingsspots.ui.extension.showActionBar
@@ -31,7 +33,7 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
 
     private val viewModel: MeteoriteDetailViewModel by viewModel()
 
-    val args: MeteoriteDetailFragmentArgs by navArgs()
+    private val args: MeteoriteDetailFragmentArgs by navArgs()
 
     private var _binding: FragmentMeteoriteDetailBinding? = null
 
@@ -64,9 +66,9 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
 
     private fun observeMeteorite() {
 
-        viewModel.meteorite.observe(viewLifecycleOwner, { result ->
+        viewModel.getMeteorite(requireContext()).observe(viewLifecycleOwner, { result ->
             when (result) {
-                is Result.Success -> {
+                is Success -> {
                     result.data.let { meteorite ->
                         if (meteorite == this.meteorite) {
                             if (meteorite.address != this.meteorite?.address) {
@@ -79,11 +81,36 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
                                     .getMapAsync(this)
                         }
                     }
-
+                    showContent()
                 }
+                is Error -> showError()
+                is InProgress -> showProgressLoader()
             }
         })
 
+    }
+
+    private fun showError() {
+        error(getString(R.string.general_error))
+    }
+
+    private fun error(messageString: String) {
+        binding.progressLoader.visibility =  INVISIBLE
+        binding.content.visibility = INVISIBLE
+        binding.messageTV.visibility = VISIBLE
+        binding.messageTV.text = messageString
+    }
+
+    private fun showProgressLoader() {
+        binding.messageTV.visibility = INVISIBLE
+        binding.progressLoader.visibility = VISIBLE
+        binding.content.visibility = INVISIBLE
+    }
+
+    private fun showContent() {
+        binding.messageTV.visibility = INVISIBLE
+        binding.progressLoader.visibility =  INVISIBLE
+        binding.content.visibility = VISIBLE
     }
 
     fun setCurrentMeteorite(meteoriteId: String) {
@@ -139,7 +166,7 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
         val address = meteorite.address
         binding.locationTxt.text = address
         binding.locationTxt.visibility = if (meteorite.hasAddress) {
-            View.VISIBLE
+            VISIBLE
         } else {
             viewModel.requestAddressUpdate(meteorite)
             View.GONE
@@ -153,7 +180,7 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
 
     companion object {
 
-        val TAG = MeteoriteDetailFragment::class.java.simpleName
+        val TAG: String = MeteoriteDetailFragment::class.java.simpleName
 
         fun newInstance(meteoriteId: String): MeteoriteDetailFragment {
             return MeteoriteDetailFragment().apply {
