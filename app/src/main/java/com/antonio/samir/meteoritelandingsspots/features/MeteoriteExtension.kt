@@ -90,11 +90,11 @@ fun Meteorite.finalAddress(location: Location?, currentAddress :String? = this.a
     return list.joinToString(separator = " - ")
 }
 
-fun Meteorite.getLocationText(context: Context, location: Location?): String? =
+fun Meteorite.getLocationText(location: Location?, noAddress: String): String =
         finalAddress(location, if (!this.address.isNullOrEmpty()) {
             this.address
         } else {
-            context.getString(R.string.without_address_placeholder)
+            noAddress
         })
 
 private const val SHOW_IN_METERS = 999

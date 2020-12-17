@@ -18,7 +18,7 @@ class MeteoriteAdapter : PagedListAdapter<Meteorite, ViewHolderMeteorite>(Meteor
 
     var openMeteorite = MutableLiveData<Meteorite>()
 
-    var selectedMeteorite: Meteorite? = null
+    private var selectedMeteorite: Meteorite? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderMeteorite {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_meteorite, parent, false)

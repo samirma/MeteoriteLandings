@@ -45,7 +45,7 @@ class MeteoritesAppWidget : AppWidgetProvider() {
     }
     
     companion object {
-        val ACTION_DATA_UPDATED = "com.sam_chordas.android.stockhawk.widget.ACTION_DATA_UPDATED"
+        const val ACTION_DATA_UPDATED = "com.sam_chordas.android.stockhawk.widget.ACTION_DATA_UPDATED"
     }
 }
 

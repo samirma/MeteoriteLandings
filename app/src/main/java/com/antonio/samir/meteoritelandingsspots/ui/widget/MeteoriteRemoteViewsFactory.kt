@@ -77,12 +77,12 @@ class MeteoriteRemoteViewsFactory(
         return true
     }
 
-    fun setLocationText(address: String?, views: RemoteViews) {
+    private fun setLocationText(address: String?, views: RemoteViews) {
         val text: String?
-        if (StringUtils.isNotEmpty(address)) {
-            text = address
+        text = if (StringUtils.isNotEmpty(address)) {
+            address
         } else {
-            text = ""
+            ""
         }
         views.setTextViewText(R.id.location, text)
 

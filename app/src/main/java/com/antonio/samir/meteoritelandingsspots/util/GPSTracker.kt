@@ -107,11 +107,6 @@ class GPSTracker(private val context: Context) : GPSTrackerInterface {
 
     companion object {
 
-        // The minimum distance to change Updates in meters
-        private const val MIN_DISTANCE_CHANGE_FOR_UPDATES: Long = 1 // 10 meters
-
-        // The minimum time between updates in milliseconds
-        private const val MIN_TIME_BW_UPDATES: Long = 15 // 1 minute
         private val TAG = GPSTracker::class.java.simpleName
     }
 
