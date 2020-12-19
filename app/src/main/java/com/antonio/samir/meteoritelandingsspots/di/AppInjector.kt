@@ -39,13 +39,13 @@ private val retrofit: Retrofit = Retrofit.Builder()
         .build()
 
 val localRepositoryModule = module {
-    single { MeteoriteLocalRepositoryImpl(get(), get()) as MeteoriteLocalRepository }
+    single<MeteoriteLocalRepository> { MeteoriteLocalRepositoryImpl(get(), get()) }
 }
 
 val networkModule = module {
     single { retrofit.create(NasaServerEndPoint::class.java) }
-    single { NetworkUtil(get()) as NetworkUtilInterface }
-    single { NasaNetworkService(get()) as MeteoriteRemoteRepository }
+    single<NetworkUtilInterface> { NetworkUtil(get()) }
+    single<MeteoriteRemoteRepository> { NasaNetworkService(get()) }
 }
 
 val databaseModule = module {
@@ -55,14 +55,31 @@ val databaseModule = module {
 @ExperimentalCoroutinesApi
 @FlowPreview
 val businessModule = module {
-    single { DefaultDispatcherProvider() as DispatcherProvider }
+    single<DispatcherProvider> { DefaultDispatcherProvider() }
     single { Geocoder(get()) }
-    single { GeoLocationUtil(get()) as GeoLocationUtilInterface }
-    single { GPSTracker(get()) as GPSTrackerInterface }
-    single { AddressService(get(), get()) as AddressServiceInterface }
-    single { MeteoriteRepositoryImpl(get(), get(), get()) as MeteoriteRepository }
+    single<GeoLocationUtilInterface> { GeoLocationUtil(get()) }
+    single<GPSTrackerInterface> { GPSTracker(get()) }
+    single<AddressServiceInterface> { AddressService(get(), get()) }
+    single<MeteoriteRepository> { MeteoriteRepositoryImpl(get(), get(), get()) }
 }
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-val appModules = listOf(localRepositoryModule, networkModule, databaseModule, businessModule)
+val viewModelModule = module {
+    viewModel {
+        MeteoriteDetailViewModel(get(), get())
+    }
+    viewModel {
+        MeteoriteListViewModel(
+                stateHandle = get(),
+                meteoriteRepository = get(),
+                gpsTracker = get(),
+                addressService = get(),
+                dispatchers = get()
+        )
+    }
+}
+
+@ExperimentalCoroutinesApi
+@FlowPreview
+val appModules = listOf(viewModelModule, localRepositoryModule, networkModule, databaseModule, businessModule)

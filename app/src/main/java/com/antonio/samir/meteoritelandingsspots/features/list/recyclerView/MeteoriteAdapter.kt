@@ -4,7 +4,6 @@ import android.location.Location
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
@@ -17,48 +16,39 @@ class MeteoriteAdapter : PagedListAdapter<Meteorite, ViewHolderMeteorite>(Meteor
 
     var location: Location? = null
 
-    var selectedMeteorite = MutableLiveData<Meteorite>()
+    var openMeteorite = MutableLiveData<Meteorite>()
+
+    private var selectedMeteorite: Meteorite? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderMeteorite {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_meteorite, parent, false)
-        val vh = ViewHolderMeteorite(view)
 
-        //On view click use MeteoriteSelector to do execute the proper according the current layout
-        view.setOnClickListener {
-            val previous = selectedMeteorite.value
-            val current = vh.meteorite
-            selectedMeteorite.value = current
-            updateListUI(current, previous)
-        }
-        return vh
+        return ViewHolderMeteorite(view)
     }
 
-    private fun updateListUI(current: Meteorite?, previous: Meteorite?) {
+    fun updateListUI(current: Meteorite?, previous: Meteorite? = selectedMeteorite) {
         if (!Objects.equals(previous, current)) {
-            currentList?.indexOf(current)?.let { notifyItemChanged(it) }
-            currentList?.indexOf(previous)?.let { notifyItemChanged(it) }
+            getPosition(current)?.let { notifyItemChanged(it) }
+            getPosition(previous)?.let { notifyItemChanged(it) }
         }
+        selectedMeteorite = current
     }
 
-    fun setData(meteorites: PagedList<Meteorite>) {
-        submitList(meteorites)
-        notifyDataSetChanged()
+    fun getPosition(current: Meteorite?): Int? {
+        return currentList?.indexOf(current)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolderMeteorite, position: Int) {
         getItem(position)?.let { meteorite ->
-            val isSelected = selectedMeteorite.value == meteorite
-            viewHolder.onBind(meteorite, isSelected, location)
+            val isSelected = selectedMeteorite == meteorite
+            viewHolder.onBind(meteorite, isSelected, location) {
+                openMeteorite.value = meteorite
+            }
         }
     }
 
-    override fun getItemId(position: Int): Long {
-        val item = getItem(position)
-        return if (item != null) {
-            (item.id.hashCode() + item.name.hashCode()).toLong()
-        } else {
-            super.getItemId(position)
-        }
+    fun clearSelectedMeteorite() {
+        openMeteorite = MutableLiveData<Meteorite>()
     }
 
 }

@@ -1,17 +1,18 @@
 package com.antonio.samir.meteoritelandingsspots.features
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.location.Location
-import android.text.TextUtils
 import android.util.Log
+import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
-import org.apache.commons.lang3.StringUtils
+import com.antonio.samir.meteoritelandingsspots.ui.extension.convertToNumberFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.*
 
-fun Meteorite.getDistanceFrom(currentLocation: Location?): String {
+fun Meteorite.getDistanceFrom(currentLocation: Location?): String? {
     val meteoriteLocation = getLocation()
     val distance = if (currentLocation != null && meteoriteLocation != null) {
         currentLocation.distanceTo(meteoriteLocation)
@@ -22,16 +23,24 @@ fun Meteorite.getDistanceFrom(currentLocation: Location?): String {
 }
 
 private fun formatDistance(distance: Float) = if (distance > 0) {
-    val distanceTo = if (distance > SHOW_IN_METERS) {
-        val kilometers = (distance / 1000).roundToInt()
-        "$kilometers km"
+    val distanceInKm = distance > SHOW_IN_METERS
+
+    val distance = if (distanceInKm) {
+        (distance / 1000).roundToInt().toString()
     } else {
-        val meters = distance.roundToInt()
-        "$meters m"
+        distance.roundToInt().toString()
     }
-    "$distanceTo away"
+
+
+    val distanceUnit = if (distanceInKm) {
+        "km"
+    } else {
+        "m"
+    }
+
+    "${distance.convertToNumberFormat(distance)} $distanceUnit away"
 } else {
-    StringUtils.EMPTY
+    null
 }
 
 @SuppressLint("SimpleDateFormat")
@@ -41,7 +50,7 @@ val Meteorite.yearString: String?
     get() {
         val value = year
         var yearParsed = value
-        if (!TextUtils.isEmpty(value)) {
+        if (!value.isNullOrBlank()) {
             try {
                 val date = SIMPLE_DATE_FORMAT.parse(year!!.trim { it <= ' ' })
 
@@ -66,5 +75,26 @@ fun Meteorite.getLocation(): Location? = try {
     null
 }
 
+fun Meteorite.finalAddress(location: Location?, currentAddress :String? = this.address): String {
+    val list = mutableListOf<String>()
+
+    if (!currentAddress.isNullOrBlank()) {
+        list += currentAddress
+    }
+
+    val distance = getDistanceFrom(location)
+    if (!distance.isNullOrBlank()) {
+        list += distance
+    }
+
+    return list.joinToString(separator = " - ")
+}
+
+fun Meteorite.getLocationText(location: Location?, noAddress: String): String =
+        finalAddress(location, if (!this.address.isNullOrEmpty()) {
+            this.address
+        } else {
+            noAddress
+        })
 
 private const val SHOW_IN_METERS = 999

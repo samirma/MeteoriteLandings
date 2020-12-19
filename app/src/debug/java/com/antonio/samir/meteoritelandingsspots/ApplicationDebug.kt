@@ -1,8 +1,10 @@
 package com.antonio.samir.meteoritelandingsspots
 
 import com.facebook.stetho.Stetho
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-class ApplicationDebug : com.antonio.samir.meteoritelandingsspots.Application() {
+@ExperimentalCoroutinesApi
+class ApplicationDebug : Application() {
 
     override fun onCreate() {
         super.onCreate()

@@ -18,8 +18,10 @@ class MeteoriteRepositoryTest {
     @get:Rule
     var coroutinesTestRule = CoroutineTestRule()
 
-    private val meteoriteDao: MeteoriteDao = mock()
-    private val location: Location = mock()
+    private val mockMeteoriteDao: MeteoriteDao = mock()
+    private val mockLocation: Location = mock()
+
+    private val mockLimit = 100L
 
     private lateinit var meteoriteLocalRepository: MeteoriteLocalRepository
 
@@ -27,7 +29,10 @@ class MeteoriteRepositoryTest {
     @Before
     fun setUp() {
 
-        meteoriteLocalRepository = MeteoriteLocalRepositoryImpl(meteoriteDao, coroutinesTestRule.testDispatcherProvider)
+        meteoriteLocalRepository = MeteoriteLocalRepositoryImpl(
+                meteoriteDao = mockMeteoriteDao,
+                dispatchers = coroutinesTestRule.testDispatcherProvider
+        )
 
     }
 
@@ -39,12 +44,12 @@ class MeteoriteRepositoryTest {
         val latitude = 2.0
         val longitude = 1.0
 
-        whenever(location.latitude).thenReturn(latitude)
-        whenever(location.longitude).thenReturn(longitude)
+        whenever(mockLocation.latitude).thenReturn(latitude)
+        whenever(mockLocation.longitude).thenReturn(longitude)
 
-        meteoriteLocalRepository.meteoriteOrdered(filter, latitude, longitude)
+        meteoriteLocalRepository.meteoriteOrdered(filter, latitude, longitude, 100)
 
-        verify(meteoriteDao).meteoriteOrderedByLocationFiltered(latitude, longitude, filter)
+        verify(mockMeteoriteDao).meteoriteOrderedByLocationFiltered(latitude, longitude, filter)
     }
 
     @Test
@@ -52,17 +57,17 @@ class MeteoriteRepositoryTest {
 
         val filter = "aa"
 
-        meteoriteLocalRepository.meteoriteOrdered(filter, null, 1.0)
+        meteoriteLocalRepository.meteoriteOrdered(filter, null, 1.0, mockLimit)
 
-        verify(meteoriteDao).meteoriteFiltered(filter)
+        verify(mockMeteoriteDao).meteoriteFiltered(filter)
     }
 
     @Test
     fun `test meteoriteOrdered without filter and invalid location`() = runBlockingTest {
 
-        meteoriteLocalRepository.meteoriteOrdered(null, 1.0, null)
+        meteoriteLocalRepository.meteoriteOrdered(null, 1.0, null, mockLimit)
 
-        verify(meteoriteDao).meteoriteOrdered()
+        verify(mockMeteoriteDao).meteoriteOrdered(mockLimit)
     }
 
     @Test
@@ -70,9 +75,9 @@ class MeteoriteRepositoryTest {
 
         val latitude = 1.0
         val longitude = 1.3
-        meteoriteLocalRepository.meteoriteOrdered(null, latitude, longitude)
+        meteoriteLocalRepository.meteoriteOrdered(null, latitude, longitude, mockLimit)
 
-        verify(meteoriteDao).meteoriteOrderedByLocation(latitude, longitude)
+        verify(mockMeteoriteDao).meteoriteOrderedByLocation(latitude, longitude)
     }
 
 }

@@ -1,67 +1,76 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
-import android.Manifest
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
+import android.view.*
 import android.view.View.*
-import android.view.ViewGroup
-import android.widget.SearchView
 import androidx.annotation.NonNull
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.data.Result.InProgress
 import com.antonio.samir.meteoritelandingsspots.data.Result.Success
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteListBinding
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailFragment
-import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailFragment.Companion.METEORITE
-import com.antonio.samir.meteoritelandingsspots.features.list.di.meteoriteListModule
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListFragmentDirections.Companion.toDetail
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel.ContentStatus.*
 import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.MeteoriteAdapter
 import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.SpacesItemDecoration
-import kotlinx.android.synthetic.main.fragment_meteorite_list.*
+import com.antonio.samir.meteoritelandingsspots.ui.extension.isLandscape
+import com.antonio.samir.meteoritelandingsspots.ui.extension.showActionBar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import org.koin.androidx.viewmodel.ext.android.stateViewModel
-import org.koin.core.context.loadKoinModules
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.concurrent.atomic.AtomicBoolean
 
 @FlowPreview
 @ExperimentalCoroutinesApi
 class MeteoriteListFragment : Fragment() {
 
-    private var sglm: GridLayoutManager? = null
-    private lateinit var meteoriteAdapter: MeteoriteAdapter
+    private var layoutManager: GridLayoutManager? = null
+
+    private var meteoriteAdapter = MeteoriteAdapter().apply {
+        setHasStableIds(false)
+    }
 
     private var meteoriteDetailFragment: MeteoriteDetailFragment? = null
 
-    private val viewModel by stateViewModel<MeteoriteListViewModel>()
+    private val viewModel: MeteoriteListViewModel by viewModel()
+
+    private var _binding: FragmentMeteoriteListBinding? = null
+
+    private val binding get() = _binding!!
+
+    private val shouldOpenMeteorite = AtomicBoolean(true)
+
+    private val redirectedToPortrait = AtomicBoolean(false)
 
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_meteorite_list, container, false)
+            savedInstanceState: Bundle?,
+    ): View {
+        _binding = FragmentMeteoriteListBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onViewCreated(view, savedInstanceState)
 
-        loadKoinModules(meteoriteListModule)
+        showActionBar(getString(R.string.title))
 
-        meteoriteAdapter = MeteoriteAdapter().apply {
-            setHasStableIds(true)
-        }
+        meteoriteAdapter.clearSelectedMeteorite()
 
-        meteoriteRV?.adapter = meteoriteAdapter
+        binding.meteoriteRV.adapter = meteoriteAdapter
 
-        meteoriteRV.addItemDecoration(SpacesItemDecoration(
+        binding.meteoriteRV.addItemDecoration(SpacesItemDecoration(
                 context = requireContext(),
                 verticalMargin = R.dimen.spacing,
                 horizontalMargin = R.dimen.horizontal_spacing
@@ -73,31 +82,14 @@ class MeteoriteListFragment : Fragment() {
 
         setupLocation()
 
-        with(searchText) {
-            isActivated = true
-            onActionViewExpanded()
-            isIconified = false
-            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                override fun onQueryTextChange(query: String): Boolean {
-                    loadMeteorites(query)
-                    return false
-                }
+        setHasOptionsMenu(true)
 
-                override fun onQueryTextSubmit(query: String): Boolean {
-                    loadMeteorites(query)
-                    return false
-                }
-
-                private fun loadMeteorites(query: String) {
-                    val minQueryLenght = 3
-                    if (query.isBlank() || query.length > minQueryLenght) {
-                        showProgressLoader()
-                        viewModel.loadMeteorites(query)
-                    }
-                }
-
-            })
+        if (viewModel.filter.isBlank()) {
+            viewModel.loadMeteorites()
         }
+
+        redirectedToPortrait.set(false)
+
     }
 
     private fun observeLiveData() {
@@ -107,30 +99,36 @@ class MeteoriteListFragment : Fragment() {
 
         observeNetworkLoadingStatus()
 
-        meteoriteAdapter.selectedMeteorite.observe(viewLifecycleOwner) {
+        meteoriteAdapter.openMeteorite.observe(viewLifecycleOwner) {
+            shouldOpenMeteorite.set(true)
             viewModel.selectMeteorite(it)
         }
 
         viewModel.selectedMeteorite.observe(viewLifecycleOwner) { meteorite ->
             if (meteorite != null) {
                 if (isLandscape()) {
-                    selectLandscape(meteorite)
+                    showMeteoriteLandscape(meteorite)
+                    meteoriteAdapter.updateListUI(meteorite)
+                    val position = meteoriteAdapter.getPosition(meteorite)
+                    position?.let { binding.meteoriteRV.smoothScrollToPosition(it) }
                 } else {
-                    selectPortrait(meteorite)
+                    if (shouldOpenMeteorite.get()) {
+                        showMeteoritePortrait(meteorite)
+                    } else {
+                        //Should clean the selected meteorite when it is not shown
+                        viewModel.clearSelectedMeteorite()
+                    }
+                    shouldOpenMeteorite.set(false)
                 }
             }
         }
 
     }
 
-    private fun isLandscape(): Boolean {
-        return resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-    }
-
     private fun setupLocation() {
         viewModel.isAuthorizationRequested().observe(viewLifecycleOwner, {
             if (it) {
-                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_REQUEST_CODE)
+                requestPermissions(arrayOf(ACCESS_FINE_LOCATION), LOCATION_REQUEST_CODE)
             }
         })
         viewModel.updateLocation()
@@ -139,29 +137,28 @@ class MeteoriteListFragment : Fragment() {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        searchText?.clearFocus()
-        Log.v(TAG, "onResume")
-    }
-
     private fun observeMeteorites() {
 
-        viewModel.getMeteorites().observe(viewLifecycleOwner, { meteorites ->
-            if (meteorites.isEmpty()) {
-                noResult()
-            } else {
-                showContent()
-                meteoriteAdapter.setData(meteorites)
+        viewModel.contentStatus.observe(viewLifecycleOwner) { contentStatus ->
+            when (contentStatus) {
+                ShowContent -> showContent()
+                NoContent -> noResult()
+                Loading -> showProgressLoader()
             }
-        })
-
-        if (viewModel.filter.isBlank()) {
-            viewModel.loadMeteorites()
-        } else {
-            searchText?.setQuery(viewModel.filter, true)
         }
 
+        viewModel.getMeteorites().observe(viewLifecycleOwner) { meteorites ->
+            onSuccess(meteorites)
+        }
+
+    }
+
+    private fun onSuccess(meteorites: PagedList<Meteorite>) {
+        if (meteorites.isEmpty()) {
+            noResult()
+        } else {
+            meteoriteAdapter.submitList(meteorites)
+        }
     }
 
     private fun observeRecoveryAddressStatus() {
@@ -190,66 +187,65 @@ class MeteoriteListFragment : Fragment() {
     }
 
     private fun showAddressLoading(progress: Float?) {
+        val addressRecoverProgress = binding.addressRecoverProgress
         progress?.let {
             addressRecoverProgress.progress = it
             addressRecoverProgress.secondaryProgress = it + 10
         }
         addressRecoverProgress.progressText = getString(R.string.loading_addresses)
-        addressRecoverProgress?.visibility = VISIBLE
+        addressRecoverProgress.visibility = VISIBLE
     }
 
     private fun hideAddressLoading() {
-        addressRecoverProgress?.visibility = GONE
+        binding.addressRecoverProgress.visibility = GONE
     }
 
     private fun unableToFetch() {
         error(getString(R.string.no_network))
-        searchText.visibility = GONE
     }
 
     private fun error(messageString: String) {
         hideContent()
-        progressLoader.visibility = INVISIBLE
-        messageTV.visibility = VISIBLE
-        messageTV.text = messageString
+        binding.progressLoader.visibility = INVISIBLE
+        binding.messageTV.visibility = VISIBLE
+        binding.messageTV.text = messageString
     }
 
-    private fun selectLandscape(meteorite: Meteorite) {
+    private fun showMeteoriteLandscape(meteorite: Meteorite) {
 
-        sglm?.spanCount = 1
+        layoutManager?.spanCount = 1
 
         if (meteoriteDetailFragment == null) {
 
-            fragment?.visibility = VISIBLE
+            binding.fragment?.visibility = VISIBLE
 
             parentFragmentManager.beginTransaction()
                     .setCustomAnimations(
                             R.anim.fragment_slide_left_enter,
                             R.anim.fragment_slide_left_exit).apply {
-                        meteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteorite)
+                        val meteoriteId: String = meteorite.id.toString()
+                        meteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteoriteId)
                         replace(R.id.fragment, meteoriteDetailFragment!!)
                         commit()
                     }
 
         } else {
-            meteoriteDetailFragment?.setCurrentMeteorite(meteorite)
+            meteoriteDetailFragment?.setCurrentMeteorite(meteorite.id.toString())
         }
 
     }
 
-    private fun selectPortrait(meteorite: Meteorite) {
-        val bundle = Bundle().apply {
-            putParcelable(METEORITE, meteorite)
-        }
-        findNavController().navigate(R.id.toDetail, bundle)
+    private fun showMeteoritePortrait(meteorite: Meteorite) {
+        redirectedToPortrait.set(true)
+        findNavController().navigate(toDetail(meteorite.id.toString()))
     }
 
     private fun setupGridLayout() {
         val columnCount = resources.getInteger(R.integer.list_column_count)
 
-        sglm = GridLayoutManager(requireContext(), columnCount)
+        layoutManager = GridLayoutManager(requireContext(), columnCount)
 
-        meteoriteRV.layoutManager = sglm
+        binding.meteoriteRV.layoutManager = layoutManager
     }
 
     private fun networkLoadingStarted() {
@@ -263,7 +259,7 @@ class MeteoriteListFragment : Fragment() {
 
     private fun networkLoadingStopped() {
         try {
-            networkStatusLoading.visibility = INVISIBLE
+            binding.networkStatusLoading.visibility = INVISIBLE
             showContent()
         } catch (e: Exception) {
             Log.e(TAG, e.message, e)
@@ -272,24 +268,28 @@ class MeteoriteListFragment : Fragment() {
     }
 
     private fun showContent() {
-        progressLoader.visibility = INVISIBLE
-        container?.visibility = VISIBLE
-        meteoriteRV?.visibility = VISIBLE
-        messageTV.visibility = INVISIBLE
+        binding.progressLoader.visibility = INVISIBLE
+        binding.container?.visibility = VISIBLE
+        binding.meteoriteRV.visibility = VISIBLE
+        binding.messageTV.visibility = INVISIBLE
     }
 
     private fun hideContent() {
-        container?.visibility = INVISIBLE
-        meteoriteRV?.visibility = INVISIBLE
+        binding.container?.visibility = INVISIBLE
+        binding.meteoriteRV.visibility = INVISIBLE
     }
 
     private fun showProgressLoader() {
-        progressLoader.visibility = VISIBLE
-        messageTV.visibility = INVISIBLE
+        binding.progressLoader.visibility = VISIBLE
+        binding.messageTV.visibility = INVISIBLE
         hideContent()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, @NonNull permissions: Array<String>, @NonNull grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+            requestCode: Int,
+            @NonNull permissions: Array<String>,
+            @NonNull grantResults: IntArray,
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == LOCATION_REQUEST_CODE) {
             for (grantResult in grantResults) {
@@ -299,6 +299,53 @@ class MeteoriteListFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main, menu)
+
+        val searchView = menu.findItem(R.id.action_search).actionView as SearchView
+
+        setup(searchView)
+
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    private fun setup(searchView: SearchView?) {
+        if (searchView != null) {
+            with(searchView) {
+                isActivated = true
+                onActionViewExpanded()
+                isIconified = false
+                setQuery(viewModel.filter, false)
+                setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+                    override fun onQueryTextChange(query: String): Boolean {
+                        if (!redirectedToPortrait.get() && query.isBlank()) {
+                            onQueryTextSubmit(query)
+                        }
+                        return false
+                    }
+
+                    override fun onQueryTextSubmit(query: String): Boolean {
+                        loadMeteorites(query)
+                        return true
+                    }
+
+                    private fun loadMeteorites(query: String) {
+                        viewModel.loadMeteorites(query)
+                    }
+
+                })
+
+            }
+        }
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {
