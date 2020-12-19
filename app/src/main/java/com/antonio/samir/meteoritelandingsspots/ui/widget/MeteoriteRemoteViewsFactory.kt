@@ -9,11 +9,10 @@ import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.yearString
 import org.apache.commons.lang3.StringUtils
-import org.koin.core.KoinComponent
 
 class MeteoriteRemoteViewsFactory(
         private val mPackageName: String
-) : RemoteViewsService.RemoteViewsFactory, KoinComponent {
+) : RemoteViewsService.RemoteViewsFactory {
 
     private var meteorites: List<Meteorite>? = null
 
@@ -48,8 +47,6 @@ class MeteoriteRemoteViewsFactory(
         val meteoriteName = meteorite.name
         val year = meteorite.yearString
 
-        val idString = meteorite.id.toString()
-
         views.setTextViewText(R.id.title, meteoriteName)
         views.setTextViewText(R.id.year, year)
         setLocationText(meteorite.address, views)
@@ -80,12 +77,12 @@ class MeteoriteRemoteViewsFactory(
         return true
     }
 
-    fun setLocationText(address: String?, views: RemoteViews) {
+    private fun setLocationText(address: String?, views: RemoteViews) {
         val text: String?
-        if (StringUtils.isNotEmpty(address)) {
-            text = address
+        text = if (StringUtils.isNotEmpty(address)) {
+            address
         } else {
-            text = ""
+            ""
         }
         views.setTextViewText(R.id.location, text)
 

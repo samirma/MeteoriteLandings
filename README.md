@@ -24,3 +24,25 @@ https://www.norio.be/android-feature-graphic-generator/
 - Room
 - Navigation-ui
 - Retrofit2
+
+
+
+
+
+## My MAD Score (Modern Android Development)
+
+
+
+
+### Summary
+
+![Sumary](https://raw.githubusercontent.com/samirma/MeteoriteLandings/feature/1.4/madscore/summary.png)
+
+
+### Kotlin
+
+![Kotlin](https://raw.githubusercontent.com/samirma/MeteoriteLandings/feature/1.4/madscore/kotlin.png)
+
+### Jetpack
+
+![Kotlin](https://raw.githubusercontent.com/samirma/MeteoriteLandings/feature/1.4/madscore/jetpack.png)

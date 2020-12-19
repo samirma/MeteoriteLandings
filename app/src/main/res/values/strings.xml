@@ -9,11 +9,15 @@
     <string name="nametype">Name Type</string>
     <string name="year">Year</string>
     <string name="loading_addresses">Loading addresses</string>
-    <string name="title">%s, %s</string>
+    <string name="name">%s, %s</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="no_result_found">No results found</string>
     <string name="searchView_query_hint">Title, places, countries</string>
     <string name="without_address_placeholder">Address not loaded yet</string>
+    <string name="search">Search</string>
+
+    <string name="title">Search for title, place or country</string>
+    <string name="unkown">\???</string>
 
 </resources>

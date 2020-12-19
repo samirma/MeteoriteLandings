@@ -5,10 +5,7 @@ import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalReposit
 import com.antonio.samir.meteoritelandingsspots.data.remote.MeteoriteRemoteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
@@ -29,13 +26,15 @@ class MeteoriteRepositoryImplTest {
 
     private lateinit var repository: MeteoriteRepository
 
+    private val fixtPageSize: Int = 5000
+
     @Before
     fun setUp() {
 
         repository = MeteoriteRepositoryImpl(mockLocalRepository, mockRemoteRepository, coroutinesTestRule.testDispatcherProvider)
 
     }
-    
+
     @Test
     fun `test loadDatabase already loaded`() = runBlockingTest {
 
@@ -53,14 +52,16 @@ class MeteoriteRepositoryImplTest {
         whenever(mockLocalRepository.getMeteoritesCount()).thenReturn(meteorites.size)
 
         whenever(mockRemoteRepository.getMeteorites(any(), any())).thenReturn(meteorites)
+                .thenReturn(emptyList())
 
-        val expected: List<Result<Nothing>> = listOf(Result.InProgress(), Result.Success())
-        val actual = repository.loadDatabase().toList()
+        val expected: List<Result<Unit>> = listOf(Result.InProgress(), Result.Success(Unit))
+        val loadDatabase = repository.loadDatabase()
+        val actual = loadDatabase.toList()
         assertEquals(expected, actual)
 
         verify(mockLocalRepository).getMeteoritesCount()
 
-        verify(mockRemoteRepository).getMeteorites(meteorites.size, repository.pageSize)
+        verify(mockRemoteRepository).getMeteorites(meteorites.size, fixtPageSize)
 
     }
 
@@ -75,17 +76,18 @@ class MeteoriteRepositoryImplTest {
 
         val meteorites = listOf(meteorite)
 
-        whenever(mockLocalRepository.getMeteoritesCount()).thenReturn(1)
+        whenever(mockLocalRepository.getMeteoritesCount()).thenReturn(50001)
 
         whenever(mockRemoteRepository.getMeteorites(any(), any())).thenReturn(meteorites)
+                .thenReturn(emptyList())
 
-        val expected: List<Result<Nothing>> = listOf(Result.InProgress(), Result.Success())
+        val expected: List<Result<Unit>> = listOf(Result.InProgress(), Result.Success(Unit))
         val actual = repository.loadDatabase().toList()
         assertEquals(expected, actual)
 
         verify(mockLocalRepository).getMeteoritesCount()
         verify(mockLocalRepository).insertAll(meteorites)
-        verify(mockRemoteRepository).getMeteorites(any(), any())
+        verify(mockRemoteRepository, times(2)).getMeteorites(any(), any())
 
     }
 

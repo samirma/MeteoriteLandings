@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface MeteoriteDao {
 
-    @Query("SELECT * from meteorites ORDER BY name LIMIT 1000")
-    fun meteoriteOrdered(): DataSource.Factory<Int, Meteorite>
+    @Query("SELECT * from meteorites ORDER BY name LIMIT :limit")
+    fun meteoriteOrdered(limit: Long): DataSource.Factory<Int, Meteorite>
 
     @Query("SELECT * from meteorites ORDER BY ((reclat-:lat)*(reclat-:lat)) + ((reclong - :lng)*(reclong - :lng)) ASC")
     fun meteoriteOrderedByLocation(lat: Double, lng: Double): DataSource.Factory<Int, Meteorite>

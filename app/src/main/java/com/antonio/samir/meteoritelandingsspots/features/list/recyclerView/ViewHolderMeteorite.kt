@@ -8,35 +8,39 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.features.getDistanceFrom
+import com.antonio.samir.meteoritelandingsspots.features.getLocationText
 import com.antonio.samir.meteoritelandingsspots.features.yearString
-import org.apache.commons.lang3.StringUtils
-import java.util.*
 
-
-class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
+class ViewHolderMeteorite(private val view: View) : RecyclerView.ViewHolder(view) {
 
     val context: Context = view.context
 
+    private val noAddressPlaceHolder = context.getString(R.string.without_address_placeholder)
+
     var name: TextView = view.findViewById(R.id.title)
 
-    var addressTV: TextView = view.findViewById(R.id.location)
+    private var addressTV: TextView = view.findViewById(R.id.location)
 
-    var cardView: CardView = view.findViewById(R.id.cardview)
+    private var cardView: CardView = view.findViewById(R.id.cardview)
 
     var meteorite: Meteorite? = null
 
     fun onBind(
             meteorite: Meteorite,
             selectedMeteorite: Boolean,
-            location: Location?
+            location: Location?,
+            onClick: () -> Unit
     ) {
 
-        if (this.meteorite == meteorite) {
-            setLocationText(meteorite, location)
+        if (this.meteorite?.id == meteorite.id) {
+            addressTV.text = meteorite.getLocationText(location, noAddressPlaceHolder)
         } else {
             this.meteorite = meteorite
             populateViewHolder(meteorite, location, selectedMeteorite)
+        }
+
+        view.setOnClickListener {
+            onClick()
         }
 
     }
@@ -46,11 +50,15 @@ class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
 
         val year = meteorite.yearString
 
-        name.text = context.getString(R.string.title, meteoriteName, year)
+        name.text = if (!year.isNullOrBlank()) {
+            context.getString(R.string.name, meteoriteName, year)
+        } else {
+            meteoriteName
+        }
 
         name.contentDescription = meteoriteName
 
-        setLocationText(meteorite, location)
+        addressTV.text = meteorite.getLocationText(location, noAddressPlaceHolder)
 
         var color = R.color.unselected_item_color
         var titleColor = R.color.title_color
@@ -68,17 +76,4 @@ class ViewHolderMeteorite(view: View) : RecyclerView.ViewHolder(view) {
     }
 
 
-    private fun setLocationText(meteorite: Meteorite, location: Location?) {
-        val address = meteorite.address
-
-        if (StringUtils.isNotEmpty(address)) {
-            showAddress(address, meteorite, location)
-        } else {
-            addressTV.text = context.getString(R.string.without_address_placeholder)
-        }
-    }
-
-    private fun showAddress(address: String?, meteorite: Meteorite, location: Location?) {
-        addressTV.text = address + meteorite.getDistanceFrom(location)
-    }
 }

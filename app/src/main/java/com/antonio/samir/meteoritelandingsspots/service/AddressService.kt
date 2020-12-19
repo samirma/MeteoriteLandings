@@ -9,12 +9,16 @@ import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 import org.apache.commons.lang3.StringUtils
 import java.util.*
 
+/**
+ * Evaluate convert this class to work manager
+ */
 @ExperimentalCoroutinesApi
 class AddressService(
         private val meteoriteLocalRepository: MeteoriteLocalRepository,
@@ -22,11 +26,11 @@ class AddressService(
         private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
 ) : AddressServiceInterface {
 
-    val TAG = AddressService::class.java.simpleName
-
+    private val TAG = AddressService::class.java.simpleName
 
     override fun recoveryAddress(): Flow<Result<Float>> = meteoriteLocalRepository.meteoritesWithOutAddress()
             .onEach { recoverAddress(it) }
+            .flowOn(dispatchers.default())
             .map {
                 getReturn(it)
             }

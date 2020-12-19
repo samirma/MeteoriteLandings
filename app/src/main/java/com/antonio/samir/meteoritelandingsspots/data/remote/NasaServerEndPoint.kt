@@ -11,7 +11,7 @@ interface NasaServerEndPoint {
 
     companion object {
 
-        val URL = "https://data.nasa.gov"
+        const val URL = "https://data.nasa.gov"
     }
 
     @GET("resource/y77d-th95.json")
