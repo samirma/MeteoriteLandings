@@ -10,7 +10,7 @@ buildscript {
         mockito_version = '2.2.0'
         roboelectric_version = '4.4'
         androidx_navigation_version = '2.3.2'
-        androidx_room_version = '2.2.5'
+        androidx_room_version = '2.2.6'
         androidx_lifecycle_version = '2.2.0'
         play_services_version = '17.1.0'
         map_version = '17.0.0'
