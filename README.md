@@ -36,13 +36,13 @@ https://www.norio.be/android-feature-graphic-generator/
 
 ### Summary
 
-![Sumary](https://raw.githubusercontent.com/samirma/MeteoriteLandings/feature/1.4/madscore/summary.png)
+![Sumary](https://raw.githubusercontent.com/samirma/MeteoriteLandings/madscore/summary.png)
 
 
 ### Kotlin
 
-![Kotlin](https://raw.githubusercontent.com/samirma/MeteoriteLandings/feature/1.4/madscore/kotlin.png)
+![Kotlin](https://raw.githubusercontent.com/samirma/MeteoriteLandings/madscore/kotlin.png)
 
 ### Jetpack
 
-![Kotlin](https://raw.githubusercontent.com/samirma/MeteoriteLandings/feature/1.4/madscore/jetpack.png)
+![Kotlin](https://raw.githubusercontent.com/samirma/MeteoriteLandings/madscore/jetpack.png)
