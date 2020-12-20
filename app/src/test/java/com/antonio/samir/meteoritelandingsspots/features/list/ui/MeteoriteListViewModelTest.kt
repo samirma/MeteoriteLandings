@@ -6,6 +6,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.paging.DataSource
 import androidx.paging.PagedList
 import com.antonio.samir.meteoritelandingsspots.data.Result
+import com.antonio.samir.meteoritelandingsspots.data.Result.InProgress
+import com.antonio.samir.meteoritelandingsspots.data.Result.Success
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel
@@ -40,8 +42,8 @@ class MeteoriteListViewModelTest {
     private val addressService: AddressServiceInterface = mock()
     private val mockSavedStateHandle = SavedStateHandle()
 
-    val mockObserverPageList: Observer<PagedList<Meteorite>> = mock()
-    val mockObserverContentStatus: Observer<ContentStatus> = mock()
+    private val mockObserverPageList: Observer<PagedList<Meteorite>> = mock()
+    private val mockObserverContentStatus: Observer<ContentStatus> = mock()
 
     @Before
     fun setUp() {
@@ -55,14 +57,35 @@ class MeteoriteListViewModelTest {
         )
 
         viewModel.getMeteorites().observeForever(mockObserverPageList)
-        viewModel.contentStatus.observeForever(mockObserverContentStatus)
+        viewModel.getContentStatus().observeForever(mockObserverContentStatus)
 
     }
 
     @Test
-    fun `test getRecoveryAddressStatus success`() {
-        val success = Result.Success(100f)
-        val inProgress = Result.InProgress(50f)
+    fun `test getRecoveryAddressStatus success with address service stopped`() {
+        val success = Success(100f)
+        val inProgress = InProgress(50f)
+
+        viewModel.addressServiceControl.value = false
+
+        whenever(addressService.recoveryAddress()).thenReturn(flow {
+            emit(inProgress)
+            emit(success)
+        })
+
+        val observer: Observer<Result<Float>> = mock()
+        viewModel.getRecoverAddressStatus().observeForever(observer)
+
+        verify(observer).onChanged(success)
+    }
+
+    @Test
+    fun `test getRecoveryAddressStatus success with address service resumed`() {
+        val success = Success(100f)
+        val inProgress = InProgress(50f)
+
+        viewModel.addressServiceControl.value = true
+
         whenever(addressService.recoveryAddress()).thenReturn(flow {
             emit(inProgress)
             emit(success)
@@ -79,15 +102,15 @@ class MeteoriteListViewModelTest {
     fun `test getNetworkLoadStatus success`() {
 
         whenever(mockRepository.loadDatabase()).thenReturn(flow {
-            emit(Result.InProgress())
-            emit(Result.Success(Unit))
+            emit(InProgress())
+            emit(Success(Unit))
         })
 
         val observer: Observer<Result<Unit>> = mock()
         viewModel.getNetworkLoadingStatus().observeForever(observer)
 
-        verify(observer).onChanged(Result.InProgress())
-        verify(observer).onChanged(Result.Success(Unit))
+        verify(observer).onChanged(InProgress())
+        verify(observer).onChanged(Success(Unit))
     }
 
     @Test
@@ -118,7 +141,7 @@ class MeteoriteListViewModelTest {
 
         viewModel.loadMeteorites("test")
 
-        verify(mockObserverContentStatus, times(2)).onChanged(ContentStatus.Loading)
+        verify(mockObserverContentStatus).onChanged(ContentStatus.Loading)
 
     }
 
