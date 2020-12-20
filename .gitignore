@@ -46,3 +46,4 @@ release.keystore
 production.properties
 
 secret.xml
+/app/release/
