@@ -99,7 +99,7 @@ class MeteoriteRepositoryImpl(
 
         private const val PAGE_SIZE = 5000
 
-        private val TAG = MeteoriteRepository::class.java.simpleName
+        private val TAG = MeteoriteRepositoryImpl::class.java.simpleName
     }
 
 }

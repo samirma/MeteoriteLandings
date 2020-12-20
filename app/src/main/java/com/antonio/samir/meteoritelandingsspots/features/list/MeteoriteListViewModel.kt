@@ -1,20 +1,24 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
 import android.location.Location
+import android.util.Log
 import androidx.lifecycle.*
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import com.antonio.samir.meteoritelandingsspots.data.Result
+import com.antonio.samir.meteoritelandingsspots.data.Result.Success
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel.ContentStatus.*
 import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.launch
-import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel.ContentStatus.*
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+
 
 /**
  * Layer responsible for manage the interactions between the activity and the services
@@ -35,7 +39,36 @@ class MeteoriteListViewModel(
 
     val selectedMeteorite = meteorite.asFlow().asLiveData()
 
-    val contentStatus = MutableLiveData<ContentStatus>(Loading)
+    private val contentStatus = MutableLiveData<ContentStatus>(Loading)
+
+    private val addressServiceProgress: LiveData<Result<Float>> = addressService.recoveryAddress().asLiveData()
+
+    private val addressServiceControl = MutableLiveData(false)
+
+    fun getContentStatus(): LiveData<ContentStatus> {
+        return contentStatus.map { status ->
+            val shouldResumeAddressService = when (status) {
+                Loading -> false
+                else -> true
+            }
+            //Prevent address service while the list is loading
+            if (addressServiceControl.value != shouldResumeAddressService) {
+                addressServiceControl.postValue(shouldResumeAddressService)
+            }
+            return@map status
+        }
+    }
+
+    fun getRecoverAddressStatus() = Transformations.switchMap(addressServiceControl) {
+        if (it) {
+            addressServiceProgress
+        } else {
+            liveData<Result<Float>> {
+                emit(Success(COMPLETED))
+            }
+        }
+    }
+
 
     var filter = ""
 
@@ -68,7 +101,6 @@ class MeteoriteListViewModel(
         return gpsTracker.location.asLiveData()
     }
 
-    fun getRecoverAddressStatus() = addressService.recoveryAddress().asLiveData()
 
     fun getMeteorites(): LiveData<PagedList<Meteorite>> {
         return currentFilter.asFlow()
@@ -88,14 +120,15 @@ class MeteoriteListViewModel(
                 .switchMap {
                     it.build()
                 }
-                .map {
-                    if (it.isEmpty()) {
+                .map { pagedList ->
+                    if (pagedList.isEmpty()) {
                         contentStatus.postValue(NoContent)
 
                     } else {
+                        Log.e(TAG, "ShowContent")
                         contentStatus.postValue(ShowContent)
                     }
-                    return@map it
+                    return@map pagedList
                 }
     }
 
@@ -112,8 +145,10 @@ class MeteoriteListViewModel(
     }
 
     companion object {
+        private val TAG = MeteoriteListViewModel::class.java.simpleName
         const val PAGE_SIZE = 1000
         const val LIMIT = 1000L
+        const val COMPLETED = 100f
         const val METEORITE = "METEORITE"
     }
 

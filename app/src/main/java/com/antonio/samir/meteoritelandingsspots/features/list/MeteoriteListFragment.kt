@@ -139,7 +139,7 @@ class MeteoriteListFragment : Fragment() {
 
     private fun observeMeteorites() {
 
-        viewModel.contentStatus.observe(viewLifecycleOwner) { contentStatus ->
+        viewModel.getContentStatus().observe(viewLifecycleOwner) { contentStatus ->
             when (contentStatus) {
                 ShowContent -> showContent()
                 NoContent -> noResult()
