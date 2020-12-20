@@ -1,7 +1,7 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
 import android.location.Location
-import android.util.Log
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
@@ -33,6 +33,8 @@ class MeteoriteListViewModel(
         private val dispatchers: DispatcherProvider,
 ) : ViewModel() {
 
+    var filter = ""
+
     private val currentFilter = ConflatedBroadcastChannel<String?>()
 
     private val meteorite = ConflatedBroadcastChannel<Meteorite?>(stateHandle[METEORITE])
@@ -41,36 +43,32 @@ class MeteoriteListViewModel(
 
     private val contentStatus = MutableLiveData<ContentStatus>(Loading)
 
-    private val addressServiceProgress: LiveData<Result<Float>> = addressService.recoveryAddress().asLiveData()
+    fun getNetworkLoadingStatus() = meteoriteRepository.loadDatabase().asLiveData()
 
-    private val addressServiceControl = MutableLiveData(false)
+    @VisibleForTesting
+    val addressServiceControl = MutableLiveData(false)
 
     fun getContentStatus(): LiveData<ContentStatus> {
-        return contentStatus.map { status ->
+        return contentStatus.distinctUntilChanged().map { status ->
             val shouldResumeAddressService = when (status) {
                 Loading -> false
                 else -> true
             }
-            //Prevent address service while the list is loading
-            if (addressServiceControl.value != shouldResumeAddressService) {
-                addressServiceControl.postValue(shouldResumeAddressService)
-            }
+            addressServiceControl.postValue(shouldResumeAddressService)
             return@map status
         }
     }
 
     fun getRecoverAddressStatus() = Transformations.switchMap(addressServiceControl) {
         if (it) {
-            addressServiceProgress
+            addressService.recoveryAddress().asLiveData()
         } else {
             liveData<Result<Float>> {
                 emit(Success(COMPLETED))
             }
         }
-    }
+    }.distinctUntilChanged()
 
-
-    var filter = ""
 
     fun loadMeteorites(location: String? = null) {
 
@@ -125,14 +123,11 @@ class MeteoriteListViewModel(
                         contentStatus.postValue(NoContent)
 
                     } else {
-                        Log.e(TAG, "ShowContent")
                         contentStatus.postValue(ShowContent)
                     }
                     return@map pagedList
                 }
     }
-
-    fun getNetworkLoadingStatus() = meteoriteRepository.loadDatabase().asLiveData()
 
     fun clearSelectedMeteorite() {
         selectMeteorite(null)

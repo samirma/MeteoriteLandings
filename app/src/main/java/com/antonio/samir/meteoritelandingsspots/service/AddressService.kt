@@ -46,7 +46,7 @@ class AddressService(
         }
     }
 
-    override suspend fun recoverAddress(list: List<Meteorite>) = withContext(dispatchers.default()) {
+    private suspend fun recoverAddress(list: List<Meteorite>) = withContext(dispatchers.default()) {
         list.onEach { meteorite ->
             try {
                 meteorite.address = getAddressFromMeteorite(meteorite)
