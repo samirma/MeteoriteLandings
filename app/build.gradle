@@ -1,9 +1,10 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'koin'
-apply plugin: "androidx.navigation.safeargs.kotlin"
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id "androidx.navigation.safeargs.kotlin"
+    id 'kotlin-kapt'
+    id("com.google.gms.google-services")
+}
 
 android {
     Properties properties = new Properties()
@@ -108,13 +109,8 @@ dependencies {
     implementation "com.google.android.gms:play-services-maps:$map_version"
 
     //insert-koin.io
-    implementation "org.koin:koin-androidx-scope:$koin_version"
-    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
-    implementation "org.koin:koin-androidx-fragment:$koin_version"
-    // Koin for Android
-    implementation "org.koin:koin-android:$koin_version"
-    implementation "org.koin:koin-android-scope:$koin_version"
-    implementation "org.koin:koin-android-viewmodel:$koin_version"
+    implementation "io.insert-koin:koin-android:$koin_version"
+    implementation "io.insert-koin:koin-android-ext:$koin_version"
 
     //Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
@@ -126,14 +122,14 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
     // Compose
-    implementation "androidx.compose.runtime:runtime:$rootProject.composeVersion"
-    implementation "androidx.compose.ui:ui:$rootProject.composeVersion"
-    implementation "androidx.compose.foundation:foundation:$rootProject.composeVersion"
-    implementation "androidx.compose.foundation:foundation-layout:$rootProject.composeVersion"
-    implementation "androidx.compose.material:material:$rootProject.composeVersion"
-    implementation "androidx.compose.runtime:runtime-livedata:$rootProject.composeVersion"
-    implementation "androidx.compose.ui:ui-tooling:$rootProject.composeVersion"
-    implementation "com.google.android.material:compose-theme-adapter:$rootProject.composeVersion"
+    implementation "androidx.compose.runtime:runtime:$composeVersion"
+    implementation "androidx.compose.ui:ui:$composeVersion"
+    implementation "androidx.compose.foundation:foundation:$composeVersion"
+    implementation "androidx.compose.foundation:foundation-layout:$composeVersion"
+    implementation "androidx.compose.material:material:$composeVersion"
+    implementation "androidx.compose.runtime:runtime-livedata:$composeVersion"
+    implementation "androidx.compose.ui:ui-tooling:$composeVersion"
+    implementation "com.google.android.material:compose-theme-adapter:$composeVersion"
 
 
     implementation 'org.apache.commons:commons-lang3:3.11'
@@ -143,7 +139,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
 
-    implementation 'com.akexorcist:round-corner-progress-bar:2.1.0'
+    implementation 'com.akexorcist:round-corner-progress-bar:2.1.2'
 
     //Stetho
     debugImplementation 'com.facebook.stetho:stetho:1.5.1'

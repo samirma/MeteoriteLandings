@@ -1,18 +1,19 @@
 package com.antonio.samir.meteoritelandingsspots.data.repository
 
 import androidx.paging.DataSource
+import androidx.paging.PagingSource
 import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import kotlinx.coroutines.flow.Flow
 
 interface MeteoriteRepository {
 
-    suspend fun loadMeteorites(
+    fun loadMeteorites(
             filter: String?,
             longitude: Double?,
             latitude: Double?,
             limit: Long,
-    ): DataSource.Factory<Int, Meteorite>
+    ): PagingSource<Int, Meteorite>
 
     fun getMeteoriteById(id: String): Flow<Result<Meteorite>>
 

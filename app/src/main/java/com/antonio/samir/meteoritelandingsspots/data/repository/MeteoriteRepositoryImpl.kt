@@ -2,6 +2,7 @@ package com.antonio.samir.meteoritelandingsspots.data.repository
 
 import android.util.Log
 import androidx.paging.DataSource
+import androidx.paging.PagingSource
 import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.data.Result.*
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
@@ -27,13 +28,13 @@ class MeteoriteRepositoryImpl(
 
     private val shouldLoad = AtomicBoolean(true)
 
-    override suspend fun loadMeteorites(
+    override fun loadMeteorites(
             filter: String?,
             longitude: Double?,
             latitude: Double?,
             limit: Long,
     ):
-            DataSource.Factory<Int, Meteorite> {
+            PagingSource<Int, Meteorite> {
         return meteoriteLocalRepository.meteoriteOrdered(filter, null, null, limit)
     }
 

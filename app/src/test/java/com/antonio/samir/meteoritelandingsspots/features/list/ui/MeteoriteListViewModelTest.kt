@@ -135,7 +135,7 @@ class MeteoriteListViewModelTest {
             emit(null)
         })
 
-        val mockMet: DataSource.Factory<Int, Meteorite> = mock()
+        val mockMet: PagingSource<Int, Meteorite> = mock()
 
         whenever(mockRepository.loadMeteorites(any(), any(), any(), any())).thenReturn(mockMet)
 
