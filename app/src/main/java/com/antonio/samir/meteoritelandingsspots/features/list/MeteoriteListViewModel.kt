@@ -3,8 +3,7 @@ package com.antonio.samir.meteoritelandingsspots.features.list
 import android.location.Location
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
+import androidx.paging.*
 import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.data.Result.Success
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
@@ -26,11 +25,11 @@ import kotlinx.coroutines.launch
 @FlowPreview
 @ExperimentalCoroutinesApi
 class MeteoriteListViewModel(
-        private val stateHandle: SavedStateHandle,
-        private val meteoriteRepository: MeteoriteRepository,
-        private val gpsTracker: GPSTrackerInterface,
-        private val addressService: AddressServiceInterface,
-        private val dispatchers: DispatcherProvider,
+    private val stateHandle: SavedStateHandle,
+    private val meteoriteRepository: MeteoriteRepository,
+    private val gpsTracker: GPSTrackerInterface,
+    private val addressService: AddressServiceInterface,
+    private val dispatchers: DispatcherProvider,
 ) : ViewModel() {
 
     var filter = ""
@@ -100,33 +99,31 @@ class MeteoriteListViewModel(
     }
 
 
-    fun getMeteorites(): LiveData<PagedList<Meteorite>> {
+    fun getMeteorites(): LiveData<PagingData<Meteorite>> {
         return currentFilter.asFlow()
-                .flowOn(dispatchers.default())
-                .combine<String?, Location?, Pair<String?, Location?>>(gpsTracker.location) { _, location ->
-                    Pair(this.filter, location)
+            .flowOn(dispatchers.default())
+            .combine<String?, Location?, Pair<String?, Location?>>(gpsTracker.location) { _, location ->
+                Pair(this.filter, location)
+            }
+            .map {
+                return@map Pager(
+                    config = PagingConfig(
+                        pageSize = 60,
+                        enablePlaceholders = true,
+                        maxSize = 200
+                    )
+                ) {
+                    meteoriteRepository.loadMeteorites(
+                        filter = it.first,
+                        longitude = it.second?.longitude,
+                        latitude = it.second?.latitude,
+                        limit = LIMIT
+                    )
                 }
-                .map<Pair<String?, Location?>, LivePagedListBuilder<Int, Meteorite>> {
-                    LivePagedListBuilder(meteoriteRepository.loadMeteorites(
-                            filter = it.first,
-                            longitude = it.second?.longitude,
-                            latitude = it.second?.latitude,
-                            limit = LIMIT
-                    ), PAGE_SIZE)
-                }
-                .asLiveData(dispatchers.default())
-                .switchMap {
-                    it.build()
-                }
-                .map { pagedList ->
-                    if (pagedList.isEmpty()) {
-                        contentStatus.postValue(NoContent)
-
-                    } else {
-                        contentStatus.postValue(ShowContent)
-                    }
-                    return@map pagedList
-                }
+            }.flatMapConcat {
+                it.flow
+            }
+            .asLiveData()
     }
 
     fun clearSelectedMeteorite() {

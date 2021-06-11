@@ -18,13 +18,11 @@ class MeteoriteLocalRepositoryImpl(
             latitude: Double?,
             longitude: Double?,
             limit: Long,
-    ) = withContext(dispatchers.io()) {
-
-        return@withContext if (latitude == null || longitude == null) {
+    ) = if (latitude == null || longitude == null) {
             if (filter.isNullOrEmpty()) {
                 meteoriteDao.meteoriteOrdered(limit)
             } else {
-                meteoriteDao.meteoriteFiltered(filter.toLowerCase(Locale.getDefault()))
+                meteoriteDao.meteoriteFiltered(filter.lowercase(Locale.getDefault()))
             }
         } else {
 
@@ -34,8 +32,6 @@ class MeteoriteLocalRepositoryImpl(
                 meteoriteDao.meteoriteOrderedByLocation(latitude, longitude)
             }
         }
-
-    }
 
     override suspend fun getMeteoritesCount(): Int {
         return meteoriteDao.getMeteoritesCount()

@@ -19,7 +19,6 @@ import com.antonio.samir.meteoritelandingsspots.data.Result.Success
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteListBinding
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailFragment
-import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListFragmentDirections.Companion.toDetail
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel.ContentStatus.*
 import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.MeteoriteAdapter
 import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.SpacesItemDecoration
@@ -237,7 +236,7 @@ class MeteoriteListFragment : Fragment() {
 
     private fun showMeteoritePortrait(meteorite: Meteorite) {
         redirectedToPortrait.set(true)
-        findNavController().navigate(toDetail(meteorite.id.toString()))
+//        findNavController().navigate(toDetail(meteorite.id.toString()))
     }
 
     private fun setupGridLayout() {
