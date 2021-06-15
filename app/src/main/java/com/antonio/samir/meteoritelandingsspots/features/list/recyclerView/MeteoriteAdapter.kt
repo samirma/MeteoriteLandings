@@ -4,11 +4,10 @@ import android.location.Location
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.PagedListAdapter
 import androidx.paging.PagingDataAdapter
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
-import java.util.*
+import com.antonio.samir.meteoritelandingsspots.databinding.ListItemMeteoriteBinding
 
 /**
  * Custom RecyclerView.Adapter to deal with meteorites cursor
@@ -21,29 +20,32 @@ class MeteoriteAdapter : PagingDataAdapter<Meteorite, ViewHolderMeteorite>(Meteo
 
     private var selectedMeteorite: Meteorite? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderMeteorite {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_meteorite, parent, false)
+    private var selectedPosition = -1
+    private var previousPosition = -1
 
-        return ViewHolderMeteorite(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderMeteorite {
+        val itemBinding = ListItemMeteoriteBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return ViewHolderMeteorite(itemBinding)
     }
 
-    fun updateListUI(current: Meteorite?, previous: Meteorite? = selectedMeteorite) {
-        if (!Objects.equals(previous, current)) {
-            getPosition(current)?.let { notifyItemChanged(it) }
-            getPosition(previous)?.let { notifyItemChanged(it) }
-        }
+    fun updateListUI(current: Meteorite?) {
+        notifyItemChanged(selectedPosition)
+        notifyItemChanged(previousPosition)
         selectedMeteorite = current
     }
 
-    fun getPosition(current: Meteorite?): Int? {
-        return currentList?.indexOf(current)
-    }
 
     override fun onBindViewHolder(viewHolder: ViewHolderMeteorite, position: Int) {
         getItem(position)?.let { meteorite ->
             val isSelected = selectedMeteorite == meteorite
             viewHolder.onBind(meteorite, isSelected, location) {
                 openMeteorite.value = meteorite
+                previousPosition = selectedPosition
+                selectedPosition = viewHolder.absoluteAdapterPosition
             }
         }
     }
@@ -51,5 +53,7 @@ class MeteoriteAdapter : PagingDataAdapter<Meteorite, ViewHolderMeteorite>(Meteo
     fun clearSelectedMeteorite() {
         openMeteorite = MutableLiveData<Meteorite>()
     }
+
+    fun getSelectedPosition() = selectedPosition
 
 }

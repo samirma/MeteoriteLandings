@@ -10,6 +10,6 @@
     app:cardCornerRadius="2dp"
     app:cardElevation="@dimen/unselected_item_elevation">
 
-    <include layout="@layout/meteorites_info" />
+    <include android:id="@+id/info" layout="@layout/meteorites_info" />
 
 </androidx.cardview.widget.CardView>
