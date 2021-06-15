@@ -1,6 +1,7 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import androidx.fragment.app.Fragment
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -8,9 +9,7 @@ import android.view.*
 import android.view.View.*
 import androidx.annotation.NonNull
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import androidx.paging.PagedList
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.Result
@@ -26,7 +25,6 @@ import com.antonio.samir.meteoritelandingsspots.ui.extension.isLandscape
 import com.antonio.samir.meteoritelandingsspots.ui.extension.showActionBar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.concurrent.atomic.AtomicBoolean
 
 @FlowPreview
@@ -52,9 +50,9 @@ class MeteoriteListFragment : Fragment() {
     private val redirectedToPortrait = AtomicBoolean(false)
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentMeteoriteListBinding.inflate(inflater, container, false)
         return binding.root
@@ -69,11 +67,13 @@ class MeteoriteListFragment : Fragment() {
 
         binding.meteoriteRV.adapter = meteoriteAdapter
 
-        binding.meteoriteRV.addItemDecoration(SpacesItemDecoration(
+        binding.meteoriteRV.addItemDecoration(
+            SpacesItemDecoration(
                 context = requireContext(),
                 verticalMargin = R.dimen.spacing,
                 horizontalMargin = R.dimen.horizontal_spacing
-        ))
+            )
+        )
 
         setupGridLayout()
 
@@ -152,12 +152,8 @@ class MeteoriteListFragment : Fragment() {
 
     }
 
-    private fun onSuccess(meteorites: PagedList<Meteorite>) {
-        if (meteorites.isEmpty()) {
-            noResult()
-        } else {
-            meteoriteAdapter.submitList(meteorites)
-        }
+    private fun onSuccess(meteorites: PagingData<Meteorite>) {
+        meteoriteAdapter.submitData(lifecycle, meteorites)
     }
 
     private fun observeRecoveryAddressStatus() {
@@ -219,14 +215,15 @@ class MeteoriteListFragment : Fragment() {
             binding.fragment?.visibility = VISIBLE
 
             parentFragmentManager.beginTransaction()
-                    .setCustomAnimations(
-                            R.anim.fragment_slide_left_enter,
-                            R.anim.fragment_slide_left_exit).apply {
-                        val meteoriteId: String = meteorite.id.toString()
-                        meteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteoriteId)
-                        replace(R.id.fragment, meteoriteDetailFragment!!)
-                        commit()
-                    }
+                .setCustomAnimations(
+                    R.anim.fragment_slide_left_enter,
+                    R.anim.fragment_slide_left_exit
+                ).apply {
+                    val meteoriteId: String = meteorite.id.toString()
+                    meteoriteDetailFragment = MeteoriteDetailFragment.newInstance(meteoriteId)
+                    replace(R.id.fragment, meteoriteDetailFragment!!)
+                    commit()
+                }
 
         } else {
             meteoriteDetailFragment?.setCurrentMeteorite(meteorite.id.toString())
@@ -285,9 +282,9 @@ class MeteoriteListFragment : Fragment() {
     }
 
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            @NonNull permissions: Array<String>,
-            @NonNull grantResults: IntArray,
+        requestCode: Int,
+        @NonNull permissions: Array<String>,
+        @NonNull grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == LOCATION_REQUEST_CODE) {

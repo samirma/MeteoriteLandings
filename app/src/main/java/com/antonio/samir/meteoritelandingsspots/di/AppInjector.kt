@@ -10,6 +10,7 @@ import com.antonio.samir.meteoritelandingsspots.data.remote.NasaServerEndPoint
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepositoryImpl
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailViewModel
+import com.antonio.samir.meteoritelandingsspots.features.detail.userCases.GetMeteoriteById
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.service.AddressService
 import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
@@ -52,6 +53,10 @@ val databaseModule = module {
     single { MeteoriteDaoFactory.getMeteoriteDao(get()) }
 }
 
+val useCaseModule = module {
+    single { GetMeteoriteById(get()) }
+}
+
 @ExperimentalCoroutinesApi
 @FlowPreview
 val businessModule = module {
@@ -82,4 +87,4 @@ val viewModelModule = module {
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-val appModules = listOf(viewModelModule, localRepositoryModule, networkModule, databaseModule, businessModule)
+val appModules = listOf(viewModelModule, useCaseModule, localRepositoryModule, networkModule, databaseModule, businessModule)

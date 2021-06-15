@@ -10,6 +10,7 @@ import com.antonio.samir.meteoritelandingsspots.data.Result
 import com.antonio.samir.meteoritelandingsspots.data.Result.*
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.features.detail.userCases.GetMeteoriteById
 import com.antonio.samir.meteoritelandingsspots.features.getLocationText
 import com.antonio.samir.meteoritelandingsspots.features.yearString
 import com.antonio.samir.meteoritelandingsspots.ui.extension.convertToNumberFormat
@@ -24,8 +25,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 @FlowPreview
 @ExperimentalCoroutinesApi
 class MeteoriteDetailViewModel(
-        private val meteoriteRepository: MeteoriteRepository,
-        gpsTracker: GPSTrackerInterface,
+    gpsTracker: GPSTrackerInterface,
+    private val getMeteoriteById: GetMeteoriteById,
 ) : ViewModel() {
 
     private var currentMeteorite = ConflatedBroadcastChannel<String>()
@@ -33,7 +34,7 @@ class MeteoriteDetailViewModel(
     val location = gpsTracker.location
 
     fun getMeteorite(context: Context): LiveData<Result<MeteoriteView>> = currentMeteorite.asFlow()
-            .flatMapLatest(meteoriteRepository::getMeteoriteById)
+            .flatMapLatest(getMeteoriteById::execute)
             .combine(location) { meteorite, location -> //Add location
                 when (meteorite) {
                     is Success -> Success(getMeteoriteView(meteorite.data, location, context))
