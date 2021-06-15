@@ -9,11 +9,7 @@
         android:label="MeteoriteListFragment">
         <action
             android:id="@+id/toDetail"
-            app:destination="@id/meteoriteDetailFragment"
-            app:enterAnim="@anim/fragment_open_enter"
-            app:exitAnim="@anim/fragment_open_exit"
-            app:popEnterAnim="@anim/fragment_close_enter"
-            app:popExitAnim="@anim/fragment_close_exit" />
+            app:destination="@id/meteoriteDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/meteoriteDetailFragment"

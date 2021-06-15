@@ -35,16 +35,14 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
 
     private val args: MeteoriteDetailFragmentArgs by navArgs()
 
-    private var _binding: FragmentMeteoriteDetailBinding? = null
-
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentMeteoriteDetailBinding
 
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?,
     ): View {
-        _binding = FragmentMeteoriteDetailBinding.inflate(inflater, container, false)
+        binding = FragmentMeteoriteDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -171,11 +169,6 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
             viewModel.requestAddressUpdate(meteorite)
             View.GONE
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     companion object {

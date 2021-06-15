@@ -1,10 +1,10 @@
 package com.antonio.samir.meteoritelandingsspots.data.local
 
+import androidx.paging.PagingSource
 import com.antonio.samir.meteoritelandingsspots.data.local.database.MeteoriteDao
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
 import java.util.*
 
 class MeteoriteLocalRepositoryImpl(
@@ -13,7 +13,7 @@ class MeteoriteLocalRepositoryImpl(
 
 ) : MeteoriteLocalRepository {
 
-    override suspend fun meteoriteOrdered(
+    override fun meteoriteOrdered(
             filter: String?,
             latitude: Double?,
             longitude: Double?,
@@ -48,6 +48,7 @@ class MeteoriteLocalRepositoryImpl(
     override fun getMeteoriteById(id: String): Flow<Meteorite> {
         return meteoriteDao.getMeteoriteById(id)
     }
+
 
     override fun meteoritesWithOutAddress(): Flow<List<Meteorite>> {
         return meteoriteDao.meteoritesWithOutAddress()

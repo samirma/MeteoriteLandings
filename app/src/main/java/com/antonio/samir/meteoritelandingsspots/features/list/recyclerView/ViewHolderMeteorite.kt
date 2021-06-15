@@ -1,78 +1,80 @@
 package com.antonio.samir.meteoritelandingsspots.features.list.recyclerView
 
-import android.content.Context
 import android.location.Location
-import android.view.View
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.databinding.ListItemMeteoriteBinding
 import com.antonio.samir.meteoritelandingsspots.features.getLocationText
 import com.antonio.samir.meteoritelandingsspots.features.yearString
 
-class ViewHolderMeteorite(private val view: View) : RecyclerView.ViewHolder(view) {
+class ViewHolderMeteorite(private val binding: ListItemMeteoriteBinding) :
+    RecyclerView.ViewHolder(binding.root) {
 
-    val context: Context = view.context
+    private val context = itemView.context
 
     private val noAddressPlaceHolder = context.getString(R.string.without_address_placeholder)
-
-    var name: TextView = view.findViewById(R.id.title)
-
-    private var addressTV: TextView = view.findViewById(R.id.location)
-
-    private var cardView: CardView = view.findViewById(R.id.cardview)
 
     var meteorite: Meteorite? = null
 
     fun onBind(
-            meteorite: Meteorite,
-            selectedMeteorite: Boolean,
-            location: Location?,
-            onClick: () -> Unit
+        meteorite: Meteorite,
+        selectedMeteorite: Boolean,
+        location: Location?,
+        onClick: () -> Unit
     ) {
 
         if (this.meteorite?.id == meteorite.id) {
-            addressTV.text = meteorite.getLocationText(location, noAddressPlaceHolder)
+            binding.info.location.text = meteorite.getLocationText(location, noAddressPlaceHolder)
         } else {
             this.meteorite = meteorite
             populateViewHolder(meteorite, location, selectedMeteorite)
         }
 
-        view.setOnClickListener {
+        itemView.setOnClickListener {
             onClick()
         }
 
     }
 
-    private fun populateViewHolder(meteorite: Meteorite, location: Location?, selectedMeteorite: Boolean) {
+    private fun populateViewHolder(
+        meteorite: Meteorite,
+        location: Location?,
+        selectedMeteorite: Boolean
+    ) {
         val meteoriteName = meteorite.name
 
         val year = meteorite.yearString
 
-        name.text = if (!year.isNullOrBlank()) {
-            context.getString(R.string.name, meteoriteName, year)
-        } else {
-            meteoriteName
-        }
-
-        name.contentDescription = meteoriteName
-
-        addressTV.text = meteorite.getLocationText(location, noAddressPlaceHolder)
-
         var color = R.color.unselected_item_color
         var titleColor = R.color.title_color
         var elevation = R.dimen.unselected_item_elevation
-
         if (selectedMeteorite) {
             color = R.color.selected_item_color
             titleColor = R.color.selected_title_color
             elevation = R.dimen.selected_item_elevation
         }
 
-        cardView.setCardBackgroundColor(context.resources.getColor(color))
-        cardView.cardElevation = context.resources.getDimensionPixelSize(elevation).toFloat()
-        name.setTextColor(context.resources.getColor(titleColor))
+        with(binding) {
+
+            with(info) {
+                title.text = if (!year.isNullOrBlank()) {
+                    context.getString(R.string.name, meteoriteName, year)
+                } else {
+                    meteoriteName
+                }
+
+                title.contentDescription = meteoriteName
+
+
+                title.setTextColor(context.resources.getColor(titleColor))
+            }
+
+            info.location.text = meteorite.getLocationText(location, noAddressPlaceHolder)
+
+            cardview.setCardBackgroundColor(context.resources.getColor(color))
+            cardview.cardElevation = context.resources.getDimensionPixelSize(elevation).toFloat()
+        }
     }
 
 

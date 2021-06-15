@@ -9,6 +9,7 @@ import android.view.*
 import android.view.View.*
 import androidx.annotation.NonNull
 import androidx.appcompat.widget.SearchView
+import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import com.antonio.samir.meteoritelandingsspots.R
@@ -26,6 +27,7 @@ import com.antonio.samir.meteoritelandingsspots.ui.extension.showActionBar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import java.util.concurrent.atomic.AtomicBoolean
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -108,8 +110,7 @@ class MeteoriteListFragment : Fragment() {
                 if (isLandscape()) {
                     showMeteoriteLandscape(meteorite)
                     meteoriteAdapter.updateListUI(meteorite)
-                    val position = meteoriteAdapter.getPosition(meteorite)
-                    position?.let { binding.meteoriteRV.smoothScrollToPosition(it) }
+                    binding.meteoriteRV.smoothScrollToPosition(meteoriteAdapter.getSelectedPosition())
                 } else {
                     if (shouldOpenMeteorite.get()) {
                         showMeteoritePortrait(meteorite)
@@ -233,7 +234,7 @@ class MeteoriteListFragment : Fragment() {
 
     private fun showMeteoritePortrait(meteorite: Meteorite) {
         redirectedToPortrait.set(true)
-//        findNavController().navigate(toDetail(meteorite.id.toString()))
+        findNavController().navigate(MeteoriteListFragmentDirections.toDetail(meteorite.id.toString()))
     }
 
     private fun setupGridLayout() {
