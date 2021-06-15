@@ -38,16 +38,6 @@ class MeteoriteRepositoryImpl(
         return meteoriteLocalRepository.meteoriteOrdered(filter, null, null, limit)
     }
 
-    override fun getMeteoriteById(id: String): Flow<Result<Meteorite>> = flow {
-        emit(InProgress())
-        try {
-            emitAll(meteoriteLocalRepository.getMeteoriteById(id).map { Success(it) })
-        } catch (e: IOException) {
-            Log.e(TAG, e.message, e)
-            emit(Error(MeteoriteLocalException(e)))
-        }
-    }
-
     override suspend fun update(meteorite: Meteorite) {
         meteoriteLocalRepository.update(meteorite)
     }

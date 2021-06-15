@@ -74,7 +74,7 @@ class MeteoriteDetailViewModelTest {
         whenever(mockContext.getString(R.string.unkown)).thenReturn(fixtString)
         whenever(mockContext.getString(R.string.without_address_placeholder)).thenReturn(fixtString)
 
-        viewModel = MeteoriteDetailViewModel(mockRepository, mockGPSTracker)
+        viewModel = MeteoriteDetailViewModel(mockRepository, mockGPSTracker, get())
 
         viewModel.getMeteorite(mockContext).observeForever(mockMeteoriteObserver)
 

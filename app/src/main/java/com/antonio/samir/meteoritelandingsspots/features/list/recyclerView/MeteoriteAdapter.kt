@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedListAdapter
+import androidx.paging.PagingDataAdapter
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import java.util.*
@@ -12,7 +13,7 @@ import java.util.*
 /**
  * Custom RecyclerView.Adapter to deal with meteorites cursor
  */
-class MeteoriteAdapter : PagedListAdapter<Meteorite, ViewHolderMeteorite>(MeteoriteDiffCallback()) {
+class MeteoriteAdapter : PagingDataAdapter<Meteorite, ViewHolderMeteorite>(MeteoriteDiffCallback()) {
 
     var location: Location? = null
 

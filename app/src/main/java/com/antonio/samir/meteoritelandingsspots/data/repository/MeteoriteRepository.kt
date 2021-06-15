@@ -15,8 +15,6 @@ interface MeteoriteRepository {
             limit: Long,
     ): PagingSource<Int, Meteorite>
 
-    fun getMeteoriteById(id: String): Flow<Result<Meteorite>>
-
     suspend fun update(meteorite: Meteorite)
 
     suspend fun update(list: List<Meteorite>)
