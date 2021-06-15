@@ -1,7 +1,7 @@
 package com.antonio.samir.meteoritelandingsspots.service
 
 import android.location.Address
-import com.antonio.samir.meteoritelandingsspots.data.Result
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
@@ -67,7 +67,7 @@ class AddressServiceTest {
 
         whenever(mockGeoLocationUtil.getAddress(any(), any())).thenReturn(address)
 
-        val expected = listOf(Result.InProgress(100f), Result.Success(100f))
+        val expected = listOf(ResultOf.InProgress(100f), ResultOf.Success(100f))
         assertEquals(expected, addressService.recoveryAddress().toList())
 
         verify(mockLocalRepository).meteoritesWithOutAddress()

@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.common.common.mapper
+package com.antonio.samir.meteoritelandingsspots.common.mapper
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

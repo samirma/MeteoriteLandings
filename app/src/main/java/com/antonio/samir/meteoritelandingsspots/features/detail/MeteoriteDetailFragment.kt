@@ -11,7 +11,9 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.data.Result.*
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf.*
+import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteDetailBinding
 import com.antonio.samir.meteoritelandingsspots.ui.extension.isLandscape
 import com.antonio.samir.meteoritelandingsspots.ui.extension.showActionBar
@@ -64,7 +66,7 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
 
     private fun observeMeteorite() {
 
-        viewModel.getMeteorite(requireContext()).observe(viewLifecycleOwner, { result ->
+        viewModel.getMeteorite(requireContext()).observe(viewLifecycleOwner) { result->
             when (result) {
                 is Success -> {
                     result.data.let { meteorite ->
@@ -84,7 +86,7 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
                 is Error -> showError()
                 is InProgress -> showProgressLoader()
             }
-        })
+        }
 
     }
 

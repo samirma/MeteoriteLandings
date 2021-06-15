@@ -1,34 +1,28 @@
 package com.antonio.samir.meteoritelandingsspots.features.list.recyclerView
 
-import android.location.Location
 import androidx.recyclerview.widget.RecyclerView
 import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.databinding.ListItemMeteoriteBinding
-import com.antonio.samir.meteoritelandingsspots.features.getLocationText
-import com.antonio.samir.meteoritelandingsspots.features.yearString
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteItemView
 
 class ViewHolderMeteorite(private val binding: ListItemMeteoriteBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     private val context = itemView.context
 
-    private val noAddressPlaceHolder = context.getString(R.string.without_address_placeholder)
-
-    var meteorite: Meteorite? = null
+    var meteorite: MeteoriteItemView? = null
 
     fun onBind(
-        meteorite: Meteorite,
+        meteorite: MeteoriteItemView,
         selectedMeteorite: Boolean,
-        location: Location?,
         onClick: () -> Unit
     ) {
 
         if (this.meteorite?.id == meteorite.id) {
-            binding.info.location.text = meteorite.getLocationText(location, noAddressPlaceHolder)
+            binding.info.location.text = meteorite.address
         } else {
             this.meteorite = meteorite
-            populateViewHolder(meteorite, location, selectedMeteorite)
+            populateViewHolder(meteorite, selectedMeteorite)
         }
 
         itemView.setOnClickListener {
@@ -38,8 +32,7 @@ class ViewHolderMeteorite(private val binding: ListItemMeteoriteBinding) :
     }
 
     private fun populateViewHolder(
-        meteorite: Meteorite,
-        location: Location?,
+        meteorite: MeteoriteItemView,
         selectedMeteorite: Boolean
     ) {
         val meteoriteName = meteorite.name
@@ -70,7 +63,7 @@ class ViewHolderMeteorite(private val binding: ListItemMeteoriteBinding) :
                 title.setTextColor(context.resources.getColor(titleColor))
             }
 
-            info.location.text = meteorite.getLocationText(location, noAddressPlaceHolder)
+            info.location.text = meteorite.address
 
             cardview.setCardBackgroundColor(context.resources.getColor(color))
             cardview.cardElevation = context.resources.getDimensionPixelSize(elevation).toFloat()

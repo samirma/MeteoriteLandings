@@ -4,11 +4,11 @@ import android.location.Location
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
 import androidx.paging.*
-import com.antonio.samir.meteoritelandingsspots.data.Result
-import com.antonio.samir.meteoritelandingsspots.data.Result.Success
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf.Success
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
-import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel.ContentStatus.*
+import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
 import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
@@ -30,13 +30,14 @@ class MeteoriteListViewModel(
     private val gpsTracker: GPSTrackerInterface,
     private val addressService: AddressServiceInterface,
     private val dispatchers: DispatcherProvider,
+    private val getMeteorites: GetMeteorites,
 ) : ViewModel() {
 
     var filter = ""
 
     private val currentFilter = ConflatedBroadcastChannel<String?>()
 
-    private val meteorite = ConflatedBroadcastChannel<Meteorite?>(stateHandle[METEORITE])
+    private val meteorite = ConflatedBroadcastChannel<MeteoriteItemView?>(stateHandle[METEORITE])
 
     val selectedMeteorite = meteorite.asFlow().asLiveData()
 
@@ -62,7 +63,7 @@ class MeteoriteListViewModel(
         if (it) {
             addressService.recoveryAddress().asLiveData()
         } else {
-            liveData<Result<Float>> {
+            liveData<ResultOf<Float>> {
                 emit(Success(COMPLETED))
             }
         }
@@ -79,7 +80,7 @@ class MeteoriteListViewModel(
 
     }
 
-    fun selectMeteorite(meteorite: Meteorite?) {
+    fun selectMeteorite(meteorite: MeteoriteItemView?) {
         stateHandle[METEORITE] = meteorite
         this.meteorite.offer(meteorite)
     }
@@ -99,30 +100,18 @@ class MeteoriteListViewModel(
     }
 
 
-    fun getMeteorites(): LiveData<PagingData<Meteorite>> {
+    fun getMeteorites(): LiveData<PagingData<MeteoriteItemView>> {
         return currentFilter.asFlow()
             .flowOn(dispatchers.default())
             .combine<String?, Location?, Pair<String?, Location?>>(gpsTracker.location) { _, location ->
                 Pair(this.filter, location)
             }
             .map {
-                return@map Pager(
-                    config = PagingConfig(
-                        pageSize = 60,
-                        enablePlaceholders = true,
-                        maxSize = 200
-                    )
-                ) {
-                    meteoriteRepository.loadMeteorites(
-                        filter = it.first,
-                        longitude = it.second?.longitude,
-                        latitude = it.second?.latitude,
-                        limit = LIMIT
-                    )
-                }
+                getMeteorites.execute(it)
             }.flatMapConcat {
-                it.flow
+                it
             }
+            .cachedIn(viewModelScope)
             .asLiveData()
     }
 
@@ -137,9 +126,6 @@ class MeteoriteListViewModel(
     }
 
     companion object {
-        private val TAG = MeteoriteListViewModel::class.java.simpleName
-        const val PAGE_SIZE = 1000
-        const val LIMIT = 1000L
         const val COMPLETED = 100f
         const val METEORITE = "METEORITE"
     }

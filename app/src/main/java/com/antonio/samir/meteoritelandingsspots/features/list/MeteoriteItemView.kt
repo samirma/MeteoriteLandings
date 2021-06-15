@@ -1,9 +1,10 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
-data class MeteoriteView(
-        val id: String?,
+data class MeteoriteItemView(
+        val id: Int,
         val name: String?,
         val yearString: String?,
         val address: String?,
-        val hasAddress: Boolean
+        val reclat: String?,
+        val reclong: String?
 )

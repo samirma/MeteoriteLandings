@@ -5,9 +5,9 @@ import android.location.Location
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.data.Result
-import com.antonio.samir.meteoritelandingsspots.data.Result.InProgress
-import com.antonio.samir.meteoritelandingsspots.data.Result.Success
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf.InProgress
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf.Success
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailViewModel
@@ -56,7 +56,7 @@ class MeteoriteDetailViewModelTest {
 
     private lateinit var viewModel: MeteoriteDetailViewModel
 
-    private val mockMeteoriteObserver: Observer<Result<MeteoriteView>> = mock()
+    private val mockMeteoriteObserver: Observer<ResultOf<MeteoriteView>> = mock()
 
     private var currentLocation = ConflatedBroadcastChannel<Location?>(null)
 
