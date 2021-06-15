@@ -3,11 +3,10 @@ package com.antonio.samir.meteoritelandingsspots.features.list.ui
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.lifecycle.SavedStateHandle
-import androidx.paging.DataSource
 import androidx.paging.PagedList
-import com.antonio.samir.meteoritelandingsspots.data.Result
-import com.antonio.samir.meteoritelandingsspots.data.Result.InProgress
-import com.antonio.samir.meteoritelandingsspots.data.Result.Success
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf.InProgress
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf.Success
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel
@@ -49,11 +48,12 @@ class MeteoriteListViewModelTest {
     fun setUp() {
 
         viewModel = MeteoriteListViewModel(
-                stateHandle = mockSavedStateHandle,
-                meteoriteRepository = mockRepository,
-                gpsTracker = mockGPSTracker,
-                addressService = addressService,
-                dispatchers = coroutinesTestRule.testDispatcherProvider
+            stateHandle = mockSavedStateHandle,
+            meteoriteRepository = mockRepository,
+            gpsTracker = mockGPSTracker,
+            addressService = addressService,
+            dispatchers = coroutinesTestRule.testDispatcherProvider,
+            getMeteorites = get()
         )
 
         viewModel.getMeteorites().observeForever(mockObserverPageList)
@@ -73,7 +73,7 @@ class MeteoriteListViewModelTest {
             emit(success)
         })
 
-        val observer: Observer<Result<Float>> = mock()
+        val observer: Observer<ResultOf<Float>> = mock()
         viewModel.getRecoverAddressStatus().observeForever(observer)
 
         verify(observer).onChanged(success)
@@ -91,7 +91,7 @@ class MeteoriteListViewModelTest {
             emit(success)
         })
 
-        val observer: Observer<Result<Float>> = mock()
+        val observer: Observer<ResultOf<Float>> = mock()
         viewModel.getRecoverAddressStatus().observeForever(observer)
 
         verify(observer).onChanged(inProgress)
@@ -106,7 +106,7 @@ class MeteoriteListViewModelTest {
             emit(Success(Unit))
         })
 
-        val observer: Observer<Result<Unit>> = mock()
+        val observer: Observer<ResultOf<Unit>> = mock()
         viewModel.getNetworkLoadingStatus().observeForever(observer)
 
         verify(observer).onChanged(InProgress())
@@ -116,13 +116,13 @@ class MeteoriteListViewModelTest {
     @Test
     fun `test getNetworkLoadStatus error`() {
 
-        val value = Result.Error(Exception("test"))
+        val value = ResultOf.Error(Exception("test"))
 
         whenever(mockRepository.loadDatabase()).thenReturn(flow {
             emit(value)
         })
 
-        val observer: Observer<Result<Unit>> = mock()
+        val observer: Observer<ResultOf<Unit>> = mock()
         viewModel.getNetworkLoadingStatus().observeForever(observer)
 
         verify(observer).onChanged(value)

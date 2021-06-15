@@ -10,8 +10,11 @@ import com.antonio.samir.meteoritelandingsspots.data.remote.NasaServerEndPoint
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepositoryImpl
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailViewModel
+import com.antonio.samir.meteoritelandingsspots.features.detail.mapper.MeteoriteMapper
 import com.antonio.samir.meteoritelandingsspots.features.detail.userCases.GetMeteoriteById
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel
+import com.antonio.samir.meteoritelandingsspots.features.list.mapper.MeteoriteViewMapper
+import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
 import com.antonio.samir.meteoritelandingsspots.service.AddressService
 import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.util.*
@@ -27,17 +30,20 @@ import java.util.concurrent.TimeUnit
 
 
 private val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl(NasaServerEndPoint.URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .client(OkHttpClient.Builder()
-                .addInterceptor(run {
-                    val httpLoggingInterceptor = HttpLoggingInterceptor()
-                    httpLoggingInterceptor.apply { httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY }
-                })
-                .readTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS).build()
-        )
-        .build()
+    .baseUrl(NasaServerEndPoint.URL)
+    .addConverterFactory(GsonConverterFactory.create())
+    .client(
+        OkHttpClient.Builder()
+            .addInterceptor(run {
+                val httpLoggingInterceptor = HttpLoggingInterceptor()
+                httpLoggingInterceptor.apply {
+                    httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+                }
+            })
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS).build()
+    )
+    .build()
 
 val localRepositoryModule = module {
     single<MeteoriteLocalRepository> { MeteoriteLocalRepositoryImpl(get(), get()) }
@@ -53,8 +59,14 @@ val databaseModule = module {
     single { MeteoriteDaoFactory.getMeteoriteDao(get()) }
 }
 
+val mappersModule = module {
+    factory { MeteoriteMapper() }
+    factory { MeteoriteViewMapper() }
+}
+
 val useCaseModule = module {
-    single { GetMeteoriteById(get()) }
+    factory { GetMeteoriteById(get(), get()) }
+    factory { GetMeteorites(get(), get()) }
 }
 
 @ExperimentalCoroutinesApi
@@ -76,15 +88,24 @@ val viewModelModule = module {
     }
     viewModel {
         MeteoriteListViewModel(
-                stateHandle = get(),
-                meteoriteRepository = get(),
-                gpsTracker = get(),
-                addressService = get(),
-                dispatchers = get()
+            stateHandle = get(),
+            meteoriteRepository = get(),
+            gpsTracker = get(),
+            addressService = get(),
+            dispatchers = get(),
+            getMeteorites = get()
         )
     }
 }
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-val appModules = listOf(viewModelModule, useCaseModule, localRepositoryModule, networkModule, databaseModule, businessModule)
+val appModules = listOf(
+    viewModelModule,
+    useCaseModule,
+    mappersModule,
+    localRepositoryModule,
+    networkModule,
+    databaseModule,
+    businessModule
+)

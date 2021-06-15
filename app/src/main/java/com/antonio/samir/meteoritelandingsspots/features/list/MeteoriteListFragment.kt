@@ -13,10 +13,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.data.Result
-import com.antonio.samir.meteoritelandingsspots.data.Result.InProgress
-import com.antonio.samir.meteoritelandingsspots.data.Result.Success
-import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf.InProgress
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf.Success
 import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteListBinding
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailFragment
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel.ContentStatus.*
@@ -43,9 +42,7 @@ class MeteoriteListFragment : Fragment() {
 
     private val viewModel: MeteoriteListViewModel by viewModel()
 
-    private var _binding: FragmentMeteoriteListBinding? = null
-
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentMeteoriteListBinding
 
     private val shouldOpenMeteorite = AtomicBoolean(true)
 
@@ -56,7 +53,7 @@ class MeteoriteListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        _binding = FragmentMeteoriteListBinding.inflate(inflater, container, false)
+        binding = FragmentMeteoriteListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -153,7 +150,7 @@ class MeteoriteListFragment : Fragment() {
 
     }
 
-    private fun onSuccess(meteorites: PagingData<Meteorite>) {
+    private fun onSuccess(meteorites: PagingData<MeteoriteItemView>) {
         meteoriteAdapter.submitData(lifecycle, meteorites)
     }
 
@@ -162,7 +159,7 @@ class MeteoriteListFragment : Fragment() {
             when (status) {
                 is InProgress -> showAddressLoading(status.data)
                 is Success -> hideAddressLoading()
-                is Result.Error -> error(getString(R.string.general_error))
+                is ResultOf.Error -> error(getString(R.string.general_error))
             }
         })
     }
@@ -207,7 +204,7 @@ class MeteoriteListFragment : Fragment() {
         binding.messageTV.text = messageString
     }
 
-    private fun showMeteoriteLandscape(meteorite: Meteorite) {
+    private fun showMeteoriteLandscape(meteorite: MeteoriteItemView) {
 
         layoutManager?.spanCount = 1
 
@@ -232,7 +229,7 @@ class MeteoriteListFragment : Fragment() {
 
     }
 
-    private fun showMeteoritePortrait(meteorite: Meteorite) {
+    private fun showMeteoritePortrait(meteorite: MeteoriteItemView) {
         redirectedToPortrait.set(true)
         findNavController().navigate(MeteoriteListFragmentDirections.toDetail(meteorite.id.toString()))
     }
@@ -337,12 +334,6 @@ class MeteoriteListFragment : Fragment() {
 
             }
         }
-    }
-
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     companion object {

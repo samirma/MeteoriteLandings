@@ -1,6 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.data.repository
 
-import com.antonio.samir.meteoritelandingsspots.data.Result
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.remote.MeteoriteRemoteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
@@ -54,7 +54,7 @@ class MeteoriteRepositoryImplTest {
         whenever(mockRemoteRepository.getMeteorites(any(), any())).thenReturn(meteorites)
                 .thenReturn(emptyList())
 
-        val expected: List<Result<Unit>> = listOf(Result.InProgress(), Result.Success(Unit))
+        val expected: List<ResultOf<Unit>> = listOf(ResultOf.InProgress(), ResultOf.Success(Unit))
         val loadDatabase = repository.loadDatabase()
         val actual = loadDatabase.toList()
         assertEquals(expected, actual)
@@ -81,7 +81,7 @@ class MeteoriteRepositoryImplTest {
         whenever(mockRemoteRepository.getMeteorites(any(), any())).thenReturn(meteorites)
                 .thenReturn(emptyList())
 
-        val expected: List<Result<Unit>> = listOf(Result.InProgress(), Result.Success(Unit))
+        val expected: List<ResultOf<Unit>> = listOf(ResultOf.InProgress(), ResultOf.Success(Unit))
         val actual = repository.loadDatabase().toList()
         assertEquals(expected, actual)
 
@@ -138,7 +138,7 @@ class MeteoriteRepositoryImplTest {
             emit(meteorite)
         })
 
-        val expected: List<Result<Meteorite>> = listOf(Result.InProgress(), Result.Success(meteorite))
+        val expected: List<ResultOf<Meteorite>> = listOf(ResultOf.InProgress(), ResultOf.Success(meteorite))
         val actual = repository.getMeteoriteById(meteorite.id.toString()).toList()
         assertEquals(expected, actual)
 

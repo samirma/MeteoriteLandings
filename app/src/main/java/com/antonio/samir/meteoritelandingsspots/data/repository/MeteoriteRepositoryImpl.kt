@@ -1,21 +1,17 @@
 package com.antonio.samir.meteoritelandingsspots.data.repository
 
 import android.util.Log
-import androidx.paging.DataSource
 import androidx.paging.PagingSource
-import com.antonio.samir.meteoritelandingsspots.data.Result
-import com.antonio.samir.meteoritelandingsspots.data.Result.*
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf.*
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.remote.MeteoriteRemoteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import java.io.IOException
 import java.util.concurrent.atomic.AtomicBoolean
 
 
@@ -28,16 +24,6 @@ class MeteoriteRepositoryImpl(
 
     private val shouldLoad = AtomicBoolean(true)
 
-    override fun loadMeteorites(
-            filter: String?,
-            longitude: Double?,
-            latitude: Double?,
-            limit: Long,
-    ):
-            PagingSource<Int, Meteorite> {
-        return meteoriteLocalRepository.meteoriteOrdered(filter, null, null, limit)
-    }
-
     override suspend fun update(meteorite: Meteorite) {
         meteoriteLocalRepository.update(meteorite)
     }
@@ -46,7 +32,7 @@ class MeteoriteRepositoryImpl(
         meteoriteLocalRepository.updateAll(list)
     }
 
-    override fun loadDatabase(): Flow<Result<Unit>> = flow {
+    override fun loadDatabase(): Flow<ResultOf<Unit>> = flow {
         if (shouldLoad.getAndSet(false)) {
             val meteoritesCount = meteoriteLocalRepository.getMeteoritesCount()
             emit(InProgress())

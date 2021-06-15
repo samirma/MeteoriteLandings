@@ -1,7 +1,7 @@
 package com.antonio.samir.meteoritelandingsspots.service
 
 import android.util.Log
-import com.antonio.samir.meteoritelandingsspots.data.Result
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
@@ -28,21 +28,21 @@ class AddressService(
 
     private val TAG = AddressService::class.java.simpleName
 
-    override fun recoveryAddress(): Flow<Result<Float>> = meteoriteLocalRepository.meteoritesWithOutAddress()
+    override fun recoveryAddress(): Flow<ResultOf<Float>> = meteoriteLocalRepository.meteoritesWithOutAddress()
             .onEach { recoverAddress(it) }
             .flowOn(dispatchers.default())
             .map {
                 getReturn(it)
             }
 
-    private suspend fun getReturn(it: List<Meteorite>): Result<Float> {
+    private suspend fun getReturn(it: List<Meteorite>): ResultOf<Float> {
         return if (!it.isNullOrEmpty()) {
             val meteoritesWithoutAddressCount = meteoriteLocalRepository.getMeteoritesWithoutAddressCount()
             val meteoritesCount = meteoriteLocalRepository.getMeteoritesCount()
             val progress = (1 - (meteoritesWithoutAddressCount.toFloat() / meteoritesCount)) * 100
-            Result.InProgress(progress)
+            ResultOf.InProgress(progress)
         } else {
-            Result.Success(100f)
+            ResultOf.Success(100f)
         }
     }
 
