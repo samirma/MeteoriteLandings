@@ -28,7 +28,14 @@ class GetMeteorites(
     }
         .flow
         .map { pagingData ->
-            pagingData.map { mapper.map(it) }
+            pagingData.map {
+                mapper.map(
+                    MeteoriteViewMapper.Input(
+                        meteorite = it,
+                        location = input.second
+                    )
+                )
+            }
         }
 
     companion object {

@@ -91,7 +91,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
 
-    implementation 'com.google.android.material:material:1.4.0-rc01'
+    implementation 'com.google.android.material:material:1.5.0-alpha01'
 
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
@@ -101,7 +101,7 @@ dependencies {
 
 
     //Paging
-    implementation "androidx.paging:paging-runtime-ktx:3.0.0"
+    implementation "androidx.paging:paging-runtime-ktx:3.0.1"
 
     //Room
     implementation "androidx.room:room-runtime:$androidx_room_version"
@@ -158,16 +158,16 @@ dependencies {
 
     //Test
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit:1.4.31'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit:1.5.20'
     testImplementation 'org.assertj:assertj-core:3.18.1'
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
     testImplementation "android.arch.core:core-testing:1.1.1"
     testImplementation 'com.flextrade.jfixture:jfixture:2.7.2'
 
     // testImplementation for pure JVM unit tests
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1"
     // androidTestImplementation for Android instrumentation tests
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3"
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1"
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
