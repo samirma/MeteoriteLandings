@@ -9,7 +9,7 @@ import com.antonio.samir.meteoritelandingsspots.features.getLocationText
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.features.yearString
 
-class MeteoriteViewMapper : MapperBase<MeteoriteViewMapper.Input, MeteoriteItemView>() {
+class MeteoriteViewMapper (val context: Context): MapperBase<MeteoriteViewMapper.Input, MeteoriteItemView>(){
 
     override suspend fun action(input: Input): MeteoriteItemView {
 
@@ -21,7 +21,7 @@ class MeteoriteViewMapper : MapperBase<MeteoriteViewMapper.Input, MeteoriteItemV
             yearString = meteorite.yearString,
             address = meteorite.getLocationText(
                 location = input.location,
-                noAddress = input.context
+                noAddress = context
                     .getString(R.string.without_address_placeholder)
             ),
             reclat = meteorite.reclat,
@@ -29,6 +29,6 @@ class MeteoriteViewMapper : MapperBase<MeteoriteViewMapper.Input, MeteoriteItemV
         )
     }
 
-    data class Input(val meteorite: Meteorite, val location: Location?, val context: Context)
+    data class Input(val meteorite: Meteorite, val location: Location?)
 
 }

@@ -61,7 +61,7 @@ val databaseModule = module {
 
 val mappersModule = module {
     factory { MeteoriteMapper() }
-    factory { MeteoriteViewMapper() }
+    factory { MeteoriteViewMapper(context = get()) }
 }
 
 val useCaseModule = module {
