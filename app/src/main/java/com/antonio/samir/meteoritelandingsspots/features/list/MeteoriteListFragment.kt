@@ -25,6 +25,7 @@ import com.antonio.samir.meteoritelandingsspots.ui.extension.isLandscape
 import com.antonio.samir.meteoritelandingsspots.ui.extension.showActionBar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import java.util.concurrent.atomic.AtomicBoolean
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -34,13 +35,11 @@ class MeteoriteListFragment : Fragment() {
 
     private var layoutManager: GridLayoutManager? = null
 
-    private var meteoriteAdapter = MeteoriteAdapter().apply {
-        setHasStableIds(false)
-    }
+    private var meteoriteAdapter = MeteoriteAdapter()
 
     private var meteoriteDetailFragment: MeteoriteDetailFragment? = null
 
-    private val viewModel: MeteoriteListViewModel by viewModel()
+    private val viewModel: MeteoriteListViewModel by stateViewModel()
 
     private lateinit var binding: FragmentMeteoriteListBinding
 
