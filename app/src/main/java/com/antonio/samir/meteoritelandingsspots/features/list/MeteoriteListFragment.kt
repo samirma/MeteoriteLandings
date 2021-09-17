@@ -9,6 +9,11 @@ import android.view.*
 import android.view.View.*
 import androidx.annotation.NonNull
 import androidx.appcompat.widget.SearchView
+import androidx.compose.foundation.background
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,14 +25,19 @@ import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteLis
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailFragment
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel.ContentStatus.*
 import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.MeteoriteAdapter
-import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.SpacesItemDecoration
 import com.antonio.samir.meteoritelandingsspots.ui.extension.isLandscape
 import com.antonio.samir.meteoritelandingsspots.ui.extension.showActionBar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import java.util.concurrent.atomic.AtomicBoolean
-import org.koin.androidx.viewmodel.ext.android.viewModel
+
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
+import kotlinx.coroutines.flow.Flow
+
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -53,6 +63,11 @@ class MeteoriteListFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentMeteoriteListBinding.inflate(inflater, container, false)
+
+        binding.meteoriteList?.setContent {
+            MeteoriteList(meteorites = viewModel.getMeteorites())
+        }
+
         return binding.root
     }
 
@@ -62,16 +77,6 @@ class MeteoriteListFragment : Fragment() {
         showActionBar(getString(R.string.title))
 
         meteoriteAdapter.clearSelectedMeteorite()
-
-        binding.meteoriteRV.adapter = meteoriteAdapter
-
-        binding.meteoriteRV.addItemDecoration(
-            SpacesItemDecoration(
-                context = requireContext(),
-                verticalMargin = R.dimen.spacing,
-                horizontalMargin = R.dimen.horizontal_spacing
-            )
-        )
 
         setupGridLayout()
 
@@ -106,7 +111,6 @@ class MeteoriteListFragment : Fragment() {
                 if (isLandscape()) {
                     showMeteoriteLandscape(meteorite)
                     meteoriteAdapter.updateListUI(meteorite)
-                    binding.meteoriteRV.smoothScrollToPosition(meteoriteAdapter.getSelectedPosition())
                 } else {
                     if (shouldOpenMeteorite.get()) {
                         showMeteoritePortrait(meteorite)
@@ -122,15 +126,15 @@ class MeteoriteListFragment : Fragment() {
     }
 
     private fun setupLocation() {
-        viewModel.isAuthorizationRequested().observe(viewLifecycleOwner, {
+        viewModel.isAuthorizationRequested().observe(viewLifecycleOwner) {
             if (it) {
                 requestPermissions(arrayOf(ACCESS_FINE_LOCATION), LOCATION_REQUEST_CODE)
             }
-        })
+        }
         viewModel.updateLocation()
-        viewModel.getLocation().observe(viewLifecycleOwner, {
+        viewModel.getLocation().observe(viewLifecycleOwner) {
             meteoriteAdapter.location = it
-        })
+        }
     }
 
     private fun observeMeteorites() {
@@ -143,34 +147,27 @@ class MeteoriteListFragment : Fragment() {
             }
         }
 
-        viewModel.getMeteorites().observe(viewLifecycleOwner) { meteorites ->
-            onSuccess(meteorites)
-        }
 
-    }
-
-    private fun onSuccess(meteorites: PagingData<MeteoriteItemView>) {
-        meteoriteAdapter.submitData(lifecycle, meteorites)
     }
 
     private fun observeRecoveryAddressStatus() {
-        viewModel.getRecoverAddressStatus().observe(viewLifecycleOwner, { status ->
+        viewModel.getRecoverAddressStatus().observe(viewLifecycleOwner) { status ->
             when (status) {
                 is InProgress -> showAddressLoading(status.data)
                 is Success -> hideAddressLoading()
                 is ResultOf.Error -> error(getString(R.string.general_error))
             }
-        })
+        }
     }
 
     private fun observeNetworkLoadingStatus() {
-        viewModel.getNetworkLoadingStatus().observe(viewLifecycleOwner, {
+        viewModel.getNetworkLoadingStatus().observe(viewLifecycleOwner) {
             when (it) {
                 is InProgress -> networkLoadingStarted()
                 is Success -> networkLoadingStopped()
                 else -> unableToFetch()
             }
-        })
+        }
     }
 
     private fun noResult() {
@@ -238,7 +235,6 @@ class MeteoriteListFragment : Fragment() {
 
         layoutManager = GridLayoutManager(requireContext(), columnCount)
 
-        binding.meteoriteRV.layoutManager = layoutManager
     }
 
     private fun networkLoadingStarted() {
@@ -263,13 +259,13 @@ class MeteoriteListFragment : Fragment() {
     private fun showContent() {
         binding.progressLoader.visibility = INVISIBLE
         binding.container?.visibility = VISIBLE
-        binding.meteoriteRV.visibility = VISIBLE
+        binding.meteoriteList?.visibility = VISIBLE
         binding.messageTV.visibility = INVISIBLE
     }
 
     private fun hideContent() {
         binding.container?.visibility = INVISIBLE
-        binding.meteoriteRV.visibility = INVISIBLE
+        binding.meteoriteList?.visibility = INVISIBLE
     }
 
     private fun showProgressLoader() {
@@ -333,6 +329,34 @@ class MeteoriteListFragment : Fragment() {
 
             }
         }
+    }
+
+    @Composable
+    fun MeteoriteList(meteorites: Flow<PagingData<MeteoriteItemView>>) {
+        val collectAsLazyPagingItems = meteorites.collectAsLazyPagingItems()
+
+        LazyColumn(Modifier.background(MaterialTheme.colors.surface)) {
+            items(collectAsLazyPagingItems) { character ->
+                MeteoriteItem(character)
+            }
+        }
+    }
+
+    @Composable
+    fun MeteoriteItem(itemView: MeteoriteItemView?) {
+        Text(text = itemView?.name!!)
+    }
+
+    @Preview
+    @Composable
+    fun MeteoriteItem() {
+        MeteoriteItem(
+            MeteoriteItemView(
+                id = 123,
+                name = "title",
+                address = "address"
+            )
+        )
     }
 
     companion object {

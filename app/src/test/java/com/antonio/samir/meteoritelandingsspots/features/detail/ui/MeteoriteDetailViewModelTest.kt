@@ -74,9 +74,9 @@ class MeteoriteDetailViewModelTest {
         whenever(mockContext.getString(R.string.unkown)).thenReturn(fixtString)
         whenever(mockContext.getString(R.string.without_address_placeholder)).thenReturn(fixtString)
 
-        viewModel = MeteoriteDetailViewModel(mockRepository, mockGPSTracker, get())
-
-        viewModel.getMeteorite(mockContext).observeForever(mockMeteoriteObserver)
+//        viewModel = MeteoriteDetailViewModel(mockRepository, mockGPSTracker, get())
+//
+//        viewModel.getMeteorite(mockContext).observeForever(mockMeteoriteObserver)
 
     }
 
@@ -90,27 +90,31 @@ class MeteoriteDetailViewModelTest {
             mass = "0"
         }
 
-        whenever(mockRepository.getMeteoriteById(any())).thenReturn(flow {
-            emit(InProgress())
-            emit(Success(meteorite))
-        })
+//        whenever(mockRepository.getMeteoriteById(any())).thenReturn(flow {
+//            emit(InProgress())
+//            emit(Success(meteorite))
+//        })
 
-        currentLocation.offer(mockLocation)
+        currentLocation.trySend(mockLocation).isSuccess
 
         viewModel.loadMeteorite(fixtMeteoriteView.id!!)
 
         verify(mockMeteoriteObserver).onChanged(InProgress())
-        verify(mockMeteoriteObserver).onChanged(Success(MeteoriteView(
-                id = "123",
-                name = null,
-                yearString = null,
-                address = fixtString,
-                recclass = null,
-                mass = meteorite.mass,
-                reclat = 1.0,
-                reclong = 0.0,
-                hasAddress = false
-        )))
+        verify(mockMeteoriteObserver).onChanged(
+            Success(
+                MeteoriteView(
+                    id = "123",
+                    name = null,
+                    yearString = null,
+                    address = fixtString,
+                    recclass = null,
+                    mass = meteorite.mass,
+                    reclat = 1.0,
+                    reclong = 0.0,
+                    hasAddress = false
+                )
+            )
+        )
 
     }
 

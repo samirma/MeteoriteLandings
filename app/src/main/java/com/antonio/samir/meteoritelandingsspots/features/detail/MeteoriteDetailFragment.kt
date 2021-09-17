@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalCoroutinesApi
@@ -33,7 +34,7 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
 
     private var meteorite: MeteoriteView? = null
 
-    private val viewModel: MeteoriteDetailViewModel by viewModel()
+    private val viewModel: MeteoriteDetailViewModel by stateViewModel()
 
     private val args: MeteoriteDetailFragmentArgs by navArgs()
 
