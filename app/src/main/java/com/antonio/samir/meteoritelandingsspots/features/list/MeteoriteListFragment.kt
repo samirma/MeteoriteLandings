@@ -1,7 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
-import androidx.fragment.app.Fragment
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -9,13 +8,27 @@ import android.view.*
 import android.view.View.*
 import androidx.annotation.NonNull
 import androidx.appcompat.widget.SearchView
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import androidx.recyclerview.widget.GridLayoutManager
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
@@ -24,38 +37,28 @@ import com.antonio.samir.meteoritelandingsspots.common.ResultOf.Success
 import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteListBinding
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailFragment
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel.ContentStatus.*
-import com.antonio.samir.meteoritelandingsspots.features.list.recyclerView.MeteoriteAdapter
+import com.antonio.samir.meteoritelandingsspots.ui.MeteoriteTheme
 import com.antonio.samir.meteoritelandingsspots.ui.extension.isLandscape
 import com.antonio.samir.meteoritelandingsspots.ui.extension.showActionBar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import java.util.concurrent.atomic.AtomicBoolean
-
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
-import kotlinx.coroutines.flow.Flow
 
 
 @FlowPreview
 @ExperimentalCoroutinesApi
+@ExperimentalMaterialApi
 class MeteoriteListFragment : Fragment() {
 
     private var layoutManager: GridLayoutManager? = null
-
-    private var meteoriteAdapter = MeteoriteAdapter()
 
     private var meteoriteDetailFragment: MeteoriteDetailFragment? = null
 
     private val viewModel: MeteoriteListViewModel by stateViewModel()
 
     private lateinit var binding: FragmentMeteoriteListBinding
-
-    private val shouldOpenMeteorite = AtomicBoolean(true)
-
-    private val redirectedToPortrait = AtomicBoolean(false)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,8 +79,6 @@ class MeteoriteListFragment : Fragment() {
 
         showActionBar(getString(R.string.title))
 
-        meteoriteAdapter.clearSelectedMeteorite()
-
         setupGridLayout()
 
         observeLiveData()
@@ -90,8 +91,6 @@ class MeteoriteListFragment : Fragment() {
             viewModel.loadMeteorites()
         }
 
-        redirectedToPortrait.set(false)
-
     }
 
     private fun observeLiveData() {
@@ -101,24 +100,12 @@ class MeteoriteListFragment : Fragment() {
 
         observeNetworkLoadingStatus()
 
-        meteoriteAdapter.openMeteorite.observe(viewLifecycleOwner) {
-            shouldOpenMeteorite.set(true)
-            viewModel.selectMeteorite(it)
-        }
-
         viewModel.selectedMeteorite.observe(viewLifecycleOwner) { meteorite ->
             if (meteorite != null) {
                 if (isLandscape()) {
                     showMeteoriteLandscape(meteorite)
-                    meteoriteAdapter.updateListUI(meteorite)
                 } else {
-                    if (shouldOpenMeteorite.get()) {
-                        showMeteoritePortrait(meteorite)
-                    } else {
-                        //Should clean the selected meteorite when it is not shown
-                        viewModel.clearSelectedMeteorite()
-                    }
-                    shouldOpenMeteorite.set(false)
+                    showMeteoritePortrait(meteorite)
                 }
             }
         }
@@ -132,9 +119,6 @@ class MeteoriteListFragment : Fragment() {
             }
         }
         viewModel.updateLocation()
-        viewModel.getLocation().observe(viewLifecycleOwner) {
-            meteoriteAdapter.location = it
-        }
     }
 
     private fun observeMeteorites() {
@@ -146,7 +130,6 @@ class MeteoriteListFragment : Fragment() {
                 Loading -> showProgressLoader()
             }
         }
-
 
     }
 
@@ -226,7 +209,6 @@ class MeteoriteListFragment : Fragment() {
     }
 
     private fun showMeteoritePortrait(meteorite: MeteoriteItemView) {
-        redirectedToPortrait.set(true)
         findNavController().navigate(MeteoriteListFragmentDirections.toDetail(meteorite.id.toString()))
     }
 
@@ -310,7 +292,7 @@ class MeteoriteListFragment : Fragment() {
                 setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
                     override fun onQueryTextChange(query: String): Boolean {
-                        if (!redirectedToPortrait.get() && query.isBlank()) {
+                        if (query.isBlank()) {
                             onQueryTextSubmit(query)
                         }
                         return false
@@ -334,20 +316,46 @@ class MeteoriteListFragment : Fragment() {
     @Composable
     fun MeteoriteList(meteorites: Flow<PagingData<MeteoriteItemView>>) {
         val collectAsLazyPagingItems = meteorites.collectAsLazyPagingItems()
-
-        LazyColumn(Modifier.background(MaterialTheme.colors.surface)) {
+        LazyColumn(
+            Modifier
+                .fillMaxWidth()
+        ) {
             items(collectAsLazyPagingItems) { character ->
-                MeteoriteItem(character)
+                character?.let { MeteoriteItem(it) }
             }
         }
     }
 
+
     @Composable
-    fun MeteoriteItem(itemView: MeteoriteItemView?) {
-        Text(text = itemView?.name!!)
+    fun MeteoriteItem(itemView: MeteoriteItemView) {
+        Card(
+            onClick = {
+                viewModel.selectMeteorite(itemView)
+            },
+            shape = RoundedCornerShape(2.dp),
+            modifier = Modifier.padding(2.dp),
+            backgroundColor = colorResource(itemView.cardBackgroundColor),
+            elevation = dimensionResource(itemView.elevation)
+        ) {
+            Column(
+                Modifier
+                    .padding(4.dp)
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    color = colorResource(itemView.titleColor),
+                    text = itemView.name!!
+                )
+                Text(
+                    color = colorResource(R.color.detail_accent_label),
+                    text = itemView.address!!
+                )
+            }
+        }
     }
 
-    @Preview
+    @Preview("Meteorite view")
     @Composable
     fun MeteoriteItem() {
         MeteoriteItem(
