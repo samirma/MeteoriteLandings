@@ -35,11 +35,11 @@ class MeteoriteListViewModel(
 
     var filter = ""
 
-    private val currentFilter = ConflatedBroadcastChannel<String?>()
+    private val currentFilter = MutableStateFlow<String?>(null)
 
-    private val meteorite = ConflatedBroadcastChannel<MeteoriteItemView?>(stateHandle[METEORITE])
+    private val meteorite = MutableStateFlow<MeteoriteItemView?>(stateHandle[METEORITE])
 
-    val selectedMeteorite = meteorite.asFlow().asLiveData()
+    val selectedMeteorite = meteorite.asLiveData()
 
     private val contentStatus = MutableLiveData<ContentStatus>(Loading)
 
@@ -76,13 +76,13 @@ class MeteoriteListViewModel(
 
         location?.let { this.filter = it }
 
-        currentFilter.offer(location)
+        currentFilter.value = location
 
     }
 
     fun selectMeteorite(meteorite: MeteoriteItemView?) {
         stateHandle[METEORITE] = meteorite
-        this.meteorite.offer(meteorite)
+        this.meteorite.value = meteorite
     }
 
     fun updateLocation() {
@@ -100,20 +100,16 @@ class MeteoriteListViewModel(
     }
 
 
-    fun getMeteorites(): LiveData<PagingData<MeteoriteItemView>> {
-        return currentFilter.asFlow()
-            .flowOn(dispatchers.default())
-            .combine<String?, Location?, Pair<String?, Location?>>(gpsTracker.location) { _, location ->
-                Pair(this.filter, location)
-            }
-            .map {
-                getMeteorites.execute(it)
-            }.flatMapConcat {
-                it
-            }
-            .cachedIn(viewModelScope)
-            .asLiveData()
-    }
+    fun getMeteorites(): Flow<PagingData<MeteoriteItemView>> = currentFilter
+        .combine<String?, Location?, Pair<String?, Location?>>(gpsTracker.location) { _, location ->
+            Pair(this.filter, location)
+        }
+        .map {
+            getMeteorites.execute(it)
+        }.flatMapConcat {
+            it
+        }
+        .cachedIn(viewModelScope)
 
     fun clearSelectedMeteorite() {
         selectMeteorite(null)

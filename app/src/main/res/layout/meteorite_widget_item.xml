@@ -7,6 +7,4 @@
     android:background="@color/unselected_item_color"
     android:padding="5dp">
 
-    <include layout="@layout/meteorites_info" />
-
 </LinearLayout>

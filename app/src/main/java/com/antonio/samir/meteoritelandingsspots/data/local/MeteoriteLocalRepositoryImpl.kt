@@ -27,7 +27,9 @@ class MeteoriteLocalRepositoryImpl(
         } else {
 
             if (filter != null) {
-                meteoriteDao.meteoriteOrderedByLocationFiltered(latitude, longitude, filter.toLowerCase(Locale.getDefault()))
+                meteoriteDao.meteoriteOrderedByLocationFiltered(latitude, longitude,
+                    filter.lowercase(Locale.getDefault())
+                )
             } else {
                 meteoriteDao.meteoriteOrderedByLocation(latitude, longitude)
             }
