@@ -29,10 +29,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 
-private val retrofit: Retrofit = Retrofit.Builder()
-    .baseUrl(NasaServerEndPoint.URL)
-    .addConverterFactory(GsonConverterFactory.create())
-    .client(
+val localRepositoryModule = module {
+    single<MeteoriteLocalRepository> { MeteoriteLocalRepositoryImpl(get(), get()) }
+}
+
+val networkModule = module {
+    factory {
         OkHttpClient.Builder()
             .addInterceptor(run {
                 val httpLoggingInterceptor = HttpLoggingInterceptor()
@@ -42,15 +44,17 @@ private val retrofit: Retrofit = Retrofit.Builder()
             })
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS).build()
-    )
-    .build()
-
-val localRepositoryModule = module {
-    single<MeteoriteLocalRepository> { MeteoriteLocalRepositoryImpl(get(), get()) }
-}
-
-val networkModule = module {
-    single { retrofit.create(NasaServerEndPoint::class.java) }
+    }
+    factory {
+        Retrofit.Builder()
+            .baseUrl(NasaServerEndPoint.URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(
+                get()
+            )
+            .build()
+            .create(NasaServerEndPoint::class.java)
+    }
     single<NetworkUtilInterface> { NetworkUtil(get()) }
     single<MeteoriteRemoteRepository> { NasaNetworkService(get()) }
 }
