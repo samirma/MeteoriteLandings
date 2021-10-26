@@ -84,7 +84,7 @@ class MeteoriteRemoteViewsFactory(
         } else {
             ""
         }
-        views.setTextViewText(R.id.location, text)
+//        views.setTextViewText(R.id.location, text)
 
     }
 

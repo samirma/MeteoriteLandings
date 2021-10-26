@@ -1,9 +1,12 @@
 package com.antonio.samir.meteoritelandingsspots.di
 
 import android.location.Geocoder
-import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteDaoFactory
+import androidx.room.Room
+import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteMigrations.MIGRATION_1_2
+import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteMigrations.MIGRATION_2_3
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepositoryImpl
+import com.antonio.samir.meteoritelandingsspots.data.local.database.AppDataBase
 import com.antonio.samir.meteoritelandingsspots.data.remote.MeteoriteRemoteRepository
 import com.antonio.samir.meteoritelandingsspots.data.remote.NasaNetworkService
 import com.antonio.samir.meteoritelandingsspots.data.remote.NasaServerEndPoint
@@ -34,33 +37,37 @@ val localRepositoryModule = module {
 }
 
 val networkModule = module {
-    factory {
-        OkHttpClient.Builder()
-            .addInterceptor(run {
-                val httpLoggingInterceptor = HttpLoggingInterceptor()
-                httpLoggingInterceptor.apply {
-                    httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-                }
-            })
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS).build()
-    }
-    factory {
+    single {
         Retrofit.Builder()
             .baseUrl(NasaServerEndPoint.URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(
-                get()
+                OkHttpClient.Builder()
+                    .addInterceptor(run<HttpLoggingInterceptor> {
+                        val httpLoggingInterceptor = HttpLoggingInterceptor()
+                        httpLoggingInterceptor.apply {
+                            httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+                        }
+                    })
+                    .readTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(30, TimeUnit.SECONDS).build()
             )
-            .build()
-            .create(NasaServerEndPoint::class.java)
+            .build().create(NasaServerEndPoint::class.java)
     }
     single<NetworkUtilInterface> { NetworkUtil(get()) }
     single<MeteoriteRemoteRepository> { NasaNetworkService(get()) }
 }
 
 val databaseModule = module {
-    single { MeteoriteDaoFactory.getMeteoriteDao(get()) }
+    single {
+        Room.databaseBuilder(
+            get(),
+            AppDataBase::class.java, "meteorites"
+        )
+            .addMigrations(MIGRATION_1_2)
+            .addMigrations(MIGRATION_2_3)
+            .build().meteoriteDao()
+    }
 }
 
 val mappersModule = module {
@@ -88,7 +95,10 @@ val businessModule = module {
 @FlowPreview
 val viewModelModule = module {
     viewModel {
-        MeteoriteDetailViewModel(get(), get())
+        MeteoriteDetailViewModel(
+            gpsTracker = get(),
+            getMeteoriteById = get()
+        )
     }
     viewModel {
         MeteoriteListViewModel(

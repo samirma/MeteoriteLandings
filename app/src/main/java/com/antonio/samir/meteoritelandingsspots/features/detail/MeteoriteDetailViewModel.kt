@@ -39,14 +39,14 @@ class MeteoriteDetailViewModel(
                     )
                 )
             }
-            .flatMapLatest{
+            .flatMapLatest {
                 it
             }
             .asLiveData()
 
 
     fun loadMeteorite(meteoriteId: String) {
-        currentMeteorite.offer(meteoriteId)
+        currentMeteorite.trySend(meteoriteId).isSuccess
     }
 
     fun requestAddressUpdate(meteorite: MeteoriteView) {
