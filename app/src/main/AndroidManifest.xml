@@ -25,7 +25,8 @@
             android:label="@string/title_activity_main"
             android:launchMode="standard"
             android:windowSoftInputMode="stateAlwaysHidden"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -35,7 +36,9 @@
         </activity>
 
         <!--Widget-->
-        <receiver android:name=".ui.widget.MeteoritesAppWidget">
+        <receiver
+            android:name=".ui.widget.MeteoritesAppWidget"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
