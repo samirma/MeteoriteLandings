@@ -29,11 +29,11 @@ android {
             storePassword prop_keyPassword
         }
     }
-    compileSdkVersion 30
+    compileSdkVersion 31
     defaultConfig {
         applicationId "com.antonio.samir.meteoritelandingsspots"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 13
         versionName "1.4.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -51,12 +51,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = JavaVersion.VERSION_11
         useIR = true
     }
 
@@ -93,7 +93,7 @@ dependencies {
 
     implementation 'com.google.android.material:material:1.5.0-alpha02'
 
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
 
     //Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$androidx_navigation_version"
@@ -134,7 +134,7 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-livedata:$composeVersion"
     implementation "androidx.compose.ui:ui-tooling:$composeVersion"
     implementation "com.google.android.material:compose-theme-adapter:$composeVersion"
-    implementation "androidx.paging:paging-compose:1.0.0-alpha12"
+    implementation "androidx.paging:paging-compose:1.0.0-alpha14"
 
     implementation 'org.apache.commons:commons-lang3:3.11'
 
