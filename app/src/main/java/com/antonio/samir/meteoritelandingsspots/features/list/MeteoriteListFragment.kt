@@ -63,11 +63,15 @@ class MeteoriteListFragment : Fragment() {
     ): View {
         binding = FragmentMeteoriteListBinding.inflate(inflater, container, false)
 
+        updateList()
+
+        return binding.root
+    }
+
+    private fun updateList() {
         binding.meteoriteList?.setContent {
             MeteoriteList(meteorites = viewModel.getMeteorites())
         }
-
-        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -305,6 +309,7 @@ class MeteoriteListFragment : Fragment() {
 
                     private fun loadMeteorites(query: String) {
                         viewModel.loadMeteorites(query)
+                        updateList()
                     }
 
                 })
