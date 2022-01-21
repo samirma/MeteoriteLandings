@@ -18,6 +18,7 @@ import com.antonio.samir.meteoritelandingsspots.features.detail.userCases.GetMet
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.features.list.mapper.MeteoriteViewMapper
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
+import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetNetworkStatus
 import com.antonio.samir.meteoritelandingsspots.service.AddressService
 import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.util.*
@@ -38,20 +39,22 @@ val localRepositoryModule = module {
 
 val networkModule = module {
     single {
+        OkHttpClient.Builder()
+            .addInterceptor(run<HttpLoggingInterceptor> {
+                val httpLoggingInterceptor = HttpLoggingInterceptor()
+                httpLoggingInterceptor.apply {
+                    httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BASIC
+                }
+            })
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS).build()
+    }
+
+    single {
         Retrofit.Builder()
             .baseUrl(NasaServerEndPoint.URL)
             .addConverterFactory(GsonConverterFactory.create())
-            .client(
-                OkHttpClient.Builder()
-                    .addInterceptor(run<HttpLoggingInterceptor> {
-                        val httpLoggingInterceptor = HttpLoggingInterceptor()
-                        httpLoggingInterceptor.apply {
-                            httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-                        }
-                    })
-                    .readTimeout(30, TimeUnit.SECONDS)
-                    .writeTimeout(30, TimeUnit.SECONDS).build()
-            )
+            .client(get())
             .build().create(NasaServerEndPoint::class.java)
     }
     single<NetworkUtilInterface> { NetworkUtil(get()) }
@@ -78,6 +81,7 @@ val mappersModule = module {
 val useCaseModule = module {
     factory { GetMeteoriteById(get(), get()) }
     factory { GetMeteorites(get(), get()) }
+    factory { GetNetworkStatus(get()) }
 }
 
 @ExperimentalCoroutinesApi
@@ -103,7 +107,7 @@ val viewModelModule = module {
     viewModel {
         MeteoriteListViewModel(
             stateHandle = get(),
-            meteoriteRepository = get(),
+            getNetworkStatus = get(),
             gpsTracker = get(),
             addressService = get(),
             dispatchers = get(),
