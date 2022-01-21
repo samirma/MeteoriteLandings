@@ -96,6 +96,10 @@ class MeteoriteListFragment : Fragment() {
 
         observeNetworkLoadingStatus()
 
+        if (!isLandscape()) {
+            viewModel.clearSelectedMeteorite()
+        }
+
         viewModel.selectedMeteorite.observe(viewLifecycleOwner) { meteorite ->
             if (meteorite != null) {
                 if (isLandscape()) {
