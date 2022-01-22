@@ -1,23 +1,19 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
 import android.location.Location
-import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
 import androidx.paging.*
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf.Success
-import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel.ContentStatus.*
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
-import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetNetworkStatus
-import com.antonio.samir.meteoritelandingsspots.service.AddressService
+import com.antonio.samir.meteoritelandingsspots.features.list.userCases.FetchMeteoriteList
 import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -29,7 +25,7 @@ import kotlinx.coroutines.launch
 @ExperimentalCoroutinesApi
 class MeteoriteListViewModel(
     private val stateHandle: SavedStateHandle,
-    private val getNetworkStatus: GetNetworkStatus,
+    private val fetchMeteoriteList: FetchMeteoriteList,
     private val gpsTracker: GPSTrackerInterface,
     private val addressService: AddressServiceInterface,
     private val dispatchers: DispatcherProvider,
@@ -37,8 +33,6 @@ class MeteoriteListViewModel(
 ) : ViewModel() {
 
     var filter = ""
-
-    private val TAG = MeteoriteListViewModel::class.java.simpleName
 
     private val currentFilter = MutableStateFlow<String?>(null)
 
@@ -48,7 +42,7 @@ class MeteoriteListViewModel(
 
     private val contentStatus = MutableLiveData<ContentStatus>(Loading)
 
-    fun getNetworkLoadingStatus() = getNetworkStatus.execute(Unit).asLiveData()
+    fun fetchMeteoriteList() = fetchMeteoriteList.execute(Unit).asLiveData()
 
     @VisibleForTesting
     val addressServiceControl = MutableLiveData(false)
@@ -127,6 +121,7 @@ class MeteoriteListViewModel(
     }
 
     companion object {
+        private val TAG = MeteoriteListViewModel::class.java.simpleName
         const val COMPLETED = 100f
         const val METEORITE = "METEORITE"
     }
