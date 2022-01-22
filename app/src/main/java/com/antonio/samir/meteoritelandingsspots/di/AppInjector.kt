@@ -18,7 +18,7 @@ import com.antonio.samir.meteoritelandingsspots.features.detail.userCases.GetMet
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.features.list.mapper.MeteoriteViewMapper
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
-import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetNetworkStatus
+import com.antonio.samir.meteoritelandingsspots.features.list.userCases.FetchMeteoriteList
 import com.antonio.samir.meteoritelandingsspots.service.AddressService
 import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.util.*
@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit
 
 
 val localRepositoryModule = module {
-    single<MeteoriteLocalRepository> { MeteoriteLocalRepositoryImpl(get(), get()) }
+    single<MeteoriteLocalRepository> { MeteoriteLocalRepositoryImpl(get()) }
 }
 
 val networkModule = module {
@@ -81,7 +81,7 @@ val mappersModule = module {
 val useCaseModule = module {
     factory { GetMeteoriteById(get(), get()) }
     factory { GetMeteorites(get(), get()) }
-    factory { GetNetworkStatus(get()) }
+    factory { FetchMeteoriteList(get()) }
 }
 
 @ExperimentalCoroutinesApi
@@ -107,7 +107,7 @@ val viewModelModule = module {
     viewModel {
         MeteoriteListViewModel(
             stateHandle = get(),
-            getNetworkStatus = get(),
+            fetchMeteoriteList = get(),
             gpsTracker = get(),
             addressService = get(),
             dispatchers = get(),

@@ -8,8 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import java.util.*
 
 class MeteoriteLocalRepositoryImpl(
-        private val meteoriteDao: MeteoriteDao,
-        private val dispatchers: DispatcherProvider
+        private val meteoriteDao: MeteoriteDao
 
 ) : MeteoriteLocalRepository {
 
