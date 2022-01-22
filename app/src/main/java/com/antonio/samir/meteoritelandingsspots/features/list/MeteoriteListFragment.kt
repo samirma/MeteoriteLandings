@@ -148,7 +148,7 @@ class MeteoriteListFragment : Fragment() {
     }
 
     private fun observeNetworkLoadingStatus() {
-        viewModel.getNetworkLoadingStatus().observe(viewLifecycleOwner) {
+        viewModel.fetchMeteoriteList().observe(viewLifecycleOwner) {
             when (it) {
                 is InProgress -> networkLoadingStarted()
                 is Success -> networkLoadingStopped()
