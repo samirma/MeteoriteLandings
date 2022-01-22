@@ -46,8 +46,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addressRecoverProgress"
-        tools:listitem="@layout/list_item_meteorite" />
+        app:layout_constraintTop_toBottomOf="@+id/addressRecoverProgress" />
 
     <com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar
         android:id="@+id/addressRecoverProgress"
