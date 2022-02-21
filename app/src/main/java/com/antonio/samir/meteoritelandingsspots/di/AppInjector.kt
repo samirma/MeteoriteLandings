@@ -78,9 +78,10 @@ val mappersModule = module {
     factory { MeteoriteViewMapper(context = get()) }
 }
 
+@FlowPreview
 val useCaseModule = module {
     factory { GetMeteoriteById(get(), get()) }
-    factory { GetMeteorites(get(), get()) }
+    factory { GetMeteorites(get(), get(), get()) }
     factory { FetchMeteoriteList(get()) }
 }
 

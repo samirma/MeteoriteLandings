@@ -8,7 +8,7 @@ buildscript {
         junit_version = '4.13.1'
         mockito_version = '2.2.0'
         roboelectric_version = '4.4'
-        androidx_navigation_version = '2.3.5'
+        androidx_navigation_version = '2.4.1'
         androidx_room_version = '2.4.1'
         androidx_lifecycle_version = '2.4.0'
         map_version = '18.0.2'

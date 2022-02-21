@@ -67,7 +67,7 @@ class MeteoriteListFragment : Fragment() {
 
     private fun updateList() {
         binding.meteoriteList?.setContent {
-            MeteoriteList(meteorites = viewModel.getMeteorites())
+            MeteoriteList(meteorites = viewModel.searchedLocation)
         }
     }
 
@@ -82,9 +82,7 @@ class MeteoriteListFragment : Fragment() {
 
         setHasOptionsMenu(true)
 
-        if (viewModel.filter.isBlank()) {
-            viewModel.loadMeteorites()
-        }
+        viewModel.searchLocation(viewModel.searchQuery.value)
 
     }
 
@@ -278,7 +276,6 @@ class MeteoriteListFragment : Fragment() {
                 isActivated = true
                 onActionViewExpanded()
                 isIconified = false
-                setQuery(viewModel.filter, false)
                 setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
                     override fun onQueryTextChange(query: String): Boolean {
@@ -294,7 +291,7 @@ class MeteoriteListFragment : Fragment() {
                     }
 
                     private fun loadMeteorites(query: String) {
-                        viewModel.loadMeteorites(query)
+                        viewModel.searchLocation(query)
                         updateList()
                     }
 

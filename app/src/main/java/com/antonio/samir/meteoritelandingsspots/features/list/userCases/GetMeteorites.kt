@@ -12,34 +12,44 @@ import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListFragment
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.features.list.mapper.MeteoriteViewMapper
+import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 
+@FlowPreview
 class GetMeteorites(
     private val meteoriteLocalRepository: MeteoriteLocalRepository,
-    private val mapper: MeteoriteViewMapper
-) : UserCaseBase<Pair<String?, Location?>, PagingData<MeteoriteItemView>>() {
+    private val mapper: MeteoriteViewMapper,
+    private val gpsTracker: GPSTrackerInterface,
+) : UserCaseBase<String?, PagingData<MeteoriteItemView>>() {
 
-    override fun action(input: Pair<String?, Location?>) = Pager(
-        PagingConfig(pageSize = PAGE_SIZE)
-    ) {
-        meteoriteLocalRepository.meteoriteOrdered(
-            filter = input.first,
-            longitude = input.second?.longitude,
-            latitude = input.second?.latitude,
-            limit = LIMIT
-        )
-    }
-        .flow
-        .map { pagingData ->
-            pagingData.map {
-                mapper.map(
-                    MeteoriteViewMapper.Input(
-                        meteorite = it,
-                        location = input.second
-                    )
+    override fun action(input: String?): Flow<PagingData<MeteoriteItemView>> {
+        Log.i(TAG, "Searching $input")
+        var location: Location? = null
+        return gpsTracker.location.flatMapConcat {
+            location = it
+            Pager(
+                PagingConfig(pageSize = PAGE_SIZE)
+            ) {
+                meteoriteLocalRepository.meteoriteOrdered(
+                    filter = input,
+                    longitude = location?.longitude,
+                    latitude = location?.latitude,
+                    limit = LIMIT
                 )
-            }
+            }.flow
         }
+            .map { pagingData ->
+                pagingData.map {
+                    mapper.map(
+                        MeteoriteViewMapper.Input(
+                            meteorite = it,
+                            location = location
+                        )
+                    )
+                }
+            }
+    }
 
     companion object {
         private val TAG = GetMeteorites::class.java.simpleName
