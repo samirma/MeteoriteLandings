@@ -99,15 +99,14 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$androidx_navigation_version"
     implementation "androidx.navigation:navigation-ui-ktx:$androidx_navigation_version"
 
-
     //Paging
-    implementation "androidx.paging:paging-runtime-ktx:3.0.1"
-
+    implementation "androidx.paging:paging-runtime-ktx:3.1.0"
 
     //Room
     implementation "androidx.room:room-runtime:$androidx_room_version"
     kapt "androidx.room:room-compiler:$androidx_room_version"
     implementation "androidx.room:room-ktx:$androidx_room_version"
+    implementation "androidx.room:room-paging:2.4.1"
 
     //Play services
     implementation "com.google.android.gms:play-services-maps:$map_version"
@@ -133,7 +132,7 @@ dependencies {
     implementation "androidx.compose.material:material:$composeVersion"
     implementation "androidx.compose.runtime:runtime-livedata:$composeVersion"
     implementation "androidx.compose.ui:ui-tooling:$composeVersion"
-    implementation "com.google.android.material:compose-theme-adapter:$composeVersion"
+    implementation "com.google.android.material:compose-theme-adapter:$composeThemeVersion"
     implementation "androidx.paging:paging-compose:1.0.0-alpha14"
 
     implementation 'org.apache.commons:commons-lang3:3.11'

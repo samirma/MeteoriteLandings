@@ -27,7 +27,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import androidx.recyclerview.widget.GridLayoutManager
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf.InProgress
@@ -47,8 +46,6 @@ import org.koin.androidx.viewmodel.ext.android.stateViewModel
 @ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 class MeteoriteListFragment : Fragment() {
-
-    private var layoutManager: GridLayoutManager? = null
 
     private var meteoriteDetailFragment: MeteoriteDetailFragment? = null
 
@@ -78,8 +75,6 @@ class MeteoriteListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         showActionBar(getString(R.string.title))
-
-        setupGridLayout()
 
         observeLiveData()
 
@@ -189,8 +184,6 @@ class MeteoriteListFragment : Fragment() {
 
     private fun showMeteoriteLandscape(meteorite: MeteoriteItemView) {
 
-        layoutManager?.spanCount = 1
-
         if (meteoriteDetailFragment == null) {
 
             binding.fragment?.visibility = VISIBLE
@@ -214,13 +207,6 @@ class MeteoriteListFragment : Fragment() {
 
     private fun showMeteoritePortrait(meteorite: MeteoriteItemView) {
         findNavController().navigate(MeteoriteListFragmentDirections.toDetail(meteorite.id.toString()))
-    }
-
-    private fun setupGridLayout() {
-        val columnCount = resources.getInteger(R.integer.list_column_count)
-
-        layoutManager = GridLayoutManager(requireContext(), columnCount)
-
     }
 
     private fun networkLoadingStarted() {
