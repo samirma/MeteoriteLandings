@@ -106,7 +106,7 @@ dependencies {
     implementation "androidx.room:room-runtime:$androidx_room_version"
     kapt "androidx.room:room-compiler:$androidx_room_version"
     implementation "androidx.room:room-ktx:$androidx_room_version"
-    implementation "androidx.room:room-paging:2.4.1"
+    implementation "androidx.room:room-paging:$androidx_room_version"
 
     //Play services
     implementation "com.google.android.gms:play-services-maps:$map_version"
