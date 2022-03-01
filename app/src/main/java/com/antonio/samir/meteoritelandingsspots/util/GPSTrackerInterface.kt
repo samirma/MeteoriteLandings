@@ -4,7 +4,7 @@ import android.location.Location
 import android.location.LocationListener
 import kotlinx.coroutines.flow.Flow
 
-interface GPSTrackerInterface : LocationListener {
+interface GPSTrackerInterface {
 
     val isLocationAuthorized: Boolean
 

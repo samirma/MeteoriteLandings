@@ -53,7 +53,7 @@ class GetMeteorites(
 
     companion object {
         private val TAG = GetMeteorites::class.java.simpleName
-        const val PAGE_SIZE = 30
+        const val PAGE_SIZE = 300
         const val LIMIT = 1000L
     }
 

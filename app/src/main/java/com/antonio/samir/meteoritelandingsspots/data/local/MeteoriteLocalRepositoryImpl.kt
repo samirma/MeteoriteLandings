@@ -6,31 +6,26 @@ import kotlinx.coroutines.flow.Flow
 import java.util.*
 
 class MeteoriteLocalRepositoryImpl(
-        private val meteoriteDao: MeteoriteDao
+    private val meteoriteDao: MeteoriteDao
 
 ) : MeteoriteLocalRepository {
 
     override fun meteoriteOrdered(
-            filter: String?,
-            latitude: Double?,
-            longitude: Double?,
-            limit: Long,
+        filter: String?,
+        latitude: Double?,
+        longitude: Double?,
+        limit: Long,
     ) = if (latitude == null || longitude == null) {
-            if (filter.isNullOrEmpty()) {
-                meteoriteDao.meteoriteOrdered(limit)
-            } else {
-                meteoriteDao.meteoriteFiltered(filter.lowercase(Locale.getDefault()))
-            }
-        } else {
+        meteoriteDao.meteoriteFiltered(filter = prepareFilter(filter))
+    } else {
+        meteoriteDao.meteoriteOrderedByLocationFiltered(
+            lat = latitude,
+            lng = longitude,
+            filter = prepareFilter(filter)
+        )
+    }
 
-            if (filter != null) {
-                meteoriteDao.meteoriteOrderedByLocationFiltered(latitude, longitude,
-                    filter.lowercase(Locale.getDefault())
-                )
-            } else {
-                meteoriteDao.meteoriteOrderedByLocation(latitude, longitude)
-            }
-        }
+    private fun prepareFilter(filter: String?) = filter?.lowercase(Locale.getDefault()) ?: ""
 
     override suspend fun getMeteoritesCount(): Int {
         return meteoriteDao.getMeteoritesCount()

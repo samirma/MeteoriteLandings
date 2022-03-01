@@ -12,9 +12,7 @@ import androidx.core.app.ActivityCompat.checkSelfPermission
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -30,7 +28,7 @@ class GPSTracker(private val context: Context) : GPSTrackerInterface {
 
     private val isLocationServiceStarted = AtomicBoolean(false)
 
-    private var currentLocation = ConflatedBroadcastChannel<Location?>(null)
+    private var currentLocation = MutableSharedFlow<Location?>(replay = 1)
 
     /**
      * Function to get the user's current liveLocation
@@ -38,9 +36,9 @@ class GPSTracker(private val context: Context) : GPSTrackerInterface {
      * @return Location
      */
     override val location: Flow<Location?>
-        get() = currentLocation.asFlow()
+        get() = currentLocation
 
-    private var currentNeedAuthorization = ConflatedBroadcastChannel<Boolean>()
+    private var currentNeedAuthorization = MutableSharedFlow<Boolean>()
 
     /**
      * Function to know if the authorization is required or not
@@ -48,7 +46,7 @@ class GPSTracker(private val context: Context) : GPSTrackerInterface {
      * @return Boolean
      */
     override val needAuthorization: Flow<Boolean>
-        get() = currentNeedAuthorization.asFlow()
+        get() = currentNeedAuthorization
 
     override fun isLocationServiceStarted(): Boolean = isLocationServiceStarted.get()
 
@@ -59,7 +57,7 @@ class GPSTracker(private val context: Context) : GPSTrackerInterface {
 
     override suspend fun stopUpdates() {
         isLocationServiceStarted.set(false)
-        locationManager.removeUpdates(this)
+//        locationManager.removeUpdates(this)
     }
 
     override suspend fun startLocationService() {
@@ -68,7 +66,7 @@ class GPSTracker(private val context: Context) : GPSTrackerInterface {
                 if (isLocationAuthorized) {
                     startLocation()
                 }
-                currentNeedAuthorization.trySend(!isLocationAuthorized).isSuccess
+                currentNeedAuthorization.emit(!isLocationAuthorized)
             } catch (e: Exception) {
                 Log.e(TAG, e.message, e)
             }
@@ -85,7 +83,13 @@ class GPSTracker(private val context: Context) : GPSTrackerInterface {
 //                    MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
 //                    this@GPSTracker)
             Log.d(TAG, "GPS Enabled")
-            locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)?.let { onLocationChanged(it) }
+            locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                ?.let {
+                    Log.i(TAG, "Location received $it")
+                    currentLocation.emit(it)
+                }
+        } else {
+            currentLocation.emit(null)
         }
     }
 
@@ -97,13 +101,6 @@ class GPSTracker(private val context: Context) : GPSTrackerInterface {
         return isGPSEnabled
     }
 
-
-    override fun onLocationChanged(location: Location) {
-        if (currentLocation.value == null) {
-            Log.i(TAG, "Location received $location")
-            location.let { currentLocation.trySend(it).isSuccess }
-        }
-    }
 
     companion object {
 
