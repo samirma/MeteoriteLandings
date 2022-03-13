@@ -18,6 +18,10 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven {
+            url "http://maven.nodle.io/io/home/runner/.m2/repository/"
+            allowInsecureProtocol = true
+        }
     }
     dependencies {
         classpath "org.koin:koin-gradle-plugin:$koin_version"
@@ -34,6 +38,10 @@ allprojects {
         jcenter()
         maven { url "https://jitpack.io" }
         maven { url 'https://maven.google.com' }
+        maven {
+            url "http://maven.nodle.io/io/home/runner/.m2/repository/"
+            allowInsecureProtocol = true
+        }
     }
 }
 

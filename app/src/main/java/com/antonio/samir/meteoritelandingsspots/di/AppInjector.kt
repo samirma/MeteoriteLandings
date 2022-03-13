@@ -1,6 +1,8 @@
 package com.antonio.samir.meteoritelandingsspots.di
 
+import android.content.Context
 import android.location.Geocoder
+import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteDaoFactory
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepositoryImpl
@@ -14,10 +16,12 @@ import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewM
 import com.antonio.samir.meteoritelandingsspots.service.AddressService
 import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.util.*
+import io.nodle.sdk.android.Nodle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -26,17 +30,20 @@ import java.util.concurrent.TimeUnit
 
 
 private val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl(NasaServerEndPoint.URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .client(OkHttpClient.Builder()
-                .addInterceptor(run {
-                    val httpLoggingInterceptor = HttpLoggingInterceptor()
-                    httpLoggingInterceptor.apply { httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY }
-                })
-                .readTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS).build()
-        )
-        .build()
+    .baseUrl(NasaServerEndPoint.URL)
+    .addConverterFactory(GsonConverterFactory.create())
+    .client(
+        OkHttpClient.Builder()
+            .addInterceptor(run {
+                val httpLoggingInterceptor = HttpLoggingInterceptor()
+                httpLoggingInterceptor.apply {
+                    httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+                }
+            })
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS).build()
+    )
+    .build()
 
 val localRepositoryModule = module {
     single<MeteoriteLocalRepository> { MeteoriteLocalRepositoryImpl(get(), get()) }
@@ -49,7 +56,7 @@ val networkModule = module {
 }
 
 val databaseModule = module {
-    single { MeteoriteDaoFactory.getMeteoriteDao(get()) }
+    single { MeteoriteDaoFactory.getMeteoriteDao(context = get()) }
 }
 
 @ExperimentalCoroutinesApi
@@ -58,9 +65,20 @@ val businessModule = module {
     single<DispatcherProvider> { DefaultDispatcherProvider() }
     single { Geocoder(get()) }
     single<GeoLocationUtilInterface> { GeoLocationUtil(get()) }
-    single<GPSTrackerInterface> { GPSTracker(get()) }
+    single<GPSTrackerInterface> { GPSTracker(context = get()) }
     single<AddressServiceInterface> { AddressService(get(), get()) }
     single<MeteoriteRepository> { MeteoriteRepositoryImpl(get(), get(), get()) }
+    single<MarketingInterface> {
+        val context = get<Context>()
+        val nodleKey = context.getString(R.string.nodle_key)
+        MarketingImpl(
+            context = context,
+            nodleKey = nodleKey
+        ).apply {
+            init()
+            setNodle(Nodle.Nodle())
+        }
+    }
 }
 
 @ExperimentalCoroutinesApi
@@ -71,15 +89,16 @@ val viewModelModule = module {
     }
     viewModel {
         MeteoriteListViewModel(
-                stateHandle = get(),
-                meteoriteRepository = get(),
-                gpsTracker = get(),
-                addressService = get(),
-                dispatchers = get()
+            stateHandle = get(),
+            meteoriteRepository = get(),
+            gpsTracker = get(),
+            addressService = get(),
+            dispatchers = get()
         )
     }
 }
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-val appModules = listOf(viewModelModule, localRepositoryModule, networkModule, databaseModule, businessModule)
+val appModules =
+    listOf(viewModelModule, localRepositoryModule, networkModule, databaseModule, businessModule)
