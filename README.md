@@ -16,6 +16,10 @@ Feature image created using:
 https://www.norio.be/android-feature-graphic-generator/
 
 
+Privacy Policy:
+https://app-privacy-policy-generator.firebaseapp.com/
+
+
 ## Build with
 - Kotlin
 - Coroutines/Flow - Rx free
