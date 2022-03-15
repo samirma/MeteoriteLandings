@@ -1,16 +1,14 @@
 package com.antonio.samir.meteoritelandingsspots.features
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.location.Location
 import android.util.Log
-import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.ui.extension.convertToNumberFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.*
+import kotlin.math.roundToInt
 
 fun Meteorite.getDistanceFrom(currentLocation: Location?): String? {
     val meteoriteLocation = getLocation()

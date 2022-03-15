@@ -1,6 +1,5 @@
 package com.antonio.samir.meteoritelandingsspots.data.local.database
 
-import androidx.paging.DataSource
 import androidx.paging.PagingSource
 import androidx.room.*
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite

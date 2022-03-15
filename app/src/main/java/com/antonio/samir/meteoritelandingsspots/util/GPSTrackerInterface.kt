@@ -1,7 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.util
 
 import android.location.Location
-import android.location.LocationListener
 import kotlinx.coroutines.flow.Flow
 
 interface GPSTrackerInterface {

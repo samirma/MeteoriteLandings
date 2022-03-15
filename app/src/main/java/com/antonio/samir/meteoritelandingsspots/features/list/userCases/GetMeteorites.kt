@@ -9,12 +9,12 @@ import androidx.paging.map
 import com.antonio.samir.meteoritelandingsspots.common.userCase.UserCaseBase
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteItemView
-import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListFragment
-import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.features.list.mapper.MeteoriteViewMapper
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.map
 
 @FlowPreview
 class GetMeteorites(

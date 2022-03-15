@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 import org.apache.commons.lang3.StringUtils
-import java.util.*
 
 /**
  * Evaluate convert this class to work manager

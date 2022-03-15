@@ -17,6 +17,7 @@ open class Application : android.app.Application() {
             // declare modules
             modules(appModules)
         }
+
     }
 
 }
