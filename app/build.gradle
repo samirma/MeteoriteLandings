@@ -34,8 +34,8 @@ android {
         applicationId "com.antonio.samir.meteoritelandingsspots"
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 13
-        versionName "1.4.2"
+        versionCode 16
+        versionName "1.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -149,6 +149,11 @@ dependencies {
     debugImplementation 'com.facebook.stetho:stetho:1.5.1'
     debugImplementation 'com.facebook.stetho:stetho-okhttp:1.5.1'
     debugImplementation 'com.facebook.stetho:stetho-urlconnection:1.5.1'
+
+    //Nodle
+    implementation 'io.nodle:nodlesdk-rc-lg:cbe8a42b18'
+
+    implementation 'com.vanniktech:rxpermission:0.7.0'
 
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.1.0-alpha3', {
         exclude group: 'com.android.support', module: 'support-annotations'

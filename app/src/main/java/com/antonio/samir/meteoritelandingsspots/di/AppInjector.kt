@@ -1,11 +1,13 @@
 package com.antonio.samir.meteoritelandingsspots.di
 
+import android.content.Context
 import android.location.Geocoder
 import androidx.room.Room
-import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteMigrations.MIGRATION_1_2
-import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteMigrations.MIGRATION_2_3
+import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepositoryImpl
+import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteMigrations.MIGRATION_1_2
+import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteMigrations.MIGRATION_2_3
 import com.antonio.samir.meteoritelandingsspots.data.local.database.AppDataBase
 import com.antonio.samir.meteoritelandingsspots.data.remote.MeteoriteRemoteRepository
 import com.antonio.samir.meteoritelandingsspots.data.remote.NasaNetworkService
@@ -17,11 +19,12 @@ import com.antonio.samir.meteoritelandingsspots.features.detail.mapper.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.detail.userCases.GetMeteoriteById
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.features.list.mapper.MeteoriteViewMapper
-import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.FetchMeteoriteList
+import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
 import com.antonio.samir.meteoritelandingsspots.service.AddressService
 import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.util.*
+import io.nodle.sdk.android.Nodle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import okhttp3.OkHttpClient
@@ -91,9 +94,20 @@ val businessModule = module {
     single<DispatcherProvider> { DefaultDispatcherProvider() }
     single { Geocoder(get()) }
     single<GeoLocationUtilInterface> { GeoLocationUtil(get()) }
-    single<GPSTrackerInterface> { GPSTracker(get()) }
+    single<GPSTrackerInterface> { GPSTracker(context = get()) }
     single<AddressServiceInterface> { AddressService(get(), get()) }
     single<MeteoriteRepository> { MeteoriteRepositoryImpl(get(), get(), get()) }
+    single<MarketingInterface> {
+        val context = get<Context>()
+        val nodleKey = context.getString(R.string.nodle_key)
+        MarketingImpl(
+            context = context,
+            nodleKey = nodleKey
+        ).apply {
+            init()
+            setNodle(Nodle.Nodle())
+        }
+    }
 }
 
 @ExperimentalCoroutinesApi
@@ -119,7 +133,8 @@ val viewModelModule = module {
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-val appModules = listOf(
+val appModules =
+    listOf(
     viewModelModule,
     useCaseModule,
     mappersModule,

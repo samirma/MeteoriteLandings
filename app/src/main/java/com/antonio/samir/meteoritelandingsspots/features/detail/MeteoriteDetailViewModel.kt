@@ -5,9 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
-import com.antonio.samir.meteoritelandingsspots.common.ResultOf.*
 import com.antonio.samir.meteoritelandingsspots.features.detail.userCases.GetMeteoriteById
-import com.antonio.samir.meteoritelandingsspots.features.detail.userCases.GetMeteoriteById.*
+import com.antonio.samir.meteoritelandingsspots.features.detail.userCases.GetMeteoriteById.Input
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -15,7 +14,6 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 
 @FlowPreview
 @ExperimentalCoroutinesApi

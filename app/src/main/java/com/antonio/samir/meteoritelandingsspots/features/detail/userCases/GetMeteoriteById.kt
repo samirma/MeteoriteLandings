@@ -3,11 +3,10 @@ package com.antonio.samir.meteoritelandingsspots.features.detail.userCases
 import android.content.Context
 import android.location.Location
 import android.util.Log
-import com.antonio.samir.meteoritelandingsspots.common.userCase.UserCaseBase
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
+import com.antonio.samir.meteoritelandingsspots.common.userCase.UserCaseBase
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteLocalException
-import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteView
 import com.antonio.samir.meteoritelandingsspots.features.detail.mapper.MeteoriteMapper
 import com.antonio.samir.meteoritelandingsspots.features.detail.userCases.GetMeteoriteById.Input

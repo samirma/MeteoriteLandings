@@ -3,12 +3,10 @@ package com.antonio.samir.meteoritelandingsspots.features.list.ui
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.lifecycle.SavedStateHandle
-import androidx.paging.PagedList
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf.InProgress
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf.Success
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
-import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel.ContentStatus
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
