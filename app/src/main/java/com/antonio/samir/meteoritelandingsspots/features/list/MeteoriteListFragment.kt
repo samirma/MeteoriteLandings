@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
+import MeteoriteList
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -67,7 +68,9 @@ class MeteoriteListFragment : Fragment() {
 
     private fun updateList() {
         binding.meteoriteList?.setContent {
-            MeteoriteList(meteorites = viewModel.searchedLocation)
+            MeteoriteList(meteorites = viewModel.searchedLocation) {
+                viewModel.selectMeteorite(it)
+            }
         }
     }
 
@@ -299,60 +302,6 @@ class MeteoriteListFragment : Fragment() {
 
             }
         }
-    }
-
-    @Composable
-    fun MeteoriteList(meteorites: Flow<PagingData<MeteoriteItemView>>) {
-        val collectAsLazyPagingItems = meteorites.collectAsLazyPagingItems()
-        LazyColumn(
-            Modifier
-                .fillMaxWidth()
-        ) {
-            items(collectAsLazyPagingItems) { character ->
-                character?.let { MeteoriteItem(it) }
-            }
-        }
-    }
-
-
-    @Composable
-    fun MeteoriteItem(itemView: MeteoriteItemView) {
-        Card(
-            onClick = {
-                viewModel.selectMeteorite(itemView)
-            },
-            shape = RoundedCornerShape(2.dp),
-            modifier = Modifier.padding(2.dp),
-            backgroundColor = colorResource(itemView.cardBackgroundColor),
-            elevation = dimensionResource(itemView.elevation)
-        ) {
-            Column(
-                Modifier
-                    .padding(4.dp)
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    color = colorResource(itemView.titleColor),
-                    text = itemView.name!!
-                )
-                Text(
-                    color = colorResource(R.color.detail_accent_label),
-                    text = itemView.address!!
-                )
-            }
-        }
-    }
-
-    @Preview("Meteorite view")
-    @Composable
-    fun MeteoriteItem() {
-        MeteoriteItem(
-            MeteoriteItemView(
-                id = 123,
-                name = "title",
-                address = "address"
-            )
-        )
     }
 
     companion object {
