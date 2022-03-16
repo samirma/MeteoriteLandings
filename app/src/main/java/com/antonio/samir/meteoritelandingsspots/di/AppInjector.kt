@@ -130,7 +130,9 @@ val viewModelModule = module {
             gpsTracker = get(),
             addressService = get(),
             dispatchers = get(),
-            getMeteorites = get()
+            getMeteorites = get(),
+            startAddressRecover = get(),
+            statusAddressRecover = get()
         )
     }
 }
