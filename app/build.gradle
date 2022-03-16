@@ -84,6 +84,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+    implementation project(":designsystem")
+
     // Architecture Components
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$androidx_lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$androidx_lifecycle_version"

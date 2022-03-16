@@ -11,13 +11,14 @@ import com.antonio.samir.meteoritelandingsspots.common.ResultOf.Success
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel.ContentStatus.Loading
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.FetchMeteoriteList
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
+import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StartAddressRecover
+import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StatusAddressRecover
 import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 
@@ -28,6 +29,8 @@ import kotlinx.coroutines.launch
 @ExperimentalCoroutinesApi
 class MeteoriteListViewModel(
     private val stateHandle: SavedStateHandle,
+    private val startAddressRecover: StartAddressRecover,
+    private val statusAddressRecover: StatusAddressRecover,
     private val fetchMeteoriteList: FetchMeteoriteList,
     private val gpsTracker: GPSTrackerInterface,
     private val addressService: AddressServiceInterface,
@@ -42,6 +45,9 @@ class MeteoriteListViewModel(
     private val contentStatus = MutableLiveData<ContentStatus>(Loading)
 
     fun fetchMeteoriteList() = fetchMeteoriteList.execute(Unit).asLiveData()
+
+    fun recoverAddressStatus(): Flow<ResultOf<Float>> = startAddressRecover.execute(Unit)
+        .flatMapConcat(statusAddressRecover::execute)
 
     @VisibleForTesting
     val addressServiceControl = MutableLiveData(false)

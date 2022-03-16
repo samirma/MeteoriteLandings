@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.ui.theme
+package com.antonio.samir.meteoritelandingsspots.designsystem.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
