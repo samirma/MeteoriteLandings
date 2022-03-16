@@ -47,7 +47,7 @@
 
         <!--Widget-->
         <receiver
-            android:name=".ui.widget.MeteoritesAppWidget"
+            android:name="com.antonio.samir.meteoritelandingsspots.common.ui.widget.MeteoritesAppWidget"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -59,7 +59,7 @@
         </receiver>
 
         <service
-            android:name=".ui.widget.DetailWidgetRemoteViewsService"
+            android:name="com.antonio.samir.meteoritelandingsspots.common.ui.widget.DetailWidgetRemoteViewsService"
             android:enabled="true"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />

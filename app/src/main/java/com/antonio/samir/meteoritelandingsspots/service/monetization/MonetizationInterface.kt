@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.util
+package com.antonio.samir.meteoritelandingsspots.service.monetization
 
 import androidx.lifecycle.LifecycleCoroutineScope
 import io.nodle.sdk.INodle

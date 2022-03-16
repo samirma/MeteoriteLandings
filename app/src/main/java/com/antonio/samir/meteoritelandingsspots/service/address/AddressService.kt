@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.service
+package com.antonio.samir.meteoritelandingsspots.service.address
 
 import android.util.Log
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf

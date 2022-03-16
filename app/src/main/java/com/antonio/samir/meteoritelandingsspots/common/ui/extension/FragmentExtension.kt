@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.ui.extension
+package com.antonio.samir.meteoritelandingsspots.common.ui.extension
 
 import android.content.res.Configuration
 import android.view.View

@@ -14,6 +14,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -29,7 +30,7 @@ class GPSTracker(private val context: Context) : GPSTrackerInterface {
 
     private val isLocationServiceStarted = AtomicBoolean(false)
 
-    private var currentLocation = MutableSharedFlow<Location?>(replay = 1)
+    private var currentLocation = MutableStateFlow<Location?>(null)
 
     /**
      * Function to get the user's current liveLocation

@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.util
+package com.antonio.samir.meteoritelandingsspots.service.monetization
 
 import android.Manifest
 import android.annotation.SuppressLint

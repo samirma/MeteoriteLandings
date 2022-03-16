@@ -10,7 +10,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.util.MonetizationInterface
+import com.antonio.samir.meteoritelandingsspots.service.monetization.MonetizationInterface
 import org.koin.android.ext.android.inject
 
 class MeteoriteMainEntryPointActivity : AppCompatActivity() {

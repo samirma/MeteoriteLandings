@@ -11,7 +11,7 @@ import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewM
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel.ContentStatus
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
 import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
-import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
+import com.antonio.samir.meteoritelandingsspots.service.address.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi

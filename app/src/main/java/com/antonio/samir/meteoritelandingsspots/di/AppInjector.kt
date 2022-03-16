@@ -23,8 +23,10 @@ import com.antonio.samir.meteoritelandingsspots.features.list.userCases.FetchMet
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StartAddressRecover
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StatusAddressRecover
-import com.antonio.samir.meteoritelandingsspots.service.AddressService
-import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
+import com.antonio.samir.meteoritelandingsspots.service.address.AddressService
+import com.antonio.samir.meteoritelandingsspots.service.address.AddressServiceInterface
+import com.antonio.samir.meteoritelandingsspots.service.monetization.MonetizationImpl
+import com.antonio.samir.meteoritelandingsspots.service.monetization.MonetizationInterface
 import com.antonio.samir.meteoritelandingsspots.util.*
 import io.nodle.sdk.android.Nodle
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -13,8 +13,8 @@ import androidx.navigation.fragment.navArgs
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf.*
 import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteDetailBinding
-import com.antonio.samir.meteoritelandingsspots.ui.extension.isLandscape
-import com.antonio.samir.meteoritelandingsspots.ui.extension.showActionBar
+import com.antonio.samir.meteoritelandingsspots.common.ui.extension.isLandscape
+import com.antonio.samir.meteoritelandingsspots.common.ui.extension.showActionBar
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
