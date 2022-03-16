@@ -13,7 +13,7 @@ import com.antonio.samir.meteoritelandingsspots.features.list.userCases.FetchMet
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StartAddressRecover
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StatusAddressRecover
-import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
+import com.antonio.samir.meteoritelandingsspots.service.address.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi

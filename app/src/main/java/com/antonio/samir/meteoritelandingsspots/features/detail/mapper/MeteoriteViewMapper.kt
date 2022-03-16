@@ -8,7 +8,7 @@ import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteView
 import com.antonio.samir.meteoritelandingsspots.features.getLocationText
 import com.antonio.samir.meteoritelandingsspots.features.yearString
-import com.antonio.samir.meteoritelandingsspots.ui.extension.convertToNumberFormat
+import com.antonio.samir.meteoritelandingsspots.common.ui.extension.convertToNumberFormat
 
 class MeteoriteMapper : MapperBase<MeteoriteMapper.Input, MeteoriteView>() {
 

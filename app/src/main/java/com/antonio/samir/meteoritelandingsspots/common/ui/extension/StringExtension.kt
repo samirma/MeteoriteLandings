@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.ui.extension
+package com.antonio.samir.meteoritelandingsspots.common.ui.extension
 
 import java.text.NumberFormat
 import java.util.*

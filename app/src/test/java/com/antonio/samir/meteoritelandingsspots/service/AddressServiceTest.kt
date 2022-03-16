@@ -5,6 +5,7 @@ import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
+import com.antonio.samir.meteoritelandingsspots.service.address.AddressService
 import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock

@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.service
+package com.antonio.samir.meteoritelandingsspots.service.address
 
 import android.content.Context
 import androidx.work.*

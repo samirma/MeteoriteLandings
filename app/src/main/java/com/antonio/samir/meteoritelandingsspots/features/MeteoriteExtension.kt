@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.location.Location
 import android.util.Log
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.ui.extension.convertToNumberFormat
+import com.antonio.samir.meteoritelandingsspots.common.ui.extension.convertToNumberFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*

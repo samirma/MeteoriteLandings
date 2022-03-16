@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.ui.widget
+package com.antonio.samir.meteoritelandingsspots.common.ui.widget
 
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider

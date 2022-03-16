@@ -9,25 +9,9 @@ import android.view.*
 import android.view.View.*
 import androidx.annotation.NonNull
 import androidx.appcompat.widget.SearchView
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.paging.PagingData
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf.InProgress
@@ -35,11 +19,10 @@ import com.antonio.samir.meteoritelandingsspots.common.ResultOf.Success
 import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteListBinding
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailFragment
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel.ContentStatus.*
-import com.antonio.samir.meteoritelandingsspots.ui.extension.isLandscape
-import com.antonio.samir.meteoritelandingsspots.ui.extension.showActionBar
+import com.antonio.samir.meteoritelandingsspots.common.ui.extension.isLandscape
+import com.antonio.samir.meteoritelandingsspots.common.ui.extension.showActionBar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
 
 
