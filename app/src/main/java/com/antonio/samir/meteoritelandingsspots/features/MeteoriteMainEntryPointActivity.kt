@@ -10,21 +10,21 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.util.MarketingInterface
+import com.antonio.samir.meteoritelandingsspots.util.MonetizationInterface
 import org.koin.android.ext.android.inject
 
 class MeteoriteMainEntryPointActivity : AppCompatActivity() {
 
     private val appBarConfiguration = AppBarConfiguration(setOf(R.id.meteoriteListFragment))
 
-    val marketing: MarketingInterface by inject()
+    val monetization: MonetizationInterface by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_meteorite_list)
         configureActionBar()
 
-        marketing.start(lifecycleScope)
+        monetization.start(lifecycleScope)
 
     }
 

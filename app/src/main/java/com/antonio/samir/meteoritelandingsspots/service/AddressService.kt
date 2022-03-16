@@ -15,9 +15,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 import org.apache.commons.lang3.StringUtils
 
-/**
- * Evaluate convert this class to work manager
- */
 @ExperimentalCoroutinesApi
 class AddressService(
         private val meteoriteLocalRepository: MeteoriteLocalRepository,

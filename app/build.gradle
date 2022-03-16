@@ -91,7 +91,7 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$androidx_navigation_version"
     implementation "androidx.navigation:navigation-ui-ktx:$androidx_navigation_version"
 
-    implementation 'com.google.android.material:material:1.6.0-alpha02'
+    implementation 'com.google.android.material:material:1.6.0-alpha03'
 
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
 
@@ -100,7 +100,9 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$androidx_navigation_version"
 
     //Paging
-    implementation "androidx.paging:paging-runtime-ktx:3.1.0"
+    implementation "androidx.paging:paging-runtime-ktx:3.1.1"
+
+    implementation "androidx.work:work-runtime-ktx:$work_version"
 
     //Room
     implementation "androidx.room:room-runtime:$androidx_room_version"
@@ -152,7 +154,6 @@ dependencies {
 
     //Nodle
     implementation 'io.nodle:nodlesdk-rc-lg:cbe8a42b18'
-
     implementation 'com.vanniktech:rxpermission:0.7.0'
 
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.1.0-alpha3', {

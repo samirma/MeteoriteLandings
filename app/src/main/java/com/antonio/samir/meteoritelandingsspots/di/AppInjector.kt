@@ -21,6 +21,8 @@ import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewM
 import com.antonio.samir.meteoritelandingsspots.features.list.mapper.MeteoriteViewMapper
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.FetchMeteoriteList
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
+import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StartAddressRecover
+import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StatusAddressRecover
 import com.antonio.samir.meteoritelandingsspots.service.AddressService
 import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.util.*
@@ -86,6 +88,8 @@ val useCaseModule = module {
     factory { GetMeteoriteById(get(), get()) }
     factory { GetMeteorites(get(), get(), get()) }
     factory { FetchMeteoriteList(get()) }
+    factory { StartAddressRecover(get()) }
+    factory { StatusAddressRecover(get()) }
 }
 
 @ExperimentalCoroutinesApi
@@ -97,10 +101,10 @@ val businessModule = module {
     single<GPSTrackerInterface> { GPSTracker(context = get()) }
     single<AddressServiceInterface> { AddressService(get(), get()) }
     single<MeteoriteRepository> { MeteoriteRepositoryImpl(get(), get(), get()) }
-    single<MarketingInterface> {
+    single<MonetizationInterface> {
         val context = get<Context>()
         val nodleKey = context.getString(R.string.nodle_key)
-        MarketingImpl(
+        MonetizationImpl(
             context = context,
             nodleKey = nodleKey
         ).apply {
