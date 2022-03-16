@@ -7,6 +7,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LifecycleCoroutineScope
+import com.antonio.samir.meteoritelandingsspots.BuildConfig
 import com.vanniktech.rxpermission.Permission
 import com.vanniktech.rxpermission.RealRxPermission
 import io.nodle.sdk.INodle
@@ -30,32 +31,35 @@ class MonetizationImpl(val context: Context, val nodleKey: String) : Monetizatio
     @SuppressLint("CheckResult")
     override fun start(lifecycleScope: LifecycleCoroutineScope) {
 
-        RealRxPermission.getInstance(context)
-            .requestEach(
-                Manifest.permission.BLUETOOTH,
-                Manifest.permission.BLUETOOTH_ADMIN,
-                Manifest.permission.BLUETOOTH_SCAN,
-                Manifest.permission.BLUETOOTH_ADVERTISE,
-                Manifest.permission.BLUETOOTH_CONNECT,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-            .reduce(true) { c, p -> c && p.state() === Permission.State.GRANTED }
-            .subscribe { granted ->
-                if (granted) {
-                    Log.d(TAG, "all the permissions was granted by user")
-                    nodle.start(nodleKey)
+        if (!BuildConfig.DEBUG) {
+            RealRxPermission.getInstance(context)
+                .requestEach(
+                    Manifest.permission.BLUETOOTH,
+                    Manifest.permission.BLUETOOTH_ADMIN,
+                    Manifest.permission.BLUETOOTH_SCAN,
+                    Manifest.permission.BLUETOOTH_ADVERTISE,
+                    Manifest.permission.BLUETOOTH_CONNECT,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+                .reduce(true) { c, p -> c && p.state() === Permission.State.GRANTED }
+                .subscribe { granted ->
+                    if (granted) {
+                        Log.d(TAG, "all the permissions was granted by user")
+                        nodle.start(nodleKey)
 
-                    Log.d(TAG,"Is started ${nodle.isStarted()} ")
-                    Log.d(TAG,"Is scanning ${nodle.isScanning()} ")
+                        Log.d(TAG, "Is started ${nodle.isStarted()} ")
+                        Log.d(TAG, "Is scanning ${nodle.isScanning()} ")
 
-                } else {
-                    Log.d(TAG, "some permission was denied by user")
+                    } else {
+                        Log.d(TAG, "some permission was denied by user")
+                    }
                 }
-            }
 
-        collectEvents(lifecycleScope = lifecycleScope)
-    
+            collectEvents(lifecycleScope = lifecycleScope)
+
+        }
+
     }
 
     override fun setNodle(nodle: INodle) {
@@ -69,8 +73,8 @@ class MonetizationImpl(val context: Context, val nodleKey: String) : Monetizatio
                 // collect the NodleEvents events here by chosing a type
                 when (event.type) {
                     NodleEventType.BlePayloadEvent -> handlePayload(event)
-                    NodleEventType.BleStartSearching -> Log.d(TAG,"Bluetooth started searching")
-                    NodleEventType.BleStopSearching -> Log.d(TAG,"Bluetooth stopped searching")
+                    NodleEventType.BleStartSearching -> Log.d(TAG, "Bluetooth started searching")
+                    NodleEventType.BleStopSearching -> Log.d(TAG, "Bluetooth stopped searching")
                 }
             }
 
@@ -79,7 +83,7 @@ class MonetizationImpl(val context: Context, val nodleKey: String) : Monetizatio
 
     private fun handlePayload(payload: NodleEvent) {
         val data = payload as NodleBluetoothScanRecord
-        Log.d(TAG,"Bluetooth payload available ${data.device} ")
+        Log.d(TAG, "Bluetooth payload available ${data.device} ")
     }
 
     companion object {
