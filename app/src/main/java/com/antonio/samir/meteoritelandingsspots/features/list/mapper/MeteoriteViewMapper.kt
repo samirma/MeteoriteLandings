@@ -16,9 +16,9 @@ class MeteoriteViewMapper (val context: Context): MapperBase<MeteoriteViewMapper
         val meteorite = input.meteorite
 
         return MeteoriteItemView(
-            id = meteorite.id,
-            name = meteorite.name,
-            yearString = meteorite.yearString,
+            id = "${meteorite.id}",
+            name = meteorite.name ?: "---",
+            yearString = meteorite.yearString?: "---",
             address = meteorite.getLocationText(
                 location = input.location,
                 noAddress = context
