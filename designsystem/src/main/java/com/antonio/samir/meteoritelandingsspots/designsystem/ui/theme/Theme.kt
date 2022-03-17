@@ -5,43 +5,80 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import com.antonio.samir.meteoritelandingsspots.designsystem.R
 
-private val DarkColorPalette = darkColors(
-    primary = Purple200,
-    primaryVariant = Purple700,
-    secondary = Teal200
+@Immutable
+data class ExtendedColors(
+    val textPrimary: Color,
+    val textSecondary: Color
 )
 
-private val LightColorPalette = lightColors(
-    primary = Purple500,
-    primaryVariant = Purple700,
-    secondary = Teal200
-
-    /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
-)
+val LocalExtendedColors = staticCompositionLocalOf {
+    ExtendedColors(
+        textPrimary = Color.Unspecified,
+        textSecondary = Color.Unspecified
+    )
+}
 
 @Composable
 fun MeteoriteLandingsTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    } else {
-        LightColorPalette
+    val colors = getColorTheme(darkTheme)
+    val extendedColors = getExtendedColorsTheme(darkTheme)
+    CompositionLocalProvider(LocalExtendedColors provides extendedColors) {
+        MaterialTheme(
+            colors = colors,
+            typography = Typography,
+            shapes = Shapes,
+            content = content
+        )
     }
+}
 
-    MaterialTheme(
-        colors = colors,
-        typography = Typography,
-        shapes = Shapes,
-        content = content
+@Composable
+fun getExtendedColorsTheme(darkTheme: Boolean): ExtendedColors  = if (darkTheme) {
+    ExtendedColors(
+        textPrimary = colorResource(R.color.textSecondaryDark),
+        textSecondary = colorResource(R.color.textSecondaryDark)
     )
+} else {
+    ExtendedColors(
+        textPrimary = colorResource(R.color.textSecondary),
+        textSecondary = colorResource(R.color.textSecondary)
+    )
+}
+
+
+@Composable
+private fun getColorTheme(darkTheme: Boolean) = if (darkTheme) {
+    darkColors(
+        primary = colorResource(R.color.colorPrimaryDark),
+        primaryVariant = colorResource(R.color.colorPrimaryDark),
+        secondary = colorResource(R.color.colorPrimaryDark),
+        background = colorResource(R.color.backgroundDark),
+        surface = colorResource(R.color.surfaceDark),
+    )
+} else {
+    lightColors(
+        primary = colorResource(R.color.colorPrimary),
+        primaryVariant = colorResource(R.color.colorPrimary),
+        secondary = colorResource(R.color.colorPrimary),
+        background = colorResource(R.color.background),
+        surface = colorResource(R.color.surface),
+    )
+}
+
+
+// Use with eg. ExtendedTheme.colors.tertiary
+object ExtendedTheme {
+    val colors: ExtendedColors
+        @Composable
+        get() = LocalExtendedColors.current
 }

@@ -15,7 +15,4 @@ data class MeteoriteItemView(
     val reclat: String? = null,
     val reclong: String? = null,
     val isSelected: Boolean = false,
-    @ColorRes val titleColor: Int =  R.color.title_color,
-    @ColorRes val cardBackgroundColor: Int = R.color.unselected_item_color,
-    @DimenRes val elevation: Int =  R.dimen.unselected_item_elevation,
 ) : Parcelable
