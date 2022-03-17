@@ -10,6 +10,7 @@ import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Text
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.antonio.samir.meteoritelandingsspots.R
@@ -40,7 +41,7 @@ class MeteoriteListFragment : Fragment() {
     ): View {
         binding = FragmentMeteoriteListBinding.inflate(inflater, container, false)
 
-        (activity as AppCompatActivity?)!!.getSupportActionBar()!!.hide()
+//        (activity as AppCompatActivity?)!!.getSupportActionBar()!!.hide()
 
         updateList()
 
@@ -49,9 +50,7 @@ class MeteoriteListFragment : Fragment() {
 
     private fun updateList() {
         binding.listScreen?.setContent {
-            ListScreen(meteorites = viewModel.searchedLocation) {
-                viewModel.selectMeteorite(it)
-            }
+            Text(text = "lalala")
         }
     }
 

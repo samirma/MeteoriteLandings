@@ -1,22 +1,19 @@
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
@@ -24,40 +21,75 @@ import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.antonio.samir.meteoritelandingsspots.R
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteItemView
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import java.lang.Double.max
-import java.lang.Float.min
 
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MeteoriteItem(
+fun MeteoriteCell(
     itemView: MeteoriteItemView,
     onItemClick: ((itemView: MeteoriteItemView) -> Unit)?
 ) {
-    Card(
-        onClick = { onItemClick?.invoke(itemView!!) },
-        shape = RoundedCornerShape(2.dp),
-        modifier = Modifier.padding(2.dp).fillMaxWidth(),
-        backgroundColor = colorResource(R.color.unselected_item_color),
-        elevation = dimensionResource(R.dimen.unselected_item_elevation)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colors.background)
+            .clickable {
+                onItemClick?.invoke(itemView)
+            }
     ) {
-        Column(
-            Modifier
-                .padding(4.dp)
-                .fillMaxWidth()
-        ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_map),
+            contentDescription = null // decorative element
+        )
+        Column {
             Text(
-                color = colorResource(R.color.title_color),
-                text = itemView?.name ?: "lalala"
+                color = ExtendedTheme.colors.textPrimary,
+                text = itemView.name ?: ""
             )
             Text(
-                color = colorResource(R.color.detail_accent_label),
-                text = itemView?.address ?: "lalala"
+                color = ExtendedTheme.colors.textSecondary,
+                text = itemView.address ?: "",
+                maxLines = 2
             )
         }
+    }
+}
+
+@Preview("MeteoriteCell Dark")
+@Composable
+fun MeteoriteCellPreviewDark() {
+    val sample = "test"
+    MeteoriteLandingsTheme(darkTheme = true) {
+        MeteoriteCell(
+            MeteoriteItemView(
+                id = sample,
+                name = "name $sample",
+                yearString = "yearString $sample",
+                address = "address $sample"
+            )
+        ) {}
+    }
+}
+
+
+@Preview("MeteoriteCell Light")
+@Composable
+fun MeteoriteCellPreviewLight() {
+    val sample = "test"
+    MeteoriteLandingsTheme(darkTheme = false) {
+        MeteoriteCell(
+            MeteoriteItemView(
+                id = sample,
+                name = "name $sample",
+                yearString = "yearString $sample",
+                address = "address $sample"
+            )
+        ) {}
     }
 }
 
@@ -67,7 +99,8 @@ fun MeteoriteItem(
 fun Title(scrollOffset: Float) {
     val imageSize by animateDpAsState(targetValue = max(72.dp, 128.dp * scrollOffset))
     Box(
-        modifier = Modifier.height(imageSize)
+        modifier = Modifier
+            .height(imageSize)
             .fillMaxWidth()
             .background(Color.LightGray),
     ) {
@@ -81,17 +114,6 @@ fun TitlePreview() {
     Title(2f)
 }
 
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun MetCell(item: MeteoriteItemView) {
-    Box(
-        Modifier.fillMaxWidth().background(Color.Gray),
-    ) {
-        Text(item.name)
-    }
-}
-
 @Composable
 fun ListScreen(
     meteorites: Flow<PagingData<MeteoriteItemView>>,
@@ -103,14 +125,18 @@ fun ListScreen(
         1f,
         1 - (scrollState.firstVisibleItemScrollOffset / 600f + scrollState.firstVisibleItemIndex)
     )
-    Column {
-
-        LazyColumn(
-            Modifier.fillMaxSize(),
-            scrollState,
+    MeteoriteLandingsTheme(darkTheme = true) {
+        Column(
+            modifier = Modifier.background(Color.Blue).fillMaxHeight()
         ) {
-            items(items) { item ->
-                item?.let { MeteoriteItem(it) {} }
+            Title(scrollOffset)
+            LazyColumn(
+                Modifier.fillMaxSize(),
+                scrollState,
+            ) {
+//               items(items) { item ->
+//                    item?.let { MeteoriteCell(it) {} }
+//                }
             }
         }
     }
@@ -131,4 +157,5 @@ fun ListScreenPreview() {
     ListScreen(
         flowOf(PagingData.from(items)), {}
     )
+
 }

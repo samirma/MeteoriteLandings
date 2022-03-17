@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#468BFF</color>
+    <color name="colorPrimaryDark">@color/colorPrimary</color>
+    <color name="colorAccent">@color/colorPrimary</color>
 
-    <color name="title_color">#fff</color>
+    <color name="background">#F9F9F9</color>
+    <color name="backgroundDark">#212326</color>
 
-    <color name="title_default">@color/title_color</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surfaceDark">#2F353D</color>
 
-    <color name="meta_bar_background_color">#333</color>
+    <color name="textPrimary">#000000</color>
+    <color name="textPrimaryDark">#FFFFFFDE</color>
 
-    <!-- our detail accent colors -->
-    <color name="detail_accent_pane_background">#455A64</color>
-    <color name="detail_accent_label">#90A4AE</color>
-    <color name="unselected_item_color">@color/meta_bar_background_color</color>
-    <color name="selected_item_color">#eee</color>
-    <color name="selected_title_color">@color/meta_bar_background_color</color>
+    <color name="textSecondary">#99000000</color>
+    <color name="textSecondaryDark">#CCF5F5F5</color>
 
 </resources>
