@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -36,39 +37,71 @@ fun MeteoriteCell(
     itemView: MeteoriteItemView,
     onItemClick: ((itemView: MeteoriteItemView) -> Unit)?
 ) {
-    Column(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colors.background)
-            .padding(16.dp)
+            .height(84.dp)
+            .padding(horizontal = 16.dp)
+            .clickable {
+                onItemClick?.invoke(itemView)
+            }
     ) {
-        Row(
+        Image(
+            painter = painterResource(id = R.drawable.ic_map),
+            contentDescription = "",
             modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    onItemClick?.invoke(itemView)
-                }
+                .align(CenterVertically)
+                .size(40.dp)
+        )
+        Box(
+            Modifier
+                .fillMaxSize()
+                .padding(start = 16.dp)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_map),
-                contentDescription = ""
-            )
-            Column(
-                Modifier.padding(start = 16.dp)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterStart)
+
             ) {
-                Text(
-                    color = ExtendedTheme.colors.textPrimary,
-                    text = itemView.name ?: ""
-                )
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Text(
+                        color = ExtendedTheme.colors.textPrimary,
+                        text = itemView.name ?: "",
+                        modifier = Modifier.wrapContentHeight(CenterVertically)
+                    )
+                    Text(
+                        color = ExtendedTheme.colors.textSecondary,
+                        text = itemView.address ?: "",
+                        maxLines = 2
+                    )
+                }
                 Text(
                     color = ExtendedTheme.colors.textSecondary,
-                    text = itemView.address ?: "",
-                    maxLines = 2
+                    text = itemView.distance ?: "800m",
+                    maxLines = 2,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 4.dp)
+                        .wrapContentWidth(Alignment.End),
                 )
             }
+            Image(
+                painter = painterResource(id = R.drawable.divider),
+                contentDescription = "",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 1.dp)
+            )
         }
     }
+
 }
+
 
 @Preview("MeteoriteCell Dark")
 @Composable
@@ -80,6 +113,7 @@ fun MeteoriteCellPreviewDark() {
                 id = sample,
                 name = "name $sample",
                 yearString = "yearString $sample",
+                distance = "distance $sample",
                 address = "address $sample"
             )
         ) {}
@@ -97,6 +131,7 @@ fun MeteoriteCellPreviewLight() {
                 id = sample,
                 name = "name $sample",
                 yearString = "yearString $sample",
+                distance = "distance $sample",
                 address = "address $sample"
             )
         ) {}
@@ -170,7 +205,8 @@ fun ListScreenPreview() {
             id = "$it",
             name = "name $it",
             yearString = "yearString $it",
-            address = "address $it"
+            address = "address $it",
+            distance = "distance $it",
         )
     }
 

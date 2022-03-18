@@ -11,7 +11,7 @@
     <color name="surfaceDark">#2F353D</color>
 
     <color name="textPrimary">#000000</color>
-    <color name="textPrimaryDark">#FFFFFFDE</color>
+    <color name="textPrimaryDark">#FFFFFF</color>
 
     <color name="textSecondary">#99000000</color>
     <color name="textSecondaryDark">#CCF5F5F5</color>

@@ -9,7 +9,8 @@ import com.antonio.samir.meteoritelandingsspots.features.getLocationText
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.features.yearString
 
-class MeteoriteViewMapper (val context: Context): MapperBase<MeteoriteViewMapper.Input, MeteoriteItemView>(){
+class MeteoriteViewMapper(val context: Context) :
+    MapperBase<MeteoriteViewMapper.Input, MeteoriteItemView>() {
 
     override suspend fun action(input: Input): MeteoriteItemView {
 
@@ -18,14 +19,13 @@ class MeteoriteViewMapper (val context: Context): MapperBase<MeteoriteViewMapper
         return MeteoriteItemView(
             id = "${meteorite.id}",
             name = meteorite.name ?: "---",
-            yearString = meteorite.yearString?: "---",
+            yearString = meteorite.yearString ?: "---",
             address = meteorite.getLocationText(
                 location = input.location,
                 noAddress = context
                     .getString(R.string.without_address_placeholder)
             ),
-            reclat = meteorite.reclat,
-            reclong = meteorite.reclong
+            distance = "800m",
         )
     }
 
