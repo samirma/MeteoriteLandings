@@ -36,30 +36,36 @@ fun MeteoriteCell(
     itemView: MeteoriteItemView,
     onItemClick: ((itemView: MeteoriteItemView) -> Unit)?
 ) {
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
+            .background(MaterialTheme.colors.background)
             .padding(16.dp)
-            .clickable {
-                onItemClick?.invoke(itemView)
-            }
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_map),
-            contentDescription = ""
-        )
-        Column(
-            Modifier.padding(start = 16.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    onItemClick?.invoke(itemView)
+                }
         ) {
-            Text(
-                color = ExtendedTheme.colors.textPrimary,
-                text = itemView.name ?: ""
+            Image(
+                painter = painterResource(id = R.drawable.ic_map),
+                contentDescription = ""
             )
-            Text(
-                color = ExtendedTheme.colors.textSecondary,
-                text = itemView.address ?: "",
-                maxLines = 2
-            )
+            Column(
+                Modifier.padding(start = 16.dp)
+            ) {
+                Text(
+                    color = ExtendedTheme.colors.textPrimary,
+                    text = itemView.name ?: ""
+                )
+                Text(
+                    color = ExtendedTheme.colors.textSecondary,
+                    text = itemView.address ?: "",
+                    maxLines = 2
+                )
+            }
         }
     }
 }
