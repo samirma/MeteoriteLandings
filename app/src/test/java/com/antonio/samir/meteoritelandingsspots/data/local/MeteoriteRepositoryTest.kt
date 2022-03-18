@@ -30,8 +30,7 @@ class MeteoriteRepositoryTest {
     fun setUp() {
 
         meteoriteLocalRepository = MeteoriteLocalRepositoryImpl(
-                meteoriteDao = mockMeteoriteDao,
-                dispatchers = coroutinesTestRule.testDispatcherProvider
+                meteoriteDao = mockMeteoriteDao
         )
 
     }

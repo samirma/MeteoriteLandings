@@ -43,14 +43,14 @@ fun MeteoriteLandingsTheme(
 }
 
 @Composable
-fun getExtendedColorsTheme(darkTheme: Boolean): ExtendedColors  = if (darkTheme) {
+fun getExtendedColorsTheme(darkTheme: Boolean): ExtendedColors = if (darkTheme) {
     ExtendedColors(
-        textPrimary = colorResource(R.color.textSecondaryDark),
+        textPrimary = colorResource(R.color.textPrimaryDark),
         textSecondary = colorResource(R.color.textSecondaryDark)
     )
 } else {
     ExtendedColors(
-        textPrimary = colorResource(R.color.textSecondary),
+        textPrimary = colorResource(R.color.textPrimary),
         textSecondary = colorResource(R.color.textSecondary)
     )
 }
