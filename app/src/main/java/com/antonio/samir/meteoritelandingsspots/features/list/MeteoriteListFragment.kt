@@ -4,13 +4,14 @@ import ListScreen
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
 import android.view.View.VISIBLE
+import android.view.ViewGroup
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Text
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.antonio.samir.meteoritelandingsspots.R
@@ -41,16 +42,19 @@ class MeteoriteListFragment : Fragment() {
     ): View {
         binding = FragmentMeteoriteListBinding.inflate(inflater, container, false)
 
-//        (activity as AppCompatActivity?)!!.getSupportActionBar()!!.hide()
+        (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
 
         updateList()
 
         return binding.root
     }
 
+
     private fun updateList() {
         binding.listScreen?.setContent {
-            Text(text = "lalala")
+            ListScreen(meteorites = viewModel.searchedLocation) {
+                viewModel.selectMeteorite(it)
+            }
         }
     }
 
@@ -138,16 +142,6 @@ class MeteoriteListFragment : Fragment() {
                 }
             }
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.main, menu)
-
-        val searchView = menu.findItem(R.id.action_search).actionView as SearchView
-
-        setup(searchView)
-
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
     private fun setup(searchView: SearchView?) {

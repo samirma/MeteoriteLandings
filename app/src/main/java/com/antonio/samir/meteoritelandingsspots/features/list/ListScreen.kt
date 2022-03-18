@@ -1,11 +1,11 @@
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -14,9 +14,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
+import androidx.compose.ui.unit.sp
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
@@ -37,16 +39,18 @@ fun MeteoriteCell(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colors.background)
+            .padding(16.dp)
             .clickable {
                 onItemClick?.invoke(itemView)
             }
     ) {
-        Icon(
+        Image(
             painter = painterResource(id = R.drawable.ic_map),
-            contentDescription = null // decorative element
+            contentDescription = ""
         )
-        Column {
+        Column(
+            Modifier.padding(start = 16.dp)
+        ) {
             Text(
                 color = ExtendedTheme.colors.textPrimary,
                 text = itemView.name ?: ""
@@ -97,14 +101,24 @@ fun MeteoriteCellPreviewLight() {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Title(scrollOffset: Float) {
-    val imageSize by animateDpAsState(targetValue = max(72.dp, 128.dp * scrollOffset))
+    val imageSize by animateDpAsState(targetValue = max(300.dp, 128.dp * scrollOffset))
     Box(
         modifier = Modifier
             .height(imageSize)
             .fillMaxWidth()
-            .background(Color.LightGray),
+            .background(MaterialTheme.colors.surface),
     ) {
-        Text("Search for your meteorite", modifier = Modifier.align(Alignment.Center))
+        Text(
+            text = "Search for your meteorite",
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(
+                    horizontal = 80.dp
+                ),
+            color = ExtendedTheme.colors.textPrimary,
+            fontSize = 28.sp
+        )
     }
 }
 
@@ -125,18 +139,18 @@ fun ListScreen(
         1f,
         1 - (scrollState.firstVisibleItemScrollOffset / 600f + scrollState.firstVisibleItemIndex)
     )
-    MeteoriteLandingsTheme(darkTheme = true) {
-        Column(
-            modifier = Modifier.background(Color.Blue).fillMaxHeight()
-        ) {
+    MeteoriteLandingsTheme {
+        Column(Modifier.fillMaxSize()) {
             Title(scrollOffset)
             LazyColumn(
-                Modifier.fillMaxSize(),
-                scrollState,
+                state = scrollState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colors.background)
             ) {
-//               items(items) { item ->
-//                    item?.let { MeteoriteCell(it) {} }
-//                }
+                items(items) { item ->
+                    item?.let { MeteoriteCell(it, onItemClick) }
+                }
             }
         }
     }
@@ -158,4 +172,16 @@ fun ListScreenPreview() {
         flowOf(PagingData.from(items)), {}
     )
 
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun MetCell(item: MeteoriteItemView) {
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .background(Color.Gray),
+    ) {
+        Text(item.name)
+    }
 }
