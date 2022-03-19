@@ -15,13 +15,15 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.R
 @Immutable
 data class ExtendedColors(
     val textPrimary: Color,
-    val textSecondary: Color
+    val textSecondary: Color,
+    val highlight: Color
 )
 
 val LocalExtendedColors = staticCompositionLocalOf {
     ExtendedColors(
         textPrimary = Color.Unspecified,
-        textSecondary = Color.Unspecified
+        textSecondary = Color.Unspecified,
+        highlight = Color.Unspecified
     )
 }
 
@@ -46,12 +48,14 @@ fun MeteoriteLandingsTheme(
 fun getExtendedColorsTheme(darkTheme: Boolean): ExtendedColors = if (darkTheme) {
     ExtendedColors(
         textPrimary = colorResource(R.color.textPrimaryDark),
-        textSecondary = colorResource(R.color.textSecondaryDark)
+        textSecondary = colorResource(R.color.textSecondaryDark),
+        highlight = colorResource(R.color.highlightDark),
     )
 } else {
     ExtendedColors(
         textPrimary = colorResource(R.color.textPrimary),
-        textSecondary = colorResource(R.color.textSecondary)
+        textSecondary = colorResource(R.color.textSecondary),
+        highlight = colorResource(R.color.highlight),
     )
 }
 

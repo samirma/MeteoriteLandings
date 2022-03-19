@@ -39,7 +39,7 @@ class MeteoriteListViewModelTest {
     private val mockGPSTracker: GPSTrackerInterface = mock()
     private val addressService: AddressServiceInterface = mock()
     private val mockSavedStateHandle = SavedStateHandle()
-    private val getMeteorites : GetMeteorites = mock()
+    private val getMeteorites: GetMeteorites = mock()
 
 
     private val mockObserverContentStatus: Observer<ContentStatus> = mock()
@@ -49,7 +49,6 @@ class MeteoriteListViewModelTest {
 
         viewModel = MeteoriteListViewModel(
             stateHandle = mockSavedStateHandle,
-            meteoriteRepository = mockRepository,
             gpsTracker = mockGPSTracker,
             addressService = addressService,
             dispatchers = coroutinesTestRule.testDispatcherProvider,
