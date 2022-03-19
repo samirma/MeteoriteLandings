@@ -16,4 +16,8 @@
     <color name="textSecondary">#99000000</color>
     <color name="textSecondaryDark">#CCF5F5F5</color>
 
+
+    <color name="highlight">@color/backgroundDark</color>
+    <color name="highlightDark">@color/background</color>
+
 </resources>

@@ -13,7 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -160,6 +160,13 @@ fun Title(scrollOffset: Float) {
             color = ExtendedTheme.colors.textPrimary,
             fontSize = 28.sp
         )
+        ToolbarActions(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(
+                    horizontal = 16.dp
+                )
+        )
     }
 }
 
@@ -167,6 +174,49 @@ fun Title(scrollOffset: Float) {
 @Composable
 fun TitlePreview() {
     Title(2f)
+}
+
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun ToolbarActions(modifier: Modifier) {
+    Row(
+        modifier = modifier
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_search),
+            contentDescription = "",
+            modifier = Modifier
+                .align(CenterVertically)
+                .height(24.dp)
+                .width(24.dp),
+            colorFilter = ColorFilter.tint(ExtendedTheme.colors.highlight)
+        )
+        Image(
+            painter = painterResource(id = R.drawable.ic_dark),
+            contentDescription = "",
+            modifier = Modifier
+                .align(CenterVertically)
+                .height(50.dp)
+                .width(50.dp)
+                .padding(start = 26.dp),
+            colorFilter = ColorFilter.tint(ExtendedTheme.colors.highlight)
+        )
+
+    }
+}
+
+@Preview("ToolbarActions")
+@Composable
+fun ToolbarActionsPreview() {
+    MeteoriteLandingsTheme(darkTheme = false) {
+        ToolbarActions(
+            Modifier
+                .padding(
+                    horizontal = 80.dp
+                )
+        )
+    }
 }
 
 @Composable
@@ -189,9 +239,19 @@ fun ListScreen(
                     .fillMaxSize()
                     .background(MaterialTheme.colors.background)
             ) {
+
+                item {
+                    Text(text = "First item")
+                }
+
                 items(items) { item ->
                     item?.let { MeteoriteCell(it, onItemClick) }
                 }
+
+                item {
+                    Text(text = "First item")
+                }
+
             }
         }
     }
@@ -211,19 +271,32 @@ fun ListScreenPreview() {
     }
 
     ListScreen(
-        flowOf(PagingData.from(items)), {}
-    )
+        meteorites = flowOf(PagingData.from(items)), onItemClick = {})
 
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@Preview
 @Composable
-fun MetCell(item: MeteoriteItemView) {
-    Box(
-        Modifier
-            .fillMaxWidth()
-            .background(Color.Gray),
-    ) {
-        Text(item.name)
+fun TextLazyColumn() {
+
+    val items = (1..10).map {
+        MeteoriteItemView(
+            id = "$it",
+            name = "name $it",
+            yearString = "yearString $it",
+            address = "address $it",
+            distance = "distance $it",
+        )
     }
+
+    LazyColumn(Modifier.height(500.dp)) {
+
+        items.forEach {
+            item {
+                MeteoriteCell(items.first(), null)
+            }
+        }
+
+    }
+
 }
