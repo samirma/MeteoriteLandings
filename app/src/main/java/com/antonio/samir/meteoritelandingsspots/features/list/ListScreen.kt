@@ -23,11 +23,12 @@ import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.antonio.samir.meteoritelandingsspots.R
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.ToolbarActions
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteItemView
-import kotlinx.coroutines.flow.Flow
+import com.antonio.samir.meteoritelandingsspots.features.list.UiState
 import kotlinx.coroutines.flow.flowOf
 
 
@@ -178,10 +179,11 @@ fun TitlePreview() {
 
 @Composable
 fun ListScreen(
-    meteorites: Flow<PagingData<MeteoriteItemView>>,
+    uiState: UiState,
     onItemClick: (itemView: MeteoriteItemView) -> Unit
 ) {
-    val items = meteorites.collectAsLazyPagingItems()
+
+    val items = uiState.meteorites.collectAsLazyPagingItems()
     val scrollState = rememberLazyListState()
     val scrollOffset: Float = Math.min(
         1f,
@@ -228,7 +230,13 @@ fun ListScreenPreview() {
     }
 
     ListScreen(
-        meteorites = flowOf(PagingData.from(items)), onItemClick = {})
+        uiState = UiState(
+            isLoading = true,
+            addressStatus = flowOf(ResultOf.Success(100f)),
+            fetchMeteoriteList = flowOf(ResultOf.Success(Unit)),
+            meteorites = flowOf(PagingData.from(items))
+        )
+    ) {}
 
 }
 
@@ -250,7 +258,7 @@ fun TextLazyColumn() {
 
         items.forEach {
             item {
-                MeteoriteCell(items.first(), null)
+                MeteoriteCell(it, null)
             }
         }
 

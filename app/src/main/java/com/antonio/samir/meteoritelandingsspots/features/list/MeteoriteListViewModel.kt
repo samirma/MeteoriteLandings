@@ -7,21 +7,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
-import com.antonio.samir.meteoritelandingsspots.common.ResultOf.Success
-import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel.UIStatus.Loading
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.FetchMeteoriteList
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StartAddressRecover
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StatusAddressRecover
-import com.antonio.samir.meteoritelandingsspots.service.address.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 
@@ -36,7 +30,6 @@ class MeteoriteListViewModel(
     private val statusAddressRecover: StatusAddressRecover,
     private val fetchMeteoriteList: FetchMeteoriteList,
     private val gpsTracker: GPSTrackerInterface,
-    private val addressService: AddressServiceInterface,
     private val dispatchers: DispatcherProvider,
     private val getMeteorites: GetMeteorites,
 ) : ViewModel() {
@@ -45,11 +38,30 @@ class MeteoriteListViewModel(
 
     val selectedMeteorite = meteorite.asLiveData()
 
-    private val contentStatus = MutableLiveData<UIStatus>(Loading)
 
-    fun fetchMeteoriteList() = fetchMeteoriteList.execute(Unit).asLiveData()
+    private val _meteorites =
+        MutableStateFlow<PagingData<MeteoriteItemView>>(PagingData.empty())
+    val meteorites = _meteorites
 
-    fun recoverAddressStatus(): Flow<ResultOf<Float>> = startAddressRecover.execute(Unit)
+    private val viewModelState = MutableStateFlow(
+        UiState(
+            isLoading = true,
+            addressStatus = recoverAddressStatus(),
+            fetchMeteoriteList = fetchMeteoriteList(),
+            meteorites = meteorites
+        )
+    )
+
+    // UI state exposed to the UI
+    val uiState = viewModelState.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = viewModelState.value
+    )
+
+    private fun fetchMeteoriteList() = fetchMeteoriteList.execute(Unit)
+
+    private fun recoverAddressStatus(): Flow<ResultOf<Float>> = startAddressRecover.execute(Unit)
         .flatMapConcat(statusAddressRecover::execute)
 
     @VisibleForTesting
@@ -58,40 +70,15 @@ class MeteoriteListViewModel(
     private val _searchQuery: MutableState<String?> = mutableStateOf<String?>(null)
     val searchQuery: State<String?> = _searchQuery
 
-    private val _searchedLocation =
-        MutableStateFlow<PagingData<MeteoriteItemView>>(PagingData.empty())
-    val searchedLocation = _searchedLocation
-
     fun searchLocation(query: String?) {
         _searchQuery.value = query
         viewModelScope.launch {
             getMeteorites.execute(query)
                 .collect {
-                    _searchedLocation.value = it
+                    _meteorites.value = it
                 }
         }
     }
-
-    fun getContentStatus(): LiveData<UIStatus> {
-        return contentStatus.distinctUntilChanged().map { status ->
-            val shouldResumeAddressService = when (status) {
-                Loading -> false
-                else -> true
-            }
-            addressServiceControl.postValue(shouldResumeAddressService)
-            return@map status
-        }
-    }
-
-    fun getRecoverAddressStatus() = Transformations.switchMap(addressServiceControl) {
-        if (it) {
-            addressService.recoveryAddress().asLiveData()
-        } else {
-            liveData<ResultOf<Float>> {
-                emit(Success(COMPLETED))
-            }
-        }
-    }.distinctUntilChanged()
 
     fun selectMeteorite(meteorite: MeteoriteItemView?) {
         stateHandle[METEORITE] = meteorite
@@ -110,12 +97,6 @@ class MeteoriteListViewModel(
 
     fun clearSelectedMeteorite() {
         selectMeteorite(null)
-    }
-
-    sealed class UIStatus {
-        object ShowContent : UIStatus()
-        object NoContent : UIStatus()
-        object Loading : UIStatus()
     }
 
     companion object {

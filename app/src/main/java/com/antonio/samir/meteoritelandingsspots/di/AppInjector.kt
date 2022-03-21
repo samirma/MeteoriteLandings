@@ -128,13 +128,12 @@ val viewModelModule = module {
     viewModel {
         MeteoriteListViewModel(
             stateHandle = get(),
+            startAddressRecover = get(),
+            statusAddressRecover = get(),
             fetchMeteoriteList = get(),
             gpsTracker = get(),
-            addressService = get(),
             dispatchers = get(),
-            getMeteorites = get(),
-            startAddressRecover = get(),
-            statusAddressRecover = get()
+            getMeteorites = get()
         )
     }
 }
@@ -143,11 +142,11 @@ val viewModelModule = module {
 @FlowPreview
 val appModules =
     listOf(
-    viewModelModule,
-    useCaseModule,
-    mappersModule,
-    localRepositoryModule,
-    networkModule,
-    databaseModule,
-    businessModule
-)
+        viewModelModule,
+        useCaseModule,
+        mappersModule,
+        localRepositoryModule,
+        networkModule,
+        databaseModule,
+        businessModule
+    )
