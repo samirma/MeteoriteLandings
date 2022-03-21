@@ -16,14 +16,16 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.R
 data class ExtendedColors(
     val textPrimary: Color,
     val textSecondary: Color,
-    val highlight: Color
+    val highlight: Color,
+    val header: Color,
 )
 
 val LocalExtendedColors = staticCompositionLocalOf {
     ExtendedColors(
         textPrimary = Color.Unspecified,
         textSecondary = Color.Unspecified,
-        highlight = Color.Unspecified
+        highlight = Color.Unspecified,
+        header = Color.Unspecified
     )
 }
 
@@ -50,12 +52,14 @@ fun getExtendedColorsTheme(darkTheme: Boolean): ExtendedColors = if (darkTheme) 
         textPrimary = colorResource(R.color.textPrimaryDark),
         textSecondary = colorResource(R.color.textSecondaryDark),
         highlight = colorResource(R.color.highlightDark),
+        header = colorResource(R.color.headerDark),
     )
 } else {
     ExtendedColors(
         textPrimary = colorResource(R.color.textPrimary),
         textSecondary = colorResource(R.color.textSecondary),
         highlight = colorResource(R.color.highlight),
+        header = colorResource(R.color.header),
     )
 }
 
@@ -67,7 +71,7 @@ private fun getColorTheme(darkTheme: Boolean) = if (darkTheme) {
         primaryVariant = colorResource(R.color.colorPrimaryDark),
         secondary = colorResource(R.color.colorPrimaryDark),
         background = colorResource(R.color.backgroundDark),
-        surface = colorResource(R.color.surfaceDark),
+        surface = colorResource(R.color.backgroundDark),
     )
 } else {
     lightColors(
@@ -75,7 +79,7 @@ private fun getColorTheme(darkTheme: Boolean) = if (darkTheme) {
         primaryVariant = colorResource(R.color.colorPrimary),
         secondary = colorResource(R.color.colorPrimary),
         background = colorResource(R.color.background),
-        surface = colorResource(R.color.surface),
+        surface = colorResource(R.color.background),
     )
 }
 

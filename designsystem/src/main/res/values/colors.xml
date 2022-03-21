@@ -7,8 +7,8 @@
     <color name="background">#F9F9F9</color>
     <color name="backgroundDark">#212326</color>
 
-    <color name="surface">#FFFFFF</color>
-    <color name="surfaceDark">#2F353D</color>
+    <color name="header">#FFFFFF</color>
+    <color name="headerDark">#2F353D</color>
 
     <color name="textPrimary">#000000</color>
     <color name="textPrimaryDark">#FFFFFF</color>

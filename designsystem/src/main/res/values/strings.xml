@@ -1,3 +1,4 @@
-<resources>
-    <string name="title_activity_compose_main">ComposeMainActivity</string>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="en">
+    <string name="message_titile" translatable="false">Oops...</string>
 </resources>
