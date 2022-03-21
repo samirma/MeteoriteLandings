@@ -52,7 +52,7 @@ class MeteoriteListViewModelTest {
             gpsTracker = mockGPSTracker,
             addressService = addressService,
             dispatchers = coroutinesTestRule.testDispatcherProvider,
-            getMeteorites = getMeteorites
+            getMeteorites = getMeteorites,
         )
 
         viewModel.getContentStatus().observeForever(mockObserverContentStatus)

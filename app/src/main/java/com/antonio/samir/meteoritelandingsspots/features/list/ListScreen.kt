@@ -13,7 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,6 +23,7 @@ import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.antonio.samir.meteoritelandingsspots.R
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.ToolbarActions
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteItemView
@@ -174,49 +174,6 @@ fun Title(scrollOffset: Float) {
 @Composable
 fun TitlePreview() {
     Title(2f)
-}
-
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun ToolbarActions(modifier: Modifier) {
-    Row(
-        modifier = modifier
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_search),
-            contentDescription = "",
-            modifier = Modifier
-                .align(CenterVertically)
-                .height(24.dp)
-                .width(24.dp),
-            colorFilter = ColorFilter.tint(ExtendedTheme.colors.highlight)
-        )
-        Image(
-            painter = painterResource(id = R.drawable.ic_dark),
-            contentDescription = "",
-            modifier = Modifier
-                .align(CenterVertically)
-                .height(50.dp)
-                .width(50.dp)
-                .padding(start = 26.dp),
-            colorFilter = ColorFilter.tint(ExtendedTheme.colors.highlight)
-        )
-
-    }
-}
-
-@Preview("ToolbarActions")
-@Composable
-fun ToolbarActionsPreview() {
-    MeteoriteLandingsTheme(darkTheme = false) {
-        ToolbarActions(
-            Modifier
-                .padding(
-                    horizontal = 80.dp
-                )
-        )
-    }
 }
 
 @Composable
