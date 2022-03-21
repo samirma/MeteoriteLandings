@@ -8,7 +8,7 @@ import androidx.lifecycle.*
 import androidx.paging.PagingData
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf.Success
-import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel.ContentStatus.Loading
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel.UIStatus.Loading
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.FetchMeteoriteList
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StartAddressRecover
@@ -18,7 +18,10 @@ import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.launch
 
 
@@ -42,7 +45,7 @@ class MeteoriteListViewModel(
 
     val selectedMeteorite = meteorite.asLiveData()
 
-    private val contentStatus = MutableLiveData<ContentStatus>(Loading)
+    private val contentStatus = MutableLiveData<UIStatus>(Loading)
 
     fun fetchMeteoriteList() = fetchMeteoriteList.execute(Unit).asLiveData()
 
@@ -69,7 +72,7 @@ class MeteoriteListViewModel(
         }
     }
 
-    fun getContentStatus(): LiveData<ContentStatus> {
+    fun getContentStatus(): LiveData<UIStatus> {
         return contentStatus.distinctUntilChanged().map { status ->
             val shouldResumeAddressService = when (status) {
                 Loading -> false
@@ -109,10 +112,10 @@ class MeteoriteListViewModel(
         selectMeteorite(null)
     }
 
-    sealed class ContentStatus {
-        object ShowContent : ContentStatus()
-        object NoContent : ContentStatus()
-        object Loading : ContentStatus()
+    sealed class UIStatus {
+        object ShowContent : UIStatus()
+        object NoContent : UIStatus()
+        object Loading : UIStatus()
     }
 
     companion object {
