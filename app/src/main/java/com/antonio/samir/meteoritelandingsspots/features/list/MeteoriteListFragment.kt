@@ -12,6 +12,8 @@ import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.antonio.samir.meteoritelandingsspots.R
@@ -44,19 +46,18 @@ class MeteoriteListFragment : Fragment() {
 
         (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
 
-        updateList()
+        binding.listScreen?.setContent {
+
+            val uiState by viewModel.uiState.collectAsState()
+
+            ListScreen(uiState = uiState) {
+                viewModel.selectMeteorite(it)
+            }
+        }
 
         return binding.root
     }
 
-
-    private fun updateList() {
-        binding.listScreen?.setContent {
-            ListScreen(meteorites = viewModel.searchedLocation) {
-                viewModel.selectMeteorite(it)
-            }
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -166,7 +167,6 @@ class MeteoriteListFragment : Fragment() {
 
                     private fun loadMeteorites(query: String) {
                         viewModel.searchLocation(query)
-                        updateList()
                     }
 
                 })
