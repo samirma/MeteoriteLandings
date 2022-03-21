@@ -4,22 +4,27 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.antonio.samir.meteoritelandingsspots.R
@@ -148,7 +153,7 @@ fun Title(scrollOffset: Float) {
         modifier = Modifier
             .height(imageSize)
             .fillMaxWidth()
-            .background(MaterialTheme.colors.surface),
+            .background(ExtendedTheme.colors.header),
     ) {
         Text(
             text = "Search for your meteorite",
@@ -190,28 +195,73 @@ fun ListScreen(
         1 - (scrollState.firstVisibleItemScrollOffset / 600f + scrollState.firstVisibleItemIndex)
     )
     MeteoriteLandingsTheme {
-        Column(Modifier.fillMaxSize()) {
-            Title(scrollOffset)
-            LazyColumn(
-                state = scrollState,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colors.background)
-            ) {
-
-                item {
-                    Text(text = "First item")
+        Surface(
+            modifier = Modifier.background(MaterialTheme.colors.background)
+        ) {
+            Column(Modifier.fillMaxSize()) {
+                Title(scrollOffset)
+                if (uiState.isLoading) {
+                    Loading()
+                } else if (uiState.message.isNullOrBlank()) {
+                    MeteoriteList(scrollState, items, onItemClick)
+                } else {
+                    Message(uiState.message)
                 }
-
-                items(items) { item ->
-                    item?.let { MeteoriteCell(it, onItemClick) }
-                }
-
-                item {
-                    Text(text = "First item")
-                }
-
             }
+        }
+    }
+}
+
+@Composable
+private fun Message(message: String) {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Text(
+            text = stringResource(id = R.string.message_titile),
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = message,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+
+@Composable
+private fun Loading() {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Color.Blue)) {
+        Text("This text is drawn first", modifier = Modifier.align(Alignment.TopCenter))
+    }
+}
+
+@Composable
+private fun MeteoriteList(
+    scrollState: LazyListState,
+    items: LazyPagingItems<MeteoriteItemView>,
+    onItemClick: (itemView: MeteoriteItemView) -> Unit
+) {
+    LazyColumn(
+        state = scrollState,
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.background)
+    ) {
+
+        item {
+            Text(text = "First item")
+        }
+
+        items(items) { item ->
+            item?.let { MeteoriteCell(it, onItemClick) }
+        }
+
+        item {
+            Text(text = "First item")
         }
     }
 }
@@ -231,7 +281,56 @@ fun ListScreenPreview() {
 
     ListScreen(
         uiState = UiState(
+            isLoading = false,
+            addressStatus = flowOf(ResultOf.Success(100f)),
+            fetchMeteoriteList = flowOf(ResultOf.Success(Unit)),
+            meteorites = flowOf(PagingData.from(items))
+        )
+    ) {}
+
+}
+
+@Preview("Meteorite list loading")
+@Composable
+fun ListScreenLoadingPreview() {
+    val items = (1..10).map {
+        MeteoriteItemView(
+            id = "$it",
+            name = "name $it",
+            yearString = "yearString $it",
+            address = "address $it",
+            distance = "distance $it",
+        )
+    }
+
+    ListScreen(
+        uiState = UiState(
             isLoading = true,
+            addressStatus = flowOf(ResultOf.Success(100f)),
+            fetchMeteoriteList = flowOf(ResultOf.Success(Unit)),
+            meteorites = flowOf(PagingData.from(items))
+        )
+    ) {}
+
+}
+
+@Preview("Meteorite list message")
+@Composable
+fun ListScreenMessagePreview() {
+    val items = (1..10).map {
+        MeteoriteItemView(
+            id = "$it",
+            name = "name $it",
+            yearString = "yearString $it",
+            address = "address $it",
+            distance = "distance $it",
+        )
+    }
+
+    ListScreen(
+        uiState = UiState(
+            isLoading = false,
+            message = "Message",
             addressStatus = flowOf(ResultOf.Success(100f)),
             fetchMeteoriteList = flowOf(ResultOf.Success(Unit)),
             meteorites = flowOf(PagingData.from(items))
