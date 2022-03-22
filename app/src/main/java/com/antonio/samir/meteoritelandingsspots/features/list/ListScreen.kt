@@ -142,7 +142,6 @@ private fun Loading() {
     Box(
         Modifier
             .fillMaxSize()
-            .background(Color.Blue)
     ) {
         Text("Loading", modifier = Modifier.align(Alignment.TopCenter))
     }
