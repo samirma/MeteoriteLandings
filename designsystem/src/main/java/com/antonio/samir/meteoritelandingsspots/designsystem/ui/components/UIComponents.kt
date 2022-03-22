@@ -20,7 +20,7 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteL
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ToolbarActions(modifier: Modifier, onDarkModeToggleClick: () -> Unit) {
+fun ToolbarButtons(modifier: Modifier, onDarkModeToggleClick: () -> Unit) {
     Row(
         modifier = modifier
     ) {
@@ -45,8 +45,6 @@ fun ToolbarActions(modifier: Modifier, onDarkModeToggleClick: () -> Unit) {
             contentDescription = "",
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .height(50.dp)
-                .width(50.dp)
                 .padding(start = 26.dp)
                 .clickable {
                     onDarkModeToggleClick()
@@ -65,7 +63,7 @@ fun ToolbarActionsPreview() {
 
     MeteoriteLandingsTheme(darkTheme = darkTheme) {
         Surface(Modifier.background(MaterialTheme.colors.background)) {
-            ToolbarActions(
+            ToolbarButtons(
                 Modifier
             ) { darkTheme = !darkTheme }
         }
