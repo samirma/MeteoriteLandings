@@ -27,6 +27,7 @@ class GetMeteorites(
         Log.i(TAG, "Searching $input")
         var location: Location? = null
         return gpsTracker.location.flatMapConcat {
+            Log.i(TAG, "Location $it")
             location = it
             Pager(
                 PagingConfig(pageSize = PAGE_SIZE)
@@ -53,7 +54,7 @@ class GetMeteorites(
 
     companion object {
         private val TAG = GetMeteorites::class.java.simpleName
-        const val PAGE_SIZE = 300
+        const val PAGE_SIZE = 20
         const val LIMIT = 1000L
     }
 

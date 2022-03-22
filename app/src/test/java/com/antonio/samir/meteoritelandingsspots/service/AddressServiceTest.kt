@@ -5,7 +5,7 @@ import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
-import com.antonio.samir.meteoritelandingsspots.service.address.AddressService
+import com.antonio.samir.meteoritelandingsspots.service.address.AddressServiceImpl
 import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
@@ -32,13 +32,17 @@ class AddressServiceTest {
     private val mockGeoLocationUtil: GeoLocationUtilInterface = mock()
     private val address: Address = mock()
 
-    private lateinit var addressService: AddressService
+    private lateinit var addressService: AddressServiceImpl
 
 
     @Before
     fun setUp() {
 
-        addressService = AddressService(mockLocalRepository, mockGeoLocationUtil, coroutinesTestRule.testDispatcherProvider)
+        addressService = AddressServiceImpl(
+            mockLocalRepository,
+            mockGeoLocationUtil,
+            coroutinesTestRule.testDispatcherProvider
+        )
 
     }
 
@@ -52,13 +56,13 @@ class AddressServiceTest {
 
         val meteorites = listOf(meteorite)
         whenever(mockLocalRepository.meteoritesWithOutAddress())
-                .thenReturn(flow {
-                    emit(meteorites)
-                    emit(emptyList())
-                })
+            .thenReturn(flow {
+                emit(meteorites)
+                emit(emptyList())
+            })
 
         whenever(mockLocalRepository.getMeteoritesWithoutAddressCount()).thenReturn(meteorites.size)
-        whenever(mockLocalRepository.getMeteoritesCount()).thenReturn(meteorites.size*2)
+        whenever(mockLocalRepository.getMeteoritesCount()).thenReturn(meteorites.size * 2)
         whenever(mockLocalRepository.getMeteoritesWithoutAddressCount()).thenReturn(0)
 
 
@@ -88,10 +92,10 @@ class AddressServiceTest {
 
         val meteorites = listOf(meteorite)
         whenever(mockLocalRepository.meteoritesWithOutAddress())
-                .thenReturn(flow {
-                    emit(meteorites)
-                    emit(emptyList())
-                })
+            .thenReturn(flow {
+                emit(meteorites)
+                emit(emptyList())
+            })
 
         whenever(address.locality).thenReturn("city")
         whenever(address.adminArea).thenReturn("adminArea")

@@ -4,11 +4,11 @@ import android.content.Context
 import android.location.Location
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.mapper.MapperBase
+import com.antonio.samir.meteoritelandingsspots.common.ui.extension.convertToNumberFormat
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteView
 import com.antonio.samir.meteoritelandingsspots.features.getLocationText
 import com.antonio.samir.meteoritelandingsspots.features.yearString
-import com.antonio.samir.meteoritelandingsspots.common.ui.extension.convertToNumberFormat
 
 class MeteoriteMapper : MapperBase<MeteoriteMapper.Input, MeteoriteView>() {
 
@@ -17,7 +17,6 @@ class MeteoriteMapper : MapperBase<MeteoriteMapper.Input, MeteoriteView>() {
         name = input.meteorite.name,
         yearString = input.meteorite.yearString,
         address = input.meteorite.getLocationText(
-            location = input.location,
             noAddress = input.context
                 .getString(R.string.without_address_placeholder)
         ),

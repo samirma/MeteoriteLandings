@@ -5,6 +5,7 @@ import android.location.Location
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.mapper.MapperBase
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.features.getDistanceFrom
 import com.antonio.samir.meteoritelandingsspots.features.getLocationText
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.features.yearString
@@ -21,11 +22,12 @@ class MeteoriteViewMapper(val context: Context) :
             name = meteorite.name ?: "---",
             yearString = meteorite.yearString ?: "---",
             address = meteorite.getLocationText(
-                location = input.location,
                 noAddress = context
                     .getString(R.string.without_address_placeholder)
             ),
-            distance = "800m",
+            distance = meteorite.getDistanceFrom(
+                input.location
+            ) ?: ""
         )
     }
 

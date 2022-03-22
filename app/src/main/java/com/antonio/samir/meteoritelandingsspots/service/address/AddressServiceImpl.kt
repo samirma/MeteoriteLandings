@@ -1,6 +1,5 @@
 package com.antonio.samir.meteoritelandingsspots.service.address
 
-import android.util.Log
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
@@ -8,32 +7,39 @@ import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import org.apache.commons.lang3.StringUtils
 
 @ExperimentalCoroutinesApi
-class AddressService(
-        private val meteoriteLocalRepository: MeteoriteLocalRepository,
-        private val geoLocationUtil: GeoLocationUtilInterface,
-        private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
+class AddressServiceImpl(
+    private val meteoriteLocalRepository: MeteoriteLocalRepository,
+    private val geoLocationUtil: GeoLocationUtilInterface,
+    private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
 ) : AddressServiceInterface {
 
-    private val TAG = AddressService::class.java.simpleName
+    private val TAG = AddressServiceImpl::class.java.simpleName
 
-    override fun recoveryAddress(): Flow<ResultOf<Float>> = meteoriteLocalRepository.meteoritesWithOutAddress()
+    override fun recoveryAddress(): Flow<ResultOf<Float>> =
+        meteoriteLocalRepository.meteoritesWithOutAddress()
             .onEach { recoverAddress(it) }
             .flowOn(dispatchers.default())
             .map {
                 getReturn(it)
             }
+            .catch { throwable ->
+                val exception = if (throwable is Exception) {
+                    throwable
+                } else {
+                    Exception("Fail to load addresses")
+                }
+                emit(ResultOf.Error(exception))
+            }
 
     private suspend fun getReturn(it: List<Meteorite>): ResultOf<Float> {
         return if (!it.isNullOrEmpty()) {
-            val meteoritesWithoutAddressCount = meteoriteLocalRepository.getMeteoritesWithoutAddressCount()
+            val meteoritesWithoutAddressCount =
+                meteoriteLocalRepository.getMeteoritesWithoutAddressCount()
             val meteoritesCount = meteoriteLocalRepository.getMeteoritesCount()
             val progress = (1 - (meteoritesWithoutAddressCount.toFloat() / meteoritesCount)) * 100
             ResultOf.InProgress(progress)
@@ -44,13 +50,8 @@ class AddressService(
 
     private suspend fun recoverAddress(list: List<Meteorite>) = withContext(dispatchers.default()) {
         list.onEach { meteorite ->
-            try {
-                meteorite.address = getAddressFromMeteorite(meteorite)
-            } catch (e: Exception) {
-                Log.e(TAG, "Fail to retrieve address", e)
-            }
+            meteorite.address = getAddressFromMeteorite(meteorite)
         }
-
         meteoriteLocalRepository.updateAll(list)
     }
 
