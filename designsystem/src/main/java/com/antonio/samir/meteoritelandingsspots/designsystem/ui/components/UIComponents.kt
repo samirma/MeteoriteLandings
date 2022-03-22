@@ -3,10 +3,9 @@ package com.antonio.samir.meteoritelandingsspots.designsystem.ui.components
 import androidx.compose.animation.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,7 +21,7 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteL
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ToolbarActions(modifier: Modifier) {
+fun ToolbarActions(modifier: Modifier, onDarkModeToggleClick: () -> Unit) {
     Row(
         modifier = modifier
     ) {
@@ -35,14 +34,24 @@ fun ToolbarActions(modifier: Modifier) {
                 .width(24.dp),
             colorFilter = ColorFilter.tint(ExtendedTheme.colors.highlight)
         )
+
+        val darkModeIcon = if (MaterialTheme.colors.isLight) {
+            R.drawable.ic_light
+        } else {
+            R.drawable.ic_dark
+        }
+
         Image(
-            painter = painterResource(id = R.drawable.ic_dark),
+            painter = painterResource(id = darkModeIcon),
             contentDescription = "",
             modifier = Modifier
                 .align(Alignment.CenterVertically)
                 .height(50.dp)
                 .width(50.dp)
-                .padding(start = 26.dp),
+                .padding(start = 26.dp)
+                .clickable {
+                    onDarkModeToggleClick()
+                },
             colorFilter = ColorFilter.tint(ExtendedTheme.colors.highlight)
         )
 
@@ -52,13 +61,15 @@ fun ToolbarActions(modifier: Modifier) {
 @Preview("ToolbarActions")
 @Composable
 fun ToolbarActionsPreview() {
-    MeteoriteLandingsTheme(darkTheme = false) {
-        ToolbarActions(
-            Modifier
-                .padding(
-                    horizontal = 80.dp
-                )
-        )
+
+    var darkTheme by remember { mutableStateOf(true) }
+
+    MeteoriteLandingsTheme(darkTheme = darkTheme) {
+        Surface(Modifier.background(MaterialTheme.colors.background)) {
+            ToolbarActions(
+                Modifier
+            ) { darkTheme = !darkTheme }
+        }
     }
 }
 
