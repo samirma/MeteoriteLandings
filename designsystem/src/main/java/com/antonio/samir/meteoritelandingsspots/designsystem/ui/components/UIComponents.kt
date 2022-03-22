@@ -1,6 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.designsystem.ui.components
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,7 +9,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -80,16 +79,9 @@ fun AddressProgress(progress: Float, modifier: Modifier) {
     val isVisible = progress > 0 && progress < 100
     AnimatedVisibility(
         visible = isVisible,
-        enter = expandHorizontally(
-            expandFrom = Alignment.End
-        ) + fadeIn(),
-        exit = shrinkHorizontally(
-            shrinkTowards = Alignment.End
-        ) + fadeOut()
+        modifier = modifier
     ) {
-        Row(
-            modifier = modifier.background(Color.Magenta)
-        ) {
+        Row {
             Text(text = "$progress loading")
         }
     }
