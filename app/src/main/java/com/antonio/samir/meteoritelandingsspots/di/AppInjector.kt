@@ -23,7 +23,7 @@ import com.antonio.samir.meteoritelandingsspots.features.list.userCases.FetchMet
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StartAddressRecover
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StatusAddressRecover
-import com.antonio.samir.meteoritelandingsspots.service.address.AddressService
+import com.antonio.samir.meteoritelandingsspots.service.address.AddressServiceImpl
 import com.antonio.samir.meteoritelandingsspots.service.address.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.service.monetization.MonetizationImpl
 import com.antonio.samir.meteoritelandingsspots.service.monetization.MonetizationInterface
@@ -101,7 +101,7 @@ val businessModule = module {
     single { Geocoder(get()) }
     single<GeoLocationUtilInterface> { GeoLocationUtil(get()) }
     single<GPSTrackerInterface> { GPSTracker(context = get()) }
-    single<AddressServiceInterface> { AddressService(get(), get()) }
+    single<AddressServiceInterface> { AddressServiceImpl(get(), get()) }
     single<MeteoriteRepository> { MeteoriteRepositoryImpl(get(), get(), get()) }
     single<MonetizationInterface> {
         val context = get<Context>()

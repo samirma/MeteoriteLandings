@@ -3,8 +3,8 @@ package com.antonio.samir.meteoritelandingsspots.features
 import android.annotation.SuppressLint
 import android.location.Location
 import android.util.Log
-import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.common.ui.extension.convertToNumberFormat
+import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -36,7 +36,7 @@ private fun formatDistance(distance: Float) = if (distance > 0) {
         "m"
     }
 
-    "${distance.convertToNumberFormat(distance)} $distanceUnit away"
+    "${distance.convertToNumberFormat(distance)}$distanceUnit"
 } else {
     null
 }
@@ -73,26 +73,23 @@ fun Meteorite.getLocation(): Location? = try {
     null
 }
 
-fun Meteorite.finalAddress(location: Location?, currentAddress :String? = this.address): String {
+fun Meteorite.finalAddress(currentAddress: String? = this.address): String {
     val list = mutableListOf<String>()
 
     if (!currentAddress.isNullOrBlank()) {
         list += currentAddress
     }
 
-    val distance = getDistanceFrom(location)
-    if (!distance.isNullOrBlank()) {
-        list += distance
-    }
-
     return list.joinToString(separator = " - ")
 }
 
-fun Meteorite.getLocationText(location: Location?, noAddress: String): String =
-        finalAddress(location, if (!this.address.isNullOrEmpty()) {
+fun Meteorite.getLocationText(noAddress: String): String =
+    finalAddress(
+        if (!this.address.isNullOrEmpty()) {
             this.address
         } else {
             noAddress
-        })
+        }
+    )
 
 private const val SHOW_IN_METERS = 999

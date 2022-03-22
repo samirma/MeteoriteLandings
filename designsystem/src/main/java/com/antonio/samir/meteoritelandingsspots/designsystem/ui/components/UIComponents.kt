@@ -92,7 +92,6 @@ fun AddressProgress(progress: Float, modifier: Modifier) {
 @Composable
 fun ProgressPreview() {
 
-
     MeteoriteLandingsTheme(darkTheme = false) {
 
         var state by remember { mutableStateOf(0.0f) }
