@@ -19,7 +19,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.asLiveData
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -53,7 +52,7 @@ fun Title(scrollOffset: Float) {
                     horizontal = 80.dp
                 ),
             color = ExtendedTheme.colors.textPrimary,
-            fontSize = 28.sp
+            style = MaterialTheme.typography.h4
         )
         ToolbarActions(
             modifier = Modifier
@@ -127,11 +126,13 @@ private fun Message(@StringRes message: Int) {
     ) {
         Text(
             text = stringResource(id = R.string.message_titile),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.h6
         )
         Text(
             text = stringResource(id = message),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.body1
         )
     }
 }
