@@ -38,12 +38,12 @@ val Typography = Typography(
         letterSpacing = 0.sp
     ),
     h6 = TextStyle(
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Normal,
         fontSize = 20.sp,
         letterSpacing = 0.sp
     ),
     subtitle1 = TextStyle(
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         letterSpacing = 0.15.sp
     ),
@@ -58,7 +58,7 @@ val Typography = Typography(
         letterSpacing = 0.5.sp
     ),
     body2 = TextStyle(
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         letterSpacing = 0.25.sp
     ),
@@ -73,7 +73,7 @@ val Typography = Typography(
         letterSpacing = 0.4.sp
     ),
     overline = TextStyle(
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         letterSpacing = 1.sp
     )

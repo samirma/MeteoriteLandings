@@ -58,12 +58,14 @@ fun MeteoriteCell(
                     Text(
                         color = ExtendedTheme.colors.textPrimary,
                         text = itemView.name ?: "",
-                        modifier = Modifier.wrapContentHeight(CenterVertically)
+                        modifier = Modifier.wrapContentHeight(CenterVertically),
+                        style = MaterialTheme.typography.subtitle1
                     )
                     Text(
                         color = ExtendedTheme.colors.textSecondary,
                         text = itemView.address ?: "",
-                        maxLines = 2
+                        maxLines = 2,
+                        style = MaterialTheme.typography.body2
                     )
                 }
                 Text(
@@ -74,6 +76,7 @@ fun MeteoriteCell(
                         .weight(1f)
                         .padding(end = 4.dp)
                         .wrapContentWidth(Alignment.End),
+                    style = MaterialTheme.typography.overline
                 )
             }
             Image(
