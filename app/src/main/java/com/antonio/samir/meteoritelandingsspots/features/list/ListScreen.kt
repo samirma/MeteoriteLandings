@@ -13,7 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,7 +34,7 @@ import com.antonio.samir.meteoritelandingsspots.features.list.UiState
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
-fun Title(scrollOffset: Float) {
+fun Title(scrollOffset: Float, onDarkModeToggleClick: () -> Unit) {
     val imageSize by animateDpAsState(targetValue = max(300.dp, 128.dp * scrollOffset))
     Box(
         modifier = Modifier
@@ -59,7 +58,8 @@ fun Title(scrollOffset: Float) {
                 .align(Alignment.BottomEnd)
                 .padding(
                     horizontal = 16.dp
-                )
+                ),
+            onDarkModeToggleClick = onDarkModeToggleClick
         )
     }
 }
@@ -67,7 +67,7 @@ fun Title(scrollOffset: Float) {
 @Preview("Title")
 @Composable
 fun TitlePreview() {
-    Title(2f)
+    Title(2f, {})
 }
 
 @Composable
@@ -82,16 +82,14 @@ fun ListScreen(
         1f,
         1 - (scrollState.firstVisibleItemScrollOffset / 600f + scrollState.firstVisibleItemIndex)
     )
-    MeteoriteLandingsTheme {
+    MeteoriteLandingsTheme(darkTheme = uiState.isDark) {
         Surface(
             modifier = Modifier.background(MaterialTheme.colors.background)
         ) {
             Column(Modifier.fillMaxSize()) {
-                Title(scrollOffset)
+                Title(scrollOffset, uiState.onDarkModeToggleClick)
                 Box(
-                    Modifier
-                        .fillMaxSize()
-                        .background(Color.Green)
+                    Modifier.fillMaxSize()
                 ) {
                     if (uiState.isLoading) {
                         Loading()
@@ -188,7 +186,7 @@ fun ListScreenPreview() {
             isLoading = false,
             addressStatus = flowOf(ResultOf.Success(100f)),
             meteorites = flowOf(PagingData.from(items))
-        )
+        ) { }
     ) {}
 
 }
@@ -211,7 +209,7 @@ fun ListScreenLoadingPreview() {
             isLoading = true,
             addressStatus = flowOf(ResultOf.Success(100f)),
             meteorites = flowOf(PagingData.from(items))
-        )
+        ) { }
     ) {}
 
 }
@@ -235,7 +233,7 @@ fun ListScreenMessagePreview() {
             message = null,
             addressStatus = flowOf(ResultOf.Success(100f)),
             meteorites = flowOf(PagingData.from(items))
-        )
+        ) { }
     ) {}
 
 }

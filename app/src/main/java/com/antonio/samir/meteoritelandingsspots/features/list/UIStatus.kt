@@ -10,5 +10,7 @@ data class UiState(
     @StringRes val message: Int? = null,
     val searchInput: String? = null,
     val addressStatus: Flow<ResultOf<Float>>,
-    val meteorites: Flow<PagingData<MeteoriteItemView>>
+    val meteorites: Flow<PagingData<MeteoriteItemView>>,
+    val isDark: Boolean = true,
+    val onDarkModeToggleClick: () -> Unit
 )

@@ -36,6 +36,8 @@ class MeteoriteListViewModel(
 
     private val meteorite = MutableStateFlow<MeteoriteItemView?>(stateHandle[METEORITE])
 
+    private var isDarkMode = true
+
     val selectedMeteorite = meteorite.asLiveData()
 
     private val _meteorites =
@@ -47,8 +49,15 @@ class MeteoriteListViewModel(
             isLoading = true,
             addressStatus = recoverAddressStatus(),
             meteorites = meteorites
-        )
+        ) {
+            onDarkModeToggleClick()
+        }
     )
+
+    private fun onDarkModeToggleClick() {
+        isDarkMode = !isDarkMode
+        viewModelState.update { it.copy(isDark = isDarkMode) }
+    }
 
     // UI state exposed to the UI
     val uiState = viewModelState.stateIn(
