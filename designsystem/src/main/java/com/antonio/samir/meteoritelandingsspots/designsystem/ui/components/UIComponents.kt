@@ -1,14 +1,17 @@
 package com.antonio.samir.meteoritelandingsspots.designsystem.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -63,39 +66,21 @@ fun ToolbarActionsPreview() {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Progress(modifier: Modifier) {
+fun AddressProgress(progress: Float, modifier: Modifier) {
     Row(
-        modifier = modifier
+        modifier = modifier.background(Color.Magenta)
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_search),
-            contentDescription = "",
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .height(24.dp)
-                .width(24.dp),
-            colorFilter = ColorFilter.tint(ExtendedTheme.colors.highlight)
-        )
-        Image(
-            painter = painterResource(id = R.drawable.ic_dark),
-            contentDescription = "",
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .height(50.dp)
-                .width(50.dp)
-                .padding(start = 26.dp),
-            colorFilter = ColorFilter.tint(ExtendedTheme.colors.highlight)
-        )
-
+        Text(text = "$progress loading")
     }
 }
 
-@Preview("ToolbarActions")
+@Preview("ProgressPreview")
 @Composable
 fun ProgressPreview() {
     MeteoriteLandingsTheme(darkTheme = false) {
-        ToolbarActions(
-            Modifier
+        AddressProgress(
+            progress = 40f,
+            modifier = Modifier
                 .padding(
                     horizontal = 80.dp
                 )

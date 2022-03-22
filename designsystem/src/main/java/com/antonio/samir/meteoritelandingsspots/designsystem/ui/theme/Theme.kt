@@ -18,6 +18,7 @@ data class ExtendedColors(
     val textSecondary: Color,
     val highlight: Color,
     val header: Color,
+    val hover: Color,
 )
 
 val LocalExtendedColors = staticCompositionLocalOf {
@@ -25,7 +26,8 @@ val LocalExtendedColors = staticCompositionLocalOf {
         textPrimary = Color.Unspecified,
         textSecondary = Color.Unspecified,
         highlight = Color.Unspecified,
-        header = Color.Unspecified
+        header = Color.Unspecified,
+        hover = Color.Unspecified,
     )
 }
 
@@ -53,6 +55,7 @@ fun getExtendedColorsTheme(darkTheme: Boolean): ExtendedColors = if (darkTheme) 
         textSecondary = colorResource(R.color.textSecondaryDark),
         highlight = colorResource(R.color.highlightDark),
         header = colorResource(R.color.headerDark),
+        hover = colorResource(R.color.hoverDark),
     )
 } else {
     ExtendedColors(
@@ -60,6 +63,7 @@ fun getExtendedColorsTheme(darkTheme: Boolean): ExtendedColors = if (darkTheme) 
         textSecondary = colorResource(R.color.textSecondary),
         highlight = colorResource(R.color.highlight),
         header = colorResource(R.color.header),
+        hover = colorResource(R.color.hover),
     )
 }
 
