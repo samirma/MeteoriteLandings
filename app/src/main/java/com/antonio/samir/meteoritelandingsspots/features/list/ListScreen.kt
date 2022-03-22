@@ -1,5 +1,4 @@
 import androidx.annotation.StringRes
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,15 +8,15 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.lifecycle.asLiveData
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -26,49 +25,88 @@ import androidx.paging.compose.items
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.AddressProgress
-import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.ToolbarActions
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.ToolbarButtons
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
+import com.antonio.samir.meteoritelandingsspots.features.list.HeaderState
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.features.list.UiState
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
-fun Title(scrollOffset: Float, onDarkModeToggleClick: () -> Unit) {
-    val imageSize by animateDpAsState(targetValue = max(300.dp, 128.dp * scrollOffset))
-    Box(
-        modifier = Modifier
-            .height(imageSize)
-            .fillMaxWidth()
-            .background(ExtendedTheme.colors.header),
+fun Header(headerState: HeaderState, onDarkModeToggleClick: () -> Unit) {
+
+    val isCollapsed = when (headerState) {
+        HeaderState.Collapsed -> true
+        else -> false
+    }
+
+    var headerModifier = Modifier
+        .fillMaxWidth()
+
+    if (!isCollapsed) {
+        headerModifier = headerModifier.height(400.dp)
+    }
+
+    Column(
+        modifier = headerModifier,
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(
-            text = "Search for your meteorite",
-            textAlign = TextAlign.Center,
+        if (!isCollapsed) {
+            Text(
+                text = stringResource(R.string.title_header),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .weight(weight = 1f, fill = true)
+                    .wrapContentSize(align = Alignment.Center)
+                    .padding(
+                        horizontal = 80.dp
+                    ),
+                color = ExtendedTheme.colors.textPrimary,
+                style = MaterialTheme.typography.h4
+            )
+        }
+        Row(
             modifier = Modifier
-                .align(Alignment.Center)
-                .padding(
-                    horizontal = 80.dp
-                ),
-            color = ExtendedTheme.colors.textPrimary,
-            style = MaterialTheme.typography.h4
-        )
-        ToolbarActions(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(
-                    horizontal = 16.dp
-                ),
-            onDarkModeToggleClick = onDarkModeToggleClick
-        )
+                .height(72.dp)
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
+            if (isCollapsed) {
+                Text(
+                    text = stringResource(R.string.title_header),
+                    textAlign = TextAlign.Start,
+                    color = ExtendedTheme.colors.textPrimary,
+                    style = MaterialTheme.typography.h6,
+                    modifier = Modifier.weight(weight = 1f, fill = true)
+                )
+            }
+            ToolbarButtons(
+                modifier = Modifier,
+                onDarkModeToggleClick = onDarkModeToggleClick
+            )
+        }
     }
 }
 
-@Preview("Title")
+@Preview("Header Collapsed")
 @Composable
-fun TitlePreview() {
-    Title(2f, {})
+fun HeaderPreview() {
+    MeteoriteLandingsTheme(darkTheme = true) {
+        Header(HeaderState.Collapsed) {}
+    }
 }
+
+
+@Preview("Header Expanded")
+@Composable
+fun HeaderExpandedPreview() {
+    MeteoriteLandingsTheme(darkTheme = false) {
+        Header(HeaderState.Expanded) {}
+    }
+}
+
 
 @Composable
 fun ListScreen(
@@ -78,16 +116,13 @@ fun ListScreen(
 
     val items = uiState.meteorites.collectAsLazyPagingItems()
     val scrollState = rememberLazyListState()
-    val scrollOffset: Float = Math.min(
-        1f,
-        1 - (scrollState.firstVisibleItemScrollOffset / 600f + scrollState.firstVisibleItemIndex)
-    )
+
     MeteoriteLandingsTheme(darkTheme = uiState.isDark) {
         Surface(
             modifier = Modifier.background(MaterialTheme.colors.background)
         ) {
             Column(Modifier.fillMaxSize()) {
-                Title(scrollOffset, uiState.onDarkModeToggleClick)
+                Header(uiState.headerState, uiState.onDarkModeToggleClick)
                 Box(
                     Modifier.fillMaxSize()
                 ) {
@@ -185,8 +220,10 @@ fun ListScreenPreview() {
         uiState = UiState(
             isLoading = false,
             addressStatus = flowOf(ResultOf.Success(100f)),
-            meteorites = flowOf(PagingData.from(items))
-        ) { }
+            meteorites = flowOf(PagingData.from(items)),
+            onDarkModeToggleClick = { },
+            headerState = HeaderState.Expanded
+        )
     ) {}
 
 }
@@ -208,8 +245,9 @@ fun ListScreenLoadingPreview() {
         uiState = UiState(
             isLoading = true,
             addressStatus = flowOf(ResultOf.Success(100f)),
-            meteorites = flowOf(PagingData.from(items))
-        ) { }
+            meteorites = flowOf(PagingData.from(items)),
+            onDarkModeToggleClick = { },
+        )
     ) {}
 
 }
@@ -232,8 +270,9 @@ fun ListScreenMessagePreview() {
             isLoading = false,
             message = null,
             addressStatus = flowOf(ResultOf.Success(100f)),
-            meteorites = flowOf(PagingData.from(items))
-        ) { }
+            meteorites = flowOf(PagingData.from(items)),
+            onDarkModeToggleClick = { },
+        )
     ) {}
 
 }

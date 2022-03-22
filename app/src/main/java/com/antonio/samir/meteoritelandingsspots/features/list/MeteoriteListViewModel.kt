@@ -48,10 +48,11 @@ class MeteoriteListViewModel(
         UiState(
             isLoading = true,
             addressStatus = recoverAddressStatus(),
-            meteorites = meteorites
-        ) {
-            onDarkModeToggleClick()
-        }
+            meteorites = meteorites,
+            onDarkModeToggleClick = {
+                onDarkModeToggleClick()
+            },
+        )
     )
 
     private fun onDarkModeToggleClick() {
