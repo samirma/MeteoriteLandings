@@ -2,8 +2,8 @@
     <string name="app_name">Meteorite Landings Spots</string>
     <string name="title_activity_main">@string/app_name</string>
 
-    <string name="no_network">Please check you network connection!</string>
-    <string name="general_error">Sorry, some kind of error has occurred</string>
+    <string name="no_network">"Current network is unavailable.\nPlease check if you have connected to a valid Wifi or mobile network. "</string>
+    <string name="general_error">Something unexpected happened.\nOur mobile app is unavailable.\nPlease check later back.</string>
 
     <string name="mass">Mass (g)</string>
     <string name="nametype">Name Type</string>

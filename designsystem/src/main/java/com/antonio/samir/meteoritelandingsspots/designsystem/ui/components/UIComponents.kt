@@ -1,14 +1,13 @@
 package com.antonio.samir.meteoritelandingsspots.designsystem.ui.components
 
+import androidx.compose.animation.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -67,24 +66,60 @@ fun ToolbarActionsPreview() {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AddressProgress(progress: Float, modifier: Modifier) {
-    Row(
-        modifier = modifier.background(Color.Magenta)
+    val isVisible = progress > 0 && progress < 100
+    AnimatedVisibility(
+        visible = isVisible,
+        enter = expandHorizontally(
+            expandFrom = Alignment.End
+        ) + fadeIn(),
+        exit = shrinkHorizontally(
+            shrinkTowards = Alignment.End
+        ) + fadeOut()
     ) {
-        Text(text = "$progress loading")
+        Row(
+            modifier = modifier.background(Color.Magenta)
+        ) {
+            Text(text = "$progress loading")
+        }
     }
+
 }
 
 @Preview("ProgressPreview")
 @Composable
 fun ProgressPreview() {
+
+
     MeteoriteLandingsTheme(darkTheme = false) {
-        AddressProgress(
-            progress = 40f,
+
+        var state by remember { mutableStateOf(0.0f) }
+
+        Column(
             modifier = Modifier
-                .padding(
-                    horizontal = 80.dp
-                )
-        )
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            AddressProgress(
+                progress = state,
+                modifier = Modifier
+            )
+            Button(
+                onClick = { state = 10.0f },
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(8.dp)
+            ) {
+                Text(text = "Show")
+            }
+            Button(
+                onClick = { state = 0.0f },
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(8.dp)
+            ) {
+                Text(text = "Hide")
+            }
+        }
     }
 }
 

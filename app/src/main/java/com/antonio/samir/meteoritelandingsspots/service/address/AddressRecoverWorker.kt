@@ -1,9 +1,11 @@
 package com.antonio.samir.meteoritelandingsspots.service.address
 
 import android.content.Context
-import androidx.work.*
+import androidx.work.CoroutineWorker
+import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.collect
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -22,10 +24,10 @@ class AddressRecoverWorker(
 
         addressService
             .recoveryAddress()
-            .onEach { result ->
+            .collect { result ->
                 when (result) {
                     is ResultOf.InProgress -> {
-                        setProgress(workDataOf("Progress" to result.data))
+                        setProgress(workDataOf(PROGRESS to result.data))
                     }
                     else -> {}
                 }

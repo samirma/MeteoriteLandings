@@ -10,13 +10,14 @@ import kotlinx.coroutines.flow.flow
 import java.util.*
 
 @FlowPreview
-class StartAddressRecover(val context : Context) : UserCaseBase<Unit, UUID>() {
+class StartAddressRecover(val context: Context) : UserCaseBase<Unit, UUID>() {
 
     override fun action(input: Unit) = flow {
         val request = OneTimeWorkRequest.from(AddressRecoverWorker::class.java)
         WorkManager.getInstance(context)
             .enqueue(request)
-        emit(request.id)
+        val uuid = request.id
+        emit(uuid)
     }
 
 

@@ -1,3 +1,4 @@
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,6 +10,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.asLiveData
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -93,20 +96,24 @@ fun ListScreen(
                 ) {
                     if (uiState.isLoading) {
                         Loading()
-                    } else if (uiState.message.isNullOrBlank()) {
+                    } else if (uiState.message == null) {
                         MeteoriteList(scrollState, items, onItemClick)
                     } else {
                         Message(uiState.message)
                     }
-                    AddressProgress(
-                        progress = 20f,
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .padding(
-                                end = 16.dp,
-                                bottom = 16.dp
-                            )
-                    )
+
+                    val addressProgress = uiState.addressStatus.asLiveData().observeAsState().value
+                    if (addressProgress != null) {
+                        if (addressProgress is ResultOf.InProgress && (addressProgress.data != null)) AddressProgress(
+                            progress = addressProgress.data,
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .padding(
+                                    end = 16.dp,
+                                    bottom = 16.dp
+                                )
+                        )
+                    }
                 }
             }
         }
@@ -114,7 +121,7 @@ fun ListScreen(
 }
 
 @Composable
-private fun Message(message: String) {
+private fun Message(@StringRes message: Int) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -123,7 +130,7 @@ private fun Message(message: String) {
             textAlign = TextAlign.Center
         )
         Text(
-            text = message,
+            text = stringResource(id = message),
             textAlign = TextAlign.Center
         )
     }
@@ -180,7 +187,6 @@ fun ListScreenPreview() {
         uiState = UiState(
             isLoading = false,
             addressStatus = flowOf(ResultOf.Success(100f)),
-            fetchMeteoriteList = flowOf(ResultOf.Success(Unit)),
             meteorites = flowOf(PagingData.from(items))
         )
     ) {}
@@ -204,7 +210,6 @@ fun ListScreenLoadingPreview() {
         uiState = UiState(
             isLoading = true,
             addressStatus = flowOf(ResultOf.Success(100f)),
-            fetchMeteoriteList = flowOf(ResultOf.Success(Unit)),
             meteorites = flowOf(PagingData.from(items))
         )
     ) {}
@@ -227,9 +232,8 @@ fun ListScreenMessagePreview() {
     ListScreen(
         uiState = UiState(
             isLoading = false,
-            message = "Message",
+            message = null,
             addressStatus = flowOf(ResultOf.Success(100f)),
-            fetchMeteoriteList = flowOf(ResultOf.Success(Unit)),
             meteorites = flowOf(PagingData.from(items))
         )
     ) {}
