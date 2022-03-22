@@ -1,11 +1,11 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
-import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
 import androidx.paging.PagingData
+import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.FetchMeteoriteList
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
@@ -38,7 +38,6 @@ class MeteoriteListViewModel(
 
     val selectedMeteorite = meteorite.asLiveData()
 
-
     private val _meteorites =
         MutableStateFlow<PagingData<MeteoriteItemView>>(PagingData.empty())
     val meteorites = _meteorites
@@ -47,7 +46,6 @@ class MeteoriteListViewModel(
         UiState(
             isLoading = true,
             addressStatus = recoverAddressStatus(),
-            fetchMeteoriteList = fetchMeteoriteList(),
             meteorites = meteorites
         )
     )
@@ -59,13 +57,35 @@ class MeteoriteListViewModel(
         initialValue = viewModelState.value
     )
 
-    private fun fetchMeteoriteList() = fetchMeteoriteList.execute(Unit)
+    init {
+        fetchMeteoriteList()
+    }
 
-    private fun recoverAddressStatus(): Flow<ResultOf<Float>> = startAddressRecover.execute(Unit)
-        .flatMapConcat(statusAddressRecover::execute)
+    private fun fetchMeteoriteList() {
 
-    @VisibleForTesting
-    val addressServiceControl = MutableLiveData(false)
+        viewModelScope.launch {
+            fetchMeteoriteList.execute(Unit).collect { resultOf ->
+                viewModelState.update {
+                    when (resultOf) {
+                        is ResultOf.Error -> it.copy(
+                            isLoading = false,
+                            message = R.string.general_error
+                        )
+                        is ResultOf.InProgress -> it.copy(isLoading = true, message = null)
+                        is ResultOf.Success -> it.copy(isLoading = false, message = null)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun recoverAddressStatus(): StateFlow<ResultOf<Float>> =
+        startAddressRecover.execute(Unit)
+            .flatMapConcat(statusAddressRecover::execute).stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Eagerly,
+                initialValue = ResultOf.InProgress(0.0f)
+            )
 
     private val _searchQuery: MutableState<String?> = mutableStateOf<String?>(null)
     val searchQuery: State<String?> = _searchQuery
@@ -101,7 +121,6 @@ class MeteoriteListViewModel(
 
     companion object {
         private val TAG = MeteoriteListViewModel::class.java.simpleName
-        const val COMPLETED = 100f
         const val METEORITE = "METEORITE"
     }
 
