@@ -1,5 +1,6 @@
 import androidx.annotation.StringRes
 import androidx.compose.animation.*
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,6 +11,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -137,21 +139,26 @@ fun ListScreen(
                 scrollState.firstVisibleItemIndex)
     )
 
+    val headerState = uiState.headerState
+
     onTopList(scrollOffset)
+
+    val weight: Float by animateFloatAsState(
+        targetValue = if (headerState.isCollapsed()) {
+            1f
+        } else {
+            7f
+        }
+    )
 
     MeteoriteLandingsTheme(darkTheme = uiState.isDark) {
         Surface(
             modifier = Modifier.background(MaterialTheme.colors.background)
         ) {
-            val headerState = uiState.headerState
             Column(Modifier.fillMaxSize()) {
                 Header(
                     headerState = headerState,
-                    modifier = if (headerState.isCollapsed()) {
-                        Modifier
-                    } else {
-                        Modifier.weight(7f)
-                    },
+                    modifier = Modifier.weight(weight),
                     onDarkModeToggleClick = uiState.onDarkModeToggleClick
                 )
                 Box(
