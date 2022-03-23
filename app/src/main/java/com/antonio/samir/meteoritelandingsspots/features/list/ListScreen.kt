@@ -84,14 +84,14 @@ fun Header(
             AnimatedVisibility(
                 visible = isCollapsed,
                 enter = fadeIn(),
-                exit = fadeOut()
+                exit = fadeOut(),
+                modifier = Modifier.weight(weight = 1f, fill = true)
             ) {
                 Text(
                     text = stringResource(R.string.title_header),
                     textAlign = TextAlign.Start,
                     color = ExtendedTheme.colors.textPrimary,
-                    style = MaterialTheme.typography.h6,
-                    modifier = Modifier.weight(weight = 1f, fill = true)
+                    style = MaterialTheme.typography.h6
                 )
             }
             ToolbarButtons(
