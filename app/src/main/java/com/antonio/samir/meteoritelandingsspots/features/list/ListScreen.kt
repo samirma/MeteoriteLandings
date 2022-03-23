@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -26,7 +27,9 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Addre
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.ToolbarButtons
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
-import com.antonio.samir.meteoritelandingsspots.features.list.*
+import com.antonio.samir.meteoritelandingsspots.features.list.HeaderState
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteItemView
+import com.antonio.samir.meteoritelandingsspots.features.list.UiState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -123,7 +126,7 @@ fun ListScreen(
                     Modifier.fillMaxSize()
                 ) {
                     if (uiState.isLoading) {
-                        Loading()
+                        Loading(modifier = Modifier.fillMaxSize())
                     } else if (uiState.message == null) {
                         MeteoriteList(scrollState, uiState.meteorites, onItemClick)
                     } else {
@@ -151,9 +154,18 @@ fun ListScreen(
 }
 
 @Composable
-private fun Message(@StringRes message: Int) {
+private fun Message(
+    @StringRes message: Int,
+    modifier: Modifier = Modifier
+) = Message(message = stringResource(id = message), modifier = modifier)
+
+@Composable
+private fun Message(
+    message: String,
+    modifier: Modifier = Modifier
+) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         Text(
             text = stringResource(id = R.string.message_titile),
@@ -161,7 +173,7 @@ private fun Message(@StringRes message: Int) {
             style = MaterialTheme.typography.h6
         )
         Text(
-            text = stringResource(id = message),
+            text = message,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.body1
         )
@@ -170,12 +182,15 @@ private fun Message(@StringRes message: Int) {
 
 
 @Composable
-private fun Loading() {
-    Box(
-        Modifier
-            .fillMaxSize()
+private fun Loading(
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Loading", modifier = Modifier.align(Alignment.TopCenter))
+        CircularProgressIndicator()
     }
 }
 
@@ -200,27 +215,25 @@ private fun MeteoriteList(
         items.apply {
             when {
                 loadState.refresh is LoadState.Loading -> {
-                    item { LoadingView(modifier = Modifier.fillParentMaxSize()) }
+                    item { Loading(modifier = Modifier.fillParentMaxSize()) }
                 }
                 loadState.append is LoadState.Loading -> {
-                    item { LoadingItem() }
+                    item { Loading(modifier = Modifier.fillParentMaxSize()) }
                 }
                 loadState.refresh is LoadState.Error -> {
                     val e = items.loadState.refresh as LoadState.Error
                     item {
-                        ErrorItem(
+                        Message(
                             message = e.error.localizedMessage!!,
-                            modifier = Modifier.fillParentMaxSize(),
-                            onClickRetry = { retry() }
+                            modifier = Modifier.fillParentMaxSize()
                         )
                     }
                 }
                 loadState.append is LoadState.Error -> {
                     val e = items.loadState.append as LoadState.Error
                     item {
-                        ErrorItem(
-                            message = e.error.localizedMessage!!,
-                            onClickRetry = { retry() }
+                        Message(
+                            message = e.error.localizedMessage!!
                         )
                     }
                 }
