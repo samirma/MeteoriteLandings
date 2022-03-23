@@ -1,4 +1,5 @@
 import androidx.annotation.StringRes
+import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -52,7 +53,12 @@ fun Header(
         modifier = headerModifier,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        if (!isCollapsed) {
+        AnimatedVisibility(
+            visible = !isCollapsed,
+            modifier = headerModifier,
+            enter = fadeIn() + slideInVertically(),
+            exit = fadeOut() + slideOutVertically(),
+        ) {
             Text(
                 text = stringResource(R.string.title_header),
                 textAlign = TextAlign.Center,
@@ -73,7 +79,11 @@ fun Header(
                 .padding(16.dp),
             horizontalArrangement = Arrangement.End
         ) {
-            if (isCollapsed) {
+            AnimatedVisibility(
+                visible = isCollapsed,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
                 Text(
                     text = stringResource(R.string.title_header),
                     textAlign = TextAlign.Start,
@@ -94,7 +104,9 @@ fun Header(
 @Composable
 fun HeaderPreview() {
     MeteoriteLandingsTheme(darkTheme = true) {
-        Header(HeaderState.Collapsed) {}
+        Surface() {
+            Header(HeaderState.Collapsed) {}
+        }
     }
 }
 
@@ -102,8 +114,10 @@ fun HeaderPreview() {
 @Preview("Header Expanded")
 @Composable
 fun HeaderExpandedPreview() {
-    MeteoriteLandingsTheme(darkTheme = false) {
-        Header(HeaderState.Expanded) {}
+    MeteoriteLandingsTheme(darkTheme = true) {
+        Surface() {
+            Header(HeaderState.Expanded) {}
+        }
     }
 }
 
@@ -111,10 +125,19 @@ fun HeaderExpandedPreview() {
 @Composable
 fun ListScreen(
     uiState: UiState,
-    onItemClick: (itemView: MeteoriteItemView) -> Unit
+    onItemClick: (itemView: MeteoriteItemView) -> Unit,
+    onTopList: (scrollOffset: Float) -> Unit,
 ) {
 
     val scrollState = rememberLazyListState()
+
+    val scrollOffset: Float = Math.min(
+        1f,
+        1 - (scrollState.firstVisibleItemScrollOffset / 600f +
+                scrollState.firstVisibleItemIndex)
+    )
+
+    onTopList(scrollOffset)
 
     MeteoriteLandingsTheme(darkTheme = uiState.isDark) {
         Surface(
@@ -272,7 +295,8 @@ fun ListScreenPreview() {
             meteorites = flowOf(PagingData.from(items)),
             onDarkModeToggleClick = { },
             headerState = HeaderState.Expanded
-        )
+        ),
+        {}
     ) {}
 
 }
@@ -296,7 +320,8 @@ fun ListScreenLoadingPreview() {
             addressStatus = flowOf(ResultOf.Success(100f)),
             meteorites = flowOf(PagingData.from(items)),
             onDarkModeToggleClick = { },
-        )
+        ),
+        {}
     ) {}
 
 }
@@ -322,7 +347,8 @@ fun ListScreenMessagePreview() {
             meteorites = flowOf(PagingData.from(items)),
             onDarkModeToggleClick = { },
             isDark = false
-        )
+        ),
+        {}
     ) {}
 
 }
