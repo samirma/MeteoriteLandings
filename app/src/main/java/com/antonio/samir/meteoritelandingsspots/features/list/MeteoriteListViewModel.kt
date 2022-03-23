@@ -129,6 +129,19 @@ class MeteoriteListViewModel(
         selectMeteorite(null)
     }
 
+    fun onTopList(offset: Float) {
+        viewModelState.update {
+            it.copy(
+                headerState =
+                if (offset == 1f) {
+                    HeaderState.Expanded
+                } else {
+                    HeaderState.Collapsed
+                }
+            )
+        }
+    }
+
     companion object {
         private val TAG = MeteoriteListViewModel::class.java.simpleName
         const val METEORITE = "METEORITE"

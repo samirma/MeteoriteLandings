@@ -50,8 +50,10 @@ class MeteoriteListFragment : Fragment() {
 
             val uiState by viewModel.uiState.collectAsState()
 
-            ListScreen(uiState = uiState) {
+            ListScreen(uiState = uiState, {
                 viewModel.selectMeteorite(it)
+            }) { offset ->
+                viewModel.onTopList(offset)
             }
         }
 
