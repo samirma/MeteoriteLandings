@@ -13,7 +13,7 @@ data class UiState(
     val meteorites: Flow<PagingData<MeteoriteItemView>>,
     val isDark: Boolean = true,
     val onDarkModeToggleClick: () -> Unit,
-    val headerState: HeaderState = HeaderState.Collapsed
+    val headerState: HeaderState = HeaderState.Expanded
 )
 
 sealed class HeaderState() {
