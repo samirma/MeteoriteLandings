@@ -34,18 +34,18 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
-fun Header(headerState: HeaderState, onDarkModeToggleClick: () -> Unit) {
+fun Header(
+    headerState: HeaderState,
+    modifier: Modifier = Modifier,
+    onDarkModeToggleClick: () -> Unit
+) {
 
-    val isCollapsed = when (headerState) {
-        HeaderState.Collapsed -> true
-        else -> false
-    }
+    val isCollapsed = headerState.isCollapsed()
 
-    var headerModifier = Modifier
-        .fillMaxWidth()
+    var headerModifier = modifier
 
     if (!isCollapsed) {
-        headerModifier = headerModifier.height(400.dp)
+        headerModifier = headerModifier.height(72.dp)
     }
 
     Column(
@@ -120,10 +120,19 @@ fun ListScreen(
         Surface(
             modifier = Modifier.background(MaterialTheme.colors.background)
         ) {
+            val headerState = uiState.headerState
             Column(Modifier.fillMaxSize()) {
-                Header(uiState.headerState, uiState.onDarkModeToggleClick)
+                Header(
+                    headerState = headerState,
+                    modifier = if (headerState.isCollapsed()) {
+                        Modifier
+                    } else {
+                        Modifier.weight(7f)
+                    },
+                    onDarkModeToggleClick = uiState.onDarkModeToggleClick
+                )
                 Box(
-                    Modifier.fillMaxSize()
+                    Modifier.weight(10f, fill = true)
                 ) {
                     if (uiState.isLoading) {
                         Loading(modifier = Modifier.fillMaxSize())
