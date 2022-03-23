@@ -11,13 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.asLiveData
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -28,9 +27,7 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Addre
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.ToolbarButtons
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
-import com.antonio.samir.meteoritelandingsspots.features.list.HeaderState
-import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteItemView
-import com.antonio.samir.meteoritelandingsspots.features.list.UiState
+import com.antonio.samir.meteoritelandingsspots.features.list.*
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
@@ -136,15 +133,17 @@ fun ListScreen(
 
                     val addressProgress = uiState.addressStatus.asLiveData().observeAsState().value
                     if (addressProgress != null) {
-                        if (addressProgress is ResultOf.InProgress && (addressProgress.data != null)) AddressProgress(
-                            progress = addressProgress.data,
-                            modifier = Modifier
-                                .align(Alignment.BottomEnd)
-                                .padding(
-                                    end = 16.dp,
-                                    bottom = 16.dp
-                                )
-                        )
+                        if (addressProgress is ResultOf.InProgress && (addressProgress.data != null)) {
+                            AddressProgress(
+                                progress = addressProgress.data,
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .padding(
+                                        end = 16.dp,
+                                        bottom = 16.dp
+                                    )
+                            )
+                        }
                     }
                 }
             }
@@ -193,13 +192,41 @@ private fun MeteoriteList(
             .fillMaxSize()
             .background(MaterialTheme.colors.background)
     ) {
+
         items(items) { item ->
             item?.let { MeteoriteCell(it, onItemClick) }
         }
 
-        item {
-            Text(text = "First item")
+        items.apply {
+            when {
+                loadState.refresh is LoadState.Loading -> {
+                    item { LoadingView(modifier = Modifier.fillParentMaxSize()) }
+                }
+                loadState.append is LoadState.Loading -> {
+                    item { LoadingItem() }
+                }
+                loadState.refresh is LoadState.Error -> {
+                    val e = items.loadState.refresh as LoadState.Error
+                    item {
+                        ErrorItem(
+                            message = e.error.localizedMessage!!,
+                            modifier = Modifier.fillParentMaxSize(),
+                            onClickRetry = { retry() }
+                        )
+                    }
+                }
+                loadState.append is LoadState.Error -> {
+                    val e = items.loadState.append as LoadState.Error
+                    item {
+                        ErrorItem(
+                            message = e.error.localizedMessage!!,
+                            onClickRetry = { retry() }
+                        )
+                    }
+                }
+            }
         }
+
     }
 }
 
@@ -269,9 +296,10 @@ fun ListScreenMessagePreview() {
         uiState = UiState(
             isLoading = false,
             message = null,
-            addressStatus = flowOf(ResultOf.Success(100f)),
+            addressStatus = flowOf(ResultOf.InProgress(100f)),
             meteorites = flowOf(PagingData.from(items)),
             onDarkModeToggleClick = { },
+            isDark = false
         )
     ) {}
 
