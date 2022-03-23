@@ -31,6 +31,10 @@ class MeteoriteLocalRepositoryImpl(
         return meteoriteDao.getMeteoritesCount()
     }
 
+    override suspend fun getValidMeteoritesCount(): Int {
+        return meteoriteDao.getValidMeteoritesCount()
+    }
+
     override suspend fun getMeteoritesWithoutAddressCount(): Int {
         return meteoriteDao.getMeteoritesWithoutAddressCount()
     }
