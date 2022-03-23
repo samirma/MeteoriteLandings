@@ -16,8 +16,11 @@ data class UiState(
     val headerState: HeaderState = HeaderState.Expanded
 )
 
-sealed class HeaderState() {
+sealed class HeaderState {
     object Collapsed : HeaderState()
     object Expanded : HeaderState()
     object Search : HeaderState()
+
+    fun isCollapsed(): Boolean = this == Collapsed
+
 }
