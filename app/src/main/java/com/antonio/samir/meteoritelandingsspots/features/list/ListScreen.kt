@@ -52,7 +52,7 @@ fun Header(
     }
 
     Column(
-        modifier = headerModifier,
+        modifier = headerModifier.background(ExtendedTheme.colors.header),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         AnimatedVisibility(
