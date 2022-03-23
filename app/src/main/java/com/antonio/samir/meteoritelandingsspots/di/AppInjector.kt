@@ -87,11 +87,27 @@ val mappersModule = module {
 
 @FlowPreview
 val useCaseModule = module {
-    factory { GetMeteoriteById(get(), get()) }
-    factory { GetMeteorites(get(), get(), get()) }
-    factory { FetchMeteoriteList(get()) }
-    factory { StartAddressRecover(get()) }
-    factory { StatusAddressRecover(get()) }
+    factory {
+        GetMeteoriteById(
+            meteoriteLocalRepository = get(),
+            mapper = get()
+        )
+    }
+    factory {
+        GetMeteorites(
+            meteoriteLocalRepository = get(),
+            mapper = get(),
+            gpsTracker = get()
+        )
+    }
+    factory {
+        FetchMeteoriteList(
+            meteoriteRepository = get(),
+            startAddressRecover = get()
+        )
+    }
+    factory { StartAddressRecover(context = get()) }
+    factory { StatusAddressRecover(context = get()) }
 }
 
 @ExperimentalCoroutinesApi
