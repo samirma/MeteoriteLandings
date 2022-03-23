@@ -16,7 +16,11 @@ interface MeteoriteDao {
     fun meteoriteOrderedByLocation(lat: Double, lng: Double): PagingSource<Int, Meteorite>
 
     @Query("SELECT * from meteorites WHERE recLong IS NOT NULL AND ((LOWER(address) GLOB '*' || :filter|| '*') or (LOWER(name) GLOB '*' || :filter|| '*')) ORDER BY ((reclat-:lat)*(reclat-:lat)) + ((reclong - :lng)*(reclong - :lng)) ASC")
-    fun meteoriteOrderedByLocationFiltered(lat: Double, lng: Double, filter: String): PagingSource<Int, Meteorite>
+    fun meteoriteOrderedByLocationFiltered(
+        lat: Double,
+        lng: Double,
+        filter: String
+    ): PagingSource<Int, Meteorite>
 
     @Query("SELECT * from meteorites WHERE recLong IS NOT NULL AND ((LOWER(address) GLOB '*' || :filter|| '*') or (LOWER(name) GLOB '*' || :filter|| '*')) ORDER BY name ASC LIMIT 5000")
     fun meteoriteFiltered(filter: String): PagingSource<Int, Meteorite>
@@ -28,6 +32,9 @@ interface MeteoriteDao {
     fun getMeteoriteById(meteoriteId: String): Flow<Meteorite>
 
     @Query("SELECT count(id) from meteorites WHERE recLong IS NOT NULL")
+    suspend fun getValidMeteoritesCount(): Int
+
+    @Query("SELECT count(id) from meteorites")
     suspend fun getMeteoritesCount(): Int
 
     @Query("SELECT count(id) from meteorites WHERE address IS NULL OR LENGTH(address) = 0")

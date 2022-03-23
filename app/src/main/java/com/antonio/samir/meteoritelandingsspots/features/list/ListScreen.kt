@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.asLiveData
 import androidx.paging.LoadState
 import androidx.paging.PagingData
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.antonio.samir.meteoritelandingsspots.R
@@ -28,6 +27,7 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Toolb
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 import com.antonio.samir.meteoritelandingsspots.features.list.*
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
@@ -111,7 +111,6 @@ fun ListScreen(
     onItemClick: (itemView: MeteoriteItemView) -> Unit
 ) {
 
-    val items = uiState.meteorites.collectAsLazyPagingItems()
     val scrollState = rememberLazyListState()
 
     MeteoriteLandingsTheme(darkTheme = uiState.isDark) {
@@ -126,7 +125,7 @@ fun ListScreen(
                     if (uiState.isLoading) {
                         Loading()
                     } else if (uiState.message == null) {
-                        MeteoriteList(scrollState, items, onItemClick)
+                        MeteoriteList(scrollState, uiState.meteorites, onItemClick)
                     } else {
                         Message(uiState.message)
                     }
@@ -183,9 +182,10 @@ private fun Loading() {
 @Composable
 private fun MeteoriteList(
     scrollState: LazyListState,
-    items: LazyPagingItems<MeteoriteItemView>,
+    meteorites: Flow<PagingData<MeteoriteItemView>>,
     onItemClick: (itemView: MeteoriteItemView) -> Unit
 ) {
+    val items = meteorites.collectAsLazyPagingItems()
     LazyColumn(
         state = scrollState,
         modifier = Modifier

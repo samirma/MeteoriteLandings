@@ -62,7 +62,7 @@ class AddressServiceTest {
             })
 
         whenever(mockLocalRepository.getMeteoritesWithoutAddressCount()).thenReturn(meteorites.size)
-        whenever(mockLocalRepository.getMeteoritesCount()).thenReturn(meteorites.size * 2)
+        whenever(mockLocalRepository.getValidMeteoritesCount()).thenReturn(meteorites.size * 2)
         whenever(mockLocalRepository.getMeteoritesWithoutAddressCount()).thenReturn(0)
 
 

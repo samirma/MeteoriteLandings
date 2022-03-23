@@ -40,7 +40,7 @@ class AddressServiceImpl(
         return if (!it.isNullOrEmpty()) {
             val meteoritesWithoutAddressCount =
                 meteoriteLocalRepository.getMeteoritesWithoutAddressCount()
-            val meteoritesCount = meteoriteLocalRepository.getMeteoritesCount()
+            val meteoritesCount = meteoriteLocalRepository.getValidMeteoritesCount()
             val progress = (1 - (meteoritesWithoutAddressCount.toFloat() / meteoritesCount)) * 100
             ResultOf.InProgress(progress)
         } else {

@@ -16,9 +16,9 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 @ExperimentalCoroutinesApi
 class MeteoriteRepositoryImpl(
-        private val meteoriteLocalRepository: MeteoriteLocalRepository,
-        private val meteoriteRemoteRepository: MeteoriteRemoteRepository,
-        private val dispatchers: DispatcherProvider,
+    private val meteoriteLocalRepository: MeteoriteLocalRepository,
+    private val meteoriteRemoteRepository: MeteoriteRemoteRepository,
+    private val dispatchers: DispatcherProvider,
 ) : MeteoriteRepository {
 
     private val shouldLoad = AtomicBoolean(true)
@@ -36,11 +36,13 @@ class MeteoriteRepositoryImpl(
             val meteoritesCount = meteoriteLocalRepository.getMeteoritesCount()
             emit(InProgress())
             try {
-                recoverFromNetwork(if (meteoritesCount <= OLDDATABASE_COUNT) {
-                    0 //Download from beginner
-                } else {
-                    meteoritesCount
-                })
+                recoverFromNetwork(
+                    if (meteoritesCount <= OLDDATABASE_COUNT) {
+                        0 //Download from beginner
+                    } else {
+                        meteoritesCount
+                    }
+                )
             } catch (e: Exception) {
                 Log.e(TAG, e.message, e)
                 emit(Error(MeteoriteServerException(e)))
@@ -57,8 +59,8 @@ class MeteoriteRepositoryImpl(
 
             val serviceOffset = (PAGE_SIZE * currentPage) + offset
             val meteorites = meteoriteRemoteRepository.getMeteorites(
-                    offset = serviceOffset,
-                    limit = PAGE_SIZE
+                offset = serviceOffset,
+                limit = PAGE_SIZE
             )
 
             meteoriteLocalRepository.insertAll(meteorites)

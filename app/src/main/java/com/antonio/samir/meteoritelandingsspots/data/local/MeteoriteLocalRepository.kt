@@ -7,10 +7,10 @@ import kotlinx.coroutines.flow.Flow
 interface MeteoriteLocalRepository {
 
     fun meteoriteOrdered(
-            filter: String?,
-            latitude: Double?,
-            longitude: Double?,
-            limit: Long,
+        filter: String?,
+        latitude: Double?,
+        longitude: Double?,
+        limit: Long,
     ): PagingSource<Int, Meteorite>
 
     fun meteoritesWithOutAddress(): Flow<List<Meteorite>>
@@ -19,7 +19,7 @@ interface MeteoriteLocalRepository {
 
     suspend fun update(meteorite: Meteorite)
 
-    suspend fun getMeteoritesCount(): Int
+    suspend fun getValidMeteoritesCount(): Int
 
     suspend fun getMeteoritesWithoutAddressCount(): Int
 
@@ -27,4 +27,5 @@ interface MeteoriteLocalRepository {
 
     suspend fun updateAll(meteorites: List<Meteorite>)
 
+    suspend fun getMeteoritesCount(): Int
 }
