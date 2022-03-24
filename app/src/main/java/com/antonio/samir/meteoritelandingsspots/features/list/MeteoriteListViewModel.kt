@@ -41,6 +41,8 @@ class MeteoriteListViewModel(
 
     val selectedMeteorite = meteorite.asLiveData()
 
+    private val debounceState = MutableStateFlow<HeaderState?>(null)
+
     private val _meteorites =
         MutableStateFlow<PagingData<MeteoriteItemView>>(PagingData.empty())
     val meteorites = _meteorites
@@ -70,6 +72,19 @@ class MeteoriteListViewModel(
 
     init {
         fetchMeteoriteList()
+
+        viewModelScope.launch(dispatchers.default()) {
+            debounceState.debounce(200).collect { headerState ->
+                if (headerState != null) {
+                    viewModelState.update {
+                        it.copy(
+                            headerState = headerState
+                        )
+                    }
+                }
+            }
+        }
+
     }
 
     private fun fetchMeteoriteList() {
@@ -132,15 +147,10 @@ class MeteoriteListViewModel(
     }
 
     fun onTopList(offset: Float) {
-        viewModelState.update {
-            it.copy(
-                headerState =
-                if (offset > 0) {
-                    HeaderState.Expanded
-                } else {
-                    HeaderState.Collapsed
-                }
-            )
+        debounceState.value = if (offset > 0) {
+            HeaderState.Expanded
+        } else {
+            HeaderState.Collapsed
         }
     }
 
