@@ -100,7 +100,6 @@ class MeteoriteListFragment : Fragment() {
                 requestPermissions(arrayOf(ACCESS_FINE_LOCATION), LOCATION_REQUEST_CODE)
             }
         }
-        viewModel.updateLocation()
     }
 
     private fun showMeteoriteLandscape(meteorite: MeteoriteItemView) {

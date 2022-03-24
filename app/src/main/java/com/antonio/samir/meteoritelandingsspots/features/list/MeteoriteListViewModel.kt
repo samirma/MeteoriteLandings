@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.FetchMeteoriteList
@@ -104,6 +105,7 @@ class MeteoriteListViewModel(
         _searchQuery.value = query
         viewModelScope.launch {
             getMeteorites.execute(query)
+                .cachedIn(viewModelScope)
                 .collect {
                     _meteorites.value = it
                 }
@@ -117,7 +119,7 @@ class MeteoriteListViewModel(
 
     fun updateLocation() {
         viewModelScope.launch(dispatchers.default()) {
-            gpsTracker.startLocationService()
+            gpsTracker.reqeustLocation()
         }
     }
 
@@ -133,7 +135,7 @@ class MeteoriteListViewModel(
         viewModelState.update {
             it.copy(
                 headerState =
-                if (offset == 1f) {
+                if (offset > 0) {
                     HeaderState.Expanded
                 } else {
                     HeaderState.Collapsed

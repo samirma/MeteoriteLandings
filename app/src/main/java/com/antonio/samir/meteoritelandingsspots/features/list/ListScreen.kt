@@ -51,13 +51,12 @@ fun Header(
         headerModifier = headerModifier.height(72.dp)
     }
 
-    Column(
+    Box(
         modifier = headerModifier.background(ExtendedTheme.colors.header),
-        verticalArrangement = Arrangement.SpaceBetween
     ) {
         AnimatedVisibility(
             visible = !isCollapsed,
-            modifier = headerModifier,
+            modifier = Modifier.align(Alignment.Center),
             enter = fadeIn() + slideInVertically(),
             exit = fadeOut() + slideOutVertically(),
         ) {
@@ -65,10 +64,8 @@ fun Header(
                 text = stringResource(R.string.title_header),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .weight(weight = 1f, fill = true)
-                    .wrapContentSize(align = Alignment.Center)
                     .padding(
-                        horizontal = 80.dp
+                        horizontal = 30.dp
                     ),
                 color = ExtendedTheme.colors.textPrimary,
                 style = MaterialTheme.typography.h4
@@ -76,6 +73,7 @@ fun Header(
         }
         Row(
             modifier = Modifier
+                .align(Alignment.BottomCenter)
                 .height(72.dp)
                 .fillMaxWidth()
                 .padding(16.dp),
@@ -147,7 +145,7 @@ fun ListScreen(
         targetValue = if (headerState.isCollapsed()) {
             1f
         } else {
-            7f
+            6f
         }
     )
 
