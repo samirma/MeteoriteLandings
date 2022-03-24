@@ -1,6 +1,5 @@
 package com.antonio.samir.meteoritelandingsspots.features.list.userCases
 
-import android.location.Location
 import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -12,9 +11,7 @@ import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.features.list.mapper.MeteoriteViewMapper
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 
 @FlowPreview
 class GetMeteorites(
@@ -23,13 +20,15 @@ class GetMeteorites(
     private val gpsTracker: GPSTrackerInterface,
 ) : UserCaseBase<String?, PagingData<MeteoriteItemView>>() {
 
-    override fun action(input: String?): Flow<PagingData<MeteoriteItemView>> {
+    override fun action(input: String?) = flow {
         Log.i(TAG, "Searching $input")
-        var location: Location? = null
-        return gpsTracker.location.flatMapConcat {
-            Log.i(TAG, "Location $it")
-            location = it
-            Pager(
+
+        gpsTracker.reqeustLocation()
+
+        gpsTracker.location.collect { location ->
+            Log.i(TAG, "location $location")
+
+            val pagingData: Flow<PagingData<MeteoriteItemView>> = Pager(
                 PagingConfig(pageSize = PAGE_SIZE)
             ) {
                 meteoriteLocalRepository.meteoriteOrdered(
@@ -38,9 +37,7 @@ class GetMeteorites(
                     latitude = location?.latitude,
                     limit = LIMIT
                 )
-            }.flow
-        }
-            .map { pagingData ->
+            }.flow.map { pagingData ->
                 pagingData.map {
                     mapper.map(
                         MeteoriteViewMapper.Input(
@@ -50,6 +47,11 @@ class GetMeteorites(
                     )
                 }
             }
+
+            emitAll(pagingData)
+
+        }
+
     }
 
     companion object {

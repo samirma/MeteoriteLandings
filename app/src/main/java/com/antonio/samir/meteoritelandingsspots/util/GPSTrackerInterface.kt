@@ -9,7 +9,7 @@ interface GPSTrackerInterface {
 
     val location: Flow<Location?>
 
-    suspend fun startLocationService()
+    suspend fun reqeustLocation()
 
     fun isLocationServiceStarted(): Boolean
 
