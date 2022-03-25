@@ -90,7 +90,9 @@ val useCaseModule = module {
     factory {
         GetMeteoriteById(
             meteoriteLocalRepository = get(),
-            mapper = get()
+            mapper = get(),
+            context = get(),
+            gpsTracker = get()
         )
     }
     factory {
@@ -137,7 +139,6 @@ val businessModule = module {
 val viewModelModule = module {
     viewModel {
         MeteoriteDetailViewModel(
-            gpsTracker = get(),
             getMeteoriteById = get()
         )
     }

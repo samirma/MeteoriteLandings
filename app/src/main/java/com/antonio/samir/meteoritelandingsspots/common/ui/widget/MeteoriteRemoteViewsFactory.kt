@@ -11,7 +11,7 @@ import com.antonio.samir.meteoritelandingsspots.features.yearString
 import org.apache.commons.lang3.StringUtils
 
 class MeteoriteRemoteViewsFactory(
-        private val mPackageName: String
+    private val mPackageName: String
 ) : RemoteViewsService.RemoteViewsFactory {
 
     private var meteorites: List<Meteorite>? = null
@@ -47,9 +47,9 @@ class MeteoriteRemoteViewsFactory(
         val meteoriteName = meteorite.name
         val year = meteorite.yearString
 
-        views.setTextViewText(R.id.title, meteoriteName)
-        views.setTextViewText(R.id.year, year)
-        setLocationText(meteorite.address, views)
+//        views.setTextViewText(R.id.title, meteoriteName)
+//        views.setTextViewText(R.id.year, year)
+//        setLocationText(meteorite.address, views)
 
         setRemoteContentDescription(views, meteoriteName)
 

@@ -23,7 +23,7 @@ class GetMeteorites(
     override fun action(input: String?) = flow {
         Log.i(TAG, "Searching $input")
 
-        gpsTracker.reqeustLocation()
+        gpsTracker.requestLocation()
 
         gpsTracker.location.collect { location ->
             Log.i(TAG, "location $location")

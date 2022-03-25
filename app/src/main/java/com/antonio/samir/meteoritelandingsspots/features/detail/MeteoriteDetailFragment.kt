@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.detail
 
+import MeteoriteDetail
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,9 +13,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf.*
-import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteDetailBinding
 import com.antonio.samir.meteoritelandingsspots.common.ui.extension.isLandscape
 import com.antonio.samir.meteoritelandingsspots.common.ui.extension.showActionBar
+import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteDetailBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -38,9 +39,9 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
     private lateinit var binding: FragmentMeteoriteDetailBinding
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentMeteoriteDetailBinding.inflate(inflater, container, false)
         return binding.root
@@ -64,20 +65,13 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
 
     private fun observeMeteorite() {
 
-        viewModel.getMeteorite(requireContext()).observe(viewLifecycleOwner) { result->
+        viewModel.getMeteorite().observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     result.data.let { meteorite ->
-                        if (meteorite == this.meteorite) {
-                            if (meteorite.address != this.meteorite?.address) {
-                                this.meteorite = meteorite
-                                setLocationText(meteorite)
-                            }
-                        } else {
-                            setMeteorite(meteorite)
-                            (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment)
-                                    .getMapAsync(this)
-                        }
+                        setMeteorite(meteorite)
+                        (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment)
+                            .getMapAsync(this)
                     }
                     showContent()
                 }
@@ -93,7 +87,7 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun error(messageString: String) {
-        binding.progressLoader.visibility =  INVISIBLE
+        binding.progressLoader.visibility = INVISIBLE
         binding.content.visibility = INVISIBLE
         binding.messageTV.visibility = VISIBLE
         binding.messageTV.text = messageString
@@ -107,7 +101,7 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
 
     private fun showContent() {
         binding.messageTV.visibility = INVISIBLE
-        binding.progressLoader.visibility =  INVISIBLE
+        binding.progressLoader.visibility = INVISIBLE
         binding.content.visibility = VISIBLE
     }
 
@@ -146,29 +140,14 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
 
         this.meteorite = meteorite
 
-        setLocationText(meteorite)
-
         if (!isLandscape()) {
             showActionBar(meteorite.name)
         }
 
-        binding.year.text = meteorite.yearString
-
-        binding.recclass.text = meteorite.recclass
-
-        binding.mass.text = meteorite.mass
-
-    }
-
-    private fun setLocationText(meteorite: MeteoriteView) {
-        val address = meteorite.address
-        binding.locationTxt.text = address
-        binding.locationTxt.visibility = if (meteorite.hasAddress) {
-            VISIBLE
-        } else {
-            viewModel.requestAddressUpdate(meteorite)
-            View.GONE
+        binding.meteoriteDetail.setContent {
+            MeteoriteDetail(itemView = meteorite)
         }
+
     }
 
     companion object {

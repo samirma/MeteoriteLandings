@@ -60,7 +60,7 @@ class GPSTracker(private val context: Context) : GPSTrackerInterface {
 //        locationManager.removeUpdates(this)
     }
 
-    override suspend fun reqeustLocation() {
+    override suspend fun requestLocation() {
         if (isGPSEnabled()) {
             try {
                 if (isLocationAuthorized) {
