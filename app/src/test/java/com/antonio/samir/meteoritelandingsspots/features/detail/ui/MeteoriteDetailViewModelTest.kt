@@ -106,7 +106,7 @@ class MeteoriteDetailViewModelTest {
                     name = null,
                     yearString = null,
                     address = fixtString,
-                    recclass = null,
+                    type = null,
                     mass = meteorite.mass,
                     reclat = 1.0,
                     reclong = 0.0,

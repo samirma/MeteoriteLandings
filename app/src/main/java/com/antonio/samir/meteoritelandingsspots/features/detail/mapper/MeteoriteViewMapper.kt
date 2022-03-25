@@ -14,13 +14,13 @@ class MeteoriteMapper : MapperBase<MeteoriteMapper.Input, MeteoriteView>() {
 
     override suspend fun action(input: Input): MeteoriteView = MeteoriteView(
         id = input.meteorite.id.toString(),
-        name = input.meteorite.name,
-        yearString = input.meteorite.yearString,
+        name = input.meteorite.name ?: "",
+        yearString = input.meteorite.yearString ?: "",
         address = input.meteorite.getLocationText(
             noAddress = input.context
                 .getString(R.string.without_address_placeholder)
         ),
-        recclass = input.meteorite.recclass,
+        type = input.meteorite.recclass ?: "",
         mass = input.meteorite.mass.convertToNumberFormat(input.context.getString(R.string.unkown)),
         reclat = input.meteorite.reclat?.toDouble() ?: 0.0,
         reclong = input.meteorite.reclong?.toDouble() ?: 0.0,

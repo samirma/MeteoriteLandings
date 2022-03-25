@@ -134,7 +134,7 @@ class MeteoriteListViewModel(
 
     fun updateLocation() {
         viewModelScope.launch(dispatchers.default()) {
-            gpsTracker.reqeustLocation()
+            gpsTracker.requestLocation()
         }
     }
 
