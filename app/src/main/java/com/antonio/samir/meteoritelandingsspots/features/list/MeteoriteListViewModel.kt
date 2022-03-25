@@ -74,7 +74,7 @@ class MeteoriteListViewModel(
         fetchMeteoriteList()
 
         viewModelScope.launch(dispatchers.default()) {
-            debounceState.debounce(200).collect { headerState ->
+            debounceState.debounce(100).collect { headerState ->
                 if (headerState != null) {
                     viewModelState.update {
                         it.copy(
