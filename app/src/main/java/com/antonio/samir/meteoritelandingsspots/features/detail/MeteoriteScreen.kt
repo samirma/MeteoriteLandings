@@ -13,6 +13,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.antonio.samir.meteoritelandingsspots.R
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteView
 
@@ -23,6 +24,9 @@ fun MeteoriteDetail(
     itemView: MeteoriteView,
 ) {
     Column(
+        modifier = Modifier
+            .background(MaterialTheme.colors.background)
+            .padding(vertical = 16.dp),
         verticalArrangement = Arrangement.Center,
     ) {
         LineDetail(R.drawable.ic_globe, itemView.address)
@@ -38,10 +42,10 @@ private fun LineDetail(
     label: String
 ) {
     Row(
+        verticalAlignment = CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colors.background)
-            .height(84.dp)
+            .height(42.dp)
             .padding(horizontal = 16.dp)
     ) {
         Image(
@@ -50,11 +54,13 @@ private fun LineDetail(
             modifier = Modifier
                 .align(CenterVertically)
                 .size(40.dp)
+                .padding(end = 16.dp),
         )
         Text(
             text = label,
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.h6
+            style = MaterialTheme.typography.h6,
+            color = ExtendedTheme.colors.textPrimary
         )
     }
 }
