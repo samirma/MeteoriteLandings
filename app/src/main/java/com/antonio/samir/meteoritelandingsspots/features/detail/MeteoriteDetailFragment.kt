@@ -8,6 +8,7 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.fragment.app.Fragment
@@ -58,6 +59,8 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
         if (isLandscape()) {
             findNavController().navigateUp()
         }
+
+        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
 
         observeMeteorite()
 
