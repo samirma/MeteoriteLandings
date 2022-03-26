@@ -4,14 +4,16 @@ import androidx.annotation.StringRes
 import androidx.paging.PagingData
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 data class UiState(
     val isLoading: Boolean,
     @StringRes val message: Int? = null,
     val searchInput: String? = null,
-    val addressStatus: Flow<ResultOf<Float>>,
+    val addressStatus: StateFlow<ResultOf<Float>>,
     val meteorites: Flow<PagingData<MeteoriteItemView>>,
-    val isDark: Boolean = true,
+    val isDark: StateFlow<Boolean> = MutableStateFlow(true),
     val onDarkModeToggleClick: () -> Unit,
     val headerState: HeaderState = HeaderState.Expanded
 )

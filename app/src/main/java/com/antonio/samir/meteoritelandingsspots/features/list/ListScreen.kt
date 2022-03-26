@@ -11,6 +11,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -34,6 +35,7 @@ import com.antonio.samir.meteoritelandingsspots.features.list.HeaderState
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.features.list.UiState
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
@@ -149,7 +151,9 @@ fun ListScreen(
         }
     )
 
-    MeteoriteLandingsTheme(darkTheme = uiState.isDark) {
+    val isDark by uiState.isDark.collectAsState()
+
+    MeteoriteLandingsTheme(darkTheme = isDark) {
         Surface(
             modifier = Modifier.background(MaterialTheme.colors.background)
         ) {
@@ -296,7 +300,7 @@ fun ListScreenPreview() {
     ListScreen(
         uiState = UiState(
             isLoading = false,
-            addressStatus = flowOf(ResultOf.Success(100f)),
+            addressStatus = MutableStateFlow(ResultOf.Success(100f)),
             meteorites = flowOf(PagingData.from(items)),
             onDarkModeToggleClick = { },
             headerState = HeaderState.Expanded
@@ -322,7 +326,7 @@ fun ListScreenLoadingPreview() {
     ListScreen(
         uiState = UiState(
             isLoading = true,
-            addressStatus = flowOf(ResultOf.Success(100f)),
+            addressStatus = MutableStateFlow(ResultOf.Success(100f)),
             meteorites = flowOf(PagingData.from(items)),
             onDarkModeToggleClick = { },
         ),
@@ -348,10 +352,9 @@ fun ListScreenMessagePreview() {
         uiState = UiState(
             isLoading = false,
             message = null,
-            addressStatus = flowOf(ResultOf.InProgress(100f)),
+            addressStatus = MutableStateFlow(ResultOf.InProgress(100f)),
             meteorites = flowOf(PagingData.from(items)),
             onDarkModeToggleClick = { },
-            isDark = false
         ),
         {}
     ) {}

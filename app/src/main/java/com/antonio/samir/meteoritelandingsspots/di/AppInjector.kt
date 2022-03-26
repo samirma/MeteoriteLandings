@@ -4,6 +4,7 @@ import android.content.Context
 import android.location.Geocoder
 import androidx.room.Room
 import com.antonio.samir.meteoritelandingsspots.R
+import com.antonio.samir.meteoritelandingsspots.common.userCase.IsDarkTheme
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepositoryImpl
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteMigrations.MIGRATION_1_2
@@ -14,15 +15,14 @@ import com.antonio.samir.meteoritelandingsspots.data.remote.NasaNetworkService
 import com.antonio.samir.meteoritelandingsspots.data.remote.NasaServerEndPoint
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepositoryImpl
+import com.antonio.samir.meteoritelandingsspots.data.repository.UIThemeRepository
+import com.antonio.samir.meteoritelandingsspots.data.repository.UIThemeRepositoryImpl
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailViewModel
 import com.antonio.samir.meteoritelandingsspots.features.detail.mapper.MeteoriteMapper
 import com.antonio.samir.meteoritelandingsspots.features.detail.userCases.GetMeteoriteById
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.features.list.mapper.MeteoriteViewMapper
-import com.antonio.samir.meteoritelandingsspots.features.list.userCases.FetchMeteoriteList
-import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
-import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StartAddressRecover
-import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StatusAddressRecover
+import com.antonio.samir.meteoritelandingsspots.features.list.userCases.*
 import com.antonio.samir.meteoritelandingsspots.service.address.AddressServiceImpl
 import com.antonio.samir.meteoritelandingsspots.service.address.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.service.monetization.MonetizationImpl
@@ -42,6 +42,7 @@ import java.util.concurrent.TimeUnit
 
 val localRepositoryModule = module {
     single<MeteoriteLocalRepository> { MeteoriteLocalRepositoryImpl(get()) }
+    single<UIThemeRepository> { UIThemeRepositoryImpl() }
 }
 
 val networkModule = module {
@@ -110,6 +111,8 @@ val useCaseModule = module {
     }
     factory { StartAddressRecover(context = get()) }
     factory { StatusAddressRecover(context = get()) }
+    factory { IsDarkTheme(get()) }
+    factory { SetUITheme(get()) }
 }
 
 @ExperimentalCoroutinesApi
@@ -139,7 +142,9 @@ val businessModule = module {
 val viewModelModule = module {
     viewModel {
         MeteoriteDetailViewModel(
-            getMeteoriteById = get()
+            getMeteoriteById = get(),
+            isDarkTheme = get(),
+            dispatchers = get()
         )
     }
     viewModel {
@@ -150,7 +155,9 @@ val viewModelModule = module {
             fetchMeteoriteList = get(),
             gpsTracker = get(),
             dispatchers = get(),
-            getMeteorites = get()
+            getMeteorites = get(),
+            setDarkMode = get(),
+            isDarkTheme = get()
         )
     }
 }

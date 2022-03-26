@@ -8,11 +8,13 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.common.ResultOf.*
 import com.antonio.samir.meteoritelandingsspots.common.ui.extension.isLandscape
 import com.antonio.samir.meteoritelandingsspots.common.ui.extension.showActionBar
 import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteDetailBinding
@@ -24,6 +26,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
 
 @ExperimentalCoroutinesApi
@@ -65,21 +69,16 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
 
     private fun observeMeteorite() {
 
-        viewModel.getMeteorite().observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
-                    result.data.let { meteorite ->
-                        setMeteorite(meteorite)
-                        (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment)
-                            .getMapAsync(this)
-                    }
-                    showContent()
+        lifecycleScope.launch {
+            viewModel.uiState.collect { uiState ->
+                uiState
+                if (uiState.isLoading) {
+                    showProgressLoader()
+                } else if (uiState.meteoriteView != null) {
+                    showContent(uiState)
                 }
-                is Error -> showError()
-                is InProgress -> showProgressLoader()
             }
         }
-
     }
 
     private fun showError() {
@@ -99,7 +98,10 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
         binding.content.visibility = INVISIBLE
     }
 
-    private fun showContent() {
+    private fun showContent(uiState: UiState) {
+
+        setMeteorite(uiState)
+
         binding.messageTV.visibility = INVISIBLE
         binding.progressLoader.visibility = INVISIBLE
         binding.content.visibility = VISIBLE
@@ -136,16 +138,24 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
     }
 
 
-    private fun setMeteorite(meteorite: MeteoriteView) {
+    private fun setMeteorite(uiState: UiState) {
 
-        this.meteorite = meteorite
+        if (uiState.meteoriteView == null) return
+
+        meteorite = uiState.meteoriteView
 
         if (!isLandscape()) {
-            showActionBar(meteorite.name)
+            showActionBar(meteorite!!.name)
         }
 
+        (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment)
+            .getMapAsync(this@MeteoriteDetailFragment)
+
         binding.meteoriteDetail.setContent {
-            MeteoriteDetail(itemView = meteorite)
+
+            val isDark by uiState.isDark.collectAsState()
+
+            MeteoriteDetail(meteoriteView = meteorite!!, darkTheme = isDark)
         }
 
     }
