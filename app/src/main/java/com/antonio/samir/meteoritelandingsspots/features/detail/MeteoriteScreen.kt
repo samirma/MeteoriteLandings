@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -21,18 +22,25 @@ import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteView
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MeteoriteDetail(
-    itemView: MeteoriteView,
+    meteoriteView: MeteoriteView,
+    darkTheme: Boolean
 ) {
-    Column(
-        modifier = Modifier
-            .background(MaterialTheme.colors.background)
-            .padding(vertical = 16.dp),
-        verticalArrangement = Arrangement.Center,
-    ) {
-        LineDetail(R.drawable.ic_globe, itemView.address)
-        LineDetail(R.drawable.ic_weight, itemView.mass)
-        LineDetail(R.drawable.ic_type, itemView.type)
-        LineDetail(R.drawable.ic_crash, itemView.yearString)
+    MeteoriteLandingsTheme(darkTheme = darkTheme) {
+        Surface(
+            modifier = Modifier.background(MaterialTheme.colors.background)
+        ) {
+            Column(
+                modifier = Modifier
+                    .background(MaterialTheme.colors.background)
+                    .padding(vertical = 16.dp),
+                verticalArrangement = Arrangement.Center,
+            ) {
+                LineDetail(R.drawable.ic_globe, meteoriteView.address)
+                LineDetail(R.drawable.ic_weight, meteoriteView.mass)
+                LineDetail(R.drawable.ic_type, meteoriteView.type)
+                LineDetail(R.drawable.ic_crash, meteoriteView.yearString)
+            }
+        }
     }
 }
 
@@ -58,8 +66,8 @@ private fun LineDetail(
         )
         Text(
             text = label,
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.h6,
+            textAlign = TextAlign.Start,
+            style = MaterialTheme.typography.body2,
             color = ExtendedTheme.colors.textPrimary
         )
     }
@@ -70,20 +78,19 @@ private fun LineDetail(
 @Composable
 fun MeteoriteDetailDark() {
     val sample = "test"
-    MeteoriteLandingsTheme(darkTheme = true) {
-        MeteoriteDetail(
-            MeteoriteView(
-                id = sample,
-                name = "name $sample",
-                yearString = "yearString $sample",
-                type = "distance $sample",
-                address = "address $sample",
-                mass = "mass",
-                reclat = 0.0,
-                reclong = 0.0
-            )
-        )
-    }
+    MeteoriteDetail(
+        meteoriteView = MeteoriteView(
+            id = sample,
+            name = "name $sample",
+            yearString = "yearString $sample",
+            type = "distance $sample",
+            address = "address $sample",
+            mass = "mass",
+            reclat = 0.0,
+            reclong = 0.0
+        ),
+        darkTheme = true
+    )
 }
 
 
@@ -91,19 +98,18 @@ fun MeteoriteDetailDark() {
 @Composable
 fun MeteoriteDetailLight() {
     val sample = "test"
-    MeteoriteLandingsTheme(darkTheme = false) {
-        MeteoriteDetail(
-            MeteoriteView(
-                id = sample,
-                name = "name $sample",
-                yearString = "yearString $sample",
-                type = "distance $sample",
-                address = "address $sample",
-                mass = "mass",
-                reclat = 0.0,
-                reclong = 0.0
-            )
-        )
-    }
+    MeteoriteDetail(
+        meteoriteView = MeteoriteView(
+            id = sample,
+            name = "name $sample",
+            yearString = "yearString $sample",
+            type = "distance $sample",
+            address = "address $sample",
+            mass = "mass",
+            reclat = 0.0,
+            reclong = 0.0
+        ),
+        darkTheme = false
+    )
 }
 

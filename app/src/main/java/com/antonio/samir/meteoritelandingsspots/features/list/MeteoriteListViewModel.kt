@@ -8,10 +8,8 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
-import com.antonio.samir.meteoritelandingsspots.features.list.userCases.FetchMeteoriteList
-import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
-import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StartAddressRecover
-import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StatusAddressRecover
+import com.antonio.samir.meteoritelandingsspots.common.userCase.IsDarkTheme
+import com.antonio.samir.meteoritelandingsspots.features.list.userCases.*
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,6 +31,8 @@ class MeteoriteListViewModel(
     private val gpsTracker: GPSTrackerInterface,
     private val dispatchers: DispatcherProvider,
     private val getMeteorites: GetMeteorites,
+    private val setDarkMode: SetUITheme,
+    isDarkTheme: IsDarkTheme,
 ) : ViewModel() {
 
     private val meteorite = MutableStateFlow<MeteoriteItemView?>(stateHandle[METEORITE])
@@ -55,20 +55,25 @@ class MeteoriteListViewModel(
             onDarkModeToggleClick = {
                 onDarkModeToggleClick()
             },
+            isDark = isDarkTheme.execute(Unit).stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Eagerly,
+                initialValue = false
+            )
         )
     )
 
-    private fun onDarkModeToggleClick() {
-        isDarkMode = !isDarkMode
-        viewModelState.update { it.copy(isDark = isDarkMode) }
-    }
 
     // UI state exposed to the UI
-    val uiState = viewModelState.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Eagerly,
-        initialValue = viewModelState.value
-    )
+    val uiState: StateFlow<UiState> = viewModelState
+
+    private fun onDarkModeToggleClick() {
+        isDarkMode = !isDarkMode
+//        viewModelState.update { it.copy(isDark = isDarkMode) }
+        viewModelScope.launch {
+            setDarkMode.execute(SetUITheme.Input(isDarkMode)).collect()
+        }
+    }
 
     init {
         fetchMeteoriteList()
@@ -113,7 +118,7 @@ class MeteoriteListViewModel(
                 initialValue = ResultOf.InProgress(0.0f)
             )
 
-    private val _searchQuery: MutableState<String?> = mutableStateOf<String?>(null)
+    private val _searchQuery: MutableState<String?> = mutableStateOf(null)
     val searchQuery: State<String?> = _searchQuery
 
     fun searchLocation(query: String?) {
