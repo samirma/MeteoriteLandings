@@ -55,7 +55,9 @@ fun MeteoriteCell(
                 Column(
                     verticalArrangement = Arrangement.Center,
                 ) {
-                    Row {
+                    Row(
+                        verticalAlignment = CenterVertically
+                    ) {
                         Text(
                             color = ExtendedTheme.colors.textPrimary,
                             text = itemView.name ?: "",
