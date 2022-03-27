@@ -24,5 +24,6 @@ sealed class HeaderState {
     object Search : HeaderState()
 
     fun isCollapsed(): Boolean = this == Collapsed
+    fun isSearch(): Boolean = this == Search
 
 }
