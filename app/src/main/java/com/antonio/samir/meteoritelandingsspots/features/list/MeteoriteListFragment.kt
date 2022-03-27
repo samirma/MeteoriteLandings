@@ -62,7 +62,7 @@ class MeteoriteListFragment : Fragment() {
                     viewModel.setHeaderState(HeaderState.Search)
                 },
                 onExitSearch = {
-                    viewModel.setHeaderState(HeaderState.Collapsed)
+                    viewModel.setHeaderState(HeaderState.Expanded)
                 },
                 onTopList = { offset ->
                     viewModel.onTopList(offset)

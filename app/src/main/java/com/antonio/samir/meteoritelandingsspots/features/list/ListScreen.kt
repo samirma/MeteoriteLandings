@@ -60,35 +60,40 @@ fun Header(
         headerModifier = headerModifier.height(72.dp)
     }
 
-    Box(
-        modifier = headerModifier.background(ExtendedTheme.colors.header),
-    ) {
-        AnimatedVisibility(
-            visible = !isCollapsed,
-            modifier = Modifier.align(Alignment.Center),
-            enter = fadeIn() + slideInVertically(),
-            exit = fadeOut() + slideOutVertically(),
+    if (isSearch) {
+        SearchBar(
+            placeholderText = stringResource(R.string.search_placeholder),
+            onNavigateBack = onExitSearch
+        )
+    } else {
+        Box(
+            modifier = headerModifier.background(ExtendedTheme.colors.header),
         ) {
-            Text(
-                text = stringResource(R.string.title_header),
-                textAlign = TextAlign.Center,
+            AnimatedVisibility(
+                visible = !isCollapsed,
+                modifier = Modifier.align(Alignment.Center),
+                enter = fadeIn() + slideInVertically(),
+                exit = fadeOut() + slideOutVertically(),
+            ) {
+                Text(
+                    text = stringResource(R.string.title_header),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(
+                            horizontal = 30.dp
+                        ),
+                    color = ExtendedTheme.colors.textPrimary,
+                    style = MaterialTheme.typography.h4
+                )
+            }
+            Row(
                 modifier = Modifier
-                    .padding(
-                        horizontal = 30.dp
-                    ),
-                color = ExtendedTheme.colors.textPrimary,
-                style = MaterialTheme.typography.h4
-            )
-        }
-        Row(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .height(72.dp)
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.End
-        ) {
-            if (!isSearch) {
+                    .align(Alignment.BottomCenter)
+                    .height(72.dp)
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
                 AnimatedVisibility(
                     visible = isCollapsed,
                     enter = fadeIn(),
@@ -106,12 +111,6 @@ fun Header(
                     modifier = Modifier,
                     onDarkModeToggleClick = onDarkModeToggleClick,
                     onEnterSearch = onEnterSearch
-                )
-            } else {
-                SearchBar(
-                    placeholderText = stringResource(R.string.search_placeholder),
-                    onNavigateBack = onExitSearch,
-                    modifier = Modifier.weight(weight = 1f, fill = true)
                 )
             }
         }
