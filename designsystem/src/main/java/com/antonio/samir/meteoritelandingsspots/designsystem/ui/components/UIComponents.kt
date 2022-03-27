@@ -50,7 +50,8 @@ fun SearchBar(
     val focusRequester = remember { FocusRequester() }
 
     Row(
-        modifier = modifier
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
     ) {
 
         IconButton(onClick = { onNavigateBack() }) {
