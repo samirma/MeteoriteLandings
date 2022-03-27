@@ -17,9 +17,9 @@
     <string name="without_address_placeholder">Address not loaded yet</string>
     <string name="search">Search</string>
 
-    <string name="title">Search for title, place or country</string>
     <string name="unkown">\???</string>
 
     <string name="title_header">Search for your meteorite</string>
+    <string name="search_placeholder">Search for title, place or country</string>
 
 </resources>

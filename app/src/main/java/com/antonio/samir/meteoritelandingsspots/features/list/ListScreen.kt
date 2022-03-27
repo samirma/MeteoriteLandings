@@ -46,10 +46,13 @@ import kotlinx.coroutines.flow.flowOf
 fun Header(
     headerState: HeaderState,
     modifier: Modifier = Modifier,
-    onDarkModeToggleClick: () -> Unit
+    onEnterSearch: () -> Unit = {},
+    onExitSearch: () -> Unit = {},
+    onDarkModeToggleClick: () -> Unit,
 ) {
 
     val isCollapsed = headerState.isCollapsed()
+    val isSearch = headerState.isSearch()
 
     var headerModifier = modifier
 
@@ -85,25 +88,33 @@ fun Header(
                 .padding(16.dp),
             horizontalArrangement = Arrangement.End
         ) {
-            AnimatedVisibility(
-                visible = isCollapsed,
-                enter = fadeIn(),
-                exit = fadeOut(),
-                modifier = Modifier.weight(weight = 1f, fill = true)
-            ) {
-                Text(
-                    text = stringResource(R.string.title_header),
-                    textAlign = TextAlign.Start,
-                    color = ExtendedTheme.colors.textPrimary,
-                    style = MaterialTheme.typography.h6
+            if (!isSearch) {
+                AnimatedVisibility(
+                    visible = isCollapsed,
+                    enter = fadeIn(),
+                    exit = fadeOut(),
+                    modifier = Modifier.weight(weight = 1f, fill = true)
+                ) {
+                    Text(
+                        text = stringResource(R.string.title_header),
+                        textAlign = TextAlign.Start,
+                        color = ExtendedTheme.colors.textPrimary,
+                        style = MaterialTheme.typography.h6
+                    )
+                }
+                ToolbarButtons(
+                    modifier = Modifier,
+                    onDarkModeToggleClick = onDarkModeToggleClick,
+                    onEnterSearch = onEnterSearch
+                )
+            } else {
+                SearchBar(
+                    placeholderText = stringResource(R.string.search_placeholder),
+                    onNavigateBack = onExitSearch,
+                    modifier = Modifier.weight(weight = 1f, fill = true)
                 )
             }
-            ToolbarButtons(
-                modifier = Modifier,
-                onDarkModeToggleClick = onDarkModeToggleClick
-            )
         }
-        SearchBar(searchText = "search text", placeholderText = "place hodler")
     }
 }
 
@@ -137,8 +148,10 @@ fun HeaderExpandedPreview() {
 @Composable
 fun ListScreen(
     uiState: UiState,
-    onItemClick: (itemView: MeteoriteItemView) -> Unit,
-    onTopList: (scrollOffset: Float) -> Unit,
+    onItemClick: (itemView: MeteoriteItemView) -> Unit = {},
+    onTopList: (scrollOffset: Float) -> Unit = {},
+    onEnterSearch: () -> Unit = {},
+    onExitSearch: () -> Unit = {},
 ) {
 
     val scrollState = rememberLazyListState()
@@ -171,7 +184,9 @@ fun ListScreen(
                 Header(
                     headerState = headerState,
                     modifier = Modifier.weight(weight),
-                    onDarkModeToggleClick = uiState.onDarkModeToggleClick
+                    onDarkModeToggleClick = uiState.onDarkModeToggleClick,
+                    onEnterSearch = onEnterSearch,
+                    onExitSearch = onExitSearch
                 )
                 Box(
                     Modifier.weight(10f, fill = true)
@@ -372,8 +387,7 @@ fun ListScreenMessagePreview() {
             meteorites = flowOf(PagingData.from(items)),
             onDarkModeToggleClick = { },
         ),
-        {}
-    ) {}
+    )
 
 }
 

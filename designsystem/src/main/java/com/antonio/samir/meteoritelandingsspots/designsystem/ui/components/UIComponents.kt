@@ -27,7 +27,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.antonio.samir.meteoritelandingsspots.designsystem.R
@@ -39,8 +38,9 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteL
 @ExperimentalComposeUiApi
 @Composable
 fun SearchBar(
-    searchText: String,
+    searchText: String = "",
     placeholderText: String = "",
+    modifier: Modifier = Modifier,
     onSearchTextChanged: (String) -> Unit = {},
     onClearClick: () -> Unit = {},
     onNavigateBack: () -> Unit = {}
@@ -49,7 +49,9 @@ fun SearchBar(
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
 
-    Row {
+    Row(
+        modifier = modifier
+    ) {
 
         IconButton(onClick = { onNavigateBack() }) {
             Icon(
@@ -59,7 +61,7 @@ fun SearchBar(
             )
         }
 
-        var text by remember { mutableStateOf(TextFieldValue("")) }
+        var text by remember { mutableStateOf(searchText) }
 
         OutlinedTextField(
             modifier = Modifier
@@ -69,9 +71,9 @@ fun SearchBar(
                     showClearButton = (focusState.isFocused)
                 }
                 .focusRequester(focusRequester),
-            value = searchText,
+            value = text,
             onValueChange = {
-                onSearchTextChanged(it)
+                text = it
             },
             placeholder = {
                 Text(text = placeholderText)
@@ -88,7 +90,10 @@ fun SearchBar(
                     enter = fadeIn(),
                     exit = fadeOut()
                 ) {
-                    IconButton(onClick = { onClearClick() }) {
+                    IconButton(onClick = {
+                        onClearClick()
+                        text = ""
+                    }) {
                         Icon(
                             imageVector = Icons.Filled.Close,
                             contentDescription = stringResource(R.string.clear)
@@ -125,7 +130,11 @@ fun SearchBarPreview() {
                 .background(MaterialTheme.colors.background)
                 .fillMaxWidth()
         ) {
-            SearchBar(searchText = "search text", placeholderText = "place hodler")
+            SearchBar(
+                searchText = "search text",
+                placeholderText = "placeholder",
+                modifier = Modifier
+            )
         }
     }
 }
@@ -133,7 +142,11 @@ fun SearchBarPreview() {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ToolbarButtons(modifier: Modifier, onDarkModeToggleClick: () -> Unit) {
+fun ToolbarButtons(
+    modifier: Modifier,
+    onDarkModeToggleClick: () -> Unit,
+    onEnterSearch: () -> Unit
+) {
     Row(
         modifier = modifier
     ) {
@@ -143,7 +156,10 @@ fun ToolbarButtons(modifier: Modifier, onDarkModeToggleClick: () -> Unit) {
             modifier = Modifier
                 .align(Alignment.CenterVertically)
                 .height(24.dp)
-                .width(24.dp),
+                .width(24.dp)
+                .clickable {
+                    onEnterSearch()
+                },
             colorFilter = ColorFilter.tint(ExtendedTheme.colors.highlight)
         )
 
@@ -177,8 +193,9 @@ fun ToolbarActionsPreview() {
     MeteoriteLandingsTheme(darkTheme = darkTheme) {
         Surface(Modifier.background(MaterialTheme.colors.background)) {
             ToolbarButtons(
-                Modifier
-            ) { darkTheme = !darkTheme }
+                Modifier,
+                { darkTheme = !darkTheme }
+            ) {}
         }
     }
 }
