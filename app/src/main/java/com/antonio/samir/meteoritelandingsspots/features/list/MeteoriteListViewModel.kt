@@ -79,7 +79,7 @@ class MeteoriteListViewModel(
         fetchMeteoriteList()
 
         viewModelScope.launch(dispatchers.default()) {
-            debounceState.debounce(100).collect { headerState ->
+            debounceState.debounce(DEBOUNCE.toLong()).collect { headerState ->
                 if (headerState != null) {
                     viewModelState.update {
                         it.copy(
@@ -152,16 +152,23 @@ class MeteoriteListViewModel(
     }
 
     fun onTopList(offset: Float) {
-        debounceState.value = if (offset > 0) {
-            HeaderState.Expanded
-        } else {
-            HeaderState.Collapsed
+        if (debounceState.value != HeaderState.Search) {
+            debounceState.value = if (offset > 0) {
+                HeaderState.Expanded
+            } else {
+                HeaderState.Collapsed
+            }
         }
+    }
+
+    fun setHeaderState(headerState: HeaderState) {
+        debounceState.value = headerState
     }
 
     companion object {
         private val TAG = MeteoriteListViewModel::class.java.simpleName
         const val METEORITE = "METEORITE"
+        const val DEBOUNCE = 200
     }
 
 }

@@ -54,11 +54,20 @@ class MeteoriteListFragment : Fragment() {
 
             val uiState by viewModel.uiState.collectAsState()
 
-            ListScreen(uiState = uiState, {
-                viewModel.selectMeteorite(it)
-            }) { offset ->
-                viewModel.onTopList(offset)
-            }
+            ListScreen(uiState = uiState,
+                onItemClick = {
+                    viewModel.selectMeteorite(it)
+                },
+                onEnterSearch = {
+                    viewModel.setHeaderState(HeaderState.Search)
+                },
+                onExitSearch = {
+                    viewModel.setHeaderState(HeaderState.Collapsed)
+                },
+                onTopList = { offset ->
+                    viewModel.onTopList(offset)
+                }
+            )
         }
 
         return binding.root
@@ -68,7 +77,7 @@ class MeteoriteListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        showActionBar(getString(R.string.title))
+        showActionBar(getString(R.string.search_placeholder))
 
         observeLiveData()
 
