@@ -10,7 +10,6 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.collectAsState
@@ -54,19 +53,13 @@ class MeteoriteListFragment : Fragment() {
 
             val uiState by viewModel.uiState.collectAsState()
 
-            ListScreen(uiState = uiState,
-                onItemClick = {
-                    viewModel.selectMeteorite(it)
-                },
-                onEnterSearch = {
-                    viewModel.setHeaderState(HeaderState.Search)
-                },
-                onExitSearch = {
-                    viewModel.setHeaderState(HeaderState.Expanded)
-                },
-                onTopList = { offset ->
-                    viewModel.onTopList(offset)
-                }
+            ListScreen(
+                uiState = uiState,
+                onItemClick = viewModel::selectMeteorite,
+                onEnterSearch = { viewModel.setHeaderState(HeaderState.Search) },
+                onExitSearch = { viewModel.setHeaderState(HeaderState.Expanded) },
+                onTopList = viewModel::onTopList,
+                onSearch = viewModel::searchLocation
             )
         }
 
@@ -155,36 +148,6 @@ class MeteoriteListFragment : Fragment() {
                 if (isPermitted) {
                     viewModel.updateLocation()
                 }
-            }
-        }
-    }
-
-    private fun setup(searchView: SearchView?) {
-        if (searchView != null) {
-            with(searchView) {
-                isActivated = true
-                onActionViewExpanded()
-                isIconified = false
-                setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-
-                    override fun onQueryTextChange(query: String): Boolean {
-                        if (query.isBlank()) {
-                            onQueryTextSubmit(query)
-                        }
-                        return false
-                    }
-
-                    override fun onQueryTextSubmit(query: String): Boolean {
-                        loadMeteorites(query)
-                        return true
-                    }
-
-                    private fun loadMeteorites(query: String) {
-                        viewModel.searchLocation(query)
-                    }
-
-                })
-
             }
         }
     }

@@ -48,6 +48,7 @@ fun Header(
     modifier: Modifier = Modifier,
     onEnterSearch: () -> Unit = {},
     onExitSearch: () -> Unit = {},
+    onSearch: (query: String) -> Unit = {},
     onDarkModeToggleClick: () -> Unit,
 ) {
 
@@ -63,7 +64,8 @@ fun Header(
     if (isSearch) {
         SearchBar(
             placeholderText = stringResource(R.string.search_placeholder),
-            onNavigateBack = onExitSearch
+            onNavigateBack = onExitSearch,
+            onSearch = onSearch
         )
     } else {
         Box(
@@ -151,6 +153,7 @@ fun ListScreen(
     onTopList: (scrollOffset: Float) -> Unit = {},
     onEnterSearch: () -> Unit = {},
     onExitSearch: () -> Unit = {},
+    onSearch: (query: String) -> Unit,
 ) {
 
     val scrollState = rememberLazyListState()
@@ -185,7 +188,8 @@ fun ListScreen(
                     modifier = Modifier.weight(weight),
                     onDarkModeToggleClick = uiState.onDarkModeToggleClick,
                     onEnterSearch = onEnterSearch,
-                    onExitSearch = onExitSearch
+                    onExitSearch = onExitSearch,
+                    onSearch = onSearch
                 )
                 Box(
                     Modifier.weight(10f, fill = true)
@@ -384,8 +388,9 @@ fun ListScreenMessagePreview() {
             message = null,
             addressStatus = MutableStateFlow(ResultOf.InProgress(100f)),
             meteorites = flowOf(PagingData.from(items)),
-            onDarkModeToggleClick = { },
+            onDarkModeToggleClick = { }
         ),
+        onSearch = {}
     )
 
 }
