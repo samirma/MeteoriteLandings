@@ -9,7 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.KeyboardOptions.Companion.Default
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -43,7 +43,8 @@ fun SearchBar(
     modifier: Modifier = Modifier,
     onSearchTextChanged: (String) -> Unit = {},
     onClearClick: () -> Unit = {},
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    onSearch: (query: String) -> Unit,
 ) {
     var showClearButton by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -105,9 +106,10 @@ fun SearchBar(
             },
             maxLines = 1,
             singleLine = true,
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = {
+            keyboardOptions = Default.copy(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = {
                 keyboardController?.hide()
+                onSearch(text)
             }),
         )
 
@@ -135,7 +137,7 @@ fun SearchBarPreview() {
                 searchText = "search text",
                 placeholderText = "placeholder",
                 modifier = Modifier
-            )
+            ) {}
         }
     }
 }
