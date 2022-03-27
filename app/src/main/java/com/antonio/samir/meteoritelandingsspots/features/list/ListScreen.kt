@@ -15,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -28,6 +29,7 @@ import androidx.paging.compose.items
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.AddressProgress
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.SearchBar
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.ToolbarButtons
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
@@ -38,6 +40,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 
+@ExperimentalComposeUiApi
+@ExperimentalAnimationApi
 @Composable
 fun Header(
     headerState: HeaderState,
@@ -99,9 +103,12 @@ fun Header(
                 onDarkModeToggleClick = onDarkModeToggleClick
             )
         }
+        SearchBar(searchText = "search text", placeholderText = "place hodler")
     }
 }
 
+@ExperimentalAnimationApi
+@ExperimentalComposeUiApi
 @Preview("Header Collapsed")
 @Composable
 fun HeaderPreview() {
@@ -113,6 +120,8 @@ fun HeaderPreview() {
 }
 
 
+@ExperimentalAnimationApi
+@ExperimentalComposeUiApi
 @Preview("Header Expanded")
 @Composable
 fun HeaderExpandedPreview() {
@@ -123,7 +132,8 @@ fun HeaderExpandedPreview() {
     }
 }
 
-
+@ExperimentalAnimationApi
+@ExperimentalComposeUiApi
 @Composable
 fun ListScreen(
     uiState: UiState,
@@ -284,6 +294,8 @@ private fun MeteoriteList(
     }
 }
 
+@ExperimentalAnimationApi
+@ExperimentalComposeUiApi
 @Preview("Meteorite list view")
 @Composable
 fun ListScreenPreview() {
@@ -310,6 +322,8 @@ fun ListScreenPreview() {
 
 }
 
+@ExperimentalAnimationApi
+@ExperimentalComposeUiApi
 @Preview("Meteorite list loading")
 @Composable
 fun ListScreenLoadingPreview() {
@@ -335,6 +349,8 @@ fun ListScreenLoadingPreview() {
 
 }
 
+@ExperimentalAnimationApi
+@ExperimentalComposeUiApi
 @Preview("Meteorite list message")
 @Composable
 fun ListScreenMessagePreview() {

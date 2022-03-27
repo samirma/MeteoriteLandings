@@ -11,9 +11,11 @@ import android.view.ViewGroup
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.antonio.samir.meteoritelandingsspots.R
@@ -26,6 +28,8 @@ import kotlinx.coroutines.FlowPreview
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
 
 
+@ExperimentalComposeUiApi
+@ExperimentalAnimationApi
 @FlowPreview
 @ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
