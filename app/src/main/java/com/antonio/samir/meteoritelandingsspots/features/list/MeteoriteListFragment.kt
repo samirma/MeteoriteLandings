@@ -57,7 +57,10 @@ class MeteoriteListFragment : Fragment() {
                 uiState = uiState,
                 onItemClick = viewModel::selectMeteorite,
                 onEnterSearch = { viewModel.setHeaderState(HeaderState.Search) },
-                onExitSearch = { viewModel.setHeaderState(HeaderState.Expanded) },
+                onExitSearch = {
+                    viewModel.searchLocation("")
+                    viewModel.setHeaderState(HeaderState.Expanded)
+                },
                 onTopList = viewModel::onTopList,
                 onSearch = viewModel::searchLocation
             )
@@ -75,8 +78,6 @@ class MeteoriteListFragment : Fragment() {
         observeLiveData()
 
         setupLocation()
-
-        setHasOptionsMenu(true)
 
         viewModel.searchLocation(viewModel.searchQuery.value)
 
