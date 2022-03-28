@@ -78,7 +78,7 @@ fun SearchBar(
                 text = it
             },
             placeholder = {
-                Text(text = placeholderText)
+                Text(text = placeholderText, style = MaterialTheme.typography.body2)
             },
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = Color.Transparent,
