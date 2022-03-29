@@ -7,35 +7,28 @@ import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalReposit
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteView
 import com.antonio.samir.meteoritelandingsspots.features.detail.mapper.MeteoriteMapper
 import com.antonio.samir.meteoritelandingsspots.features.detail.userCases.GetMeteoriteById.Input
-import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class GetMeteoriteById(
     private val meteoriteLocalRepository: MeteoriteLocalRepository,
-    private val gpsTracker: GPSTrackerInterface,
     private val mapper: MeteoriteMapper,
     private val context: Context
 ) : UserCaseBase<Input, ResultOf<MeteoriteView>>() {
 
-    override fun action(input: Input): Flow<ResultOf<MeteoriteView>> = flow {
-        gpsTracker.requestLocation()
-        gpsTracker.location.collect { location ->
-            val map: Flow<ResultOf.Success<MeteoriteView>> =
-                meteoriteLocalRepository.getMeteoriteById(input.id)
-                    .map {
-                        ResultOf.Success(
-                            data = mapper.map(
-                                MeteoriteMapper.Input(
-                                    meteorite = it,
-                                    location = location,
-                                    context = context
-                                )
-                            )
+    override fun action(input: Input): Flow<ResultOf<MeteoriteView>> =
+        meteoriteLocalRepository.getMeteoriteById(input.id)
+            .map {
+                ResultOf.Success(
+                    data = mapper.map(
+                        MeteoriteMapper.Input(
+                            meteorite = it,
+                            location = null,
+                            context = context
                         )
-                    }
-            emitAll(map)
-        }
-    }
+                    )
+                )
+            }
 
     data class Input(val id: String)
 

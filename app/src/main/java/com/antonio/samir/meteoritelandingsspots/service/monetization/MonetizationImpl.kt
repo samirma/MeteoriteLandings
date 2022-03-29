@@ -1,6 +1,5 @@
 package com.antonio.samir.meteoritelandingsspots.service.monetization
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
@@ -8,8 +7,6 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.antonio.samir.meteoritelandingsspots.BuildConfig
-import com.vanniktech.rxpermission.Permission
-import com.vanniktech.rxpermission.RealRxPermission
 import io.nodle.sdk.INodle
 import io.nodle.sdk.NodleBluetoothScanRecord
 import io.nodle.sdk.NodleEvent
@@ -32,29 +29,29 @@ class MonetizationImpl(val context: Context, val nodleKey: String) : Monetizatio
     override fun start(lifecycleScope: LifecycleCoroutineScope) {
 
         if (!BuildConfig.DEBUG) {
-            RealRxPermission.getInstance(context)
-                .requestEach(
-                    Manifest.permission.BLUETOOTH,
-                    Manifest.permission.BLUETOOTH_ADMIN,
-                    Manifest.permission.BLUETOOTH_SCAN,
-                    Manifest.permission.BLUETOOTH_ADVERTISE,
-                    Manifest.permission.BLUETOOTH_CONNECT,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-                .reduce(true) { c, p -> c && p.state() === Permission.State.GRANTED }
-                .subscribe { granted ->
-                    if (granted) {
-                        Log.d(TAG, "all the permissions was granted by user")
-                        nodle.start(nodleKey)
-
-                        Log.d(TAG, "Is started ${nodle.isStarted()} ")
-                        Log.d(TAG, "Is scanning ${nodle.isScanning()} ")
-
-                    } else {
-                        Log.d(TAG, "some permission was denied by user")
-                    }
-                }
+//            RealRxPermission.getInstance(context)
+//                .requestEach(
+//                    Manifest.permission.BLUETOOTH,
+//                    Manifest.permission.BLUETOOTH_ADMIN,
+//                    Manifest.permission.BLUETOOTH_SCAN,
+//                    Manifest.permission.BLUETOOTH_ADVERTISE,
+//                    Manifest.permission.BLUETOOTH_CONNECT,
+//                    Manifest.permission.ACCESS_COARSE_LOCATION,
+//                    Manifest.permission.ACCESS_FINE_LOCATION
+//                )
+//                .reduce(true) { c, p -> c && p.state() === Permission.State.GRANTED }
+//                .subscribe { granted ->
+//                    if (granted) {
+//                        Log.d(TAG, "all the permissions was granted by user")
+//                        nodle.start(nodleKey)
+//
+//                        Log.d(TAG, "Is started ${nodle.isStarted()} ")
+//                        Log.d(TAG, "Is scanning ${nodle.isScanning()} ")
+//
+//                    } else {
+//                        Log.d(TAG, "some permission was denied by user")
+//                    }
+//                }
 
             collectEvents(lifecycleScope = lifecycleScope)
 

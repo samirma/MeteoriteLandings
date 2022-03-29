@@ -1,9 +1,13 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.*
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.antonio.samir.meteoritelandingsspots.R
@@ -11,7 +15,6 @@ import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.common.userCase.IsDarkTheme
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.*
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
-import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -28,7 +31,6 @@ class MeteoriteListViewModel(
     private val startAddressRecover: StartAddressRecover,
     private val statusAddressRecover: StatusAddressRecover,
     private val fetchMeteoriteList: FetchMeteoriteList,
-    private val gpsTracker: GPSTrackerInterface,
     private val dispatchers: DispatcherProvider,
     private val getMeteorites: GetMeteorites,
     private val setDarkMode: SetUITheme,
@@ -121,10 +123,10 @@ class MeteoriteListViewModel(
     private val _searchQuery: MutableState<String?> = mutableStateOf(null)
     val searchQuery: State<String?> = _searchQuery
 
-    fun searchLocation(query: String?) {
+    fun searchLocation(query: String?, activity: AppCompatActivity) {
         _searchQuery.value = query
         viewModelScope.launch {
-            getMeteorites.execute(query)
+            getMeteorites.execute(GetMeteorites.Input(query = query, activity = activity))
                 .cachedIn(viewModelScope)
                 .collect {
                     _meteorites.value = it
@@ -135,16 +137,6 @@ class MeteoriteListViewModel(
     fun selectMeteorite(meteorite: MeteoriteItemView?) {
         stateHandle[METEORITE] = meteorite
         this.meteorite.value = meteorite
-    }
-
-    fun updateLocation() {
-        viewModelScope.launch(dispatchers.default()) {
-            gpsTracker.requestLocation()
-        }
-    }
-
-    fun isAuthorizationRequested(): LiveData<Boolean> {
-        return gpsTracker.needAuthorization.asLiveData()
     }
 
     fun clearSelectedMeteorite() {
