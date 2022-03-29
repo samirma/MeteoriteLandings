@@ -11,7 +11,7 @@ data class UiState(
     val isLoading: Boolean,
     @StringRes val message: Int? = null,
     val searchInput: String? = null,
-    val addressStatus: StateFlow<ResultOf<Float>>,
+    val addressStatus: ResultOf<Float>,
     val meteorites: Flow<PagingData<MeteoriteItemView>>,
     val isDark: StateFlow<Boolean> = MutableStateFlow(true),
     val onDarkModeToggleClick: () -> Unit,

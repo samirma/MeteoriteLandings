@@ -52,7 +52,7 @@ class MeteoriteListViewModel(
     private val viewModelState = MutableStateFlow(
         UiState(
             isLoading = true,
-            addressStatus = recoverAddressStatus(),
+            addressStatus = ResultOf.InProgress(0f),
             meteorites = meteorites,
             onDarkModeToggleClick = {
                 onDarkModeToggleClick()
@@ -110,15 +110,19 @@ class MeteoriteListViewModel(
                 }
             }
         }
+
+        viewModelScope.launch {
+            recoverAddressStatus().collect { resultOf ->
+                viewModelState.update {
+                    it.copy(addressStatus = resultOf)
+                }
+            }
+        }
     }
 
-    private fun recoverAddressStatus(): StateFlow<ResultOf<Float>> =
+    private fun recoverAddressStatus(): Flow<ResultOf<Float>> =
         startAddressRecover.execute(Unit)
-            .flatMapConcat(statusAddressRecover::execute).stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.Eagerly,
-                initialValue = ResultOf.InProgress(0.0f)
-            )
+            .flatMapConcat(statusAddressRecover::execute)
 
     private val _searchQuery: MutableState<String?> = mutableStateOf(null)
     val searchQuery: State<String?> = _searchQuery

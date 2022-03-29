@@ -13,7 +13,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -21,7 +20,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.asLiveData
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -37,7 +35,6 @@ import com.antonio.samir.meteoritelandingsspots.features.list.HeaderState
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.features.list.UiState
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 
 @ExperimentalComposeUiApi
@@ -202,19 +199,17 @@ fun ListScreen(
                         Message(uiState.message)
                     }
 
-                    val addressProgress = uiState.addressStatus.asLiveData().observeAsState().value
-                    if (addressProgress != null) {
-                        if (addressProgress is ResultOf.InProgress && (addressProgress.data != null)) {
-                            AddressProgress(
-                                progress = addressProgress.data,
-                                modifier = Modifier
-                                    .align(Alignment.BottomEnd)
-                                    .padding(
-                                        end = 16.dp,
-                                        bottom = 16.dp
-                                    )
-                            )
-                        }
+                    val addressProgress = uiState.addressStatus
+                    if (addressProgress is ResultOf.InProgress && (addressProgress.data != null)) {
+                        AddressProgress(
+                            progress = addressProgress.data,
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .padding(
+                                    end = 16.dp,
+                                    bottom = 16.dp
+                                )
+                        )
                     }
                 }
             }
@@ -330,7 +325,7 @@ fun ListScreenPreview() {
     ListScreen(
         uiState = UiState(
             isLoading = false,
-            addressStatus = MutableStateFlow(ResultOf.Success(100f)),
+            addressStatus = ResultOf.Success(100f),
             meteorites = flowOf(PagingData.from(items)),
             onDarkModeToggleClick = { },
             headerState = HeaderState.Expanded
@@ -358,7 +353,7 @@ fun ListScreenLoadingPreview() {
     ListScreen(
         uiState = UiState(
             isLoading = true,
-            addressStatus = MutableStateFlow(ResultOf.Success(100f)),
+            addressStatus = ResultOf.Success(100f),
             meteorites = flowOf(PagingData.from(items)),
             onDarkModeToggleClick = { },
         ),
@@ -386,7 +381,7 @@ fun ListScreenMessagePreview() {
         uiState = UiState(
             isLoading = false,
             message = null,
-            addressStatus = MutableStateFlow(ResultOf.InProgress(10f)),
+            addressStatus = ResultOf.InProgress(10f),
             meteorites = flowOf(PagingData.from(items)),
             onDarkModeToggleClick = { }
         ),
