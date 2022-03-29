@@ -145,7 +145,7 @@ dependencies {
     //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
 
     implementation 'com.akexorcist:round-corner-progress-bar:2.1.2'
 
@@ -156,7 +156,10 @@ dependencies {
 
     //Nodle
     implementation 'io.nodle:nodlesdk-rc-lg:cbe8a42b18'
-    implementation 'com.vanniktech:rxpermission:0.7.0'
+
+    // The core artifact.
+    implementation 'com.github.fondesa:kpermissions:3.3.0'
+    implementation 'com.github.fondesa:kpermissions-coroutines:3.3.0'
 
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.1.0-alpha3', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -167,16 +170,16 @@ dependencies {
 
     //Test
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit:1.5.20'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit:1.5.21'
     testImplementation 'org.assertj:assertj-core:3.18.1'
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
     testImplementation "android.arch.core:core-testing:1.1.1"
     testImplementation 'com.flextrade.jfixture:jfixture:2.7.2'
 
     // testImplementation for pure JVM unit tests
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0"
     // androidTestImplementation for Android instrumentation tests
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2"
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0"
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 

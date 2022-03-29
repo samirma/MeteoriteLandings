@@ -2,9 +2,12 @@ package com.antonio.samir.meteoritelandingsspots.di
 
 import android.content.Context
 import android.location.Geocoder
+import android.location.LocationManager
 import androidx.room.Room
 import com.antonio.samir.meteoritelandingsspots.R
+import com.antonio.samir.meteoritelandingsspots.common.userCase.GetLocation
 import com.antonio.samir.meteoritelandingsspots.common.userCase.IsDarkTheme
+import com.antonio.samir.meteoritelandingsspots.common.userCase.RequestPermission
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepositoryImpl
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteMigrations.MIGRATION_1_2
@@ -92,15 +95,14 @@ val useCaseModule = module {
         GetMeteoriteById(
             meteoriteLocalRepository = get(),
             mapper = get(),
-            context = get(),
-            gpsTracker = get()
+            context = get()
         )
     }
     factory {
         GetMeteorites(
             meteoriteLocalRepository = get(),
             mapper = get(),
-            gpsTracker = get()
+            getLocation = get()
         )
     }
     factory {
@@ -113,6 +115,14 @@ val useCaseModule = module {
     factory { StatusAddressRecover(context = get()) }
     factory { IsDarkTheme(get()) }
     factory { SetUITheme(get()) }
+    factory { RequestPermission() }
+    factory {
+        GetLocation(
+            get(),
+            get<Context>().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        )
+    }
+
 }
 
 @ExperimentalCoroutinesApi
@@ -121,7 +131,6 @@ val businessModule = module {
     single<DispatcherProvider> { DefaultDispatcherProvider() }
     single { Geocoder(get()) }
     single<GeoLocationUtilInterface> { GeoLocationUtil(get()) }
-    single<GPSTrackerInterface> { GPSTracker(context = get()) }
     single<AddressServiceInterface> { AddressServiceImpl(get(), get()) }
     single<MeteoriteRepository> { MeteoriteRepositoryImpl(get(), get(), get()) }
     single<MonetizationInterface> {
@@ -153,7 +162,6 @@ val viewModelModule = module {
             startAddressRecover = get(),
             statusAddressRecover = get(),
             fetchMeteoriteList = get(),
-            gpsTracker = get(),
             dispatchers = get(),
             getMeteorites = get(),
             setDarkMode = get(),

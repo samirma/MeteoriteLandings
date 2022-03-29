@@ -60,8 +60,4 @@ class MeteoriteDetailViewModel(
         this.currentMeteorite.value = meteoriteId
     }
 
-    fun requestAddressUpdate(meteorite: MeteoriteView) {
-
-    }
-
 }

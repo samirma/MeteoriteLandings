@@ -386,7 +386,7 @@ fun ListScreenMessagePreview() {
         uiState = UiState(
             isLoading = false,
             message = null,
-            addressStatus = MutableStateFlow(ResultOf.InProgress(100f)),
+            addressStatus = MutableStateFlow(ResultOf.InProgress(10f)),
             meteorites = flowOf(PagingData.from(items)),
             onDarkModeToggleClick = { }
         ),
