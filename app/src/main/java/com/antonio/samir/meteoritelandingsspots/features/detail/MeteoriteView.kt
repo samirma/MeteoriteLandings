@@ -9,5 +9,5 @@ data class MeteoriteView(
     val mass: String,
     val reclat: Double,
     val reclong: Double,
-    val hasAddress: Boolean = false
+    val hasAddress: Boolean = true
 )
