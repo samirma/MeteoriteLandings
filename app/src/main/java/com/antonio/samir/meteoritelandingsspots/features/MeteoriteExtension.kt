@@ -58,6 +58,7 @@ val Meteorite.yearString: String?
 
             } catch (e: ParseException) {
                 Log.e(this@yearString::class.java.simpleName, "${e.message} ${year}", e)
+                yearParsed = year
             }
 
         }
