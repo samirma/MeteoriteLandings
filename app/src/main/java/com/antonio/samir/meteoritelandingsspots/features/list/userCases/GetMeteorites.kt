@@ -34,7 +34,7 @@ class GetMeteorites(
             Log.i(TAG, "resultOf $resultOf")
 
             val location: Location? = when (resultOf) {
-                is ResultOf.Success -> null //resultOf.data.location
+                is ResultOf.Success -> resultOf.data.location
                 else -> null
             }
 
