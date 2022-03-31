@@ -138,7 +138,8 @@ val businessModule = module {
         val nodleKey = context.getString(R.string.nodle_key)
         MonetizationImpl(
             context = context,
-            nodleKey = nodleKey
+            nodleKey = nodleKey,
+            requestPermission = get()
         ).apply {
             init()
             setNodle(Nodle.Nodle())

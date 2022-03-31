@@ -170,9 +170,9 @@ fun ToolbarButtons(
         )
 
         val darkModeIcon = if (MaterialTheme.colors.isLight) {
-            R.drawable.ic_light
-        } else {
             R.drawable.ic_dark
+        } else {
+            R.drawable.ic_light
         }
 
         Image(

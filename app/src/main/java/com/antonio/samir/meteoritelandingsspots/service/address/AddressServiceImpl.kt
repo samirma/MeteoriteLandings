@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.service.address
 
+import android.util.Log
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
@@ -42,6 +43,10 @@ class AddressServiceImpl(
                 meteoriteLocalRepository.getMeteoritesWithoutAddressCount()
             val meteoritesCount = meteoriteLocalRepository.getValidMeteoritesCount()
             val progress = (1 - (meteoritesWithoutAddressCount.toFloat() / meteoritesCount)) * 100
+            Log.d(
+                TAG,
+                "meteoritesWithoutAddressCount: $meteoritesWithoutAddressCount meteoritesCount: $meteoritesCount progress: $progress"
+            )
             ResultOf.InProgress(progress)
         } else {
             ResultOf.Success(100f)
