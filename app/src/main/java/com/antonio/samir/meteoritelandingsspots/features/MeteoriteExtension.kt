@@ -57,7 +57,7 @@ val Meteorite.yearString: String?
                 yearParsed = cal.get(Calendar.YEAR).toString()
 
             } catch (e: ParseException) {
-                Log.e(this@yearString::class.java.simpleName, e.message, e)
+                Log.e(this@yearString::class.java.simpleName, "${e.message} ${year}", e)
             }
 
         }
