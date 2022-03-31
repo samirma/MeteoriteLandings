@@ -24,7 +24,7 @@ class MeteoriteMainEntryPointActivity : AppCompatActivity() {
         setContentView(R.layout.activity_meteorite_list)
         configureActionBar()
 
-        monetization.start(lifecycleScope)
+        monetization.start(lifecycleScope, this)
 
     }
 

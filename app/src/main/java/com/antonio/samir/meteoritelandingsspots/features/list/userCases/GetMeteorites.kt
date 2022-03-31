@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.list.userCases
 
+import android.location.Location
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.paging.Pager
@@ -32,8 +33,8 @@ class GetMeteorites(
         getLocation.execute(GetLocation.Input(input.activity)).collect { resultOf ->
             Log.i(TAG, "resultOf $resultOf")
 
-            val location = when (resultOf) {
-                is ResultOf.Success -> resultOf.data.location
+            val location: Location? = when (resultOf) {
+                is ResultOf.Success -> null //resultOf.data.location
                 else -> null
             }
 
@@ -67,7 +68,7 @@ class GetMeteorites(
 
     companion object {
         private val TAG = GetMeteorites::class.java.simpleName
-        const val PAGE_SIZE = 20
+        const val PAGE_SIZE = 200
         const val LIMIT = 1000L
     }
 

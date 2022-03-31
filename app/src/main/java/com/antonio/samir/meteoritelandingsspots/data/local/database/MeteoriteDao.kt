@@ -37,7 +37,7 @@ interface MeteoriteDao {
     @Query("SELECT count(id) from meteorites")
     suspend fun getMeteoritesCount(): Int
 
-    @Query("SELECT count(id) from meteorites WHERE address IS NULL OR LENGTH(address) = 0")
+    @Query("SELECT count(id) from meteorites WHERE recLong IS NOT NULL AND (address IS NULL OR LENGTH(address) = 0)")
     suspend fun getMeteoritesWithoutAddressCount(): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
