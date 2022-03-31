@@ -13,6 +13,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.antonio.samir.meteoritelandingsspots.R
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Shimmer
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteItemView
@@ -75,12 +76,18 @@ fun MeteoriteCell(
                             style = MaterialTheme.typography.overline
                         )
                     }
-                    Text(
-                        color = ExtendedTheme.colors.textSecondary,
-                        text = itemView.address ?: "",
-                        maxLines = 2,
-                        style = MaterialTheme.typography.body2
-                    )
+                    if (itemView.hasAddress) {
+                        Text(
+                            color = ExtendedTheme.colors.textSecondary,
+                            text = itemView.address ?: "",
+                            maxLines = 2,
+                            style = MaterialTheme.typography.body2
+                        )
+                    } else {
+                        Shimmer(
+                            Modifier.padding(top = 6.dp)
+                        )
+                    }
                 }
 
             }
@@ -128,6 +135,24 @@ fun MeteoriteCellPreviewLight() {
                 yearString = "yearString $sample",
                 distance = "distance $sample",
                 address = "address $sample"
+            )
+        ) {}
+    }
+}
+
+@Preview("MeteoriteCell Light no Adress")
+@Composable
+fun MeteoriteCellPreviewLightNoAdress() {
+    val sample = "test"
+    MeteoriteLandingsTheme(darkTheme = false) {
+        MeteoriteCell(
+            MeteoriteItemView(
+                id = sample,
+                name = "name $sample",
+                yearString = "yearString $sample",
+                distance = "distance $sample",
+                address = "address $sample",
+                hasAddress = false
             )
         ) {}
     }

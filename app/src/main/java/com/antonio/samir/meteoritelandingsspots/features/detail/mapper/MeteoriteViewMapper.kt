@@ -16,10 +16,7 @@ class MeteoriteMapper : MapperBase<MeteoriteMapper.Input, MeteoriteView>() {
         id = input.meteorite.id.toString(),
         name = input.meteorite.name ?: "",
         yearString = input.meteorite.yearString ?: "",
-        address = input.meteorite.getLocationText(
-            noAddress = input.context
-                .getString(R.string.without_address_placeholder)
-        ),
+        address = input.meteorite.getLocationText(noAddress = ""),
         type = input.meteorite.recclass ?: "",
         mass = input.meteorite.mass.convertToNumberFormat(input.context.getString(R.string.unkown)),
         reclat = input.meteorite.reclat?.toDouble() ?: 0.0,

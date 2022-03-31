@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.antonio.samir.meteoritelandingsspots.R
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Shimmer
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteView
@@ -35,7 +36,11 @@ fun MeteoriteDetail(
                     .padding(vertical = 16.dp),
                 verticalArrangement = Arrangement.Center,
             ) {
-                LineDetail(R.drawable.ic_globe, meteoriteView.address)
+                LineDetail(
+                    icon = R.drawable.ic_globe,
+                    label = meteoriteView.address,
+                    showShimmer = !meteoriteView.hasAddress
+                )
                 LineDetail(R.drawable.ic_weight, meteoriteView.mass)
                 LineDetail(R.drawable.ic_type, meteoriteView.type)
                 LineDetail(R.drawable.ic_crash, meteoriteView.yearString)
@@ -47,7 +52,8 @@ fun MeteoriteDetail(
 @Composable
 private fun LineDetail(
     @DrawableRes icon: Int,
-    label: String
+    label: String,
+    showShimmer: Boolean = false
 ) {
     Row(
         verticalAlignment = CenterVertically,
@@ -64,12 +70,19 @@ private fun LineDetail(
                 .size(40.dp)
                 .padding(end = 16.dp),
         )
-        Text(
-            text = label,
-            textAlign = TextAlign.Start,
-            style = MaterialTheme.typography.body2,
-            color = ExtendedTheme.colors.textPrimary
-        )
+        if (showShimmer) {
+            Shimmer(
+                modifier = Modifier
+                    .align(CenterVertically)
+            )
+        } else {
+            Text(
+                text = label,
+                textAlign = TextAlign.Start,
+                style = MaterialTheme.typography.body2,
+                color = ExtendedTheme.colors.textPrimary
+            )
+        }
     }
 }
 
@@ -108,6 +121,27 @@ fun MeteoriteDetailLight() {
             mass = "mass",
             reclat = 0.0,
             reclong = 0.0
+        ),
+        darkTheme = false
+    )
+}
+
+
+@Preview("MeteoriteDetail no Address Light")
+@Composable
+fun MeteoriteDetailNoAddressLight() {
+    val sample = "test"
+    MeteoriteDetail(
+        meteoriteView = MeteoriteView(
+            id = sample,
+            name = "name $sample",
+            yearString = "yearString $sample",
+            type = "distance $sample",
+            address = "address $sample",
+            mass = "mass",
+            reclat = 0.0,
+            reclong = 0.0,
+            hasAddress = false
         ),
         darkTheme = false
     )

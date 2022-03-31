@@ -8,7 +8,8 @@ data class MeteoriteItemView(
     val id: String,
     val name: String,
     val yearString: String,
-    val address: String,
+    val address: String = "",
     val distance: String,
     val isSelected: Boolean = false,
+    val hasAddress: Boolean = true,
 ) : Parcelable

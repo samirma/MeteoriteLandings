@@ -32,6 +32,9 @@ import androidx.compose.ui.unit.dp
 import com.antonio.samir.meteoritelandingsspots.designsystem.R
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
+import com.valentinilk.shimmer.ShimmerBounds
+import com.valentinilk.shimmer.rememberShimmer
+import com.valentinilk.shimmer.shimmer
 
 
 @ExperimentalAnimationApi
@@ -258,3 +261,22 @@ fun ProgressPreview() {
     }
 }
 
+
+@Composable
+fun Shimmer(modifier: Modifier = Modifier) {
+    val shimmer = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
+    Box(
+        modifier = modifier
+            .width(152.dp)
+            .height(20.dp)
+            .shimmer(customShimmer = shimmer),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(24.dp)
+                .background(Color.LightGray)
+        )
+    }
+}
