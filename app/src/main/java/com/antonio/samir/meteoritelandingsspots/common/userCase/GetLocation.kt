@@ -16,7 +16,7 @@ class GetLocation(
 ) :
     UserCaseBase<Input, ResultOf<Output>>() {
 
-    override fun action(input: Input) = requestPermission.execute(
+    override fun action(input: Input) = requestPermission(
         RequestPermission.Input(
             activity = input.activity,
             Manifest.permission.ACCESS_COARSE_LOCATION,

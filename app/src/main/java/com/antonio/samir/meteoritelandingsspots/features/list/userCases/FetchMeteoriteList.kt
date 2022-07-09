@@ -13,7 +13,7 @@ class FetchMeteoriteList(
 ) : UserCaseBase<Unit, ResultOf<Unit>>() {
 
     override fun action(input: Unit) = meteoriteRepository.loadDatabase().onEach {
-        if (it is ResultOf.Success) startAddressRecover.execute(Unit)
+        if (it is ResultOf.Success) startAddressRecover(Unit)
     }
 
 }

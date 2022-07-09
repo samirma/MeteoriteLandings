@@ -30,7 +30,7 @@ class GetMeteorites(
     override fun action(input: Input) = flow {
         Log.i(TAG, "Searching $input")
 
-        getLocation.execute(GetLocation.Input(input.activity)).collect { resultOf ->
+        getLocation(GetLocation.Input(input.activity)).collect { resultOf ->
             Log.i(TAG, "resultOf $resultOf")
 
             val location: Location? = when (resultOf) {

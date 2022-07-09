@@ -38,7 +38,7 @@ class MonetizationImpl(
         if (BuildConfig.DEBUG) {
 
             lifecycleScope.launch {
-                requestPermission.execute(
+                requestPermission(
                     RequestPermission.Input(
                         activity = activity,
                         Manifest.permission.BLUETOOTH,

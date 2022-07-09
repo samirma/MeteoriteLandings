@@ -24,7 +24,7 @@ class MeteoriteDetailViewModel(
 
     private val viewModelState = MutableStateFlow(
         UiState(
-            isDark = isDarkTheme.execute(Unit).stateIn(
+            isDark = isDarkTheme(Unit).stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.Eagerly,
                 initialValue = false
@@ -48,7 +48,7 @@ class MeteoriteDetailViewModel(
     private fun getMeteorite() = currentMeteorite.asStateFlow()
         .filterNotNull()
         .flatMapLatest { meteoriteId ->
-            getMeteoriteById.execute(
+            getMeteoriteById(
                 Input(
                     id = meteoriteId
                 )
