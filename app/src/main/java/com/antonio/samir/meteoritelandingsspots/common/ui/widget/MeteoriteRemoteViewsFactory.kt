@@ -8,7 +8,6 @@ import android.widget.RemoteViewsService
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.yearString
-import org.apache.commons.lang3.StringUtils
 
 class MeteoriteRemoteViewsFactory(
     private val mPackageName: String
@@ -77,16 +76,16 @@ class MeteoriteRemoteViewsFactory(
         return true
     }
 
-    private fun setLocationText(address: String?, views: RemoteViews) {
-        val text: String?
-        text = if (StringUtils.isNotEmpty(address)) {
-            address
-        } else {
-            ""
-        }
-//        views.setTextViewText(R.id.location, text)
-
-    }
+//    private fun setLocationText(address: String?, views: RemoteViews) {
+//        val text: String?
+//        text = if (StringUtils.isNotEmpty(address)) {
+//            address
+//        } else {
+//            ""
+//        }
+////        views.setTextViewText(R.id.location, text)
+//
+//    }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
     private fun setRemoteContentDescription(views: RemoteViews, description: String?) {

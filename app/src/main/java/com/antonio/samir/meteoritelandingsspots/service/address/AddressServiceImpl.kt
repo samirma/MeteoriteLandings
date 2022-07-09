@@ -10,7 +10,6 @@ import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
-import org.apache.commons.lang3.StringUtils
 
 @ExperimentalCoroutinesApi
 class AddressServiceImpl(
@@ -84,17 +83,17 @@ class AddressServiceImpl(
         if (address != null) {
             val finalAddress = ArrayList<String>()
             val city = address.locality
-            if (StringUtils.isNoneEmpty(city)) {
+            if (!city.isNullOrBlank()) {
                 finalAddress.add(city)
             }
 
             val state = address.adminArea
-            if (StringUtils.isNoneEmpty(state)) {
+            if (!state.isNullOrBlank()) {
                 finalAddress.add(state)
             }
 
             val countryName = address.countryName
-            if (StringUtils.isNoneEmpty(countryName)) {
+            if (!countryName.isNullOrBlank()) {
                 finalAddress.add(countryName)
             }
 
