@@ -57,7 +57,7 @@ class MeteoriteListViewModel(
             onDarkModeToggleClick = {
                 onDarkModeToggleClick()
             },
-            isDark = isDarkTheme.execute(Unit).stateIn(
+            isDark = isDarkTheme(Unit).stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.Eagerly,
                 initialValue = false
@@ -73,7 +73,7 @@ class MeteoriteListViewModel(
         isDarkMode = !isDarkMode
 //        viewModelState.update { it.copy(isDark = isDarkMode) }
         viewModelScope.launch {
-            setDarkMode.execute(SetUITheme.Input(isDarkMode)).collect()
+            setDarkMode(SetUITheme.Input(isDarkMode)).collect()
         }
     }
 
@@ -97,7 +97,7 @@ class MeteoriteListViewModel(
     private fun fetchMeteoriteList() {
 
         viewModelScope.launch {
-            fetchMeteoriteList.execute(Unit).collect { resultOf ->
+            fetchMeteoriteList(Unit).collect { resultOf ->
                 viewModelState.update {
                     when (resultOf) {
                         is ResultOf.Error -> it.copy(
@@ -121,8 +121,7 @@ class MeteoriteListViewModel(
     }
 
     private fun recoverAddressStatus(): Flow<ResultOf<Float>> =
-        startAddressRecover.execute(Unit)
-            .flatMapConcat(statusAddressRecover::execute)
+        startAddressRecover(Unit).flatMapConcat { statusAddressRecover(it) }
 
     private val _searchQuery: MutableState<String?> = mutableStateOf(null)
     val searchQuery: State<String?> = _searchQuery
@@ -130,7 +129,7 @@ class MeteoriteListViewModel(
     fun searchLocation(query: String?, activity: AppCompatActivity) {
         _searchQuery.value = query
         viewModelScope.launch {
-            getMeteorites.execute(GetMeteorites.Input(query = query, activity = activity))
+            getMeteorites(GetMeteorites.Input(query = query, activity = activity))
                 .cachedIn(viewModelScope)
                 .collect {
                     _meteorites.value = it
