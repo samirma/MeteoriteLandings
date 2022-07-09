@@ -364,7 +364,7 @@ fun ListScreenLoadingPreview() {
 
 @ExperimentalAnimationApi
 @ExperimentalComposeUiApi
-@Preview("Meteorite list message")
+@Preview("Meteorite list message loading 10%")
 @Composable
 fun ListScreenMessagePreview() {
     val items = (1..10).map {
@@ -381,7 +381,7 @@ fun ListScreenMessagePreview() {
         uiState = UiState(
             isLoading = false,
             message = null,
-            addressStatus = ResultOf.InProgress(10f),
+            addressStatus = ResultOf.InProgress(10.0f),
             meteorites = flowOf(PagingData.from(items)),
             onDarkModeToggleClick = { }
         ),
