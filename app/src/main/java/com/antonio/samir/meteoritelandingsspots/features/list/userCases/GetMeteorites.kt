@@ -31,7 +31,7 @@ class GetMeteorites(
         Log.i(TAG, "Searching $input")
 
         getLocation(GetLocation.Input(input.activity)).collect { resultOf ->
-            Log.i(TAG, "resultOf $resultOf")
+            Log.i(TAG, "Location $resultOf")
 
             val location: Location? = when (resultOf) {
                 is ResultOf.Success -> resultOf.data.location

@@ -104,7 +104,10 @@ class MeteoriteListViewModel(
                             isLoading = false,
                             message = R.string.general_error
                         )
-                        is ResultOf.InProgress -> it.copy(isLoading = true, message = null)
+                        is ResultOf.InProgress -> it.copy(
+                            isLoading = false,
+                            message = R.string.general_error
+                        )
                         is ResultOf.Success -> it.copy(isLoading = false, message = null)
                     }
                 }
@@ -131,9 +134,8 @@ class MeteoriteListViewModel(
         viewModelScope.launch {
             getMeteorites(GetMeteorites.Input(query = query, activity = activity))
                 .cachedIn(viewModelScope)
-                .collect {
-                    _meteorites.value = it
-                }
+                .onEach { _meteorites.value = it }
+                .collect {}
         }
     }
 

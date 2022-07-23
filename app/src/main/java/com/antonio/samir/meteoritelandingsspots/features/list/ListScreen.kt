@@ -91,7 +91,8 @@ fun Header(
                     .height(72.dp)
                     .fillMaxWidth()
                     .padding(16.dp),
-                horizontalArrangement = Arrangement.End
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 AnimatedVisibility(
                     visible = isCollapsed,

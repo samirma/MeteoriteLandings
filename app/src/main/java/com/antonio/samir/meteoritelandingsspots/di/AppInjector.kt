@@ -107,8 +107,7 @@ val useCaseModule = module {
     }
     factory {
         FetchMeteoriteList(
-            meteoriteRepository = get(),
-            startAddressRecover = get()
+            meteoriteRepository = get()
         )
     }
     factory { StartAddressRecover(context = get()) }
