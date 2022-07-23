@@ -23,7 +23,6 @@ class AddressServiceImpl(
     override fun recoveryAddress(): Flow<ResultOf<Float>> =
         meteoriteLocalRepository.meteoritesWithOutAddress()
             .onEach { recoverAddress(it) }
-            .flowOn(dispatchers.default())
             .map {
                 getReturn(it)
             }
@@ -52,7 +51,7 @@ class AddressServiceImpl(
         }
     }
 
-    private suspend fun recoverAddress(list: List<Meteorite>) = withContext(dispatchers.default()) {
+    private suspend fun recoverAddress(list: List<Meteorite>) {
         list.onEach { meteorite ->
             meteorite.address = getAddressFromMeteorite(meteorite)
         }
