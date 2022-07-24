@@ -2,7 +2,6 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -13,14 +12,24 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.antonio.samir.meteoritelandingsspots.R
+import com.antonio.samir.meteoritelandingsspots.designsystem.R
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Shimmer
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
-import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteView
 
 
-@OptIn(ExperimentalMaterialApi::class)
+data class MeteoriteView(
+    val id: String?,
+    val name: String,
+    val yearString: String,
+    val address: String,
+    val type: String,
+    val mass: String,
+    val reclat: Double,
+    val reclong: Double,
+    val hasAddress: Boolean = true
+)
+
 @Composable
 fun MeteoriteDetail(
     meteoriteView: MeteoriteView,
