@@ -1,6 +1,7 @@
 package com.antonio.samir.meteoritelandingsspots.features.detail
 
 import MeteoriteDetail
+import MeteoriteView
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -27,7 +28,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
 
@@ -60,8 +60,6 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
             findNavController().navigateUp()
         }
 
-        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
-
         observeMeteorite()
 
         if (arguments != null) {
@@ -74,7 +72,6 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
 
         lifecycleScope.launch {
             viewModel.uiState.collect { uiState ->
-                uiState
                 if (uiState.isLoading) {
                     showProgressLoader()
                 } else if (uiState.meteoriteView != null) {
