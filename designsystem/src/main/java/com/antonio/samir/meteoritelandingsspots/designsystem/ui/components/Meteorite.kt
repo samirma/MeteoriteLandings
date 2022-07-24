@@ -1,10 +1,11 @@
-package com.antonio.samir.meteoritelandingsspots.features.list
+package com.antonio.samir.meteoritelandingsspots.designsystem.ui.components
 
+
+import android.os.Parcelable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -14,14 +15,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
-import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Shimmer
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
+import kotlinx.android.parcel.Parcelize
+import com.antonio.samir.meteoritelandingsspots.designsystem.R
 
 
-@OptIn(ExperimentalMaterialApi::class)
+
+@Parcelize
+data class MeteoriteItemView(
+    val id: String,
+    val name: String,
+    val yearString: String,
+    val address: String = "",
+    val distance: String,
+    val isSelected: Boolean = false,
+    val hasAddress: Boolean = true,
+) : Parcelable
+
+
 @Composable
 fun MeteoriteCell(
     itemView: MeteoriteItemView,

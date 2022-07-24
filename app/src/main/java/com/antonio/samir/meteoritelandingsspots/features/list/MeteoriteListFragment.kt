@@ -2,6 +2,7 @@ package com.antonio.samir.meteoritelandingsspots.features.list
 
 import ListScreen
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
@@ -13,14 +14,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ui.extension.isLandscape
 import com.antonio.samir.meteoritelandingsspots.common.ui.extension.showActionBar
 import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteListBinding
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.HeaderState
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailFragment
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.*
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
 
 

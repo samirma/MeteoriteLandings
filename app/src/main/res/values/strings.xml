@@ -15,7 +15,4 @@
 
     <string name="unkown">\???</string>
 
-    <string name="title_header">Search for your meteorite</string>
-    <string name="search_placeholder">Search for title, place or country</string>
-
 </resources>

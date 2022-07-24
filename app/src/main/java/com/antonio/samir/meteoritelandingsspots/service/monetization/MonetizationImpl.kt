@@ -16,6 +16,7 @@ import io.nodle.sdk.NodleBluetoothScanRecord
 import io.nodle.sdk.NodleEvent
 import io.nodle.sdk.NodleEventType
 import io.nodle.sdk.android.Nodle
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 
@@ -37,7 +38,7 @@ class MonetizationImpl(
 
         if (BuildConfig.DEBUG) {
 
-            lifecycleScope.launch {
+            lifecycleScope.launch(Dispatchers.IO) {
                 requestPermission(
                     RequestPermission.Input(
                         activity = activity,
