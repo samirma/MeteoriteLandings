@@ -209,68 +209,6 @@ fun ToolbarActionsPreview() {
 }
 
 
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun AddressProgress(progress: Float, modifier: Modifier) {
-    val isVisible = progress > 0f && progress < 100f
-    AnimatedVisibility(
-        visible = isVisible,
-        modifier = modifier
-    ) {
-        Box(
-            modifier = Modifier.width(112.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_load_layout),
-                contentDescription = "",
-                modifier = Modifier.align(Alignment.CenterStart),
-                colorFilter = ColorFilter.tint(ExtendedTheme.colors.backgroundInverted)
-            )
-            Row(
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = String.format("%.2f", progress) + "%",
-                    modifier = Modifier
-                        .padding(6.dp)
-                        .align(CenterVertically),
-                    style = MaterialTheme.typography.subtitle2,
-                    fontSize = 8.sp,
-                    color = ExtendedTheme.colors.textPrimaryInverted
-                )
-                Text(
-                    modifier = Modifier.align(CenterVertically),
-                    text = stringResource(R.string.loading_resources),
-                    style = MaterialTheme.typography.overline,
-                    fontSize = 6.sp,
-                    color = ExtendedTheme.colors.textSecondaryInverted
-                )
-            }
-        }
-    }
-
-}
-
-@Preview("AddressProgress Light")
-@Composable
-fun AddressProgresssLightPreview() {
-    MeteoriteLandingsTheme(darkTheme = false) {
-        AddressProgress(10.0f, Modifier)
-    }
-}
-
-@Preview("AddressProgress Dark")
-@Composable
-fun AddressProgresssDarkPreview() {
-    MeteoriteLandingsTheme(darkTheme = true) {
-        AddressProgress(10.0f, Modifier)
-    }
-}
-
 @Preview("ProgressPreview")
 @Composable
 fun ProgressPreview() {

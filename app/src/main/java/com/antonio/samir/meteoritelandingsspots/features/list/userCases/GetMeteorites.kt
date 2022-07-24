@@ -11,14 +11,16 @@ import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.common.userCase.GetLocation
 import com.antonio.samir.meteoritelandingsspots.common.userCase.UserCaseBase
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
-import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteItemView
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.features.list.mapper.MeteoriteViewMapper
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites.Input
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 @FlowPreview
 class GetMeteorites(
@@ -48,13 +50,15 @@ class GetMeteorites(
                     limit = LIMIT
                 )
             }.flow.map { pagingData ->
-                pagingData.map {
-                    mapper.map(
-                        MeteoriteViewMapper.Input(
-                            meteorite = it,
-                            location = location
+                return@map withContext(Dispatchers.IO) {
+                    pagingData.map { meteorite ->
+                        mapper.map(
+                            MeteoriteViewMapper.Input(
+                                meteorite = meteorite,
+                                location = location
+                            )
                         )
-                    )
+                    }
                 }
             }
 

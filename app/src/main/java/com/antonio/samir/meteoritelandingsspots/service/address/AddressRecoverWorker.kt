@@ -23,16 +23,16 @@ class AddressRecoverWorker(
 
         val addressService: AddressServiceInterface by inject()
 
-//        addressService
-//            .recoveryAddress()
-//            .collect { result ->
-//                when (result) {
-//                    is ResultOf.InProgress -> {
-//                        setProgress(workDataOf(PROGRESS to result.data))
-//                    }
-//                    else -> {}
-//                }
-//            }
+        addressService
+            .recoveryAddress()
+            .collect { result ->
+                when (result) {
+                    is ResultOf.InProgress -> {
+                        setProgress(workDataOf(PROGRESS to result.data))
+                    }
+                    else -> {}
+                }
+            }
 
         return Result.success()
     }

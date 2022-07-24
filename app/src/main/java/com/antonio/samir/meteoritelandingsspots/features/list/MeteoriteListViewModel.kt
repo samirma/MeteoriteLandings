@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -13,12 +14,12 @@ import androidx.paging.cachedIn
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.common.userCase.IsDarkTheme
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.HeaderState
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.*
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
 
 /**
@@ -49,19 +50,14 @@ class MeteoriteListViewModel(
         MutableStateFlow<PagingData<MeteoriteItemView>>(PagingData.empty())
     val meteorites = _meteorites
 
-    private val viewModelState = MutableStateFlow(
+    private var viewModelState: MutableStateFlow<UiState> = MutableStateFlow(
         UiState(
             isLoading = true,
             addressStatus = ResultOf.InProgress(0f),
             meteorites = meteorites,
             onDarkModeToggleClick = {
                 onDarkModeToggleClick()
-            },
-            isDark = isDarkTheme(Unit).stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.Eagerly,
-                initialValue = false
-            )
+            }
         )
     )
 
@@ -78,6 +74,7 @@ class MeteoriteListViewModel(
     }
 
     init {
+
         fetchMeteoriteList()
 
         viewModelScope.launch(dispatchers.default()) {
@@ -85,7 +82,12 @@ class MeteoriteListViewModel(
                 if (headerState != null) {
                     viewModelState.update {
                         it.copy(
-                            headerState = headerState
+                            headerState = headerState,
+                            isDark = isDarkTheme(Unit).stateIn(
+                                scope = viewModelScope,
+                                started = SharingStarted.Eagerly,
+                                initialValue = false
+                            )
                         )
                     }
                 }

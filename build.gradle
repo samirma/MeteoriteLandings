@@ -13,7 +13,7 @@ buildscript {
         androidx_lifecycle_version = '2.4.1'
         map_version = '18.0.2'
         composeVersion = '1.1.1'
-        composeThemeVersion = '1.1.6'
+        composeThemeVersion = '1.1.14'
         work_version = "2.7.1"
     }
 

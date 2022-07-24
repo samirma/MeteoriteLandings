@@ -4,9 +4,9 @@ import android.content.Context
 import android.location.Location
 import com.antonio.samir.meteoritelandingsspots.common.mapper.MapperBase
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.features.getDistanceFrom
 import com.antonio.samir.meteoritelandingsspots.features.getLocationText
-import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.features.yearString
 
 class MeteoriteViewMapper(val context: Context) :

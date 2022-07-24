@@ -26,121 +26,12 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
-import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.AddressProgress
-import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.SearchBar
-import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.ToolbarButtons
-import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.*
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
-import com.antonio.samir.meteoritelandingsspots.features.list.HeaderState
-import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.features.list.UiState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-@ExperimentalComposeUiApi
-@ExperimentalAnimationApi
-@Composable
-fun Header(
-    headerState: HeaderState,
-    modifier: Modifier = Modifier,
-    onEnterSearch: () -> Unit = {},
-    onExitSearch: () -> Unit = {},
-    onSearch: (query: String) -> Unit = {},
-    onDarkModeToggleClick: () -> Unit,
-) {
-
-    val isCollapsed = headerState.isCollapsed()
-    val isSearch = headerState.isSearch()
-
-    var headerModifier = modifier
-
-    if (!isCollapsed) {
-        headerModifier = headerModifier.height(72.dp)
-    }
-
-    if (isSearch) {
-        SearchBar(
-            placeholderText = stringResource(R.string.search_placeholder),
-            onNavigateBack = onExitSearch,
-            onSearch = onSearch
-        )
-    } else {
-        Box(
-            modifier = headerModifier.background(ExtendedTheme.colors.header),
-        ) {
-            AnimatedVisibility(
-                visible = !isCollapsed,
-                modifier = Modifier.align(Alignment.Center),
-                enter = fadeIn() + slideInVertically(),
-                exit = fadeOut() + slideOutVertically(),
-            ) {
-                Text(
-                    text = stringResource(R.string.title_header),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(
-                            horizontal = 30.dp
-                        ),
-                    color = ExtendedTheme.colors.textPrimary,
-                    style = MaterialTheme.typography.h4
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .height(72.dp)
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                AnimatedVisibility(
-                    visible = isCollapsed,
-                    enter = fadeIn(),
-                    exit = fadeOut(),
-                    modifier = Modifier.weight(weight = 1f, fill = true)
-                ) {
-                    Text(
-                        text = stringResource(R.string.title_header),
-                        textAlign = TextAlign.Start,
-                        color = ExtendedTheme.colors.textPrimary,
-                        style = MaterialTheme.typography.h6
-                    )
-                }
-                ToolbarButtons(
-                    modifier = Modifier,
-                    onDarkModeToggleClick = onDarkModeToggleClick,
-                    onEnterSearch = onEnterSearch
-                )
-            }
-        }
-    }
-}
-
-@ExperimentalAnimationApi
-@ExperimentalComposeUiApi
-@Preview("Header Collapsed")
-@Composable
-fun HeaderPreview() {
-    MeteoriteLandingsTheme(darkTheme = true) {
-        Surface() {
-            Header(HeaderState.Collapsed) {}
-        }
-    }
-}
-
-
-@ExperimentalAnimationApi
-@ExperimentalComposeUiApi
-@Preview("Header Expanded")
-@Composable
-fun HeaderExpandedPreview() {
-    MeteoriteLandingsTheme(darkTheme = true) {
-        Surface() {
-            Header(HeaderState.Expanded) {}
-        }
-    }
-}
 
 @ExperimentalAnimationApi
 @ExperimentalComposeUiApi
