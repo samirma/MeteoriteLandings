@@ -6,7 +6,6 @@ import com.antonio.samir.meteoritelandingsspots.common.ResultOf.*
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.remote.MeteoriteRemoteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
