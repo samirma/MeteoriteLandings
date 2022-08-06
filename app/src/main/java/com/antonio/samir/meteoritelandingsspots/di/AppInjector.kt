@@ -31,7 +31,6 @@ import com.antonio.samir.meteoritelandingsspots.service.address.AddressServiceIn
 import com.antonio.samir.meteoritelandingsspots.service.monetization.MonetizationImpl
 import com.antonio.samir.meteoritelandingsspots.service.monetization.MonetizationInterface
 import com.antonio.samir.meteoritelandingsspots.util.*
-import io.nodle.sdk.android.Nodle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import okhttp3.OkHttpClient
@@ -134,15 +133,9 @@ val businessModule = module {
     single<MeteoriteRepository> { MeteoriteRepositoryImpl(get(), get(), get()) }
     single<MonetizationInterface> {
         val context = get<Context>()
-        val nodleKey = context.getString(R.string.nodle_key)
         MonetizationImpl(
-            context = context,
-            nodleKey = nodleKey,
-            requestPermission = get()
-        ).apply {
-            init()
-            setNodle(Nodle.Nodle())
-        }
+            context = context
+        )
     }
 }
 

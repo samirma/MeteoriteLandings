@@ -150,9 +150,6 @@ dependencies {
     debugImplementation 'com.facebook.stetho:stetho-okhttp:1.5.1'
     debugImplementation 'com.facebook.stetho:stetho-urlconnection:1.5.1'
 
-    //Nodle
-    implementation 'io.nodle:nodlesdk-rc-lg:cbe8a42b18'
-
     // The core artifact.
     implementation 'com.github.fondesa:kpermissions:3.3.0'
     implementation 'com.github.fondesa:kpermissions-coroutines:3.3.0'
