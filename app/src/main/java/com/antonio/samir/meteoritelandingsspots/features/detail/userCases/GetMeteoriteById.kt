@@ -4,7 +4,7 @@ import android.content.Context
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.common.userCase.UserCaseBase
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
-import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteView
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteView
 import com.antonio.samir.meteoritelandingsspots.features.detail.mapper.MeteoriteMapper
 import com.antonio.samir.meteoritelandingsspots.features.detail.userCases.GetMeteoriteById.Input
 import kotlinx.coroutines.flow.Flow

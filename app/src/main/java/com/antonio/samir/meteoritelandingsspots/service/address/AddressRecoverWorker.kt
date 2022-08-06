@@ -5,8 +5,6 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOf
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

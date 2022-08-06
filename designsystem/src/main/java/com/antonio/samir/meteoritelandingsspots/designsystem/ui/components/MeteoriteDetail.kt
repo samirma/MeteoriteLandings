@@ -1,3 +1,5 @@
+package com.antonio.samir.meteoritelandingsspots.designsystem.ui.components
+
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,7 +15,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.antonio.samir.meteoritelandingsspots.designsystem.R
-import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Shimmer
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 
