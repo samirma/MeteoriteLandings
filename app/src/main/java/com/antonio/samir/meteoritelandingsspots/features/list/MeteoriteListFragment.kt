@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
@@ -16,11 +17,11 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ui.extension.isLandscape
-import com.antonio.samir.meteoritelandingsspots.common.ui.extension.showActionBar
 import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteListBinding
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.HeaderState
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailFragment
+import com.google.android.material.appbar.AppBarLayout
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
@@ -80,7 +81,14 @@ class MeteoriteListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        showActionBar(getString(R.string.search_placeholder))
+        with(requireActivity()) {
+            val textActionBarTitle = findViewById<TextView>(R.id.toolbar_title)
+            val appBarLayoutFlowMain = findViewById<AppBarLayout>(R.id.app_bar_flow)
+            getString(R.string.search_placeholder)?.let<CharSequence, Unit> {
+                textActionBarTitle?.text = it
+            }
+            appBarLayoutFlowMain?.visibility = VISIBLE
+        }
 
         observeLiveData()
 
