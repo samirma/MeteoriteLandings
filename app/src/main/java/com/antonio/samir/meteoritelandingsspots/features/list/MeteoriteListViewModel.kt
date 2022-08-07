@@ -107,10 +107,7 @@ class MeteoriteListViewModel(
                             isLoading = false,
                             message = R.string.general_error
                         )
-                        is ResultOf.InProgress -> it.copy(
-                            isLoading = false,
-                            message = R.string.general_error
-                        )
+                        is ResultOf.InProgress -> it.copy(isLoading = false, message = null)
                         is ResultOf.Success -> it.copy(isLoading = false, message = null)
                     }
                 }

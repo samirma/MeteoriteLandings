@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -27,6 +26,7 @@ import androidx.paging.compose.items
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.*
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 import com.antonio.samir.meteoritelandingsspots.features.list.UiState
 import kotlinx.coroutines.flow.Flow
@@ -122,33 +122,25 @@ private fun Message(
 ) {
     Column(
         modifier = modifier.fillMaxSize()
+            .padding(12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = stringResource(id = R.string.message_titile),
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.h6
+            style = MaterialTheme.typography.h6,
+            color = ExtendedTheme.colors.textPrimary
         )
         Text(
             text = message,
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.body1
+            style = MaterialTheme.typography.body1,
+            color = ExtendedTheme.colors.textSecondary
         )
     }
 }
 
 
-@Composable
-private fun Loading(
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        CircularProgressIndicator()
-    }
-}
 
 @Composable
 private fun MeteoriteList(
@@ -245,6 +237,34 @@ fun ListScreenLoadingPreview() {
     ListScreen(
         uiState = UiState(
             isLoading = true,
+            addressStatus = ResultOf.Success(100f),
+            meteorites = flowOf(PagingData.from(items)),
+            onDarkModeToggleClick = { },
+        ),
+        {}
+    ) {}
+
+}
+
+@ExperimentalAnimationApi
+@ExperimentalComposeUiApi
+@Preview("Meteorite list error")
+@Composable
+fun ListScreenErrorPreview() {
+    val items = (1..10).map {
+        MeteoriteItemView(
+            id = "$it",
+            name = "name $it",
+            yearString = "yearString $it",
+            address = "address $it",
+            distance = "distance $it",
+        )
+    }
+
+    ListScreen(
+        uiState = UiState(
+            isLoading = false,
+            message = R.string.general_error,
             addressStatus = ResultOf.Success(100f),
             meteorites = flowOf(PagingData.from(items)),
             onDarkModeToggleClick = { },

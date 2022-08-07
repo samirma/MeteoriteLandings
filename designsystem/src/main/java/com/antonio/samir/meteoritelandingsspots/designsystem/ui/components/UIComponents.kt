@@ -263,3 +263,17 @@ fun Shimmer(modifier: Modifier = Modifier) {
         )
     }
 }
+
+
+@Composable
+fun Loading(
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        CircularProgressIndicator()
+    }
+}
