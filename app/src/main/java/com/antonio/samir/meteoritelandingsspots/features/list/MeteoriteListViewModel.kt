@@ -33,7 +33,7 @@ class MeteoriteListViewModel(
     private val startAddressRecover: StartAddressRecover,
     private val statusAddressRecover: StatusAddressRecover,
     private val fetchMeteoriteList: FetchMeteoriteList,
-    private val dispatchers: DispatcherProvider,
+    dispatchers: DispatcherProvider,
     private val getMeteorites: GetMeteorites,
     private val setDarkMode: SetUITheme,
     isDarkTheme: IsDarkTheme,
@@ -49,7 +49,7 @@ class MeteoriteListViewModel(
 
     private val _meteorites =
         MutableStateFlow<PagingData<MeteoriteItemView>>(PagingData.empty())
-    val meteorites = _meteorites
+    val meteorites = _meteorites.cachedIn(viewModelScope)
 
     private var viewModelState: MutableStateFlow<UiState> = MutableStateFlow(
         UiState(
@@ -133,9 +133,7 @@ class MeteoriteListViewModel(
         _searchQuery.value = query
         viewModelScope.launch {
             getMeteorites(GetMeteorites.Input(query = query, activity = activity))
-                .cachedIn(viewModelScope)
-                .onEach { _meteorites.value = it }
-                .collect {}
+                .collect { pagingData -> _meteorites.value = pagingData }
         }
     }
 
@@ -149,13 +147,13 @@ class MeteoriteListViewModel(
     }
 
     fun onTopList(offset: Float) {
-        if (debounceState.value != HeaderState.Search) {
-            debounceState.value = if (offset > 0) {
-                HeaderState.Expanded
-            } else {
-                HeaderState.Collapsed
-            }
-        }
+//        if (debounceState.value != HeaderState.Search) {
+//            debounceState.value = if (offset > 0) {
+//                HeaderState.Expanded
+//            } else {
+//                HeaderState.Collapsed
+//            }
+//        }
     }
 
     fun setHeaderState(headerState: HeaderState) {

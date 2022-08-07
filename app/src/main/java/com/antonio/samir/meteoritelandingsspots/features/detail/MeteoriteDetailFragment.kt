@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalAnimationApi::class)
+
 package com.antonio.samir.meteoritelandingsspots.features.detail
 
 import android.os.Bundle
@@ -7,16 +9,18 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ui.extension.isLandscape
-import com.antonio.samir.meteoritelandingsspots.common.ui.extension.showActionBar
 import com.antonio.samir.meteoritelandingsspots.databinding.FragmentMeteoriteDetailBinding
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.ActionBar
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteDetail
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteView
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -25,11 +29,13 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.appbar.AppBarLayout
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
 
+@OptIn(ExperimentalComposeUiApi::class)
 @ExperimentalCoroutinesApi
 @FlowPreview
 class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
@@ -53,11 +59,6 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        //Exit from full meteorite detail screen to list view
-        if (isLandscape()) {
-            findNavController().navigateUp()
-        }
 
         observeMeteorite()
 
@@ -143,8 +144,11 @@ class MeteoriteDetailFragment : Fragment(), OnMapReadyCallback {
 
         meteorite = uiState.meteoriteView
 
+
         if (!isLandscape()) {
-            showActionBar(meteorite!!.name)
+            binding.toolbar.setContent {
+                ActionBar(title = meteorite!!.name)
+            }
         }
 
         (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment)
