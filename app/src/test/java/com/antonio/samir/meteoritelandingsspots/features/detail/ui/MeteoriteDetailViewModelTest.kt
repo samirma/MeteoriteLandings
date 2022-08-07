@@ -42,7 +42,6 @@ class MeteoriteDetailViewModelTest {
     var rule: TestRule = InstantTaskExecutorRule()
 
     private val mockRepository: MeteoriteRepository = mock()
-    private val mockGPSTracker: GPSTrackerInterface = mock()
     private val mockLocation: Location = mock()
     private val mockContext: Context = mock()
 
@@ -67,10 +66,8 @@ class MeteoriteDetailViewModelTest {
             emit(Success(Unit))
         })
 
-        whenever(mockGPSTracker.location).thenReturn(currentLocation.asFlow())
-
-        whenever(mockContext.getString(R.string.unkown)).thenReturn(fixtString)
-        whenever(mockContext.getString(R.string.without_address_placeholder)).thenReturn(fixtString)
+//        whenever(mockContext.getString(R.string.unkown)).thenReturn(fixtString)
+//        whenever(mockContext.getString(R.string.without_address_placeholder)).thenReturn(fixtString)
 
 //        viewModel = MeteoriteDetailViewModel(mockRepository, mockGPSTracker, get())
 //
@@ -102,11 +99,11 @@ class MeteoriteDetailViewModelTest {
             Success(
                 MeteoriteView(
                     id = "123",
-                    name = null,
-                    yearString = null,
+                    name = "",
+                    yearString = "",
                     address = fixtString,
-                    type = null,
-                    mass = meteorite.mass,
+                    type = "",
+                    mass = meteorite.mass!!,
                     reclat = 1.0,
                     reclong = 0.0,
                     hasAddress = false
@@ -116,12 +113,12 @@ class MeteoriteDetailViewModelTest {
 
     }
 
-    @Test
-    fun requestAddressUpdate() = runBlockingTest {
-
-        viewModel.requestAddressUpdate(fixtMeteoriteView)
-
-//        verify(mockRepository).update(fixtMeteoriteView)
-
-    }
+//    @Test
+//    fun requestAddressUpdate() = runBlockingTest {
+//
+//        viewModel.requestAddressUpdate(fixtMeteoriteView)
+//
+////        verify(mockRepository).update(fixtMeteoriteView)
+//
+//    }
 }
