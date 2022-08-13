@@ -21,6 +21,7 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.R
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 
+
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
