@@ -121,7 +121,8 @@ private fun Message(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
             .padding(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -139,7 +140,6 @@ private fun Message(
         )
     }
 }
-
 
 
 @Composable
