@@ -1,4 +1,3 @@
-
 package com.antonio.samir.meteoritelandingsspots.designsystem.ui.components
 
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -29,7 +28,6 @@ fun ActionBar(
     title: String,
     onItemClick: (() -> Unit) = {}
 ) {
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
