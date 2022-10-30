@@ -1,4 +1,3 @@
-import androidx.annotation.StringRes
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -8,15 +7,12 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
@@ -26,9 +22,9 @@ import androidx.paging.compose.items
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.*
-import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
-import com.antonio.samir.meteoritelandingsspots.features.list.UiState
+import com.antonio.samir.meteoritelandingsspots.features.list.ListScreenView
+import com.antonio.samir.meteoritelandingsspots.features.list.ListState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -37,7 +33,7 @@ import kotlinx.coroutines.flow.flowOf
 @ExperimentalComposeUiApi
 @Composable
 fun ListScreen(
-    uiState: UiState,
+    uiState: ListScreenView,
     onItemClick: (itemView: MeteoriteItemView) -> Unit = {},
     onTopList: (scrollOffset: Float) -> Unit = {},
     onEnterSearch: () -> Unit = {},
@@ -83,12 +79,16 @@ fun ListScreen(
                 Box(
                     Modifier.weight(10f, fill = true)
                 ) {
-                    if (uiState.isLoading) {
-                        Loading(modifier = Modifier.fillMaxSize())
-                    } else if (uiState.message == null) {
-                        MeteoriteList(scrollState, uiState.meteorites, onItemClick)
-                    } else {
-                        Message(uiState.message)
+                    when (uiState.listState) {
+                        is ListState.UiContent -> MeteoriteList(
+                            scrollState = scrollState,
+                            meteorites = uiState.listState.meteorites,
+                            onItemClick = onItemClick
+                        )
+                        ListState.UiLoading -> Loading(modifier = Modifier.fillMaxSize())
+                        is ListState.UiMessage -> MessageError(
+                            message = uiState.listState.message
+                        )
                     }
 
                     val addressProgress = uiState.addressStatus
@@ -106,38 +106,6 @@ fun ListScreen(
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun Message(
-    @StringRes message: Int,
-    modifier: Modifier = Modifier
-) = Message(message = stringResource(id = message), modifier = modifier)
-
-@Composable
-private fun Message(
-    message: String,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = stringResource(id = R.string.message_titile),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.h6,
-            color = ExtendedTheme.colors.textPrimary
-        )
-        Text(
-            text = message,
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.body1,
-            color = ExtendedTheme.colors.textSecondary
-        )
     }
 }
 
@@ -171,7 +139,7 @@ private fun MeteoriteList(
                 loadState.refresh is LoadState.Error -> {
                     val e = items.loadState.refresh as LoadState.Error
                     item {
-                        Message(
+                        MessageError(
                             message = e.error.localizedMessage!!,
                             modifier = Modifier.fillParentMaxSize()
                         )
@@ -180,7 +148,7 @@ private fun MeteoriteList(
                 loadState.append is LoadState.Error -> {
                     val e = items.loadState.append as LoadState.Error
                     item {
-                        Message(
+                        MessageError(
                             message = e.error.localizedMessage!!
                         )
                     }
@@ -196,21 +164,12 @@ private fun MeteoriteList(
 @Preview("Meteorite list view")
 @Composable
 fun ListScreenPreview() {
-    val items = (1..10).map {
-        MeteoriteItemView(
-            id = "$it",
-            name = "name $it",
-            yearString = "yearString $it",
-            address = "address $it",
-            distance = "distance $it",
-        )
-    }
+    val items = getFakeListItems()
 
     ListScreen(
-        uiState = UiState(
-            isLoading = false,
+        uiState = ListScreenView(
             addressStatus = ResultOf.Success(100f),
-            meteorites = flowOf(PagingData.from(items)),
+            listState = ListState.UiContent(meteorites = flowOf(PagingData.from(items))),
             onDarkModeToggleClick = { },
             headerState = HeaderState.Expanded
         ),
@@ -224,21 +183,10 @@ fun ListScreenPreview() {
 @Preview("Meteorite list loading")
 @Composable
 fun ListScreenLoadingPreview() {
-    val items = (1..10).map {
-        MeteoriteItemView(
-            id = "$it",
-            name = "name $it",
-            yearString = "yearString $it",
-            address = "address $it",
-            distance = "distance $it",
-        )
-    }
-
     ListScreen(
-        uiState = UiState(
-            isLoading = true,
+        uiState = ListScreenView(
             addressStatus = ResultOf.Success(100f),
-            meteorites = flowOf(PagingData.from(items)),
+            listState = ListState.UiLoading,
             onDarkModeToggleClick = { },
         ),
         {}
@@ -251,22 +199,10 @@ fun ListScreenLoadingPreview() {
 @Preview("Meteorite list error")
 @Composable
 fun ListScreenErrorPreview() {
-    val items = (1..10).map {
-        MeteoriteItemView(
-            id = "$it",
-            name = "name $it",
-            yearString = "yearString $it",
-            address = "address $it",
-            distance = "distance $it",
-        )
-    }
-
     ListScreen(
-        uiState = UiState(
-            isLoading = false,
-            message = R.string.general_error,
+        uiState = ListScreenView(
+            listState = ListState.UiMessage(R.string.general_error),
             addressStatus = ResultOf.Success(100f),
-            meteorites = flowOf(PagingData.from(items)),
             onDarkModeToggleClick = { },
         ),
         {}
@@ -279,22 +215,12 @@ fun ListScreenErrorPreview() {
 @Preview("Meteorite list message loading 10%")
 @Composable
 fun ListScreenMessagePreview() {
-    val items = (1..10).map {
-        MeteoriteItemView(
-            id = "$it",
-            name = "name $it",
-            yearString = "yearString $it",
-            address = "address $it",
-            distance = "distance $it",
-        )
-    }
+    val items = getFakeListItems()
 
     ListScreen(
-        uiState = UiState(
-            isLoading = false,
-            message = null,
+        uiState = ListScreenView(
             addressStatus = ResultOf.InProgress(10.0f),
-            meteorites = flowOf(PagingData.from(items)),
+            listState = ListState.UiContent(meteorites = flowOf(PagingData.from(items))),
             onDarkModeToggleClick = { }
         ),
         onSearch = {}
@@ -306,15 +232,7 @@ fun ListScreenMessagePreview() {
 @Composable
 fun TextLazyColumn() {
 
-    val items = (1..10).map {
-        MeteoriteItemView(
-            id = "$it",
-            name = "name $it",
-            yearString = "yearString $it",
-            address = "address $it",
-            distance = "distance $it",
-        )
-    }
+    val items = getFakeListItems()
 
     LazyColumn(Modifier.height(500.dp)) {
 
@@ -326,4 +244,14 @@ fun TextLazyColumn() {
 
     }
 
+}
+
+private fun getFakeListItems(): List<MeteoriteItemView> = (1..10).map {
+    MeteoriteItemView(
+        id = "$it",
+        name = "name $it",
+        yearString = "yearString $it",
+        address = "address $it",
+        distance = "distance $it",
+    )
 }

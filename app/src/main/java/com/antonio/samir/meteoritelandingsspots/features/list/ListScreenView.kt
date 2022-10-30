@@ -9,13 +9,23 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-data class UiState(
-    val isLoading: Boolean,
-    @StringRes val message: Int? = null,
-    val searchInput: String? = null,
-    val addressStatus: ResultOf<Float>,
-    val meteorites: Flow<PagingData<MeteoriteItemView>>,
+data class ListScreenView(
     val isDark: StateFlow<Boolean> = MutableStateFlow(true),
+    val addressStatus: ResultOf<Float>,
     val onDarkModeToggleClick: () -> Unit,
-    val headerState: HeaderState = HeaderState.Expanded
+    val headerState: HeaderState = HeaderState.Expanded,
+    val listState: ListState
 )
+
+sealed class ListState {
+    class UiContent(
+        val meteorites: Flow<PagingData<MeteoriteItemView>>,
+    ) : ListState()
+
+    class UiMessage(
+        @StringRes val message: Int,
+    ) : ListState()
+
+    object UiLoading : ListState()
+}
+
