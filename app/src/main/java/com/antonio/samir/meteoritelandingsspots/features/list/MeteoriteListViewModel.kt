@@ -21,7 +21,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import androidx.lifecycle.coroutineScope
 
 
 /**
@@ -52,24 +51,22 @@ class MeteoriteListViewModel(
         MutableStateFlow<PagingData<MeteoriteItemView>>(PagingData.empty())
     val meteorites = _meteorites
 
-    private var viewModelState: MutableStateFlow<UiState> = MutableStateFlow(
-        UiState(
-            isLoading = true,
+    private var viewModelState: MutableStateFlow<ListScreenView> = MutableStateFlow(
+        ListScreenView(
             addressStatus = ResultOf.InProgress(0f),
-            meteorites = meteorites,
             onDarkModeToggleClick = {
                 onDarkModeToggleClick()
-            }
+            },
+            listState = ListState.UiLoading
         )
     )
 
 
     // UI state exposed to the UI
-    val uiState: StateFlow<UiState> = viewModelState
+    val uiState: StateFlow<ListScreenView> = viewModelState
 
     private fun onDarkModeToggleClick() {
         isDarkMode = !isDarkMode
-//        viewModelState.update { it.copy(isDark = isDarkMode) }
         viewModelScope.launch {
             setDarkMode(SetUITheme.Input(isDarkMode)).collect()
         }
@@ -99,17 +96,20 @@ class MeteoriteListViewModel(
     }
 
     private fun fetchMeteoriteList() {
-
         viewModelScope.launch {
             fetchMeteoriteList(Unit).collect { resultOf ->
                 viewModelState.update {
                     when (resultOf) {
                         is ResultOf.Error -> it.copy(
-                            isLoading = false,
-                            message = R.string.general_error
+                            listState = ListState.UiMessage(R.string.general_error)
                         )
-                        is ResultOf.InProgress -> it.copy(isLoading = false, message = null)
-                        is ResultOf.Success -> it.copy(isLoading = false, message = null)
+                        else -> {
+                            it.copy(
+                                listState = ListState.UiContent(
+                                    meteorites = meteorites
+                                )
+                            )
+                        }
                     }
                 }
             }
