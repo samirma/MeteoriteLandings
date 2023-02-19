@@ -107,7 +107,7 @@ dependencies {
     implementation "com.google.android.gms:play-services-maps:$map_version"
 
     //insert-koin.io
-    implementation "io.insert-koin:koin-android:$koin_version"
+    implementation "io.insert-koin:koin-android:3.3.3"
     implementation "io.insert-koin:koin-android-ext:$koin_version"
 
     //Coroutines
