@@ -24,7 +24,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -114,7 +114,7 @@ class MeteoriteDetailViewModelTest {
     }
 
 //    @Test
-//    fun requestAddressUpdate() = runBlockingTest {
+//    fun requestAddressUpdate() = runTest {
 //
 //        viewModel.requestAddressUpdate(fixtMeteoriteView)
 //
