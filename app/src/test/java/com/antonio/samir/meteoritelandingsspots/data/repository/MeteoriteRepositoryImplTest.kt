@@ -21,8 +21,8 @@ class MeteoriteRepositoryImplTest {
     @get:Rule
     var coroutinesTestRule = CoroutineTestRule()
 
-    private val mockLocalRepository: MeteoriteLocalRepository = mock()
-    private val mockRemoteRepository: MeteoriteRemoteRepository = mock()
+    private val mockLocalRepository: MeteoriteLocalRepository = mockk()
+    private val mockRemoteRepository: MeteoriteRemoteRepository = mockk()
 
     private lateinit var repository: MeteoriteRepository
 

@@ -3,9 +3,9 @@ package com.antonio.samir.meteoritelandingsspots.data.local
 import android.location.Location
 import com.antonio.samir.meteoritelandingsspots.data.local.database.MeteoriteDao
 import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -18,8 +18,8 @@ class MeteoriteRepositoryTest {
     @get:Rule
     var coroutinesTestRule = CoroutineTestRule()
 
-    private val mockMeteoriteDao: MeteoriteDao = mock()
-    private val mockLocation: Location = mock()
+    private val mockMeteoriteDao: MeteoriteDao = mockk()
+    private val mockLocation: Location = mockk()
 
     private val mockLimit = 100L
 
@@ -30,7 +30,7 @@ class MeteoriteRepositoryTest {
     fun setUp() {
 
         meteoriteLocalRepository = MeteoriteLocalRepositoryImpl(
-                meteoriteDao = mockMeteoriteDao
+            meteoriteDao = mockMeteoriteDao
         )
 
     }
