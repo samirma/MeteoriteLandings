@@ -4,7 +4,6 @@ import android.content.Context
 import android.location.Location
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf.InProgress
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf.Success
@@ -16,15 +15,13 @@ import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
 import com.flextrade.jfixture.FixtureAnnotations
 import com.flextrade.jfixture.JFixture
 import com.flextrade.jfixture.annotations.Fixture
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -41,9 +38,9 @@ class MeteoriteDetailViewModelTest {
     @get:Rule
     var rule: TestRule = InstantTaskExecutorRule()
 
-    private val mockRepository: MeteoriteRepository = mock()
-    private val mockLocation: Location = mock()
-    private val mockContext: Context = mock()
+    private val mockRepository: MeteoriteRepository = mockk()
+    private val mockLocation: Location = mockk()
+    private val mockContext: Context = mockk()
 
     @Fixture
     lateinit var fixtMeteoriteView: MeteoriteView
@@ -53,7 +50,7 @@ class MeteoriteDetailViewModelTest {
 
     private lateinit var viewModel: MeteoriteDetailViewModel
 
-    private val mockMeteoriteObserver: Observer<ResultOf<MeteoriteView>> = mock()
+    private val mockMeteoriteObserver: Observer<ResultOf<MeteoriteView>> = mockk()
 
     private var currentLocation = ConflatedBroadcastChannel<Location?>(null)
 

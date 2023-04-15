@@ -8,9 +8,9 @@ import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
 import com.antonio.samir.meteoritelandingsspots.service.address.AddressServiceImpl
 import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
 import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.flow
@@ -28,9 +28,9 @@ class AddressServiceTest {
     @get:Rule
     var coroutinesTestRule = CoroutineTestRule()
 
-    private val mockLocalRepository: MeteoriteLocalRepository = mock()
-    private val mockGeoLocationUtil: GeoLocationUtilInterface = mock()
-    private val address: Address = mock()
+    private val mockLocalRepository: MeteoriteLocalRepository = mockk()
+    private val mockGeoLocationUtil: GeoLocationUtilInterface = mockk()
+    private val address: Address = mockk()
 
     private lateinit var addressService: AddressServiceImpl
 

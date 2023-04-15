@@ -1,14 +1,14 @@
 package com.antonio.samir.meteoritelandingsspots.util
 
 import android.location.Geocoder
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.Before
 import org.junit.Test
 
 class GeoLocationUtilTest {
 
-    private val mockGeocoder: Geocoder = mock()
+    private val mockGeocoder: Geocoder = mockk()
 
     private lateinit var service: GeoLocationUtilInterface
 
