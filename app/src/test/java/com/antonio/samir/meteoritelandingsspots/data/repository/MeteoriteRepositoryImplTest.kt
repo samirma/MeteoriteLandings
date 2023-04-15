@@ -9,7 +9,7 @@ import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -40,7 +40,7 @@ class MeteoriteRepositoryImplTest {
     }
 
     @Test
-    fun `test loadDatabase already loaded`() = runBlockingTest {
+    fun `test loadDatabase already loaded`() = runTest {
 
         val meteorites = mutableListOf<Meteorite>()
 
@@ -70,7 +70,7 @@ class MeteoriteRepositoryImplTest {
     }
 
     @Test
-    fun `test loadDatabase with valid meteorite`() = runBlockingTest {
+    fun `test loadDatabase with valid meteorite`() = runTest {
 
         val meteorite = Meteorite().apply {
             reclong = "0"
@@ -97,7 +97,7 @@ class MeteoriteRepositoryImplTest {
 
 
     @Test
-    fun `test update`() = runBlockingTest {
+    fun `test update`() = runTest {
 
         val meteorite = Meteorite().apply {
             id = 43
@@ -112,7 +112,7 @@ class MeteoriteRepositoryImplTest {
     }
 
     @Test
-    fun `test update from list`() = runBlockingTest {
+    fun `test update from list`() = runTest {
 
         val meteorite = Meteorite().apply {
             id = 43
@@ -130,7 +130,7 @@ class MeteoriteRepositoryImplTest {
 
 
     @Test
-    fun `test getMeteoriteById`() = runBlockingTest {
+    fun `test getMeteoriteById`() = runTest {
 
         val meteorite = Meteorite().apply {
             id = 43

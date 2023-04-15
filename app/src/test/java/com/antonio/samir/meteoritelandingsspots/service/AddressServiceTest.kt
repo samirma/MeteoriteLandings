@@ -15,7 +15,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -47,7 +47,7 @@ class AddressServiceTest {
     }
 
     @Test
-    fun `test meteoritesWithOutAddress success`() = runBlockingTest {
+    fun `test meteoritesWithOutAddress success`() = runTest {
 
         val meteorite = Meteorite().apply {
             reclong = "0"
@@ -83,7 +83,7 @@ class AddressServiceTest {
 
 
     @Test
-    fun `test recoverAddress success`() = runBlockingTest {
+    fun `test recoverAddress success`() = runTest {
 
         val meteorite = Meteorite().apply {
             reclong = "0"

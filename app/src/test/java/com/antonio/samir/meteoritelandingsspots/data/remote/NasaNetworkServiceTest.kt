@@ -7,7 +7,7 @@ import com.flextrade.jfixture.annotations.Fixture
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -31,7 +31,7 @@ class NasaNetworkServiceTest {
     }
 
     @Test
-    fun getMeteorites()  = runBlockingTest {
+    fun getMeteorites()  = runTest {
 
         whenever(mockNasaServerEndPoint.publicMeteorites(fixtOffset, fixtLimit))
                 .thenReturn(listMeteorites)
