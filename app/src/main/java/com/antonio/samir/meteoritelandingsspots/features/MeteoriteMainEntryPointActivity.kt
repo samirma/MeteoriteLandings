@@ -17,7 +17,7 @@ class MeteoriteMainEntryPointActivity : AppCompatActivity() {
 
     private val appBarConfiguration = AppBarConfiguration(setOf(R.id.meteoriteListFragment))
 
-    val monetization: MonetizationInterface by inject()
+    private val monetization: MonetizationInterface by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -21,7 +20,6 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTh
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MeteoriteCell(
     itemView: MeteoriteItemView,
