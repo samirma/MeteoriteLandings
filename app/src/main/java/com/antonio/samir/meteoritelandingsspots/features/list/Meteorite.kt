@@ -61,13 +61,13 @@ fun MeteoriteCell(
                     ) {
                         Text(
                             color = ExtendedTheme.colors.textPrimary,
-                            text = itemView.name ?: "",
+                            text = itemView.name,
                             modifier = Modifier.wrapContentHeight(CenterVertically),
                             style = MaterialTheme.typography.subtitle1
                         )
                         Text(
                             color = ExtendedTheme.colors.textSecondary,
-                            text = itemView.distance ?: "800m",
+                            text = itemView.distance,
                             maxLines = 2,
                             modifier = Modifier
                                 .weight(1f)
@@ -79,7 +79,7 @@ fun MeteoriteCell(
                     if (itemView.hasAddress) {
                         Text(
                             color = ExtendedTheme.colors.textSecondary,
-                            text = itemView.address ?: "",
+                            text = itemView.address,
                             maxLines = 2,
                             style = MaterialTheme.typography.body2
                         )

@@ -51,12 +51,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
+        jvmTarget = JavaVersion.VERSION_17
     }
 
     testOptions {
@@ -79,7 +79,7 @@ android {
 dependencies {
     implementation project(":designsystem")
 
-    implementation platform('androidx.compose:compose-bom:2023.01.00')
+    implementation platform('androidx.compose:compose-bom:2023.05.00')
 
     // Architecture Components
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$androidx_lifecycle_version"
@@ -107,7 +107,7 @@ dependencies {
     implementation "com.google.android.gms:play-services-maps:$map_version"
 
     //insert-koin.io
-    implementation "io.insert-koin:koin-android:3.3.3"
+    implementation 'io.insert-koin:koin-android:3.4.0'
     implementation "io.insert-koin:koin-android-ext:$koin_version"
 
     //Coroutines
@@ -136,7 +136,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11'
 
-    implementation 'com.akexorcist:round-corner-progress-bar:2.1.2'
+    implementation 'com.akexorcist:round-corner-progress-bar:2.2.0'
 
     //Stetho
     debugImplementation 'com.facebook.stetho:stetho:1.6.0'
@@ -147,7 +147,7 @@ dependencies {
     implementation 'com.github.fondesa:kpermissions:3.4.0'
     implementation 'com.github.fondesa:kpermissions-coroutines:3.4.0'
 
-    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.1.0-alpha3', {
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.6.0-alpha01', {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-v4'
         exclude group: 'com.android.support', module: 'design'
@@ -156,7 +156,7 @@ dependencies {
 
     //Test
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit:1.7.20'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit:1.8.21'
     testImplementation 'org.assertj:assertj-core:3.24.2'
     testImplementation "io.mockk:mockk:1.13.5"
     testImplementation "android.arch.core:core-testing:1.1.1"

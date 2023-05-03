@@ -22,7 +22,7 @@ fun Meteorite.getDistanceFrom(currentLocation: Location?): String? {
 private fun formatDistance(distance: Float) = if (distance > 0) {
     val distanceInKm = distance > SHOW_IN_METERS
 
-    val distance = if (distanceInKm) {
+    val finalDistance = if (distanceInKm) {
         (distance / 1000).roundToInt().toString()
     } else {
         distance.roundToInt().toString()
@@ -35,7 +35,7 @@ private fun formatDistance(distance: Float) = if (distance > 0) {
         "m"
     }
 
-    "${distance.convertToNumberFormat(distance)}$distanceUnit"
+    "${finalDistance.convertToNumberFormat(finalDistance)}$distanceUnit"
 } else {
     null
 }
