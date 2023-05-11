@@ -44,18 +44,6 @@
             </intent-filter>
         </activity>
 
-        <!--Widget-->
-        <receiver
-            android:name="com.antonio.samir.meteoritelandingsspots.common.ui.widget.MeteoritesAppWidget"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/meteorites_app_widget_info" />
-        </receiver>
 
         <service
             android:name="com.antonio.samir.meteoritelandingsspots.common.ui.widget.DetailWidgetRemoteViewsService"
