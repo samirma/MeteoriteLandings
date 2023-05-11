@@ -60,6 +60,19 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
     implementation(libs.material)
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.play.services.maps)
+
+    implementation(libs.koin.android)
+    implementation(libs.koin.android.ext)
+
+    implementation(libs.kpermissions)
+    implementation(libs.kpermissions.coroutines)
+
+    debugImplementation(libs.stetho)
+    debugImplementation(libs.stethoOkhttp)
+    debugImplementation(libs.stethoUrlconnection)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
