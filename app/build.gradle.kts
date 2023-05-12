@@ -73,6 +73,17 @@ dependencies {
     debugImplementation(libs.stethoOkhttp)
     debugImplementation(libs.stethoUrlconnection)
 
+    implementation(libs.paging.compose)
+
+    //Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+
+    //Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
