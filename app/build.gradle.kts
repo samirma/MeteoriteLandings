@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
+    id("kotlin-parcelize")
+    id("androidx.navigation.safeargs")
 }
 
 android {
@@ -38,6 +40,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
@@ -51,6 +54,8 @@ android {
 
 dependencies {
 
+    implementation(project(":designsystem"))
+
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.activity.compose)
@@ -62,6 +67,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.play.services.maps)
+
+    implementation(libs.androidx.lifecycle.livedata.ktx)
 
     implementation(libs.koin.android)
     implementation(libs.koin.android.ext)
@@ -75,6 +82,10 @@ dependencies {
 
     implementation(libs.paging.compose)
 
+    //Navigation
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+
     //Room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
@@ -83,6 +94,11 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
+
+    implementation(libs.androidx.navigation.fragment.ktx)
+//    implementation ("androidx.navigation:navigation-ui:2.5.3")
+
+    implementation(libs.androidx.work.runtime.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

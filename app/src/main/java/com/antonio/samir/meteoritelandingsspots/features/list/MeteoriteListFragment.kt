@@ -8,7 +8,6 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.material3.ExperimentalMaterialApi
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -30,7 +29,6 @@ import org.koin.androidx.viewmodel.ext.android.stateViewModel
 @ExperimentalAnimationApi
 @FlowPreview
 @ExperimentalCoroutinesApi
-@ExperimentalMaterialApi
 class MeteoriteListFragment : Fragment() {
 
     private var meteoriteDetailFragment: MeteoriteDetailFragment? = null

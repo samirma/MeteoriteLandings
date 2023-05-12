@@ -1,6 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme
 
-import androidx.compose.material3.Typography
+import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -25,7 +25,7 @@ private val Roboto = FontFamily(
 )
 
 // Set of Material typography styles to start with
-val Typography = Typography(
+val meteoriteTypography = Typography(
     defaultFontFamily = Roboto,
     h4 = TextStyle(
         fontWeight = FontWeight.SemiBold,

@@ -1,7 +1,11 @@
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -23,7 +27,13 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
-import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.*
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.AddressProgress
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Header
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.HeaderState
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Loading
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MessageError
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteCell
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 import com.antonio.samir.meteoritelandingsspots.features.list.ListScreenView
 import com.antonio.samir.meteoritelandingsspots.features.list.ListState
@@ -70,7 +80,7 @@ fun ListScreen(
 
     MeteoriteLandingsTheme(darkTheme = isDark) {
         Surface(
-            modifier = Modifier.background(MaterialTheme.colors.background)
+            modifier = Modifier.background(MaterialTheme.colorScheme.background)
         ) {
             Column(Modifier.fillMaxSize()) {
                 Header(
@@ -126,7 +136,7 @@ private fun MeteoriteList(
         state = scrollState,
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.background)
+            .background(MaterialTheme.colorScheme.background)
     ) {
 
         items(items) { item ->

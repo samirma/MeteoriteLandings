@@ -1,9 +1,10 @@
 package com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.Typography
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColors
-import androidx.compose.material3.lightColors
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -42,12 +43,12 @@ fun MeteoriteLandingsTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
+    ExtendedTheme.isLight = !darkTheme
     val colors = getColorTheme(darkTheme)
     val extendedColors = getExtendedColorsTheme(darkTheme)
     CompositionLocalProvider(LocalExtendedColors provides extendedColors) {
         MaterialTheme(
-            colors = colors,
-            typography = Typography,
+            colorScheme = colors,
             shapes = Shapes,
             content = content
         )
@@ -82,17 +83,15 @@ fun getExtendedColorsTheme(darkTheme: Boolean): ExtendedColors = if (darkTheme) 
 
 @Composable
 private fun getColorTheme(darkTheme: Boolean) = if (darkTheme) {
-    darkColors(
+    darkColorScheme(
         primary = colorResource(R.color.colorPrimaryDark),
-        primaryVariant = colorResource(R.color.colorPrimaryDark),
         secondary = colorResource(R.color.colorPrimaryDark),
         background = colorResource(R.color.backgroundDark),
         surface = colorResource(R.color.backgroundDark),
     )
 } else {
-    lightColors(
+    lightColorScheme(
         primary = colorResource(R.color.colorPrimary),
-        primaryVariant = colorResource(R.color.colorPrimary),
         secondary = colorResource(R.color.colorPrimary),
         background = colorResource(R.color.background),
         surface = colorResource(R.color.background),
@@ -102,7 +101,15 @@ private fun getColorTheme(darkTheme: Boolean) = if (darkTheme) {
 
 // Use with eg. ExtendedTheme.colors.tertiary
 object ExtendedTheme {
+
+    var isLight: Boolean = false
+
     val colors: ExtendedColors
         @Composable
         get() = LocalExtendedColors.current
+
+    val typography: Typography
+        @Composable
+        get() = meteoriteTypography
+
 }

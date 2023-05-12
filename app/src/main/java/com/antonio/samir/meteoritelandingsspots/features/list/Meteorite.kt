@@ -3,7 +3,17 @@ package com.antonio.samir.meteoritelandingsspots.features.list
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,7 +38,7 @@ fun MeteoriteCell(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colors.background)
+            .background(MaterialTheme.colorScheme.background)
             .height(84.dp)
             .padding(horizontal = 16.dp)
             .clickable {
@@ -63,7 +73,7 @@ fun MeteoriteCell(
                             color = ExtendedTheme.colors.textPrimary,
                             text = itemView.name,
                             modifier = Modifier.wrapContentHeight(CenterVertically),
-                            style = MaterialTheme.typography.subtitle1
+                            style = ExtendedTheme.typography.subtitle1
                         )
                         Text(
                             color = ExtendedTheme.colors.textSecondary,
@@ -73,7 +83,7 @@ fun MeteoriteCell(
                                 .weight(1f)
                                 .padding(end = 4.dp)
                                 .wrapContentWidth(Alignment.End),
-                            style = MaterialTheme.typography.overline
+                            style = ExtendedTheme.typography.overline
                         )
                     }
                     if (itemView.hasAddress) {
@@ -81,7 +91,7 @@ fun MeteoriteCell(
                             color = ExtendedTheme.colors.textSecondary,
                             text = itemView.address,
                             maxLines = 2,
-                            style = MaterialTheme.typography.body2
+                            style = ExtendedTheme.typography.body2
                         )
                     } else {
                         Shimmer(
