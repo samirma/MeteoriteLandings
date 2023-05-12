@@ -3,7 +3,13 @@ package com.antonio.samir.meteoritelandingsspots.designsystem.ui.components
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -38,11 +44,11 @@ fun MeteoriteDetail(
 ) {
     MeteoriteLandingsTheme(darkTheme = darkTheme) {
         Surface(
-            modifier = Modifier.background(MaterialTheme.colors.background)
+            modifier = Modifier.background(MaterialTheme.colorScheme.background)
         ) {
             Column(
                 modifier = Modifier
-                    .background(MaterialTheme.colors.background)
+                    .background(MaterialTheme.colorScheme.background)
                     .padding(vertical = 16.dp),
                 verticalArrangement = Arrangement.Center,
             ) {
@@ -89,7 +95,7 @@ private fun LineDetail(
             Text(
                 text = label,
                 textAlign = TextAlign.Start,
-                style = MaterialTheme.typography.body2,
+                style = ExtendedTheme.typography.body2,
                 color = ExtendedTheme.colors.textPrimary
             )
         }

@@ -4,7 +4,6 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,13 +34,13 @@ fun MessageError(
         Text(
             text = stringResource(id = R.string.message_titile),
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.h6,
+            style = ExtendedTheme.typography.h6,
             color = ExtendedTheme.colors.textPrimary
         )
         Text(
             text = message,
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.body1,
+            style = ExtendedTheme.typography.body1,
             color = ExtendedTheme.colors.textSecondary
         )
     }

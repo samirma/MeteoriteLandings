@@ -15,7 +15,7 @@ buildscript {
     }
 
     dependencies {
-//        classpath(libs.google.ossLicensesPlugin)
+        classpath(libs.navigation.safe.args.gradle.plugin)
     }
 }
 

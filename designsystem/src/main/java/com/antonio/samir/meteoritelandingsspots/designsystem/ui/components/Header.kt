@@ -1,9 +1,18 @@
 package com.antonio.samir.meteoritelandingsspots.designsystem.ui.components
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -64,7 +73,7 @@ fun Header(
                             horizontal = 30.dp
                         ),
                     color = ExtendedTheme.colors.textPrimary,
-                    style = MaterialTheme.typography.h4
+                    style = ExtendedTheme.typography.h4
                 )
             }
             Row(
@@ -86,7 +95,7 @@ fun Header(
                         text = stringResource(R.string.title_header),
                         textAlign = TextAlign.Start,
                         color = ExtendedTheme.colors.textPrimary,
-                        style = MaterialTheme.typography.h6
+                        style = ExtendedTheme.typography.h6
                     )
                 }
                 ToolbarButtons(
