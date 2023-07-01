@@ -95,8 +95,8 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
 
-    implementation(libs.androidx.navigation.fragment.ktx)
-//    implementation ("androidx.navigation:navigation-ui:2.5.3")
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.activity.compose)
 
     implementation(libs.androidx.work.runtime.ktx)
 
