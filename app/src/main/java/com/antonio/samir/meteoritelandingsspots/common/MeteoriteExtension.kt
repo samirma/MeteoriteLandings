@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.features
+package com.antonio.samir.meteoritelandingsspots.common
 
 import android.annotation.SuppressLint
 import android.location.Location
