@@ -1,5 +1,5 @@
 [versions]
-agp = "8.0.1"
+agp = "8.0.2"
 kotlin = "1.8.10"
 core-ktx = "1.10.1"
 junit = "4.13.2"
@@ -13,6 +13,7 @@ loggingInterceptor = "5.0.0-alpha.11"
 material = "1.9.0"
 googleServices = "4.3.15"
 dependencyGraphGenerator = "0.8.0"
+navigationCompose = "2.6.0"
 navigationSafeArgsGradlePlugin = "2.5.3"
 navigationUiKtx = "2.5.3"
 navigationFragmentKtx = "2.5.3"
@@ -29,6 +30,7 @@ workRuntimeKtx = "2.8.1"
 
 [libraries]
 androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycle-runtime-ktx" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigationUiKtx" }
 androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
 androidx-paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "pagingRuntimeKtx" }

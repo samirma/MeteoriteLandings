@@ -1,12 +1,12 @@
 package com.antonio.samir.meteoritelandingsspots.service.monetization
 
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Activity
 import androidx.lifecycle.LifecycleCoroutineScope
 
 interface MonetizationInterface {
 
     fun init()
 
-    fun start(lifecycleScope: LifecycleCoroutineScope, activity: AppCompatActivity)
+    fun start(lifecycleScope: LifecycleCoroutineScope, activity: Activity)
 
 }

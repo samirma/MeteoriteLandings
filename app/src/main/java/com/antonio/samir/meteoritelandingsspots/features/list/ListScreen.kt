@@ -21,6 +21,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -37,9 +38,21 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Meteo
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 import com.antonio.samir.meteoritelandingsspots.features.list.ListScreenView
 import com.antonio.samir.meteoritelandingsspots.features.list.ListState
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
+@OptIn(FlowPreview::class)
+@ExperimentalAnimationApi
+@ExperimentalComposeUiApi
+@Composable
+fun ListScreen(
+    listViewModel: MeteoriteListViewModel,
+    navController: NavController
+) {
+
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalAnimationApi
@@ -51,7 +64,7 @@ fun ListScreen(
     onTopList: (scrollOffset: Float) -> Unit = {},
     onEnterSearch: () -> Unit = {},
     onExitSearch: () -> Unit = {},
-    onSearch: (query: String) -> Unit,
+    onSearch: (query: String) -> Unit = {},
 ) {
 
     val scrollState = rememberLazyListState()

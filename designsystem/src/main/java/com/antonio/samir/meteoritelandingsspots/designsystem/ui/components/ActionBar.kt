@@ -26,8 +26,6 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTh
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 
 
-@ExperimentalComposeUiApi
-@ExperimentalAnimationApi
 @Composable
 fun ActionBar(
     title: String,

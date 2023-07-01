@@ -1,51 +1,64 @@
 package com.antonio.samir.meteoritelandingsspots.features
 
+import ListScreen
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import com.antonio.samir.meteoritelandingsspots.R
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
+import com.antonio.samir.meteoritelandingsspots.features.detail.DetailScreen
+import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailViewModel
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.service.monetization.MonetizationInterface
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.stateViewModel
 
-class MeteoriteMainEntryPointActivity : AppCompatActivity() {
-
-    private val appBarConfiguration = AppBarConfiguration(setOf(R.id.meteoriteListFragment))
+@OptIn(ExperimentalAnimationApi::class)
+class MeteoriteMainEntryPointActivity : ComponentActivity() {
 
     private val monetization: MonetizationInterface by inject()
 
+    private val detailViewModel: MeteoriteDetailViewModel by stateViewModel()
+
+    private val listViewModel: MeteoriteListViewModel by stateViewModel()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_meteorite_list)
-        configureActionBar()
 
         monetization.start(lifecycleScope, this)
 
+        setContent { MeteoriteLandingsTheme { Navigation() } }
     }
 
-    private fun configureActionBar() {
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+    @OptIn(ExperimentalComposeUiApi::class, FlowPreview::class, ExperimentalCoroutinesApi::class)
+    @Composable
+    private fun Navigation() {
+        val navController = rememberNavController()
 
-        val navController = getNavController()
-
-        navController.setGraph(R.navigation.nav_main, intent.extras)
-
-        setupActionBarWithNavController(navController, appBarConfiguration)
-
-    }
-
-    private fun getNavController(): NavController =
-        (supportFragmentManager.findFragmentById(R.id.main_fragment_container_view)
-                as NavHostFragment).navController
-
-    override fun onSupportNavigateUp(): Boolean {
-        return getNavController().navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+        NavHost(
+            navController = navController,
+            startDestination = MainRouter.HOME.name
+        ) {
+            composable(MainRouter.HOME.name) {
+                ListScreen(listViewModel, navController)
+            }
+            composable(
+                "${MainRouter.DETAIL.name}/{meteoriteId}",
+                arguments = listOf(navArgument("meteoriteId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val meteoriteId = backStackEntry.arguments?.getString("meteoriteId")!!
+                DetailScreen(meteoriteId, navController, detailViewModel)
+            }
+        }
     }
 }
