@@ -1,6 +1,5 @@
 package com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme
 
-import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -25,56 +24,56 @@ private val Roboto = FontFamily(
 )
 
 // Set of Material typography styles to start with
-val meteoriteTypography = Typography(
-    defaultFontFamily = Roboto,
-    h4 = TextStyle(
+object MeteoriteTypography {
+    val defaultFontFamily = Roboto
+    val h4 = TextStyle(
         fontWeight = FontWeight.SemiBold,
         fontSize = 30.sp,
         letterSpacing = 0.sp
-    ),
-    h5 = TextStyle(
+    )
+    val h5 = TextStyle(
         fontWeight = FontWeight.SemiBold,
         fontSize = 24.sp,
         letterSpacing = 0.sp
-    ),
-    h6 = TextStyle(
+    )
+    val h6 = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 20.sp,
         letterSpacing = 0.sp
-    ),
-    subtitle1 = TextStyle(
+    )
+    val subtitle1 = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         letterSpacing = 0.15.sp
-    ),
-    subtitle2 = TextStyle(
+    )
+    val subtitle2 = TextStyle(
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
         letterSpacing = 0.1.sp
-    ),
-    body1 = TextStyle(
+    )
+    val body1 = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         letterSpacing = 0.5.sp
-    ),
-    body2 = TextStyle(
+    )
+    val body2 = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         letterSpacing = 0.25.sp
-    ),
-    button = TextStyle(
+    )
+    val button = TextStyle(
         fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp,
         letterSpacing = 1.25.sp
-    ),
-    caption = TextStyle(
+    )
+    val caption = TextStyle(
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
         letterSpacing = 0.4.sp
-    ),
-    overline = TextStyle(
+    )
+    val overline = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         letterSpacing = 1.sp
     )
-)
+}

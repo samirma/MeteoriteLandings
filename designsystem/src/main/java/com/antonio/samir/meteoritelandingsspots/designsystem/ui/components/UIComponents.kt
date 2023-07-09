@@ -60,9 +60,9 @@ import com.valentinilk.shimmer.shimmer
 @ExperimentalComposeUiApi
 @Composable
 fun SearchBar(
+    modifier: Modifier = Modifier,
     searchText: String = "",
     placeholderText: String = "",
-    modifier: Modifier = Modifier,
     onSearchTextChanged: (String) -> Unit = {},
     onClearClick: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
@@ -155,9 +155,9 @@ fun SearchBarPreview() {
                 .fillMaxWidth()
         ) {
             SearchBar(
+                modifier = Modifier,
                 searchText = "search text",
-                placeholderText = "placeholder",
-                modifier = Modifier
+                placeholderText = "placeholder"
             ) {}
         }
     }

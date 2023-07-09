@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.antonio.samir.meteoritelandingsspots.designsystem.R
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 
 @Parcelize
@@ -84,13 +84,13 @@ fun MeteoriteCell(
                     ) {
                         Text(
                             color = ExtendedTheme.colors.textPrimary,
-                            text = itemView.name ?: "",
+                            text = itemView.name,
                             modifier = Modifier.wrapContentHeight(CenterVertically),
                             style = ExtendedTheme.typography.subtitle1
                         )
                         Text(
                             color = ExtendedTheme.colors.textSecondary,
-                            text = itemView.distance ?: "800m",
+                            text = itemView.distance,
                             maxLines = 2,
                             modifier = Modifier
                                 .weight(1f)
@@ -102,7 +102,7 @@ fun MeteoriteCell(
                     if (itemView.hasAddress) {
                         Text(
                             color = ExtendedTheme.colors.textSecondary,
-                            text = itemView.address ?: "",
+                            text = itemView.address,
                             maxLines = 2,
                             style = ExtendedTheme.typography.body2
                         )

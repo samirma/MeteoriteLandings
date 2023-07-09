@@ -1,7 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.Typography
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -36,6 +35,10 @@ val LocalExtendedColors = staticCompositionLocalOf {
         backgroundInverted = Color.Unspecified,
         textPrimaryInverted = Color.Unspecified
     )
+}
+
+val LocalExtendedTypography = staticCompositionLocalOf {
+    MeteoriteTypography
 }
 
 @Composable
@@ -108,8 +111,8 @@ object ExtendedTheme {
         @Composable
         get() = LocalExtendedColors.current
 
-    val typography: Typography
+    val typography: MeteoriteTypography
         @Composable
-        get() = meteoriteTypography
+        get() = LocalExtendedTypography.current
 
 }
