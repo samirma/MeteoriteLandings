@@ -1,5 +1,5 @@
 [versions]
-agp = "8.0.2"
+agp = "8.1.0"
 kotlin = "1.8.10"
 core-ktx = "1.10.1"
 junit = "4.13.2"
@@ -19,6 +19,7 @@ navigationUiKtx = "2.5.3"
 navigationFragmentKtx = "2.5.3"
 pagingRuntimeKtx = "3.1.1"
 retrofit = "2.9.0"
+roomCompiler = "2.5.2"
 roomPaging = "2.5.2"
 shimmer = "1.0.4"
 stetho = "1.6.0"
@@ -34,6 +35,7 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigationUiKtx" }
 androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
 androidx-paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "pagingRuntimeKtx" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomPaging" }
 androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "roomPaging" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomPaging" }
