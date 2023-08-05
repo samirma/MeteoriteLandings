@@ -1,6 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features
 
-import ListScreenNavigation
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,6 +19,7 @@ import androidx.navigation.navArgument
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 import com.antonio.samir.meteoritelandingsspots.features.detail.DetailScreen
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailViewModel
+import com.antonio.samir.meteoritelandingsspots.features.list.ListScreenNavigation
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.service.monetization.MonetizationInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
