@@ -1,6 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features
 
-enum class MainRouter {
-    DETAIL,
-    HOME,
+sealed class Screen(val route: String) {
+    object meteoriteList : Screen("friendslist")
+    object meteoriteDetail : Screen("profile")
 }
