@@ -1,14 +1,12 @@
 package com.antonio.samir.meteoritelandingsspots.features
 
-import ListScreen
+import ListScreenNavigation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -48,25 +46,26 @@ class MeteoriteMainEntryPointActivity : ComponentActivity() {
     @OptIn(ExperimentalComposeUiApi::class, FlowPreview::class, ExperimentalCoroutinesApi::class)
     @Composable
     private fun Navigation() {
-        Column {
-            val navController = rememberNavController()
-            Text(text = "lalala")
-            NavHost(
-                navController, startDestination = Screen.meteoriteList.route,
-                Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-            ) {
-                composable(Screen.meteoriteList.route) { ListScreen(listViewModel, navController) }
-                composable(
-                    "${Screen.meteoriteDetail.route}/{meteoriteId}",
-                    arguments = listOf(navArgument("meteoriteId") { type = NavType.StringType })
-                ) { backStackEntry ->
-                    val meteoriteId = backStackEntry.arguments?.getString("meteoriteId")!!
-                    DetailScreen(meteoriteId, navController, detailViewModel)
-                }
+        val navController = rememberNavController()
+        NavHost(
+            navController, startDestination = Screen.meteoriteList.route,
+            Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+        ) {
+            composable(Screen.meteoriteList.route) {
+                ListScreenNavigation(
+                    listViewModel,
+                    navController
+                )
             }
-            Text(text = "aaaa")
+            composable(
+                "${Screen.meteoriteDetail.route}/{meteoriteId}",
+                arguments = listOf(navArgument("meteoriteId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val meteoriteId = backStackEntry.arguments?.getString("meteoriteId")!!
+                DetailScreen(meteoriteId, navController, detailViewModel)
+            }
         }
     }
 }

@@ -47,11 +47,20 @@ import kotlinx.coroutines.flow.flowOf
 @ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 @Composable
-fun ListScreen(
-    listViewModel: MeteoriteListViewModel,
+fun ListScreenNavigation(
+    viewModel: MeteoriteListViewModel,
     navController: NavController
 ) {
+    val uiState by viewModel.uiState.collectAsState()
 
+    ListScreen(
+        uiState = uiState,
+        onItemClick = viewModel::selectMeteorite,
+        onEnterSearch = { viewModel.setHeaderState(HeaderState.Search) },
+        onExitSearch = {},
+        onTopList = viewModel::onTopList,
+        onSearch = {}
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
