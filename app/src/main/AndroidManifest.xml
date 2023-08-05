@@ -45,11 +45,11 @@
         </activity>
 
 
-        <service
-            android:name="com.antonio.samir.meteoritelandingsspots.common.ui.widget.DetailWidgetRemoteViewsService"
-            android:enabled="true"
-            android:exported="false"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <!--        <service-->
+        <!--            android:name="com.antonio.samir.meteoritelandingsspots.common.ui.widget.DetailWidgetRemoteViewsService"-->
+        <!--            android:enabled="true"-->
+        <!--            android:exported="false"-->
+        <!--            android:permission="android.permission.BIND_REMOTEVIEWS" />-->
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
