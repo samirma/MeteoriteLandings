@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,12 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MessageError
-import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteCell
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
 import kotlinx.coroutines.flow.Flow
+
 
 @Composable
 fun MeteoriteList(
@@ -33,13 +33,10 @@ fun MeteoriteList(
     ) {
 
         items(
-            count = items.itemCount,
-            key = items.itemKey(),
-            contentType = items.itemContentType(
-            )
+            items.itemCount,
+            key = items.itemKey { it.id }
         ) { index ->
-            val item = items[index]
-            item?.let { MeteoriteCell(it, onItemClick) }
+            items[index]?.let { MeteoriteCell(it, onItemClick) }
         }
 
         items.apply {

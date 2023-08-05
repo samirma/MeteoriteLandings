@@ -59,7 +59,7 @@ dependencies {
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.activity.compose)
     implementation(platform(libs.compose.bom))
-    implementation("androidx.compose.runtime:runtime-tracing:1.0.0-alpha03")
+    implementation(libs.androidx.runtime.tracing)
     implementation(libs.ui)
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
@@ -80,7 +80,9 @@ dependencies {
     debugImplementation(libs.stethoOkhttp)
     debugImplementation(libs.stethoUrlconnection)
 
+    //Paging
     implementation(libs.paging.compose)
+    implementation(libs.androidx.paging.runtime)
 
     //Navigation
     implementation(libs.androidx.navigation.fragment.ktx)
