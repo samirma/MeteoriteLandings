@@ -1,25 +1,28 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
-import com.antonio.samir.meteoritelandingsspots.common.userCase.IsDarkTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.HeaderState
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
-import com.antonio.samir.meteoritelandingsspots.features.list.userCases.*
-import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
+import com.antonio.samir.meteoritelandingsspots.features.list.userCases.FetchMeteoriteList
+import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
+import com.antonio.samir.meteoritelandingsspots.features.list.userCases.SetUITheme
+import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StartAddressRecover
+import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StatusAddressRecover
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
@@ -33,13 +36,13 @@ class MeteoriteListViewModel(
     private val startAddressRecover: StartAddressRecover,
     private val statusAddressRecover: StatusAddressRecover,
     private val fetchMeteoriteList: FetchMeteoriteList,
-    private val dispatchers: DispatcherProvider,
     private val getMeteorites: GetMeteorites,
     private val setDarkMode: SetUITheme,
-    isDarkTheme: IsDarkTheme,
 ) : ViewModel() {
 
     private val meteorite = MutableStateFlow<MeteoriteItemView?>(stateHandle[METEORITE])
+
+    private val _searchQuery = MutableStateFlow("")
 
     private var isDarkMode = true
 
@@ -47,9 +50,9 @@ class MeteoriteListViewModel(
 
     private val debounceState = MutableStateFlow<HeaderState?>(null)
 
-    private val _meteorites =
-        MutableStateFlow<PagingData<MeteoriteItemView>>(PagingData.empty())
-    val meteorites = _meteorites
+    val meteorites: Flow<PagingData<MeteoriteItemView>> = _searchQuery.flatMapConcat {
+        getMeteorites(GetMeteorites.Input(query = it, location = null))
+    }
 
     private var viewModelState: MutableStateFlow<ListScreenView> = MutableStateFlow(
         ListScreenView(
@@ -76,34 +79,20 @@ class MeteoriteListViewModel(
 
         fetchMeteoriteList()
 
-        viewModelScope.launch(dispatchers.default()) {
-            debounceState.debounce(DEBOUNCE.toLong()).collect { headerState ->
-                if (headerState != null) {
-                    viewModelState.update {
-                        it.copy(
-                            headerState = headerState,
-                            isDark = isDarkTheme(Unit).stateIn(
-                                scope = viewModelScope,
-                                started = SharingStarted.Eagerly,
-                                initialValue = false
-                            )
-                        )
-                    }
-                }
-            }
-        }
-
     }
 
     private fun fetchMeteoriteList() {
         viewModelScope.launch {
             fetchMeteoriteList(Unit).collect { resultOf ->
                 viewModelState.update {
+                    Log.i(TAG, "$resultOf")
                     when (resultOf) {
                         is ResultOf.Error -> it.copy(
                             listState = ListState.UiMessage(R.string.general_error)
                         )
-                        else -> {
+
+                        is ResultOf.InProgress -> it.copy(listState = ListState.UiLoading)
+                        is ResultOf.Success -> {
                             it.copy(
                                 listState = ListState.UiContent(
                                     meteorites = meteorites
@@ -127,17 +116,9 @@ class MeteoriteListViewModel(
     private fun recoverAddressStatus(): Flow<ResultOf<Float>> =
         startAddressRecover(Unit).flatMapConcat { statusAddressRecover(it) }
 
-    private val _searchQuery: MutableState<String?> = mutableStateOf(null)
-    val searchQuery: State<String?> = _searchQuery
 
-    fun searchLocation(query: String?, activity: AppCompatActivity) {
+    fun searchLocation(query: String) {
         _searchQuery.value = query
-        viewModelScope.launch {
-            getMeteorites(GetMeteorites.Input(query = query, activity = activity))
-                .cachedIn(viewModelScope)
-                .onEach { _meteorites.value = it }
-                .collect {}
-        }
     }
 
     fun selectMeteorite(meteorite: MeteoriteItemView?) {
