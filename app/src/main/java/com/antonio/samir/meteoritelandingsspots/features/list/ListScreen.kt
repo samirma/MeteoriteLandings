@@ -27,10 +27,11 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Heade
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.HeaderState
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.flowOf
 
-@OptIn(FlowPreview::class)
+@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 @ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 @Composable
@@ -48,7 +49,7 @@ fun ListScreenNavigation(
             viewModel.setHeaderState(HeaderState.Expanded)
         },
         onTopList = viewModel::onTopList,
-        onSearch = {}
+        onSearch = viewModel::searchLocation
     )
 }
 
