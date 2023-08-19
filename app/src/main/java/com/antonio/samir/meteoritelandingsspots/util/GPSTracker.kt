@@ -68,7 +68,7 @@ class GPSTracker(private val context: Context) : GPSTrackerInterface {
                 if (isLocationAuthorized) {
                     startLocation()
                 }
-                currentNeedAuthorization.offer(!isLocationAuthorized)
+                currentNeedAuthorization.trySend(!isLocationAuthorized).isSuccess
             } catch (e: Exception) {
                 Log.e(TAG, e.message, e)
             }
@@ -101,7 +101,7 @@ class GPSTracker(private val context: Context) : GPSTrackerInterface {
     override fun onLocationChanged(location: Location) {
         if (currentLocation.value == null) {
             Log.i(TAG, "Location received $location")
-            location.let { currentLocation.offer(it) }
+            location.let { currentLocation.trySend(it).isSuccess }
         }
     }
 

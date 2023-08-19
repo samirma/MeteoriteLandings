@@ -2,7 +2,6 @@ package com.antonio.samir.meteoritelandingsspots.di
 
 import android.content.Context
 import android.location.Geocoder
-import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteDaoFactory
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepositoryImpl
@@ -15,13 +14,20 @@ import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailV
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListViewModel
 import com.antonio.samir.meteoritelandingsspots.service.AddressService
 import com.antonio.samir.meteoritelandingsspots.service.AddressServiceInterface
-import com.antonio.samir.meteoritelandingsspots.util.*
-import io.nodle.sdk.android.Nodle
+import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
+import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
+import com.antonio.samir.meteoritelandingsspots.util.GPSTracker
+import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
+import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtil
+import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
+import com.antonio.samir.meteoritelandingsspots.util.MarketingImpl
+import com.antonio.samir.meteoritelandingsspots.util.MarketingInterface
+import com.antonio.samir.meteoritelandingsspots.util.NetworkUtil
+import com.antonio.samir.meteoritelandingsspots.util.NetworkUtilInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -70,13 +76,11 @@ val businessModule = module {
     single<MeteoriteRepository> { MeteoriteRepositoryImpl(get(), get(), get()) }
     single<MarketingInterface> {
         val context = get<Context>()
-        val nodleKey = context.getString(R.string.nodle_key)
         MarketingImpl(
             context = context,
-            nodleKey = nodleKey
+            nodleKey = ""
         ).apply {
             init()
-            setNodle(Nodle.Nodle())
         }
     }
 }
