@@ -5,6 +5,9 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -13,13 +16,15 @@ class AddressRecoverWorker(
     parameters: WorkerParameters
 ) : KoinComponent, CoroutineWorker(context, parameters) {
 
+    private val addressService: AddressServiceInterface by inject()
+
     companion object {
         const val PROGRESS = "Progress"
     }
 
-    override suspend fun doWork(): Result {
+    override suspend fun doWork() = withContext(Dispatchers.Default) {
 
-        val addressService: AddressServiceInterface by inject()
+        delay(5000L)
 
         addressService
             .recoveryAddress()
@@ -32,6 +37,6 @@ class AddressRecoverWorker(
                 }
             }
 
-        return Result.success()
+        Result.success()
     }
 }
