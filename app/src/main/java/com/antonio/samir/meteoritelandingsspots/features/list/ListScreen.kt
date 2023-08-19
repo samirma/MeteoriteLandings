@@ -25,6 +25,8 @@ import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.AddressProgress
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Header
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.HeaderState
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Loading
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MessageError
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -109,11 +111,11 @@ fun ListScreen(
                             meteorites = uiState.listState.meteorites,
                             onItemClick = onItemClick
                         )
-//                        ListState.UiLoading -> Loading(modifier = Modifier.fillMaxSize())
-//                        is ListState.UiMessage -> MessageError(
-//                            message = uiState.listState.message
-//                        )
-                        else -> {}
+
+                        ListState.UiLoading -> Loading(modifier = Modifier.fillMaxSize())
+                        is ListState.UiMessage -> MessageError(
+                            message = uiState.listState.message
+                        )
                     }
 
                     val addressProgress = uiState.addressStatus
