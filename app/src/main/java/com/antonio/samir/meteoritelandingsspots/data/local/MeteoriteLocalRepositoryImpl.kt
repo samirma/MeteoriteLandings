@@ -3,7 +3,7 @@ package com.antonio.samir.meteoritelandingsspots.data.local
 import com.antonio.samir.meteoritelandingsspots.data.local.database.MeteoriteDao
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import java.util.Locale
 
 class MeteoriteLocalRepositoryImpl(
     private val meteoriteDao: MeteoriteDao
@@ -48,9 +48,7 @@ class MeteoriteLocalRepositoryImpl(
     }
 
 
-    override fun meteoritesWithOutAddress(): Flow<List<Meteorite>> {
-        return meteoriteDao.meteoritesWithOutAddress()
-    }
+    override fun meteoritesWithOutAddress() = meteoriteDao.meteoritesWithOutAddress()
 
     override suspend fun insertAll(meteorites: List<Meteorite>) {
         meteoriteDao.insertAll(meteorites)
