@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace = "com.antonio.samir.meteoritelandingsspots"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.antonio.samir.meteoritelandingsspots"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 16
         versionName = "1.0"
 
