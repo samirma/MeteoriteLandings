@@ -10,6 +10,7 @@ import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
@@ -30,16 +31,11 @@ class AddressServiceImpl(
                 getReturn(it)
             }
             .catch { throwable ->
-                val exception = if (throwable is Exception) {
-                    throwable
-                } else {
-                    Exception("Fail to load addresses")
-                }
-                emit(ResultOf.Error(exception))
-            }
+                emit(ResultOf.Error(Exception("Fail to load addresses", throwable)))
+            }.flowOn(dispatchers.default())
 
     private suspend fun getReturn(it: List<Meteorite>): ResultOf<Float> {
-        return if (!it.isNullOrEmpty()) {
+        return if (it.isNotEmpty()) {
             val meteoritesWithoutAddressCount =
                 meteoriteLocalRepository.getMeteoritesWithoutAddressCount()
             val meteoritesCount = meteoriteLocalRepository.getValidMeteoritesCount()
