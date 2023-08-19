@@ -49,12 +49,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = JavaVersion.VERSION_17
     }
 
     testOptions {
@@ -64,6 +64,7 @@ android {
     buildFeatures {
         viewBinding true
     }
+    namespace 'com.antonio.samir.meteoritelandingsspots'
 
 }
 
@@ -134,7 +135,7 @@ dependencies {
     debugImplementation 'com.facebook.stetho:stetho-urlconnection:1.5.1'
 
     //Nodle
-    implementation 'io.nodle:nodlesdk-rc-lg:cbe8a42b18'
+//    implementation 'io.nodle:nodlesdk-rc-lg:cbe8a42b18'
 
     implementation 'com.vanniktech:rxpermission:0.7.0'
 

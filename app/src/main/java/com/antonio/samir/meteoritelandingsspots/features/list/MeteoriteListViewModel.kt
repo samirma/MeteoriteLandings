@@ -76,13 +76,13 @@ class MeteoriteListViewModel(
 
         location?.let { this.filter = it }
 
-        currentFilter.offer(location)
+        currentFilter.trySend(location).isSuccess
 
     }
 
     fun selectMeteorite(meteorite: Meteorite?) {
         stateHandle[METEORITE] = meteorite
-        this.meteorite.offer(meteorite)
+        this.meteorite.trySend(meteorite).isSuccess
     }
 
     fun updateLocation() {
@@ -102,31 +102,33 @@ class MeteoriteListViewModel(
 
     fun getMeteorites(): LiveData<PagedList<Meteorite>> {
         return currentFilter.asFlow()
-                .flowOn(dispatchers.default())
-                .combine<String?, Location?, Pair<String?, Location?>>(gpsTracker.location) { _, location ->
-                    Pair(this.filter, location)
-                }
-                .map<Pair<String?, Location?>, LivePagedListBuilder<Int, Meteorite>> {
-                    LivePagedListBuilder(meteoriteRepository.loadMeteorites(
-                            filter = it.first,
-                            longitude = it.second?.longitude,
-                            latitude = it.second?.latitude,
-                            limit = LIMIT
-                    ), PAGE_SIZE)
-                }
-                .asLiveData(dispatchers.default())
-                .switchMap {
-                    it.build()
-                }
-                .map { pagedList ->
-                    if (pagedList.isEmpty()) {
-                        contentStatus.postValue(NoContent)
+            .flowOn(dispatchers.default())
+            .combine<String?, Location?, Pair<String?, Location?>>(gpsTracker.location) { _, location ->
+                Pair(this.filter, location)
+            }
+            .map<Pair<String?, Location?>, LivePagedListBuilder<Int, Meteorite>> {
+                LivePagedListBuilder(
+                    meteoriteRepository.loadMeteorites(
+                        filter = it.first,
+                        longitude = it.second?.longitude,
+                        latitude = it.second?.latitude,
+                        limit = LIMIT
+                    ), PAGE_SIZE
+                )
+            }
+            .asLiveData(dispatchers.default())
+            .switchMap {
+                it.build()
+            }
+            .map { pagedList ->
+                if (pagedList.isEmpty()) {
+                    contentStatus.postValue(NoContent)
 
-                    } else {
-                        contentStatus.postValue(ShowContent)
-                    }
-                    return@map pagedList
+                } else {
+                    contentStatus.postValue(ShowContent)
                 }
+                return@map pagedList
+            }
     }
 
     fun clearSelectedMeteorite() {

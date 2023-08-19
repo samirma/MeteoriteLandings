@@ -1,7 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots
 
 import com.antonio.samir.meteoritelandingsspots.di.appModules
-import io.nodle.sdk.android.Nodle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin

@@ -95,22 +95,26 @@ class MeteoriteDetailViewModelTest {
             emit(Success(meteorite))
         })
 
-        currentLocation.offer(mockLocation)
+        currentLocation.trySend(mockLocation).isSuccess
 
         viewModel.loadMeteorite(fixtMeteoriteView.id!!)
 
         verify(mockMeteoriteObserver).onChanged(InProgress())
-        verify(mockMeteoriteObserver).onChanged(Success(MeteoriteView(
-                id = "123",
-                name = null,
-                yearString = null,
-                address = fixtString,
-                recclass = null,
-                mass = meteorite.mass,
-                reclat = 1.0,
-                reclong = 0.0,
-                hasAddress = false
-        )))
+        verify(mockMeteoriteObserver).onChanged(
+            Success(
+                MeteoriteView(
+                    id = "123",
+                    name = null,
+                    yearString = null,
+                    address = fixtString,
+                    recclass = null,
+                    mass = meteorite.mass,
+                    reclat = 1.0,
+                    reclong = 0.0,
+                    hasAddress = false
+                )
+            )
+        )
 
     }
 

@@ -15,7 +15,7 @@ class GeoLocationUtil(private val geoCoder: Geocoder) : GeoLocationUtilInterface
 
             val addresses = geoCoder.getFromLocation(latitude, longitude, 1)
 
-            if (addresses.isNotEmpty()) {
+            if (addresses?.isNotEmpty() == true) {
 
                 address = addresses[0]
 

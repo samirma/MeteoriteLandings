@@ -33,33 +33,34 @@ class MeteoriteDetailViewModel(
     val location = gpsTracker.location
 
     fun getMeteorite(context: Context): LiveData<Result<MeteoriteView>> = currentMeteorite.asFlow()
-            .flatMapLatest(meteoriteRepository::getMeteoriteById)
-            .combine(location) { meteorite, location -> //Add location
-                when (meteorite) {
-                    is Success -> Success(getMeteoriteView(meteorite.data, location, context))
-                    is Error -> Error(meteorite.exception)
-                    is InProgress -> InProgress()
-                }
+        .flatMapLatest(meteoriteRepository::getMeteoriteById)
+        .combine(location) { meteorite, location -> //Add location
+            when (meteorite) {
+                is Success -> Success(getMeteoriteView(meteorite.data, location, context))
+                is Error -> Error(meteorite.exception)
+                is InProgress -> InProgress()
             }
-            .asLiveData()
+        }
+        .asLiveData()
 
-    private fun getMeteoriteView(meteorite: Meteorite, location: Location?, context: Context) = MeteoriteView(
+    private fun getMeteoriteView(meteorite: Meteorite, location: Location?, context: Context) =
+        MeteoriteView(
             id = meteorite.id.toString(),
             name = meteorite.name,
             yearString = meteorite.yearString,
             address = meteorite.getLocationText(
-                    location = location,
-                    noAddress = context.getString(R.string.without_address_placeholder)
+                location = location,
+                noAddress = context.getString(R.string.without_address_placeholder)
             ),
             recclass = meteorite.recclass,
             mass = meteorite.mass.convertToNumberFormat(context.getString(R.string.unkown)),
             reclat = meteorite.reclat?.toDouble() ?: 0.0,
             reclong = meteorite.reclong?.toDouble() ?: 0.0,
             hasAddress = !meteorite.address.isNullOrBlank()
-    )
+        )
 
     fun loadMeteorite(meteoriteId: String) {
-        currentMeteorite.offer(meteoriteId)
+        currentMeteorite.trySend(meteoriteId).isSuccess
     }
 
     fun requestAddressUpdate(meteorite: MeteoriteView) {
