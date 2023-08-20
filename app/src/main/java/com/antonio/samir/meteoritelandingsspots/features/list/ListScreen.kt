@@ -75,19 +75,17 @@ fun ListScreen(
                 scrollState.firstVisibleItemIndex)
     )
 
-    val headerState = uiState.headerState
-
     onTopList(scrollOffset)
 
     val weight: Float by animateFloatAsState(
-        targetValue = if (headerState.isCollapsed()) {
+        targetValue = if (false) {
             1f
         } else {
             6f
         }
     )
 
-    val isDark by uiState.isDark.collectAsState()
+    val isDark = uiState.isDark
 
     MeteoriteLandingsTheme(darkTheme = isDark) {
         Surface(
@@ -95,7 +93,7 @@ fun ListScreen(
         ) {
             Column(Modifier.fillMaxSize()) {
                 Header(
-                    headerState = headerState,
+                    headerState = HeaderState.Collapsed,
                     modifier = Modifier.weight(weight),
                     onDarkModeToggleClick = uiState.onDarkModeToggleClick,
                     onEnterSearch = onEnterSearch,
@@ -146,10 +144,10 @@ fun ListScreenPreview() {
 
     ListScreen(
         uiState = ListScreenView(
+            isDark = false,
             addressStatus = ResultOf.Success(100f),
-            listState = ListState.UiContent(meteorites = flowOf(PagingData.from(items))),
             onDarkModeToggleClick = { },
-            headerState = HeaderState.Expanded
+            listState = ListState.UiContent(meteorites = flowOf(PagingData.from(items)))
         ),
         {}
     ) {}

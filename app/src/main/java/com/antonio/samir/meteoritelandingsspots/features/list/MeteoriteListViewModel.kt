@@ -1,13 +1,12 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
+import com.antonio.samir.meteoritelandingsspots.common.userCase.IsDarkTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.HeaderState
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.FetchMeteoriteList
@@ -15,6 +14,7 @@ import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteo
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.SetUITheme
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StartAddressRecover
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StatusAddressRecover
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -38,6 +38,7 @@ class MeteoriteListViewModel(
     private val fetchMeteoriteList: FetchMeteoriteList,
     private val getMeteorites: GetMeteorites,
     private val setDarkMode: SetUITheme,
+    private val isDarkTheme: IsDarkTheme,
 ) : ViewModel() {
 
     private val meteorite = MutableStateFlow<MeteoriteItemView?>(stateHandle[METEORITE])
@@ -45,8 +46,6 @@ class MeteoriteListViewModel(
     private val _searchQuery = MutableStateFlow("")
 
     private var isDarkMode = true
-
-    val selectedMeteorite = meteorite.asLiveData()
 
     private val debounceState = MutableStateFlow<HeaderState?>(null)
 
@@ -56,6 +55,7 @@ class MeteoriteListViewModel(
 
     private var viewModelState: MutableStateFlow<ListScreenView> = MutableStateFlow(
         ListScreenView(
+            isDark = false,
             addressStatus = ResultOf.InProgress(0f),
             onDarkModeToggleClick = {
                 onDarkModeToggleClick()
@@ -76,16 +76,24 @@ class MeteoriteListViewModel(
     }
 
     init {
-
         fetchMeteoriteList()
+        fetchThemeMode()
+    }
 
+    private fun fetchThemeMode() {
+        viewModelScope.launch(Dispatchers.Default) {
+            isDarkTheme(Unit).collect { isDark ->
+                viewModelState.update {
+                    it.copy(isDark = isDark)
+                }
+            }
+        }
     }
 
     private fun fetchMeteoriteList() {
         viewModelScope.launch {
             fetchMeteoriteList(Unit).collect { resultOf ->
                 viewModelState.update {
-                    Log.i(TAG, "$resultOf")
                     when (resultOf) {
                         is ResultOf.Error -> it.copy(
                             listState = ListState.UiMessage(R.string.general_error)
@@ -113,9 +121,8 @@ class MeteoriteListViewModel(
         }
     }
 
-    private fun recoverAddressStatus(): Flow<ResultOf<Float>> =
-        startAddressRecover(Unit).flatMapConcat { statusAddressRecover(it) }
-
+    private fun recoverAddressStatus() = startAddressRecover(Unit)
+        .flatMapConcat { statusAddressRecover(it) }
 
     fun searchLocation(query: String) {
         _searchQuery.value = query
@@ -124,10 +131,6 @@ class MeteoriteListViewModel(
     fun selectMeteorite(meteorite: MeteoriteItemView?) {
         stateHandle[METEORITE] = meteorite
         this.meteorite.value = meteorite
-    }
-
-    fun clearSelectedMeteorite() {
-        selectMeteorite(null)
     }
 
     fun onTopList(offset: Float) {
@@ -147,7 +150,6 @@ class MeteoriteListViewModel(
     companion object {
         private val TAG = MeteoriteListViewModel::class.java.simpleName
         const val METEORITE = "METEORITE"
-        const val DEBOUNCE = 200
     }
 
 }

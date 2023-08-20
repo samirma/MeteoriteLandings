@@ -163,7 +163,8 @@ val viewModelModule = module {
             statusAddressRecover = get(),
             fetchMeteoriteList = get(),
             getMeteorites = get(),
-            setDarkMode = get()
+            setDarkMode = get(),
+            isDarkTheme = get()
         )
     }
 }
