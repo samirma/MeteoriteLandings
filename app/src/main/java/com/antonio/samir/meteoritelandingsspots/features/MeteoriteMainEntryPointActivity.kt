@@ -46,9 +46,9 @@ class MeteoriteMainEntryPointActivity : ComponentActivity() {
         monetization.start(lifecycleScope, this)
 
         setContent {
-            val darkTheme = isDarkTheme(Unit).collectAsState(initial = false)
+            val darkTheme = isDarkTheme(Unit).collectAsState(initial = false).value
             MeteoriteLandingsTheme(
-                darkTheme = darkTheme.value
+                darkTheme = darkTheme
             ) {
                 Navigation()
             }
