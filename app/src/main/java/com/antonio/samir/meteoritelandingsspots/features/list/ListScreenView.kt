@@ -7,7 +7,6 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Meteo
 import kotlinx.coroutines.flow.Flow
 
 data class ListScreenView(
-    val isDark: Boolean,
     val addressStatus: ResultOf<Float>,
     val onDarkModeToggleClick: () -> Unit,
     val listState: ListState

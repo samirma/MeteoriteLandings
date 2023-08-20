@@ -43,10 +43,10 @@ fun Header(
     val isCollapsed = headerState.isCollapsed()
     val isSearch = headerState.isSearch()
 
-    var headerModifier = modifier
-
-    if (!isCollapsed) {
-        headerModifier = headerModifier.height(72.dp)
+    val height = if (isCollapsed) {
+        72.dp
+    } else {
+        276.dp
     }
 
     if (isSearch) {
@@ -57,7 +57,9 @@ fun Header(
         )
     } else {
         Box(
-            modifier = headerModifier.background(ExtendedTheme.colors.header),
+            modifier = modifier
+                .height(height)
+                .background(ExtendedTheme.colors.header),
         ) {
             AnimatedVisibility(
                 visible = !isCollapsed,
