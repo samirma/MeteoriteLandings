@@ -29,6 +29,7 @@ import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteo
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.SetUITheme
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StartAddressRecover
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StatusAddressRecover
+import com.antonio.samir.meteoritelandingsspots.features.list.userCases.SwitchUITheme
 import com.antonio.samir.meteoritelandingsspots.service.address.AddressServiceImpl
 import com.antonio.samir.meteoritelandingsspots.service.address.AddressServiceInterface
 import com.antonio.samir.meteoritelandingsspots.service.monetization.MonetizationImpl
@@ -120,6 +121,7 @@ val useCaseModule = module {
     factory { StatusAddressRecover(context = get()) }
     factory { IsDarkTheme(get()) }
     factory { SetUITheme(get()) }
+    factory { SwitchUITheme(get(), get()) }
     factory { RequestPermission() }
     factory {
         GetLocation(
@@ -158,13 +160,11 @@ val viewModelModule = module {
     }
     viewModel {
         MeteoriteListViewModel(
-            stateHandle = get(),
             startAddressRecover = get(),
             statusAddressRecover = get(),
             fetchMeteoriteList = get(),
             getMeteorites = get(),
-            setDarkMode = get(),
-            isDarkTheme = get()
+            switchUITheme = get()
         )
     }
 }
