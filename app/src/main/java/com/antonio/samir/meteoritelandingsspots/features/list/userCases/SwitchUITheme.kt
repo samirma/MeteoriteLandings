@@ -5,8 +5,8 @@ import com.antonio.samir.meteoritelandingsspots.common.userCase.IsDarkTheme
 import com.antonio.samir.meteoritelandingsspots.common.userCase.UserCaseBase
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.last
 
 @FlowPreview
 class SwitchUITheme(
@@ -16,7 +16,7 @@ class SwitchUITheme(
 
     override fun action(input: Unit) = flow {
         try {
-            val isDark = isDarkTheme(Unit).last()
+            val isDark = isDarkTheme(Unit).first()
             emitAll(setUITheme(SetUITheme.Input(!isDark)))
         } catch (e: Exception) {
             emit(ResultOf.Error(e))
