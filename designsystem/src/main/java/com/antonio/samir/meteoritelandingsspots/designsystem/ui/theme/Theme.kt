@@ -9,8 +9,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
-import com.antonio.samir.meteoritelandingsspots.designsystem.R
 
 @Immutable
 data class ExtendedColors(
@@ -61,25 +59,25 @@ fun MeteoriteLandingsTheme(
 @Composable
 fun getExtendedColorsTheme(darkTheme: Boolean): ExtendedColors = if (darkTheme) {
     ExtendedColors(
-        textPrimary = colorResource(R.color.textPrimaryDark),
-        textSecondary = colorResource(R.color.textSecondaryDark),
-        highlight = colorResource(R.color.highlightDark),
-        header = colorResource(R.color.headerDark),
-        hover = colorResource(R.color.hoverDark),
-        backgroundInverted = colorResource(R.color.background),
-        textPrimaryInverted = colorResource(R.color.textPrimary),
-        textSecondaryInverted = colorResource(R.color.textSecondary),
+        textPrimary = textPrimaryDark,
+        textSecondary = textSecondaryDark,
+        highlight = highlightDark,
+        header = headerDark,
+        hover = hoverDark,
+        backgroundInverted = background,
+        textPrimaryInverted = textPrimary,
+        textSecondaryInverted = textSecondary,
     )
 } else {
     ExtendedColors(
-        textPrimary = colorResource(R.color.textPrimary),
-        textSecondary = colorResource(R.color.textSecondary),
-        highlight = colorResource(R.color.highlight),
-        header = colorResource(R.color.header),
-        hover = colorResource(R.color.hover),
-        backgroundInverted = colorResource(R.color.backgroundDark),
-        textPrimaryInverted = colorResource(R.color.textPrimaryDark),
-        textSecondaryInverted = colorResource(R.color.textSecondaryDark)
+        textPrimary = textPrimary,
+        textSecondary = textSecondary,
+        highlight = highlight,
+        header = header,
+        hover = hover,
+        backgroundInverted = backgroundDark,
+        textPrimaryInverted = textPrimaryDark,
+        textSecondaryInverted = textSecondaryDark
     )
 }
 
@@ -87,17 +85,17 @@ fun getExtendedColorsTheme(darkTheme: Boolean): ExtendedColors = if (darkTheme) 
 @Composable
 private fun getColorTheme(darkTheme: Boolean) = if (darkTheme) {
     darkColorScheme(
-        primary = colorResource(R.color.colorPrimaryDark),
-        secondary = colorResource(R.color.colorPrimaryDark),
-        background = colorResource(R.color.backgroundDark),
-        surface = colorResource(R.color.backgroundDark),
+        primary = colorPrimary,
+        secondary = colorPrimaryDark,
+        background = backgroundDark,
+        surface = backgroundDark,
     )
 } else {
     lightColorScheme(
-        primary = colorResource(R.color.colorPrimary),
-        secondary = colorResource(R.color.colorPrimary),
-        background = colorResource(R.color.background),
-        surface = colorResource(R.color.background),
+        primary = colorPrimary,
+        secondary = colorPrimary,
+        background = background,
+        surface = background,
     )
 }
 
