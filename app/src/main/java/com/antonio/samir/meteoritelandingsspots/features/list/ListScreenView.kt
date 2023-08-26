@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.Flow
 
 data class ListScreenView(
     val addressStatus: ResultOf<Float>,
-    val onDarkModeToggleClick: () -> Unit,
     val listState: ListState
 )
 
