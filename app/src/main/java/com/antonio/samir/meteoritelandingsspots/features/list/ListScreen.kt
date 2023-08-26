@@ -29,6 +29,7 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Heade
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Loading
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MessageError
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 import com.antonio.samir.meteoritelandingsspots.features.list.ListState.UiContent
 import com.antonio.samir.meteoritelandingsspots.features.list.ListState.UiLoading
 import com.antonio.samir.meteoritelandingsspots.features.list.ListState.UiMessage
@@ -43,15 +44,14 @@ import kotlinx.coroutines.flow.flowOf
 fun ListScreenNavigation(
     viewModel: MeteoriteListViewModel
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState = viewModel.uiState.collectAsState()
 
     ListScreen(
-        uiState = uiState,
+        uiState = uiState.value,
         onItemClick = viewModel::onItemClicked,
         onEnterSearch = { viewModel.setHeaderState(HeaderState.Search) },
-        onExitSearch = {
-            viewModel.setHeaderState(HeaderState.Expanded)
-        },
+        onDarkModeToggleClick = viewModel::onDarkModeToggleClick,
+        onExitSearch = { viewModel.setHeaderState(HeaderState.Expanded) },
         onSearch = viewModel::searchLocation
     )
 }
@@ -64,6 +64,7 @@ fun ListScreen(
     onItemClick: (itemView: MeteoriteItemView) -> Unit,
     onEnterSearch: () -> Unit,
     onExitSearch: () -> Unit,
+    onDarkModeToggleClick: () -> Unit,
     onSearch: (query: String) -> Unit,
 ) {
 
@@ -81,7 +82,7 @@ fun ListScreen(
         Column(Modifier.fillMaxSize()) {
             Header(
                 headerState = headerState,
-                onDarkModeToggleClick = uiState.onDarkModeToggleClick,
+                onDarkModeToggleClick = onDarkModeToggleClick,
                 onEnterSearch = onEnterSearch,
                 onExitSearch = onExitSearch,
                 onSearch = onSearch
@@ -136,22 +137,45 @@ private fun ContentList(
 
 @ExperimentalAnimationApi
 @ExperimentalComposeUiApi
-@Preview("Meteorite list view")
+@Preview("Meteorite list view Dark")
 @Composable
-fun ListScreenPreview() {
+fun ListScreenPreviewDark() {
     val items = getFakeListItems()
+    MeteoriteLandingsTheme(darkTheme = true) {
+        ListScreen(
+            uiState = ListScreenView(
+                addressStatus = ResultOf.Success(100f),
+                listState = UiContent(meteorites = flowOf(PagingData.from(items)))
+            ),
+            onDarkModeToggleClick = {},
+            onItemClick = {},
+            onEnterSearch = {},
+            onExitSearch = {}
+        ) {}
 
-    ListScreen(
-        uiState = ListScreenView(
-            addressStatus = ResultOf.Success(100f),
-            onDarkModeToggleClick = { },
-            listState = UiContent(meteorites = flowOf(PagingData.from(items)))
-        ),
-        onItemClick = {},
-        onEnterSearch = {},
-        onExitSearch = {}
-    ) {}
+    }
+}
 
+
+@ExperimentalAnimationApi
+@ExperimentalComposeUiApi
+@Preview("Meteorite list view Light")
+@Composable
+fun ListScreenPreviewLight() {
+    val items = getFakeListItems()
+    MeteoriteLandingsTheme(darkTheme = false) {
+        ListScreen(
+            uiState = ListScreenView(
+                addressStatus = ResultOf.Success(100f),
+                listState = UiContent(meteorites = flowOf(PagingData.from(items)))
+            ),
+            onDarkModeToggleClick = {},
+            onItemClick = {},
+            onEnterSearch = {},
+            onExitSearch = {}
+        ) {}
+
+    }
 }
 //
 //@ExperimentalAnimationApi

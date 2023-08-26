@@ -51,9 +51,6 @@ class MeteoriteListViewModel(
     private var viewModelState: MutableStateFlow<ListScreenView> = MutableStateFlow(
         ListScreenView(
             addressStatus = ResultOf.InProgress(0f),
-            onDarkModeToggleClick = {
-                onDarkModeToggleClick()
-            },
             listState = ListState.UiLoading
         )
     )
@@ -62,7 +59,7 @@ class MeteoriteListViewModel(
     // UI state exposed to the UI
     val uiState: StateFlow<ListScreenView> = viewModelState
 
-    private fun onDarkModeToggleClick() {
+    fun onDarkModeToggleClick() {
         viewModelScope.launch {
             switchUITheme(Unit).collect {
                 Log.i(TAG, "SwitchUITheme ${it.javaClass}")
