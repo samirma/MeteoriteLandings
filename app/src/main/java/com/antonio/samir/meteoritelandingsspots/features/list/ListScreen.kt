@@ -6,7 +6,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
@@ -22,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
+import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.AddressProgress
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Header
@@ -61,11 +64,11 @@ fun ListScreenNavigation(
 @Composable
 fun ListScreen(
     uiState: ListScreenView,
-    onItemClick: (itemView: MeteoriteItemView) -> Unit,
-    onEnterSearch: () -> Unit,
-    onExitSearch: () -> Unit,
-    onDarkModeToggleClick: () -> Unit,
-    onSearch: (query: String) -> Unit,
+    onItemClick: (itemView: MeteoriteItemView) -> Unit = {},
+    onEnterSearch: () -> Unit = {},
+    onExitSearch: () -> Unit = {},
+    onDarkModeToggleClick: () -> Unit = {},
+    onSearch: (query: String) -> Unit = {},
 ) {
 
     val scrollState = rememberLazyListState()
@@ -177,74 +180,72 @@ fun ListScreenPreviewLight() {
 
     }
 }
-//
-//@ExperimentalAnimationApi
-//@ExperimentalComposeUiApi
-//@Preview("Meteorite list loading")
-//@Composable
-//fun ListScreenLoadingPreview() {
-//    ListScreen(
-//        uiState = ListScreenView(
-//            addressStatus = ResultOf.Success(100f),
-//            listState = ListState.UiLoading,
-//            onDarkModeToggleClick = { },
-//        ),
-//        {}
-//    ) {}
-//
-//}
-//
-//@ExperimentalAnimationApi
-//@ExperimentalComposeUiApi
-//@Preview("Meteorite list error")
-//@Composable
-//fun ListScreenErrorPreview() {
-//    ListScreen(
-//        uiState = ListScreenView(
-//            listState = ListState.UiMessage(R.string.general_error),
-//            addressStatus = ResultOf.Success(100f),
-//            onDarkModeToggleClick = { },
-//        ),
-//        {}
-//    ) {}
-//
-//}
-//
-//@ExperimentalAnimationApi
-//@ExperimentalComposeUiApi
-//@Preview("Meteorite list message loading 10%")
-//@Composable
-//fun ListScreenMessagePreview() {
-//    val items = getFakeListItems()
-//
-//    ListScreen(
-//        uiState = ListScreenView(
-//            addressStatus = ResultOf.InProgress(10.0f),
-//            listState = ListState.UiContent(meteorites = flowOf(PagingData.from(items))),
-//            onDarkModeToggleClick = { }
-//        ),
-//        onSearch = {}
-//    )
-//
-//}
-//
-//@Preview
-//@Composable
-//fun TextLazyColumn() {
-//
-//    val items = getFakeListItems()
-//
-//    LazyColumn(Modifier.height(500.dp)) {
-//
-//        items.forEach {
-//            item {
-//                MeteoriteCell(it, null)
-//            }
-//        }
-//
-//    }
-//
-//}
+
+@ExperimentalAnimationApi
+@ExperimentalComposeUiApi
+@Preview("Meteorite list loading")
+@Composable
+fun ListScreenLoadingPreview() {
+    ListScreen(
+        uiState = ListScreenView(
+            addressStatus = ResultOf.Success(100f),
+            listState = ListState.UiLoading,
+        ),
+        onDarkModeToggleClick = {},
+        onItemClick = {},
+        onEnterSearch = {},
+        onExitSearch = {}
+    ) {}
+
+}
+
+@ExperimentalAnimationApi
+@ExperimentalComposeUiApi
+@Preview("Meteorite list error")
+@Composable
+fun ListScreenErrorPreview() {
+    ListScreen(
+        uiState = ListScreenView(
+            listState = UiMessage(R.string.general_error),
+            addressStatus = ResultOf.Success(100f),
+        )
+    )
+
+}
+
+@ExperimentalAnimationApi
+@ExperimentalComposeUiApi
+@Preview("Meteorite list message loading 10%")
+@Composable
+fun ListScreenMessagePreview() {
+    val items = getFakeListItems()
+
+    ListScreen(
+        uiState = ListScreenView(
+            addressStatus = ResultOf.InProgress(10.0f),
+            listState = UiContent(meteorites = flowOf(PagingData.from(items))),
+        )
+    )
+
+}
+
+@Preview
+@Composable
+fun TextLazyColumn() {
+
+    val items = getFakeListItems()
+
+    LazyColumn(Modifier.height(500.dp)) {
+
+        items.forEach {
+            item {
+                MeteoriteCell(it, null)
+            }
+        }
+
+    }
+
+}
 
 private fun getFakeListItems(): List<MeteoriteItemView> = (1..10).map {
     MeteoriteItemView(
