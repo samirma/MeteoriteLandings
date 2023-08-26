@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
-import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.HeaderState
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.FetchMeteoriteList
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
@@ -42,8 +41,6 @@ class MeteoriteListViewModel(
 
     private val _searchQuery = MutableStateFlow("")
 
-    private val debounceState = MutableStateFlow<HeaderState?>(null)
-
     val meteorites: Flow<PagingData<MeteoriteItemView>> = _searchQuery.flatMapConcat {
         getMeteorites(GetMeteorites.Input(query = it, location = null))
     }
@@ -55,9 +52,12 @@ class MeteoriteListViewModel(
         )
     )
 
-
     // UI state exposed to the UI
     val uiState: StateFlow<ListScreenView> = viewModelState
+
+    init {
+        fetchMeteoriteList()
+    }
 
     fun onDarkModeToggleClick() {
         viewModelScope.launch {
@@ -65,10 +65,6 @@ class MeteoriteListViewModel(
                 Log.i(TAG, "SwitchUITheme ${it.javaClass}")
             }
         }
-    }
-
-    init {
-        fetchMeteoriteList()
     }
 
     private fun fetchMeteoriteList() {
@@ -112,11 +108,6 @@ class MeteoriteListViewModel(
     fun onItemClicked(meteoriteItemView: MeteoriteItemView?) {
         _navigateToMeteoriteDetail.value = meteoriteItemView
     }
-
-    fun setHeaderState(headerState: HeaderState) {
-        debounceState.value = headerState
-    }
-
 
     companion object {
         private val TAG = MeteoriteListViewModel::class.java.simpleName

@@ -2,7 +2,9 @@ package com.antonio.samir.meteoritelandingsspots.data.repository
 
 import android.util.Log
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
-import com.antonio.samir.meteoritelandingsspots.common.ResultOf.*
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf.Error
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf.InProgress
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf.Success
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.remote.MeteoriteRemoteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
