@@ -207,9 +207,9 @@ fun ToolbarButtons(
     }
 }
 
-@Preview("ToolbarActions")
+@Preview("ToolbarActions Light")
 @Composable
-fun ToolbarActionsPreview() {
+fun ToolbarActionsLightPreview() {
 
     var darkTheme by remember { mutableStateOf(true) }
 
@@ -223,12 +223,65 @@ fun ToolbarActionsPreview() {
     }
 }
 
-
-@Preview("ProgressPreview")
+@Preview("ToolbarActions Dark")
 @Composable
-fun ProgressPreview() {
+fun ToolbarActionsDarkPreview() {
+
+    var darkTheme by remember { mutableStateOf(false) }
+
+    MeteoriteLandingsTheme(darkTheme = darkTheme) {
+        Surface(Modifier.background(MaterialTheme.colorScheme.background)) {
+            ToolbarButtons(
+                Modifier,
+                { darkTheme = !darkTheme }
+            ) {}
+        }
+    }
+}
+
+
+@Preview("Progress Light")
+@Composable
+fun ProgressLightPreview() {
 
     MeteoriteLandingsTheme(darkTheme = false) {
+
+        var state by remember { mutableStateOf(0.0f) }
+
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            AddressProgress(
+                progress = state,
+                modifier = Modifier
+            )
+            Button(
+                onClick = { state = 10.0f },
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(8.dp)
+            ) {
+                Text(text = "Show")
+            }
+            Button(
+                onClick = { state = 0.0f },
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(8.dp)
+            ) {
+                Text(text = "Hide")
+            }
+        }
+    }
+}
+
+@Preview("Progress Dark")
+@Composable
+fun ProgressLightDark() {
+
+    MeteoriteLandingsTheme(darkTheme = true) {
 
         var state by remember { mutableStateOf(0.0f) }
 
