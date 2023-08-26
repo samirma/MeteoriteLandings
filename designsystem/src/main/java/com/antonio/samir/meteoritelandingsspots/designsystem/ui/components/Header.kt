@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -32,37 +34,35 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteL
 @ExperimentalAnimationApi
 @Composable
 fun Header(
-    headerState: HeaderState,
+    isScrollOnTop: Boolean,
     modifier: Modifier = Modifier,
-    onEnterSearch: () -> Unit = {},
-    onExitSearch: () -> Unit = {},
     onSearch: (query: String) -> Unit = {},
-    onDarkModeToggleClick: () -> Unit,
+    onDarkModeToggleClick: () -> Unit = {},
 ) {
 
-    val isCollapsed = headerState.isCollapsed()
-    val isSearch = headerState.isSearch()
+    val isSearch = remember { mutableStateOf(false) }
 
-    val height = if (isCollapsed) {
-        72.dp
-    } else {
-        276.dp
-    }
-
-    if (isSearch) {
+    if (isSearch.value) {
         SearchBar(
             placeholderText = stringResource(R.string.search_placeholder),
-            onNavigateBack = onExitSearch,
+            onNavigateBack = { isSearch.value = false },
             onSearch = onSearch
         )
     } else {
+
+        val height = if (isScrollOnTop) {
+            72.dp
+        } else {
+            276.dp
+        }
+
         Box(
             modifier = modifier
                 .height(height)
                 .background(ExtendedTheme.colors.header),
         ) {
             AnimatedVisibility(
-                visible = !isCollapsed,
+                visible = !isScrollOnTop,
                 modifier = Modifier.align(Alignment.Center),
                 enter = fadeIn() + slideInVertically(),
                 exit = fadeOut() + slideOutVertically(),
@@ -88,7 +88,7 @@ fun Header(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 AnimatedVisibility(
-                    visible = isCollapsed,
+                    visible = isScrollOnTop,
                     enter = fadeIn(),
                     exit = fadeOut(),
                     modifier = Modifier.weight(weight = 1f, fill = true)
@@ -103,23 +103,13 @@ fun Header(
                 ToolbarButtons(
                     modifier = Modifier,
                     onDarkModeToggleClick = onDarkModeToggleClick,
-                    onEnterSearch = onEnterSearch
+                    onEnterSearch = { isSearch.value = true }
                 )
             }
         }
     }
 }
 
-
-sealed class HeaderState {
-    object Collapsed : HeaderState()
-    object Expanded : HeaderState()
-    object Search : HeaderState()
-
-    fun isCollapsed(): Boolean = this == Collapsed
-    fun isSearch(): Boolean = this == Search
-
-}
 
 @ExperimentalAnimationApi
 @ExperimentalComposeUiApi
@@ -128,7 +118,7 @@ sealed class HeaderState {
 fun HeaderPreview() {
     MeteoriteLandingsTheme(darkTheme = true) {
         Surface() {
-            Header(HeaderState.Collapsed) {}
+            Header(true) {}
         }
     }
 }
@@ -141,7 +131,7 @@ fun HeaderPreview() {
 fun HeaderExpandedPreview() {
     MeteoriteLandingsTheme(darkTheme = true) {
         Surface() {
-            Header(HeaderState.Expanded) {}
+            Header(false) {}
         }
     }
 }

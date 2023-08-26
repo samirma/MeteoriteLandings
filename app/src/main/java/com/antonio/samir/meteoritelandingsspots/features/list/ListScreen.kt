@@ -28,7 +28,6 @@ import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.AddressProgress
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Header
-import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.HeaderState
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Loading
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MessageError
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
@@ -52,9 +51,7 @@ fun ListScreenNavigation(
     ListScreen(
         uiState = uiState.value,
         onItemClick = viewModel::onItemClicked,
-        onEnterSearch = { viewModel.setHeaderState(HeaderState.Search) },
         onDarkModeToggleClick = viewModel::onDarkModeToggleClick,
-        onExitSearch = { viewModel.setHeaderState(HeaderState.Expanded) },
         onSearch = viewModel::searchLocation
     )
 }
@@ -65,29 +62,23 @@ fun ListScreenNavigation(
 fun ListScreen(
     uiState: ListScreenView,
     onItemClick: (itemView: MeteoriteItemView) -> Unit = {},
-    onEnterSearch: () -> Unit = {},
-    onExitSearch: () -> Unit = {},
     onDarkModeToggleClick: () -> Unit = {},
     onSearch: (query: String) -> Unit = {},
 ) {
 
     val scrollState = rememberLazyListState()
 
-    val isCollapsed: Boolean by remember {
+    val isScrollOnTop: Boolean by remember {
         derivedStateOf { scrollState.firstVisibleItemIndex > 0 }
     }
-
-    val headerState = if (isCollapsed) HeaderState.Collapsed else HeaderState.Expanded
 
     Surface(
         modifier = Modifier.background(MaterialTheme.colorScheme.background)
     ) {
         Column(Modifier.fillMaxSize()) {
             Header(
-                headerState = headerState,
+                isScrollOnTop = isScrollOnTop,
                 onDarkModeToggleClick = onDarkModeToggleClick,
-                onEnterSearch = onEnterSearch,
-                onExitSearch = onExitSearch,
                 onSearch = onSearch
             )
             Box(
@@ -149,13 +140,8 @@ fun ListScreenPreviewDark() {
             uiState = ListScreenView(
                 addressStatus = ResultOf.Success(100f),
                 listState = UiContent(meteorites = flowOf(PagingData.from(items)))
-            ),
-            onDarkModeToggleClick = {},
-            onItemClick = {},
-            onEnterSearch = {},
-            onExitSearch = {}
-        ) {}
-
+            )
+        )
     }
 }
 
@@ -171,13 +157,8 @@ fun ListScreenPreviewLight() {
             uiState = ListScreenView(
                 addressStatus = ResultOf.Success(100f),
                 listState = UiContent(meteorites = flowOf(PagingData.from(items)))
-            ),
-            onDarkModeToggleClick = {},
-            onItemClick = {},
-            onEnterSearch = {},
-            onExitSearch = {}
-        ) {}
-
+            )
+        )
     }
 }
 
@@ -189,13 +170,9 @@ fun ListScreenLoadingPreview() {
     ListScreen(
         uiState = ListScreenView(
             addressStatus = ResultOf.Success(100f),
-            listState = ListState.UiLoading,
-        ),
-        onDarkModeToggleClick = {},
-        onItemClick = {},
-        onEnterSearch = {},
-        onExitSearch = {}
-    ) {}
+            listState = UiLoading,
+        )
+    )
 
 }
 

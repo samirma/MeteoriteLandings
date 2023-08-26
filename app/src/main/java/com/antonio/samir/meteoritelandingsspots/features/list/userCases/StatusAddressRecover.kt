@@ -9,7 +9,7 @@ import com.antonio.samir.meteoritelandingsspots.service.address.AddressRecoverWo
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.util.*
+import java.util.UUID
 
 @FlowPreview
 class StatusAddressRecover(val context: Context) : UserCaseBase<UUID, ResultOf<Float>>() {
