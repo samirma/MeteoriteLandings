@@ -45,7 +45,9 @@ fun Header(
     if (isSearch.value) {
         SearchBar(
             placeholderText = stringResource(R.string.search_placeholder),
-            onNavigateBack = { isSearch.value = false },
+            onNavigateBack = {
+                isSearch.value = false
+            },
             onSearch = onSearch
         )
     } else {
@@ -117,7 +119,7 @@ fun Header(
 @Composable
 fun HeaderPreview() {
     MeteoriteLandingsTheme(darkTheme = true) {
-        Surface() {
+        Surface {
             Header(true) {}
         }
     }
@@ -130,7 +132,7 @@ fun HeaderPreview() {
 @Composable
 fun HeaderExpandedPreview() {
     MeteoriteLandingsTheme(darkTheme = true) {
-        Surface() {
+        Surface {
             Header(false) {}
         }
     }
