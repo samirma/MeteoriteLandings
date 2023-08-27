@@ -2,8 +2,7 @@ package com.antonio.samir.meteoritelandingsspots.features
 
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
@@ -24,6 +24,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.common.userCase.IsDarkTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.AddressProgress
@@ -39,7 +40,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @OptIn(ExperimentalAnimationApi::class, FlowPreview::class, ExperimentalCoroutinesApi::class)
-class MeteoriteMainEntryPointActivity : ComponentActivity() {
+class MeteoriteMainEntryPointActivity : AppCompatActivity() {
 
     private val monetization: MonetizationInterface by inject()
 
@@ -52,9 +53,11 @@ class MeteoriteMainEntryPointActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        setContentView(R.layout.activity_meteorite_list)
+
         monetization.start(lifecycleScope, this)
 
-        setContent {
+        findViewById<ComposeView>(R.id.compose_view).setContent {
             val addressProgress by listViewModel.addressStatus.collectAsState()
             val darkTheme = isDarkTheme(Unit).collectAsState(initial = false).value
             MeteoriteLandingsTheme(

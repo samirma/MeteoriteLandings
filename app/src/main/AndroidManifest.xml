@@ -32,7 +32,7 @@
             android:label="@string/title_activity_main"
             android:launchMode="standard"
             android:windowSoftInputMode="stateAlwaysHidden"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
             android:exported="true"
             android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden">
