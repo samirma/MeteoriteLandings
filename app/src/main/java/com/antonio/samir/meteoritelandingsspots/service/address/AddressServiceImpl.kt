@@ -8,7 +8,6 @@ import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
@@ -56,7 +55,6 @@ class AddressServiceImpl(
             meteorite.address = getAddressFromMeteorite(meteorite)
         }
         meteoriteLocalRepository.updateAll(list)
-        delay(50L)
     }
 
     override suspend fun recoverAddress(meteorite: Meteorite) = withContext(dispatchers.default()) {

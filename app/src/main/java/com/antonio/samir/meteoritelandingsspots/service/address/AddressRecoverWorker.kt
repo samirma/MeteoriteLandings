@@ -3,6 +3,8 @@ package com.antonio.samir.meteoritelandingsspots.service.address
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import androidx.work.workDataOf
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -24,16 +26,17 @@ class AddressRecoverWorker(
 
         delay(5000L)
 
-//        addressService
-//            .recoveryAddress()
-//            .collect { result ->
-//                when (result) {
-//                    is ResultOf.InProgress -> {
-//                        setProgress(workDataOf(PROGRESS to result.data))
-//                    }
-//                    else -> {}
-//                }
-//            }
+        addressService
+            .recoveryAddress()
+            .collect { result ->
+                when (result) {
+                    is ResultOf.InProgress -> {
+                        setProgress(workDataOf(PROGRESS to result.data))
+                    }
+
+                    else -> {}
+                }
+            }
 
         Result.success()
     }
