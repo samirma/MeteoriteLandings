@@ -48,8 +48,6 @@ fun SearchBar(
     modifier: Modifier = Modifier,
     searchText: String = "",
     placeholderText: String = "",
-    onSearchTextChanged: (String) -> Unit = {},
-    onClearClick: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onSearch: (query: String) -> Unit,
 ) {
@@ -57,20 +55,30 @@ fun SearchBar(
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
 
+    var text by remember { mutableStateOf(searchText) }
+
+    val clear = {
+        if (text.isNotBlank()) {
+            text = ""
+            onSearch(text)
+        }
+    }
+
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        IconButton(onClick = { onNavigateBack() }) {
+        IconButton(onClick = {
+            clear()
+            onNavigateBack()
+        }) {
             Icon(
                 imageVector = Icons.Filled.ArrowBack,
                 modifier = Modifier,
                 contentDescription = stringResource(R.string.close_search)
             )
         }
-
-        var text by remember { mutableStateOf(searchText) }
 
         OutlinedTextField(
             modifier = Modifier
@@ -83,7 +91,6 @@ fun SearchBar(
             value = text,
             onValueChange = {
                 text = it
-                onSearchTextChanged(it)
             },
             placeholder = {
                 Text(text = placeholderText, style = ExtendedTheme.typography.body2)
@@ -94,10 +101,7 @@ fun SearchBar(
                     enter = fadeIn(),
                     exit = fadeOut()
                 ) {
-                    IconButton(onClick = {
-                        onClearClick()
-                        text = ""
-                    }) {
+                    IconButton(onClick = clear) {
                         Icon(
                             imageVector = Icons.Filled.Close,
                             contentDescription = stringResource(R.string.clear)
@@ -110,7 +114,7 @@ fun SearchBar(
             singleLine = true,
             keyboardOptions = Default.copy(imeAction = ImeAction.Search),
             keyboardActions = KeyboardActions(onSearch = {
-                keyboardController?.hide()
+                //keyboardController?.hide()
                 onSearch(text)
             }),
         )

@@ -5,11 +5,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -17,7 +24,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.common.userCase.IsDarkTheme
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.AddressProgress
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 import com.antonio.samir.meteoritelandingsspots.features.detail.DetailScreen
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailViewModel
@@ -46,11 +55,29 @@ class MeteoriteMainEntryPointActivity : ComponentActivity() {
         monetization.start(lifecycleScope, this)
 
         setContent {
+            val addressProgress by listViewModel.addressStatus.collectAsState()
             val darkTheme = isDarkTheme(Unit).collectAsState(initial = false).value
             MeteoriteLandingsTheme(
                 darkTheme = darkTheme
             ) {
-                Navigation()
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background)
+                ) {
+                    Navigation()
+                    (addressProgress as? ResultOf.InProgress)?.data?.let {
+                        AddressProgress(
+                            progress = it,
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .padding(
+                                    end = 16.dp,
+                                    bottom = 16.dp
+                                )
+                        )
+                    }
+                }
             }
         }
     }

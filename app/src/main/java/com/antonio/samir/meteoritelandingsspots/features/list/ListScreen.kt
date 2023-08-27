@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -18,23 +16,20 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.common.ResultOf
-import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.AddressProgress
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Header
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Loading
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MessageError
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
-import com.antonio.samir.meteoritelandingsspots.features.list.ListState.UiContent
-import com.antonio.samir.meteoritelandingsspots.features.list.ListState.UiLoading
-import com.antonio.samir.meteoritelandingsspots.features.list.ListState.UiMessage
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoristListState.Loading
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoristListState.UiContent
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoristListState.UiMessage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.flowOf
@@ -48,11 +43,15 @@ fun ListScreenNavigation(
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
+    val onItemClick = remember { return@remember viewModel::onItemClicked }
+    val onDarkModeToggleClick = remember { return@remember viewModel::onDarkModeToggleClick }
+    val onSearch = remember { return@remember viewModel::searchLocation }
+
     ListScreen(
         uiState = uiState.value,
-        onItemClick = viewModel::onItemClicked,
-        onDarkModeToggleClick = viewModel::onDarkModeToggleClick,
-        onSearch = viewModel::searchLocation
+        onItemClick = onItemClick,
+        onDarkModeToggleClick = onDarkModeToggleClick,
+        onSearch = onSearch
     )
 }
 
@@ -60,7 +59,7 @@ fun ListScreenNavigation(
 @ExperimentalComposeUiApi
 @Composable
 fun ListScreen(
-    uiState: ListScreenView,
+    uiState: MeteoristListState,
     onItemClick: (itemView: MeteoriteItemView) -> Unit = {},
     onDarkModeToggleClick: () -> Unit = {},
     onSearch: (query: String) -> Unit = {},
@@ -84,47 +83,20 @@ fun ListScreen(
             Box(
                 Modifier.weight(10f, fill = true)
             ) {
-                val listState: ListState = uiState.listState
-                ContentList(
-                    listState = listState,
-                    scrollState = scrollState,
-                    onItemClick = onItemClick
-                )
+                when (uiState) {
+                    is UiContent -> MeteoriteList(
+                        scrollState = scrollState,
+                        meteorites = uiState.meteorites,
+                        onItemClick = onItemClick
+                    )
 
-                val addressProgress = uiState.addressStatus
-                if (addressProgress is ResultOf.InProgress && (addressProgress.data != null)) {
-                    AddressProgress(
-                        progress = addressProgress.data,
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .padding(
-                                end = 16.dp,
-                                bottom = 16.dp
-                            )
+                    Loading -> Loading(modifier = Modifier.fillMaxSize())
+                    is UiMessage -> MessageError(
+                        message = uiState.message
                     )
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun ContentList(
-    listState: ListState,
-    scrollState: LazyListState,
-    onItemClick: (itemView: MeteoriteItemView) -> Unit
-) {
-    when (listState) {
-        is UiContent -> MeteoriteList(
-            scrollState = scrollState,
-            meteorites = listState.meteorites,
-            onItemClick = onItemClick
-        )
-
-        UiLoading -> Loading(modifier = Modifier.fillMaxSize())
-        is UiMessage -> MessageError(
-            message = listState.message
-        )
     }
 }
 
@@ -137,10 +109,7 @@ fun ListScreenPreviewDark() {
     val items = getFakeListItems()
     MeteoriteLandingsTheme(darkTheme = true) {
         ListScreen(
-            uiState = ListScreenView(
-                addressStatus = ResultOf.Success(100f),
-                listState = UiContent(meteorites = flowOf(PagingData.from(items)))
-            )
+            uiState = UiContent(meteorites = flowOf(PagingData.from(items)))
         )
     }
 }
@@ -154,10 +123,7 @@ fun ListScreenPreviewLight() {
     val items = getFakeListItems()
     MeteoriteLandingsTheme(darkTheme = false) {
         ListScreen(
-            uiState = ListScreenView(
-                addressStatus = ResultOf.Success(100f),
-                listState = UiContent(meteorites = flowOf(PagingData.from(items)))
-            )
+            uiState = UiContent(meteorites = flowOf(PagingData.from(items)))
         )
     }
 }
@@ -168,10 +134,7 @@ fun ListScreenPreviewLight() {
 @Composable
 fun ListScreenLoadingPreview() {
     ListScreen(
-        uiState = ListScreenView(
-            addressStatus = ResultOf.Success(100f),
-            listState = UiLoading,
-        )
+        uiState = Loading
     )
 
 }
@@ -182,12 +145,8 @@ fun ListScreenLoadingPreview() {
 @Composable
 fun ListScreenErrorPreview() {
     ListScreen(
-        uiState = ListScreenView(
-            listState = UiMessage(R.string.general_error),
-            addressStatus = ResultOf.Success(100f),
-        )
+        uiState = UiMessage(R.string.general_error)
     )
-
 }
 
 @ExperimentalAnimationApi
@@ -196,14 +155,9 @@ fun ListScreenErrorPreview() {
 @Composable
 fun ListScreenMessagePreview() {
     val items = getFakeListItems()
-
     ListScreen(
-        uiState = ListScreenView(
-            addressStatus = ResultOf.InProgress(10.0f),
-            listState = UiContent(meteorites = flowOf(PagingData.from(items))),
-        )
+        uiState = UiContent(meteorites = flowOf(PagingData.from(items)))
     )
-
 }
 
 @Preview

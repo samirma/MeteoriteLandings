@@ -8,7 +8,8 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.paging.LoadState
+import androidx.paging.LoadState.Error
+import androidx.paging.LoadState.Loading
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
@@ -41,16 +42,10 @@ fun MeteoriteList(
 
         items.apply {
             when {
-                loadState.refresh is LoadState.Loading -> {
-                    item { Loading(modifier = Modifier.fillParentMaxSize()) }
-                }
-
-                loadState.append is LoadState.Loading -> {
-                    item { Loading(modifier = Modifier.fillParentMaxSize()) }
-                }
-
-                loadState.refresh is LoadState.Error -> {
-                    val e = items.loadState.refresh as LoadState.Error
+                loadState.refresh is Loading -> item { Loading(modifier = Modifier.fillParentMaxSize()) }
+                loadState.append is Loading -> item { Loading(modifier = Modifier.fillParentMaxSize()) }
+                loadState.refresh is Error -> {
+                    val e = items.loadState.refresh as Error
                     item {
                         MessageError(
                             message = e.error.localizedMessage!!,
