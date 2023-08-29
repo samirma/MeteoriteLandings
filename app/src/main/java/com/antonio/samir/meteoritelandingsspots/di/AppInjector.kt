@@ -109,7 +109,8 @@ val useCaseModule = module {
     factory {
         GetMeteorites(
             meteoriteLocalRepository = get(),
-            mapper = get()
+            mapper = get(),
+            getLocation = get()
         )
     }
     factory {
@@ -125,8 +126,8 @@ val useCaseModule = module {
     factory { RequestPermission() }
     factory {
         GetLocation(
-            get(),
-            get<Context>().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            requestPermission = get(),
+            locationManager = get<Context>().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         )
     }
 
