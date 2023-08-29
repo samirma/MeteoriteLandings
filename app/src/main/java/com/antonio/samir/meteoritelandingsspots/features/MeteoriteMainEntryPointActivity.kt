@@ -57,6 +57,8 @@ class MeteoriteMainEntryPointActivity : AppCompatActivity() {
 
         monetization.start(lifecycleScope, this)
 
+        listViewModel.fetchMeteoriteList(this)
+
         findViewById<ComposeView>(R.id.compose_view).setContent {
             val addressProgress by listViewModel.addressStatus.collectAsState()
             val darkTheme = isDarkTheme(Unit).collectAsState(initial = false).value

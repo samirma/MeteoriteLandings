@@ -1,6 +1,8 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
+import android.annotation.SuppressLint
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
@@ -34,30 +36,20 @@ class MeteoriteListViewModel(
     private val switchUITheme: SwitchUITheme,
 ) : ViewModel() {
 
+    @SuppressLint("StaticFieldLeak")
+    private lateinit var activity: AppCompatActivity
+
     private val _navigateToMeteoriteDetail = MutableStateFlow<MeteoriteItemView?>(null)
 
     val navigateToMeteoriteDetail: StateFlow<MeteoriteItemView?> = _navigateToMeteoriteDetail
 
-    private var _uiState = MutableStateFlow<MeteoristListState>(
-        UiContent(
-            meteorites = getMeteorites(
-                GetMeteorites.Input(
-                    query = "",
-                    location = null
-                )
-            )
-        )
-    )
+    private var _uiState = MutableStateFlow<MeteoristListState>(MeteoristListState.Loading)
 
     // UI state exposed to the UI
     val uiState: StateFlow<MeteoristListState> = _uiState
 
     private val _addressStatus = MutableStateFlow<ResultOf<Float>>(InProgress(0f))
     val addressStatus: StateFlow<ResultOf<Float>> = _addressStatus
-
-    init {
-        fetchMeteoriteList()
-    }
 
     fun onDarkModeToggleClick() {
         viewModelScope.launch {
@@ -67,7 +59,8 @@ class MeteoriteListViewModel(
         }
     }
 
-    private fun fetchMeteoriteList() {
+    fun fetchMeteoriteList(activity: AppCompatActivity) {
+        this.activity = activity
 //        viewModelScope.launch(Dispatchers.Default) {
 //            fetchMeteoriteList(Unit).collect { resultOf ->
 //                _uiState.update {
@@ -79,6 +72,15 @@ class MeteoriteListViewModel(
 //                }
 //            }
 //        }
+
+        _uiState.value = UiContent(
+            meteorites = getMeteorites(
+                GetMeteorites.Input(
+                    query = "",
+                    activity = activity
+                )
+            )
+        )
 
         viewModelScope.launch(Dispatchers.Default) {
             recoverAddressStatus().collect { resultOf: ResultOf<Float> ->
@@ -96,7 +98,7 @@ class MeteoriteListViewModel(
                 meteorites = getMeteorites(
                     GetMeteorites.Input(
                         query = query,
-                        location = null
+                        activity = activity
                     )
                 )
             )
