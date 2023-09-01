@@ -64,7 +64,6 @@ dependencies {
     implementation(libs.material3)
 
     implementation(libs.shimmer)
-    implementation(libs.androidx.material)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

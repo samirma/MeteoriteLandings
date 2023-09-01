@@ -6,7 +6,7 @@ junit = "4.13.2"
 androidx-test-ext-junit = "1.1.5"
 espresso-core = "3.5.1"
 lifecycle-runtime-ktx = "2.6.1"
-activity-compose = "1.7.1"
+activity-compose = "1.7.2"
 compose-bom = "2023.05.01"
 appcompat = "1.6.1"
 loggingInterceptor = "5.0.0-alpha.11"
@@ -20,7 +20,7 @@ navigationFragmentKtx = "2.5.3"
 retrofit = "2.9.0"
 roomCompiler = "2.5.2"
 roomPaging = "2.5.2"
-runtimeTracing = "1.0.0-alpha03"
+runtimeTracing = "1.0.0-alpha04"
 shimmer = "1.0.4"
 stetho = "1.6.0"
 koin = "3.4.0"
@@ -62,7 +62,7 @@ material3 = { group = "androidx.compose.material3", name = "material3" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "shimmer" }
-androidx-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version = "2.5.3" }
+androidx-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version = "navigationFragmentKtx" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version = "18.1.0" }
 stetho = { module = "com.facebook.stetho:stetho", version.ref = "stetho" }
 stethoOkhttp = { module = "com.facebook.stetho:stetho-okhttp", version.ref = "stetho" }
@@ -72,7 +72,6 @@ koin-android-ext = { module = "io.insert-koin:koin-android-ext", version.ref = "
 kpermissions = { module = "com.github.fondesa:kpermissions", version.ref = "kpermissions" }
 kpermissions-coroutines = { module = "com.github.fondesa:kpermissions-coroutines", version.ref = "kpermissions" }
 paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
-androidx-material = { group = "androidx.compose.material", name = "material", version = "1.4.3" }
 
 
 [plugins]
