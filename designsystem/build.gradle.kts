@@ -63,6 +63,10 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
 
+    implementation(libs.maps.compose)
+    implementation(libs.play.services.maps)
+    implementation(libs.play.services.location)
+
     implementation(libs.shimmer)
     implementation(libs.androidx.material)
 
