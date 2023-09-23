@@ -67,7 +67,9 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.material)
     implementation(libs.androidx.navigation.fragment)
+    implementation(libs.maps.compose)
     implementation(libs.play.services.maps)
+    implementation(libs.play.services.location)
 
     implementation(libs.androidx.lifecycle.livedata.ktx)
 
