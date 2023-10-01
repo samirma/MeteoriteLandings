@@ -1,5 +1,5 @@
 [versions]
-agp = "8.1.1"
+agp = "8.1.2"
 kotlin = "1.9.10"
 core-ktx = "1.12.0"
 junit = "4.13.2"
@@ -7,7 +7,7 @@ androidx-test-ext-junit = "1.1.5"
 espresso-core = "3.5.1"
 lifecycle-runtime-ktx = "2.6.2"
 activity-compose = "1.7.2"
-compose-bom = "2023.09.01"
+compose-bom = "2023.09.02"
 appcompat = "1.6.1"
 loggingInterceptor = "5.0.0-alpha.11"
 mapsCompose = "2.14.0"
@@ -21,7 +21,6 @@ roomCompiler = "2.5.2"
 roomPaging = "2.5.2"
 runtimeTracing = "1.0.0-alpha04"
 shimmer = "1.0.4"
-stetho = "1.6.0"
 koin = "3.4.0"
 koin-ktx = "3.0.2"
 kpermissions = "3.4.0"
@@ -66,9 +65,6 @@ material = { group = "com.google.android.material", name = "material", version.r
 shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "shimmer" }
 androidx-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version = "navigationFragmentKtx" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version = "18.1.0" }
-stetho = { module = "com.facebook.stetho:stetho", version.ref = "stetho" }
-stethoOkhttp = { module = "com.facebook.stetho:stetho-okhttp", version.ref = "stetho" }
-stethoUrlconnection = { module = "com.facebook.stetho:stetho-urlconnection", version.ref = "stetho" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-android-ext = { module = "io.insert-koin:koin-android-ext", version.ref = "koin-ktx" }
 kpermissions = { module = "com.github.fondesa:kpermissions", version.ref = "kpermissions" }
