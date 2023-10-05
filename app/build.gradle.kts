@@ -79,10 +79,6 @@ dependencies {
     implementation(libs.kpermissions)
     implementation(libs.kpermissions.coroutines)
 
-    debugImplementation(libs.stetho)
-    debugImplementation(libs.stethoOkhttp)
-    debugImplementation(libs.stethoUrlconnection)
-
     //Paging
     implementation(libs.paging.compose)
     implementation(libs.androidx.paging.runtime)
