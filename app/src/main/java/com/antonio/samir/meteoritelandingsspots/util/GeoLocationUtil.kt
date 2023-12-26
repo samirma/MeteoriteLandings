@@ -3,9 +3,11 @@ package com.antonio.samir.meteoritelandingsspots.util
 import android.location.Address
 import android.location.Geocoder
 import android.util.Log
+import javax.inject.Inject
 
 
-class GeoLocationUtil(private val geoCoder: Geocoder) : GeoLocationUtilInterface {
+class GeoLocationUtil @Inject constructor(private val geoCoder: Geocoder) :
+    GeoLocationUtilInterface {
 
     override fun getAddress(latitude: Double, longitude: Double): Address? {
 

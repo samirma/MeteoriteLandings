@@ -14,6 +14,6 @@ sealed class MeteoristListState {
         @StringRes val message: Int,
     ) : MeteoristListState()
 
-    object Loading : MeteoristListState()
+    data object Loading : MeteoristListState()
 }
 

@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin) apply false
     alias(libs.plugins.kotlinSerialization) apply false
     alias(libs.plugins.devtoolsKsp) apply false
+    id("com.google.dagger.hilt.android") version "2.48.1" apply false
 }
 
 buildscript {

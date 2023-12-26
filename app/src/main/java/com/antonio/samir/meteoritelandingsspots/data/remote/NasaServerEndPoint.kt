@@ -1,6 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.data.remote
 
-import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.data.local.model.Meteorite
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -15,6 +15,9 @@ interface NasaServerEndPoint {
     }
 
     @GET("resource/y77d-th95.json")
-    suspend fun publicMeteorites(@Query("\$offset") offset: Int, @Query("\$limit") limit: Int): List<Meteorite>
+    suspend fun publicMeteorites(
+        @Query("\$offset") offset: Int,
+        @Query("\$limit") limit: Int
+    ): List<Meteorite>
 
 }

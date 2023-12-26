@@ -7,7 +7,6 @@ import kotlin.coroutines.CoroutineContext
 abstract class MapperBase<I, O>(private val coroutineContext: CoroutineContext = Dispatchers.Default) {
 
     suspend fun map(input: I): O = withContext(coroutineContext) {
-        assert(Thread.currentThread().name != "main")
         return@withContext action(input)
     }
 
