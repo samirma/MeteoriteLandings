@@ -13,8 +13,8 @@ import kotlinx.coroutines.withContext
 
 @HiltWorker
 class AddressRecoverWorker(
-    @Assisted context: Context,
-    @Assisted workerParams: WorkerParameters,
+     context: Context,
+     workerParams: WorkerParameters,
     private val addressService: AddressServiceInterface
 ) : CoroutineWorker(context, workerParams) {
 

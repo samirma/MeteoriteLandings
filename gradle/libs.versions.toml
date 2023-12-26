@@ -90,7 +90,6 @@ kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 dependencyGraphGenerator = { id = "com.vanniktech.dependency.graph.generator", version.ref = "dependencyGraphGenerator" }
-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 devtoolsKsp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
