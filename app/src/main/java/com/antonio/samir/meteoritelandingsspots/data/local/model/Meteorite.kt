@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.data.repository.model
+package com.antonio.samir.meteoritelandingsspots.data.local.model
 
 import android.os.Parcelable
 import androidx.room.Entity

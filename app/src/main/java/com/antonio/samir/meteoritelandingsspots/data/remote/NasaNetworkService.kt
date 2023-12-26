@@ -1,6 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.data.remote
 
-import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.data.local.model.Meteorite
 import javax.inject.Inject
 
 class NasaNetworkService @Inject constructor(val service: NasaServerEndPoint) :

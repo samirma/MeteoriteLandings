@@ -1,17 +1,15 @@
 package com.antonio.samir.meteoritelandingsspots.features.debug
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.hilt.navigation.compose.hiltViewModel
 
 
-@ExperimentalAnimationApi
-@ExperimentalComposeUiApi
 @Composable
-fun DebugNavigation(
-    viewModel: DebugViewModel
-) {
+fun DebugNavigation() {
+
+    val viewModel: DebugViewModel = hiltViewModel()
+
     val uiState = viewModel.uiState.collectAsState()
 
     DebugScreen(
