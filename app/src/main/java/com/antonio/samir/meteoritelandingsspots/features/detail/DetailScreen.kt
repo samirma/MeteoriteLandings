@@ -4,27 +4,42 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.ActionBar
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteDetail
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteView
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 
-@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 @Composable
-fun DetailScreen(
-    meteoriteId: String,
+fun DetailScreenNavigation(
     navController: NavController,
-    viewModel: MeteoriteDetailViewModel
+    meteoriteId: String
 ) {
 
-    viewModel.loadMeteorite(meteoriteId)
+    val viewModel: MeteoriteDetailViewModel = hiltViewModel()
 
-    val uiState = viewModel.uiState.collectAsState().value
+    val state by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(viewModel) {
+        viewModel.loadMeteorite(meteoriteId)
+    }
+
+    DetailScreen(state) {
+        navController.popBackStack()
+    }
+
+}
+
+@Composable
+fun DetailScreen(
+    uiState: UiState,
+    onBack: () -> Unit
+) {
 
     MeteoriteLandingsTheme(darkTheme = uiState.isDark) {
 
@@ -35,9 +50,7 @@ fun DetailScreen(
             } else {
                 val meteoriteView = uiState.meteoriteView
                 if (meteoriteView != null) {
-                    DetailContent(meteoriteView) {
-                        navController.popBackStack()
-                    }
+                    DetailContent(meteoriteView, onBack)
                 }
             }
         }

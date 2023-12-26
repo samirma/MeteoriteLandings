@@ -7,8 +7,8 @@
 
     <application xmlns:tools="http://schemas.android.com/tools"
         android:name=".ApplicationDebug"
-        tools:replace="android:name"
         android:allowBackup="true"
-        android:fullBackupContent="@xml/backup_descriptor" />
+        android:fullBackupContent="@xml/backup_descriptor"
+        tools:replace="android:name" />
 
 </manifest>

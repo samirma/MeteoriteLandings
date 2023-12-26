@@ -10,17 +10,17 @@ import kotlinx.android.parcel.Parcelize
 @Entity(tableName = "meteorites", indices = [Index("id")])
 @Parcelize
 data class Meteorite(
-        @PrimaryKey
-        @SerializedName("id")
-        var id: Int = 0,
-        var mass: String? = null,
-        var nametype: String? = null,
-        var recclass: String? = null,
-        var name: String? = null,
-        var fall: String? = null,
-        var year: String? = null,
-        var reclong: String? = null,
-        var reclat: String? = null,
-        var address: String? = null
+    @PrimaryKey
+    @SerializedName("id")
+    var id: Int = 0,
+    var mass: String? = null,
+    var nametype: String? = null,
+    var recclass: String? = null,
+    var name: String? = null,
+    var fall: String? = null,
+    var year: String? = null,
+    var reclong: String? = null,
+    var reclat: String? = null,
+    var address: String? = null
 
 ) : Parcelable

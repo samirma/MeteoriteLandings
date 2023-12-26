@@ -9,8 +9,9 @@ import com.antonio.samir.meteoritelandingsspots.common.ui.extension.convertToNum
 import com.antonio.samir.meteoritelandingsspots.common.yearString
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteView
+import javax.inject.Inject
 
-class MeteoriteMapper : MapperBase<MeteoriteMapper.Input, MeteoriteView>() {
+class MeteoriteMapper @Inject constructor() : MapperBase<MeteoriteMapper.Input, MeteoriteView>() {
 
     override suspend fun action(input: Input): MeteoriteView = MeteoriteView(
         id = input.meteorite.id.toString(),

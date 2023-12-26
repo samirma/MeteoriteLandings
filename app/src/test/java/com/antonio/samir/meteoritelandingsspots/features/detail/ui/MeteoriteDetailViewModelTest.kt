@@ -7,7 +7,6 @@ import androidx.lifecycle.Observer
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf.InProgress
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf.Success
-import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteView
 import com.antonio.samir.meteoritelandingsspots.features.detail.MeteoriteDetailViewModel

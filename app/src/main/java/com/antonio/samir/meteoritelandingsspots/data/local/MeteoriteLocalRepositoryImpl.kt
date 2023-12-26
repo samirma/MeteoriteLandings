@@ -4,10 +4,10 @@ import com.antonio.samir.meteoritelandingsspots.data.local.database.MeteoriteDao
 import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
 import kotlinx.coroutines.flow.Flow
 import java.util.Locale
+import javax.inject.Inject
 
-class MeteoriteLocalRepositoryImpl(
+class MeteoriteLocalRepositoryImpl @Inject constructor(
     private val meteoriteDao: MeteoriteDao
-
 ) : MeteoriteLocalRepository {
 
     override fun meteoriteOrdered(
