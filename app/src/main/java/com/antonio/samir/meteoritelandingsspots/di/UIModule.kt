@@ -11,6 +11,6 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class UIModule {
     @Binds
-    abstract fun bindAppRepository(impl: UIThemeRepositoryImpl): UIThemeRepository
+    abstract fun bindUIThemeRepository(impl: UIThemeRepositoryImpl): UIThemeRepository
 
 }
