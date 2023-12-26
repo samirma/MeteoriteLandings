@@ -3,8 +3,9 @@ package com.antonio.samir.meteoritelandingsspots.service.monetization
 import android.app.Activity
 import android.content.Context
 import androidx.lifecycle.LifecycleCoroutineScope
+import javax.inject.Inject
 
-class MonetizationImpl(
+class MonetizationImpl @Inject constructor(
     val context: Context,
 ) : MonetizationInterface {
 

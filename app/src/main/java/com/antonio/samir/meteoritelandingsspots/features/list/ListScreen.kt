@@ -1,6 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
-
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -18,8 +18,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import androidx.paging.PagingData
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Header
@@ -27,31 +30,36 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Loadi
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MessageError
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
+import com.antonio.samir.meteoritelandingsspots.features.Route
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoristListState.Loading
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoristListState.UiContent
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoristListState.UiMessage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.flowOf
 
-@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 @ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 @Composable
-fun ListScreenNavigation(
-    viewModel: MeteoriteListViewModel
-) {
+fun ListScreenNavigation(navController: NavHostController) {
+
+    val viewModel: MeteoriteListViewModel = hiltViewModel()
     val uiState = viewModel.uiState.collectAsState()
 
-    val onItemClick = remember { return@remember viewModel::onItemClicked }
-    val onDarkModeToggleClick = remember { return@remember viewModel::onDarkModeToggleClick }
-    val onSearch = remember { return@remember viewModel::searchLocation }
+    val activity = LocalContext.current as AppCompatActivity
 
     ListScreen(
         uiState = uiState.value,
-        onItemClick = onItemClick,
-        onDarkModeToggleClick = onDarkModeToggleClick,
-        onSearch = onSearch
+        onItemClick = { itemView: MeteoriteItemView ->
+            navController.navigate(Route.getDetailUrlById(itemView.id))
+        },
+        onDarkModeToggleClick = viewModel::onDarkModeToggleClick,
+        onSearch = { query: String ->
+            viewModel.searchLocation(
+                query = query,
+                activity = activity
+            )
+        }
     )
 }
 
