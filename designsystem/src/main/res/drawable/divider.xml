@@ -6,14 +6,11 @@
 
     <group>
 
-        <clip-path
-            android:pathData="M0 0H272V1H0V0Z"
-            />
+        <clip-path android:pathData="M0 0H272V1H0V0Z" />
 
         <path
-            android:pathData="M0 0V1H272V0"
             android:fillColor="#14212121"
-            />
+            android:pathData="M0 0V1H272V0" />
 
     </group>
 

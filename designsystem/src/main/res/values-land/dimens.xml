@@ -2,6 +2,6 @@
     <dimen name="title_size">20sp</dimen>
     <dimen name="font_detail_size">15sp</dimen>
 
-    <dimen name="horizontal_spacing" >2dp</dimen>
+    <dimen name="horizontal_spacing">2dp</dimen>
 
 </resources>

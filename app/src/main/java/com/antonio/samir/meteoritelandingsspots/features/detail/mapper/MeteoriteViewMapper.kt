@@ -7,7 +7,7 @@ import com.antonio.samir.meteoritelandingsspots.common.getLocationText
 import com.antonio.samir.meteoritelandingsspots.common.mapper.MapperBase
 import com.antonio.samir.meteoritelandingsspots.common.ui.extension.convertToNumberFormat
 import com.antonio.samir.meteoritelandingsspots.common.yearString
-import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.data.local.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteView
 import javax.inject.Inject
 

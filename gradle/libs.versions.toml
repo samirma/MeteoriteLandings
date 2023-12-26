@@ -32,6 +32,8 @@ kpermissions = "3.4.0"
 paging = "3.2.1"
 workRuntimeKtx = "2.8.1"
 ksp = "1.9.20-Beta2"
+hiltWork = "1.1.0"
+hiltCommon = "1.1.0"
 
 [libraries]
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
@@ -80,6 +82,8 @@ kpermissions = { module = "com.github.fondesa:kpermissions", version.ref = "kper
 kpermissions-coroutines = { module = "com.github.fondesa:kpermissions-coroutines", version.ref = "kpermissions" }
 paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
 androidx-material = { group = "androidx.compose.material", name = "material", version = "androidXmaterial" }
+androidx-hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltWork" }
+androidx-hilt-common = { group = "androidx.hilt", name = "hilt-common", version.ref = "hiltCommon" }
 
 
 [plugins]

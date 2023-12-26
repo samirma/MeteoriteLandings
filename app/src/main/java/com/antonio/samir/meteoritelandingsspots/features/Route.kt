@@ -5,6 +5,9 @@ object Route {
     // Define the route for the list screen.
     const val LIST = "main"
 
+    // Define the route for the list screen.
+    const val DEBUG = "debug"
+
     // Define the template for the detail screen route.
     private const val DETAIL_TEMPLATE = "detail/%s"
 

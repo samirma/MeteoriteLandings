@@ -19,14 +19,14 @@ import androidx.navigation.compose.rememberNavController
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.userCase.IsDarkTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
+import com.antonio.samir.meteoritelandingsspots.features.Route.DEBUG
 import com.antonio.samir.meteoritelandingsspots.features.Route.DETAIL
 import com.antonio.samir.meteoritelandingsspots.features.Route.LIST
 import com.antonio.samir.meteoritelandingsspots.features.Route.METEORITE_ID_ARG
+import com.antonio.samir.meteoritelandingsspots.features.debug.DebugNavigation
 import com.antonio.samir.meteoritelandingsspots.features.detail.DetailScreenNavigation
 import com.antonio.samir.meteoritelandingsspots.features.list.ListScreenNavigation
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -40,7 +40,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_meteorite_list)
-
 
         findViewById<ComposeView>(R.id.compose_view).setContent {
 
@@ -59,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @OptIn(ExperimentalComposeUiApi::class, FlowPreview::class, ExperimentalCoroutinesApi::class)
+    @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     private fun Navigation() {
         val navController = rememberNavController()
@@ -73,6 +72,9 @@ class MainActivity : AppCompatActivity() {
                     navController = navController,
                     meteoriteId = appId
                 )
+            }
+            composable(DEBUG) { backStackEntry ->
+                DebugNavigation()
             }
         }
 

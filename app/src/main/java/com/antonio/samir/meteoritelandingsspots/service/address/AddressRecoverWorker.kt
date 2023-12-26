@@ -1,22 +1,22 @@
 package com.antonio.samir.meteoritelandingsspots.service.address
 
 import android.content.Context
+import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
+import dagger.assisted.Assisted
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
+@HiltWorker
 class AddressRecoverWorker(
-    context: Context,
-    parameters: WorkerParameters
-) : KoinComponent, CoroutineWorker(context, parameters) {
-
-    private val addressService: AddressServiceInterface by inject()
+    @Assisted context: Context,
+    @Assisted workerParams: WorkerParameters,
+    private val addressService: AddressServiceInterface
+) : CoroutineWorker(context, workerParams) {
 
     companion object {
         const val PROGRESS = "Progress"

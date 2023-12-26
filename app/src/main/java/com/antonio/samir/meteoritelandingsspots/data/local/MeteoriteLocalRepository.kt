@@ -1,7 +1,7 @@
 package com.antonio.samir.meteoritelandingsspots.data.local
 
 import androidx.paging.PagingSource
-import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.data.local.model.Meteorite
 import kotlinx.coroutines.flow.Flow
 
 interface MeteoriteLocalRepository {

@@ -1,6 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.data.remote
 
-import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.data.local.model.Meteorite
 import retrofit2.http.GET
 import retrofit2.http.Query
 
