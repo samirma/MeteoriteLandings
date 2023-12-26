@@ -8,12 +8,11 @@ import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import com.antonio.samir.meteoritelandingsspots.common.userCase.UserCaseBase
 import com.antonio.samir.meteoritelandingsspots.service.address.AddressRecoverWorker
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.flow
 import java.util.UUID
+import javax.inject.Inject
 
-@FlowPreview
-class StartAddressRecover(val context: Context) : UserCaseBase<Unit, UUID>() {
+class StartAddressRecover @Inject constructor(val context: Context) : UserCaseBase<Unit, UUID>() {
 
     override fun action(input: Unit) = flow {
 

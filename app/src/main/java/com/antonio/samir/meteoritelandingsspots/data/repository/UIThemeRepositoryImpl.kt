@@ -3,8 +3,9 @@ package com.antonio.samir.meteoritelandingsspots.data.repository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class UIThemeRepositoryImpl : UIThemeRepository {
+class UIThemeRepositoryImpl @Inject constructor() : UIThemeRepository {
 
     private val isDark = MutableStateFlow(true)
 

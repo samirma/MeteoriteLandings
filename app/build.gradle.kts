@@ -4,6 +4,7 @@ plugins {
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs")
     id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -73,15 +74,8 @@ dependencies {
 
     implementation(libs.androidx.lifecycle.livedata.ktx)
 
-    implementation(libs.koin.android)
-    implementation(libs.koin.android.ext)
-
     implementation(libs.kpermissions)
     implementation(libs.kpermissions.coroutines)
-
-    debugImplementation(libs.stetho)
-    debugImplementation(libs.stethoOkhttp)
-    debugImplementation(libs.stethoUrlconnection)
 
     //Paging
     implementation(libs.paging.compose)
@@ -107,6 +101,10 @@ dependencies {
 
     implementation(libs.androidx.work.runtime.ktx)
 
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -114,4 +112,12 @@ dependencies {
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.fixture)
+    testImplementation(libs.mockk)
 }
+
+//// Allow references to generated code
+//kapt {
+//    correctErrorTypes = true
+//}

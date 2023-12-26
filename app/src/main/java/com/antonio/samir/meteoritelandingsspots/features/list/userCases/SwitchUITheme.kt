@@ -2,14 +2,14 @@ package com.antonio.samir.meteoritelandingsspots.features.list.userCases
 
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.common.userCase.IsDarkTheme
+import com.antonio.samir.meteoritelandingsspots.common.userCase.SetUITheme
 import com.antonio.samir.meteoritelandingsspots.common.userCase.UserCaseBase
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-@FlowPreview
-class SwitchUITheme(
+class SwitchUITheme @Inject constructor(
     private val setUITheme: SetUITheme,
     private val isDarkTheme: IsDarkTheme
 ) : UserCaseBase<Unit, ResultOf<Unit>>() {

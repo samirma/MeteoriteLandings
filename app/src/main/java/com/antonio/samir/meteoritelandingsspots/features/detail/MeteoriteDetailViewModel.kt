@@ -7,8 +7,6 @@ import com.antonio.samir.meteoritelandingsspots.common.userCase.IsDarkTheme
 import com.antonio.samir.meteoritelandingsspots.features.detail.userCases.GetMeteoriteById
 import com.antonio.samir.meteoritelandingsspots.features.detail.userCases.GetMeteoriteById.Input
 import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,10 +14,9 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-@FlowPreview
-@ExperimentalCoroutinesApi
-class MeteoriteDetailViewModel(
+class MeteoriteDetailViewModel @Inject constructor(
     private val getMeteoriteById: GetMeteoriteById,
     val isDarkTheme: IsDarkTheme,
     val dispatchers: DispatcherProvider,

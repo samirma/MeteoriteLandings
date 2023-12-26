@@ -14,14 +14,13 @@ import com.antonio.samir.meteoritelandingsspots.features.list.mapper.MeteoriteVi
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites.Input
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-@FlowPreview
-class GetMeteorites(
+class GetMeteorites @Inject constructor(
     private val meteoriteLocalRepository: MeteoriteLocalRepository,
     private val mapper: MeteoriteViewMapper,
     private val getLocation: GetLocation,

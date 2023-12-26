@@ -9,8 +9,9 @@ import com.antonio.samir.meteoritelandingsspots.features.detail.mapper.Meteorite
 import com.antonio.samir.meteoritelandingsspots.features.detail.userCases.GetMeteoriteById.Input
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class GetMeteoriteById(
+class GetMeteoriteById @Inject constructor(
     private val meteoriteLocalRepository: MeteoriteLocalRepository,
     private val mapper: MeteoriteMapper,
     private val context: Context

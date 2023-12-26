@@ -22,7 +22,9 @@ class AddressServiceImpl(
     private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
 ) : AddressServiceInterface {
 
-    private val TAG = AddressServiceImpl::class.java.simpleName
+    companion object {
+        private val TAG = AddressServiceImpl::class.java.simpleName
+    }
 
     override fun recoveryAddress(): Flow<ResultOf<Float>> =
         meteoriteLocalRepository.meteoritesWithOutAddress()
