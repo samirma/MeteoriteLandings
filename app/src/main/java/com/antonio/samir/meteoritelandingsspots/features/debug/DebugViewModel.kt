@@ -13,8 +13,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DebugViewModel(
+class DebugViewModel @Inject constructor(
     private val fetchMeteoriteList: FetchMeteoriteList,
 ) : ViewModel() {
 
