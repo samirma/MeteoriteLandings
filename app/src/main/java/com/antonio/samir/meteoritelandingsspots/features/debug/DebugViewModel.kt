@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
+import com.antonio.samir.meteoritelandingsspots.features.debug.DebugListState.Error
 import com.antonio.samir.meteoritelandingsspots.features.debug.DebugListState.Loaded
 import com.antonio.samir.meteoritelandingsspots.features.debug.DebugListState.Loading
-import com.antonio.samir.meteoritelandingsspots.features.debug.DebugListState.UiMessage
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.FetchMeteoriteList
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StartAddressRecover
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StatusAddressRecover
@@ -38,7 +38,7 @@ class DebugViewModel @Inject constructor(
                     when (resultOf) {
                         is ResultOf.InProgress -> Loading
                         is ResultOf.Success -> Loaded
-                        else -> UiMessage(R.string.general_error)
+                        else -> Error(R.string.general_error)
                     }
                 }
             }

@@ -4,7 +4,7 @@ import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.data.local.model.Meteorite
 import kotlinx.coroutines.flow.Flow
 
-interface AddressServiceInterface {
+interface AddressService {
 
     fun recoveryAddress(): Flow<ResultOf<Float>>
 

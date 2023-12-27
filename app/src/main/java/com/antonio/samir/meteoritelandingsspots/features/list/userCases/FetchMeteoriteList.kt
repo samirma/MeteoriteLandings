@@ -27,7 +27,7 @@ class FetchMeteoriteList @Inject constructor(
                 emit(ResultOf.InProgress())
                 try {
                     recoverFromNetwork(
-                        if (meteoritesCount <= OLDDATABASE_COUNT) {
+                        if (meteoritesCount <= OLD_DATABASE_COUNT) {
                             0 //Download from beginner
                         } else {
                             meteoritesCount
@@ -65,7 +65,7 @@ class FetchMeteoriteList @Inject constructor(
 
     companion object {
 
-        private const val OLDDATABASE_COUNT = 1000
+        private const val OLD_DATABASE_COUNT = 1000
 
         private const val PAGE_SIZE = 5000
 

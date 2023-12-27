@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 
 sealed class DebugListState {
 
-    class UiMessage(
+    class Error(
         @StringRes val message: Int,
     ) : DebugListState()
 

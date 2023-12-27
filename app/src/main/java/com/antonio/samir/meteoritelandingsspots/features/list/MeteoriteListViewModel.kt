@@ -4,7 +4,8 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.antonio.samir.meteoritelandingsspots.features.list.MeteoristListState.UiContent
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListState.Loaded
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListState.Loading
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.SwitchUITheme
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,10 +21,10 @@ class MeteoriteListViewModel @Inject constructor(
     private val switchUITheme: SwitchUITheme,
 ) : ViewModel() {
 
-    private var _uiState = MutableStateFlow<MeteoristListState>(MeteoristListState.Loading)
+    private var _uiState = MutableStateFlow<MeteoriteListState>(Loading)
 
     // UI state exposed to the UI
-    val uiState: StateFlow<MeteoristListState> = _uiState
+    val uiState: StateFlow<MeteoriteListState> = _uiState
 
     fun onDarkModeToggleClick() {
         viewModelScope.launch {
@@ -35,7 +36,7 @@ class MeteoriteListViewModel @Inject constructor(
 
     fun fetchMeteoriteList(activity: AppCompatActivity) {
 
-        _uiState.value = UiContent(
+        _uiState.value = Loaded(
             meteorites = getMeteorites(
                 GetMeteorites.Input(
                     query = "",
@@ -47,8 +48,8 @@ class MeteoriteListViewModel @Inject constructor(
 
 
     fun searchLocation(query: String, activity: AppCompatActivity) {
-        (_uiState.value as? UiContent)?.let {
-            _uiState.value = UiContent(
+        (_uiState.value as? Loaded)?.let {
+            _uiState.value = Loaded(
                 meteorites = getMeteorites(
                     GetMeteorites.Input(
                         query = query,
