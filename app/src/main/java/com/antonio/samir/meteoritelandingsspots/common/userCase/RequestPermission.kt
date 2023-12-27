@@ -8,8 +8,9 @@ import com.fondesa.kpermissions.allGranted
 import com.fondesa.kpermissions.coroutines.sendSuspend
 import com.fondesa.kpermissions.extension.permissionsBuilder
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class RequestPermission : UserCaseBase<Input, ResultOf<Boolean>>() {
+class RequestPermission @Inject constructor() : UserCaseBase<Input, ResultOf<Boolean>>() {
 
     override fun action(input: Input) = flow {
         try {

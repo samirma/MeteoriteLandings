@@ -7,6 +7,7 @@ import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalReposit
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteView
 import com.antonio.samir.meteoritelandingsspots.features.detail.mapper.MeteoriteMapper
 import com.antonio.samir.meteoritelandingsspots.features.detail.userCases.GetMeteoriteById.Input
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -14,7 +15,7 @@ import javax.inject.Inject
 class GetMeteoriteById @Inject constructor(
     private val meteoriteLocalRepository: MeteoriteLocalRepository,
     private val mapper: MeteoriteMapper,
-    private val context: Context
+    @ApplicationContext private val context: Context
 ) : UserCaseBase<Input, ResultOf<MeteoriteView>>() {
 
     override fun action(input: Input): Flow<ResultOf<MeteoriteView>> =

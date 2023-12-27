@@ -4,9 +4,8 @@ import android.util.Log
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.local.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.util.DefaultDispatcherProvider
-import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
 import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -18,8 +17,7 @@ import kotlinx.coroutines.withContext
 @ExperimentalCoroutinesApi
 class AddressServiceImpl(
     private val meteoriteLocalRepository: MeteoriteLocalRepository,
-    private val geoLocationUtil: GeoLocationUtilInterface,
-    private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
+    private val geoLocationUtil: GeoLocationUtilInterface
 ) : AddressServiceInterface {
 
     companion object {
@@ -34,7 +32,7 @@ class AddressServiceImpl(
             }
             .catch { throwable ->
                 emit(ResultOf.Error(Exception("Fail to load addresses", throwable)))
-            }.flowOn(dispatchers.default())
+            }.flowOn(Dispatchers.Default)
 
     private suspend fun getReturn(it: List<Meteorite>): ResultOf<Float> {
         return if (it.isNotEmpty()) {
@@ -59,7 +57,7 @@ class AddressServiceImpl(
         meteoriteLocalRepository.updateAll(list)
     }
 
-    override suspend fun recoverAddress(meteorite: Meteorite) = withContext(dispatchers.default()) {
+    override suspend fun recoverAddress(meteorite: Meteorite) = withContext(Dispatchers.Default) {
         meteorite.address = getAddressFromMeteorite(meteorite)
         meteoriteLocalRepository.update(meteorite)
     }

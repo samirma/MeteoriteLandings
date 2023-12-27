@@ -6,24 +6,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoristListState.UiContent
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
-import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StartAddressRecover
-import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StatusAddressRecover
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.SwitchUITheme
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-/**
- * Layer responsible for manage the interactions between the activity and the services
- */
-@ExperimentalCoroutinesApi
+@HiltViewModel
 class MeteoriteListViewModel @Inject constructor(
-    private val startAddressRecover: StartAddressRecover,
-    private val statusAddressRecover: StatusAddressRecover,
     private val getMeteorites: GetMeteorites,
     private val switchUITheme: SwitchUITheme,
 ) : ViewModel() {
@@ -53,8 +45,6 @@ class MeteoriteListViewModel @Inject constructor(
         )
     }
 
-    private fun recoverAddressStatus() = startAddressRecover(Unit)
-        .flatMapConcat { statusAddressRecover(it) }
 
     fun searchLocation(query: String, activity: AppCompatActivity) {
         (_uiState.value as? UiContent)?.let {

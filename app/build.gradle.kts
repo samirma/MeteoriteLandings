@@ -68,7 +68,6 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.material)
     implementation(libs.androidx.material)
-    implementation(libs.androidx.navigation.fragment)
     implementation(libs.maps.compose)
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
@@ -102,6 +101,7 @@ dependencies {
 
     implementation(libs.androidx.work.runtime.ktx)
 
+    //Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.work)

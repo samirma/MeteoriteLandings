@@ -9,12 +9,12 @@ import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.common.userCase.GetLocation.Input
 import com.antonio.samir.meteoritelandingsspots.common.userCase.GetLocation.Output
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class GetLocation(
+class GetLocation @Inject constructor(
     private val requestPermission: RequestPermission,
     private val locationManager: LocationManager
-) :
-    UserCaseBase<Input, ResultOf<Output>>() {
+) : UserCaseBase<Input, ResultOf<Output>>() {
 
     override fun action(input: Input) = requestPermission(
         RequestPermission.Input(

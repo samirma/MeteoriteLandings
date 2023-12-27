@@ -75,7 +75,7 @@ appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "a
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "shimmer" }
 androidx-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version = "navigationFragmentKtx" }
-play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version = "18.1.0" }
+play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version = "18.2.0" }
 kpermissions = { module = "com.github.fondesa:kpermissions", version.ref = "kpermissions" }
 kpermissions-coroutines = { module = "com.github.fondesa:kpermissions-coroutines", version.ref = "kpermissions" }
 paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }

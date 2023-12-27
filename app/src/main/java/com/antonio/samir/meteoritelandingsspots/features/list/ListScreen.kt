@@ -41,10 +41,12 @@ import kotlinx.coroutines.flow.flowOf
 @ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 @Composable
-fun ListScreenNavigation(navController: NavHostController) {
+fun ListScreenNavigation(navController: NavHostController, activity: AppCompatActivity) {
 
     val viewModel: MeteoriteListViewModel = hiltViewModel()
     val uiState = viewModel.uiState.collectAsState()
+
+    viewModel.fetchMeteoriteList(activity)
 
     val activity = LocalContext.current as AppCompatActivity
 
