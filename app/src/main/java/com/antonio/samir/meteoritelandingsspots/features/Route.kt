@@ -3,7 +3,7 @@ package com.antonio.samir.meteoritelandingsspots.features
 object Route {
 
     // Define the route for the list screen.
-    const val LIST = "main"
+    const val MAIN = "main"
 
     // Define the route for the list screen.
     const val DEBUG = "debug"

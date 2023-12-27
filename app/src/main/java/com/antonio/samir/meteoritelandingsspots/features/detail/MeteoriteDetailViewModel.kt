@@ -6,7 +6,8 @@ import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.common.userCase.IsDarkTheme
 import com.antonio.samir.meteoritelandingsspots.features.detail.userCases.GetMeteoriteById
 import com.antonio.samir.meteoritelandingsspots.features.detail.userCases.GetMeteoriteById.Input
-import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,10 +17,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class MeteoriteDetailViewModel @Inject constructor(
     private val getMeteoriteById: GetMeteoriteById,
     val isDarkTheme: IsDarkTheme,
-    val dispatchers: DispatcherProvider,
 ) : ViewModel() {
 
     private val currentMeteorite = MutableStateFlow<String?>(null)
@@ -30,14 +31,14 @@ class MeteoriteDetailViewModel @Inject constructor(
     val uiState: StateFlow<UiState> = viewModelState
 
     init {
-        viewModelScope.launch(dispatchers.default()) {
+        viewModelScope.launch(Dispatchers.Default) {
             getMeteorite().collect { result ->
                 if (result is ResultOf.Success) viewModelState.update {
                     it.copy(meteoriteView = result.data, isLoading = false)
                 }
             }
         }
-        viewModelScope.launch(dispatchers.default()) {
+        viewModelScope.launch(Dispatchers.Default) {
             isDarkTheme(Unit).collect { isDark ->
                 viewModelState.update {
                     it.copy(isDark = isDark)

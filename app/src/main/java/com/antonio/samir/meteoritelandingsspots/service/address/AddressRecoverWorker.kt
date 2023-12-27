@@ -6,15 +6,14 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
-import dagger.assisted.Assisted
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 @HiltWorker
 class AddressRecoverWorker(
-     context: Context,
-     workerParams: WorkerParameters,
+    context: Context,
+    workerParams: WorkerParameters,
     private val addressService: AddressServiceInterface
 ) : CoroutineWorker(context, workerParams) {
 

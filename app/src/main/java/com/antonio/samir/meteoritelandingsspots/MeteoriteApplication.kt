@@ -7,14 +7,14 @@ import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
 @HiltAndroidApp
-class MeteoriteApplication : Application() {
+class MeteoriteApplication : Application() , Configuration.Provider {
 
     @Inject
     lateinit var hiltWorkerFactory: HiltWorkerFactory
 
-//    override val workManagerConfiguration: Configuration
-//        get() = Configuration.Builder()
-//            .setWorkerFactory(hiltWorkerFactory)
-//            .build()
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setWorkerFactory(hiltWorkerFactory)
+            .build()
 
 }

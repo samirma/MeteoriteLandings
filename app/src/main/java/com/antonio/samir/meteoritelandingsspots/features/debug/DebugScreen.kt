@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.debug
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -21,6 +22,6 @@ fun DebugNavigation() {
 fun DebugScreen(
     debugListState: DebugListState,
 ) {
-
+    Text("DEBUG SCREEN")
 }
 

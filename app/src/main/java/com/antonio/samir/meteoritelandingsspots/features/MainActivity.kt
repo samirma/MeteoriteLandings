@@ -21,7 +21,7 @@ import com.antonio.samir.meteoritelandingsspots.common.userCase.IsDarkTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 import com.antonio.samir.meteoritelandingsspots.features.Route.DEBUG
 import com.antonio.samir.meteoritelandingsspots.features.Route.DETAIL
-import com.antonio.samir.meteoritelandingsspots.features.Route.LIST
+import com.antonio.samir.meteoritelandingsspots.features.Route.MAIN
 import com.antonio.samir.meteoritelandingsspots.features.Route.METEORITE_ID_ARG
 import com.antonio.samir.meteoritelandingsspots.features.debug.DebugNavigation
 import com.antonio.samir.meteoritelandingsspots.features.detail.DetailScreenNavigation
@@ -62,9 +62,12 @@ class MainActivity : AppCompatActivity() {
     @Composable
     private fun Navigation() {
         val navController = rememberNavController()
-        NavHost(navController, startDestination = LIST) {
-            composable(LIST) {
-                ListScreenNavigation(navController = navController)
+        NavHost(navController, startDestination = MAIN) {
+            composable(MAIN) {
+                ListScreenNavigation(
+                    navController = navController,
+                    activity = this@MainActivity
+                )
             }
             composable(DETAIL) { backStackEntry ->
                 val appId = backStackEntry.arguments?.getString(METEORITE_ID_ARG).orEmpty()
