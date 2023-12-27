@@ -1,7 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,14 +29,13 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteL
 
 
 @Composable
-fun MeteoriteCell(
+fun MeteoriteItem(
     itemView: MeteoriteItemView,
     onItemClick: ((itemView: MeteoriteItemView) -> Unit)?
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background)
             .height(84.dp)
             .padding(horizontal = 16.dp)
             .clickable {
@@ -114,13 +111,12 @@ fun MeteoriteCell(
 
 }
 
-
 @Preview("MeteoriteCell Dark")
 @Composable
 fun MeteoriteCellPreviewDark() {
     val sample = "test"
     MeteoriteLandingsTheme(darkTheme = true) {
-        MeteoriteCell(
+        MeteoriteItem(
             MeteoriteItemView(
                 id = sample,
                 name = "name $sample",
@@ -138,7 +134,7 @@ fun MeteoriteCellPreviewDark() {
 fun MeteoriteCellPreviewLight() {
     val sample = "test"
     MeteoriteLandingsTheme(darkTheme = false) {
-        MeteoriteCell(
+        MeteoriteItem(
             MeteoriteItemView(
                 id = sample,
                 name = "name $sample",
@@ -150,12 +146,12 @@ fun MeteoriteCellPreviewLight() {
     }
 }
 
-@Preview("MeteoriteCell Light no Adress")
+@Preview("MeteoriteCell Light no Address")
 @Composable
-fun MeteoriteCellPreviewLightNoAdress() {
+fun MeteoriteCellPreviewLightNoAddress() {
     val sample = "test"
     MeteoriteLandingsTheme(darkTheme = false) {
-        MeteoriteCell(
+        MeteoriteItem(
             MeteoriteItemView(
                 id = sample,
                 name = "name $sample",

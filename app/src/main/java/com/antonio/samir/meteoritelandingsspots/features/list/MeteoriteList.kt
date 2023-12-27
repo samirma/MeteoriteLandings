@@ -37,7 +37,7 @@ fun MeteoriteList(
             items.itemCount,
             key = items.itemKey { it.id }
         ) { index ->
-            items[index]?.let { MeteoriteCell(it, onItemClick) }
+            items[index]?.let { MeteoriteItem(it, onItemClick) }
         }
 
         items.apply {

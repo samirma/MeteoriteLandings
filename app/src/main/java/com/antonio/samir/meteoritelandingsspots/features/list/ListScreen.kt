@@ -171,7 +171,7 @@ fun TextLazyColumn() {
 
         items.forEach {
             item {
-                MeteoriteCell(it, null)
+                MeteoriteItem(it, null)
             }
         }
 
