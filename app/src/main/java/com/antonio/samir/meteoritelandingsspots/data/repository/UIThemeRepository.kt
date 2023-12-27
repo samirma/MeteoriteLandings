@@ -5,10 +5,10 @@ import kotlinx.coroutines.flow.Flow
 interface UIThemeRepository {
     fun getTheme(): Flow<UITheme>
 
-    fun setTheme(uiTheme: UITheme)
+    suspend fun setTheme(uiTheme: UITheme)
 
-    enum class UITheme {
-        DARK,
-        LIGHT
+    enum class UITheme(val value: Boolean) {
+        DARK(true),
+        LIGHT(false)
     }
 }

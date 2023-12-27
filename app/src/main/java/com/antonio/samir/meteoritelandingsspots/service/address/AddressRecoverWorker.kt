@@ -9,14 +9,13 @@ import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 @HiltWorker
 class AddressRecoverWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters,
-    private val addressService: AddressServiceInterface
+    private val addressService: AddressService
 ) : CoroutineWorker(context, workerParams) {
 
     companion object {

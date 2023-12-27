@@ -5,15 +5,15 @@ import androidx.paging.PagingData
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
 import kotlinx.coroutines.flow.Flow
 
-sealed class MeteoristListState {
-    class UiContent(
+sealed class MeteoriteListState {
+    class Loaded(
         val meteorites: Flow<PagingData<MeteoriteItemView>>,
-    ) : MeteoristListState()
+    ) : MeteoriteListState()
 
-    class UiMessage(
+    class Error(
         @StringRes val message: Int,
-    ) : MeteoristListState()
+    ) : MeteoriteListState()
 
-    data object Loading : MeteoristListState()
+    data object Loading : MeteoriteListState()
 }
 

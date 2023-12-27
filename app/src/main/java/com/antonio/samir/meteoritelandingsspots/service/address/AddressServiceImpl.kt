@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
 class AddressServiceImpl(
     private val meteoriteLocalRepository: MeteoriteLocalRepository,
     private val geoLocationUtil: GeoLocationUtilInterface
-) : AddressServiceInterface {
+) : AddressService {
 
     companion object {
         private val TAG = AddressServiceImpl::class.java.simpleName

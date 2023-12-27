@@ -2,15 +2,12 @@ package com.antonio.samir.meteoritelandingsspots.features.list
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -18,7 +15,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -31,9 +27,9 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Messa
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 import com.antonio.samir.meteoritelandingsspots.features.Route
-import com.antonio.samir.meteoritelandingsspots.features.list.MeteoristListState.Loading
-import com.antonio.samir.meteoritelandingsspots.features.list.MeteoristListState.UiContent
-import com.antonio.samir.meteoritelandingsspots.features.list.MeteoristListState.UiMessage
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListState.Loading
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListState.Loaded
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListState.Error
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 
@@ -47,8 +43,6 @@ fun ListScreenNavigation(navController: NavHostController, activity: AppCompatAc
     val uiState = viewModel.uiState.collectAsState()
 
     viewModel.fetchMeteoriteList(activity)
-
-    val activity = LocalContext.current as AppCompatActivity
 
     ListScreen(
         uiState = uiState.value,
@@ -69,7 +63,7 @@ fun ListScreenNavigation(navController: NavHostController, activity: AppCompatAc
 @ExperimentalComposeUiApi
 @Composable
 fun ListScreen(
-    uiState: MeteoristListState,
+    uiState: MeteoriteListState,
     onItemClick: (itemView: MeteoriteItemView) -> Unit = {},
     onDarkModeToggleClick: () -> Unit = {},
     onSearch: (query: String) -> Unit = {},
@@ -81,9 +75,6 @@ fun ListScreen(
         derivedStateOf { scrollState.firstVisibleItemIndex > 0 }
     }
 
-    Surface(
-        modifier = Modifier.background(MaterialTheme.colorScheme.background)
-    ) {
         Column(Modifier.fillMaxSize()) {
             Header(
                 isScrollOnTop = isScrollOnTop,
@@ -94,20 +85,18 @@ fun ListScreen(
                 Modifier.weight(10f, fill = true)
             ) {
                 when (uiState) {
-                    is UiContent -> MeteoriteList(
+                    is Loaded -> MeteoriteList(
                         scrollState = scrollState,
                         meteorites = uiState.meteorites,
                         onItemClick = onItemClick
                     )
-
                     Loading -> Loading(modifier = Modifier.fillMaxSize())
-                    is UiMessage -> MessageError(
+                    is Error -> MessageError(
                         message = uiState.message
                     )
                 }
             }
         }
-    }
 }
 
 
@@ -119,7 +108,7 @@ fun ListScreenPreviewDark() {
     val items = getFakeListItems()
     MeteoriteLandingsTheme(darkTheme = true) {
         ListScreen(
-            uiState = UiContent(meteorites = flowOf(PagingData.from(items)))
+            uiState = Loaded(meteorites = flowOf(PagingData.from(items)))
         )
     }
 }
@@ -133,7 +122,7 @@ fun ListScreenPreviewLight() {
     val items = getFakeListItems()
     MeteoriteLandingsTheme(darkTheme = false) {
         ListScreen(
-            uiState = UiContent(meteorites = flowOf(PagingData.from(items)))
+            uiState = Loaded(meteorites = flowOf(PagingData.from(items)))
         )
     }
 }
@@ -155,7 +144,7 @@ fun ListScreenLoadingPreview() {
 @Composable
 fun ListScreenErrorPreview() {
     ListScreen(
-        uiState = UiMessage(R.string.general_error)
+        uiState = Error(R.string.general_error)
     )
 }
 
@@ -166,7 +155,7 @@ fun ListScreenErrorPreview() {
 fun ListScreenMessagePreview() {
     val items = getFakeListItems()
     ListScreen(
-        uiState = UiContent(meteorites = flowOf(PagingData.from(items)))
+        uiState = Loaded(meteorites = flowOf(PagingData.from(items)))
     )
 }
 
