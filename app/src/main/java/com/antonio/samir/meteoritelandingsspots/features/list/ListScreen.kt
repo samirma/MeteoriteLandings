@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -27,13 +28,11 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Messa
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 import com.antonio.samir.meteoritelandingsspots.features.Route
-import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListState.Loading
-import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListState.Loaded
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListState.Error
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListState.Loaded
+import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListState.Loading
 import kotlinx.coroutines.flow.flowOf
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 @Composable
@@ -42,7 +41,9 @@ fun ListScreenNavigation(navController: NavHostController, activity: AppCompatAc
     val viewModel: MeteoriteListViewModel = hiltViewModel()
     val uiState = viewModel.uiState.collectAsState()
 
-    viewModel.fetchMeteoriteList(activity)
+    LaunchedEffect(viewModel) {
+        viewModel.fetchMeteoriteList(activity)
+    }
 
     ListScreen(
         uiState = uiState.value,
@@ -75,28 +76,29 @@ fun ListScreen(
         derivedStateOf { scrollState.firstVisibleItemIndex > 0 }
     }
 
-        Column(Modifier.fillMaxSize()) {
-            Header(
-                isScrollOnTop = isScrollOnTop,
-                onDarkModeToggleClick = onDarkModeToggleClick,
-                onSearch = onSearch
-            )
-            Box(
-                Modifier.weight(10f, fill = true)
-            ) {
-                when (uiState) {
-                    is Loaded -> MeteoriteList(
-                        scrollState = scrollState,
-                        meteorites = uiState.meteorites,
-                        onItemClick = onItemClick
-                    )
-                    Loading -> Loading(modifier = Modifier.fillMaxSize())
-                    is Error -> MessageError(
-                        message = uiState.message
-                    )
-                }
+    Column(Modifier.fillMaxSize()) {
+        Header(
+            isScrollOnTop = isScrollOnTop,
+            onDarkModeToggleClick = onDarkModeToggleClick,
+            onSearch = onSearch
+        )
+        Box(
+            Modifier.weight(10f, fill = true)
+        ) {
+            when (uiState) {
+                is Loaded -> MeteoriteList(
+                    scrollState = scrollState,
+                    meteorites = uiState.meteorites,
+                    onItemClick = onItemClick
+                )
+
+                Loading -> Loading(modifier = Modifier.fillMaxSize())
+                is Error -> MessageError(
+                    message = uiState.message
+                )
             }
         }
+    }
 }
 
 

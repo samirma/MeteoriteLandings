@@ -30,7 +30,7 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteL
 
 
 @Composable
-fun AddressProgress(progress: Float, modifier: Modifier) {
+fun AddressProgress(progress: Float, modifier: Modifier = Modifier) {
     val isVisible = progress > 0f && progress < 100f
     AnimatedVisibility(
         visible = isVisible,

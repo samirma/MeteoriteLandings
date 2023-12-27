@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.data.repository
+package com.antonio.samir.meteoritelandingsspots.data.local
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -6,9 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
-import com.antonio.samir.meteoritelandingsspots.data.repository.UIThemeRepository.UITheme
-import com.antonio.samir.meteoritelandingsspots.data.repository.UIThemeRepository.UITheme.DARK
-import com.antonio.samir.meteoritelandingsspots.data.repository.UIThemeRepository.UITheme.LIGHT
+import com.antonio.samir.meteoritelandingsspots.data.local.model.UITheme
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -30,7 +28,7 @@ class UIThemeRepositoryImpl @Inject constructor(
         // Get the theme preference, defaulting to DARK if not set
         val isDark = preferences[THEME_KEY] ?: true
         // Convert the boolean value to a UITheme enum
-        if (isDark == DARK.value) DARK else LIGHT
+        if (isDark == UITheme.DARK.value) UITheme.DARK else UITheme.LIGHT
     }
 
     // Update the theme preference in the DataStore

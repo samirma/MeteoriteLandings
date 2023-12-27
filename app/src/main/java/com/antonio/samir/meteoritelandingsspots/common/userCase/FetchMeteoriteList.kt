@@ -1,11 +1,10 @@
-package com.antonio.samir.meteoritelandingsspots.features.list.userCases
+package com.antonio.samir.meteoritelandingsspots.common.userCase
 
 import android.util.Log
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
-import com.antonio.samir.meteoritelandingsspots.common.userCase.UserCaseBase
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.remote.MeteoriteRemoteRepository
-import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteServerException
+import com.antonio.samir.meteoritelandingsspots.data.remote.MeteoriteServerException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext

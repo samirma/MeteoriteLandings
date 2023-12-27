@@ -1,6 +1,5 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -28,9 +27,7 @@ class MeteoriteListViewModel @Inject constructor(
 
     fun onDarkModeToggleClick() {
         viewModelScope.launch {
-            switchUITheme(Unit).collect {
-                Log.i(TAG, "SwitchUITheme ${it.javaClass}")
-            }
+            switchUITheme()
         }
     }
 
