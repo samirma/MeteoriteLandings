@@ -41,18 +41,19 @@ fun DetailScreen(
     state: MeteoriteListState,
     onBack: () -> Unit
 ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            when (state) {
-                is MeteoriteListState.Loading -> CircularProgressIndicator()
-                is MeteoriteListState.Loaded -> {
-                    val meteoriteView = state.meteoriteView
-                    if (meteoriteView != null) {
-                        DetailContent(meteoriteView, onBack)
-                    }
+    Column(modifier = Modifier.fillMaxSize()) {
+        when (state) {
+            is MeteoriteListState.Loading -> CircularProgressIndicator()
+            is MeteoriteListState.Loaded -> {
+                val meteoriteView = state.meteoriteView
+                if (meteoriteView != null) {
+                    DetailContent(meteoriteView, onBack)
                 }
-                is MeteoriteListState.Error -> Text(stringResource(id = state.message))
             }
+
+            is MeteoriteListState.Error -> Text(stringResource(id = state.message))
         }
+    }
 }
 
 @Composable

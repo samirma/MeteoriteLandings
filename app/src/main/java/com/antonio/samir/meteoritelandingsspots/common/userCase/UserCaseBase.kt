@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlin.coroutines.CoroutineContext
 
-abstract class UserCaseBase<I, O>(private val coroutineContext: CoroutineContext = Dispatchers.IO) {
+abstract class UserCaseBase<I, O>(private val coroutineContext: CoroutineContext = Dispatchers.Default) {
 
     operator fun invoke(input: I) = action(input).flowOn(coroutineContext)
 

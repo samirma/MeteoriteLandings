@@ -1,26 +1,22 @@
 package com.antonio.samir.meteoritelandingsspots.features.list.userCases
 
-import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.common.userCase.IsDarkTheme
-import com.antonio.samir.meteoritelandingsspots.common.userCase.SetUITheme
-import com.antonio.samir.meteoritelandingsspots.common.userCase.UserCaseBase
-import kotlinx.coroutines.flow.emitAll
+import com.antonio.samir.meteoritelandingsspots.data.local.UIThemeRepository
+import com.antonio.samir.meteoritelandingsspots.data.local.model.UITheme
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SwitchUITheme @Inject constructor(
-    private val setUITheme: SetUITheme,
+    private val uiThemeRepository: UIThemeRepository,
     private val isDarkTheme: IsDarkTheme
-) : UserCaseBase<Unit, ResultOf<Unit>>() {
+) {
 
-    override fun action(input: Unit) = flow {
-        try {
-            val isDark = isDarkTheme(Unit).first()
-            emitAll(setUITheme(SetUITheme.Input(!isDark)))
-        } catch (e: Exception) {
-            emit(ResultOf.Error(e))
-        }
+    suspend operator fun invoke() = withContext(Dispatchers.Default) {
+        val isDark = isDarkTheme(Unit).first()
+        val uiTheme = if (!isDark) UITheme.DARK else UITheme.LIGHT
+        uiThemeRepository.setTheme(uiTheme)
     }
 
 }

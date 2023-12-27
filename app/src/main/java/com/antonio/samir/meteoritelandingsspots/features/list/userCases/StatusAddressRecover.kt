@@ -16,7 +16,7 @@ class StatusAddressRecover @Inject constructor(@ApplicationContext val context: 
     UserCaseBase<UUID, ResultOf<Float>>() {
 
     override fun action(input: UUID): Flow<ResultOf.InProgress<Float>> {
-        val map = WorkManager.getInstance(context)
+        return WorkManager.getInstance(context)
             .getWorkInfoByIdLiveData(input).asFlow().map { workInfo ->
                 ResultOf.InProgress(
                     data = workInfo.progress.getFloat(
@@ -25,7 +25,6 @@ class StatusAddressRecover @Inject constructor(@ApplicationContext val context: 
                     )
                 )
             }
-        return map
     }
 
 }

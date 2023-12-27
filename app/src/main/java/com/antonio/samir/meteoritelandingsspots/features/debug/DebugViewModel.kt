@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
+import com.antonio.samir.meteoritelandingsspots.common.userCase.FetchMeteoriteList
 import com.antonio.samir.meteoritelandingsspots.features.debug.DebugListState.Error
 import com.antonio.samir.meteoritelandingsspots.features.debug.DebugListState.Loaded
 import com.antonio.samir.meteoritelandingsspots.features.debug.DebugListState.Loading
-import com.antonio.samir.meteoritelandingsspots.features.list.userCases.FetchMeteoriteList
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StartAddressRecover
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StatusAddressRecover
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,7 +37,7 @@ class DebugViewModel @Inject constructor(
                 _uiState.update {
                     when (resultOf) {
                         is ResultOf.InProgress -> Loading
-                        is ResultOf.Success -> Loaded
+                        is ResultOf.Success -> Loaded(100f)
                         else -> Error(R.string.general_error)
                     }
                 }
@@ -47,5 +47,17 @@ class DebugViewModel @Inject constructor(
 
     private fun recoverAddressStatus() = startAddressRecover(Unit)
         .flatMapConcat { statusAddressRecover(it) }
+
+    fun loadAddresses() {
+        viewModelScope.launch {
+            recoverAddressStatus().collect { it: ResultOf<Float> ->
+                _uiState.value = when (it) {
+                    is ResultOf.Error -> Error(R.string.general_error)
+                    is ResultOf.InProgress -> Loaded(it.data ?: 0f)
+                    is ResultOf.Success -> Loaded(100f)
+                }
+            }
+        }
+    }
 
 }

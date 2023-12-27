@@ -8,8 +8,8 @@ sealed class DebugListState {
         @StringRes val message: Int,
     ) : DebugListState()
 
-    object Loading : DebugListState()
+    data object Loading : DebugListState()
 
-    object Loaded : DebugListState()
+    data class Loaded(val addressProgress: Float) : DebugListState()
 }
 

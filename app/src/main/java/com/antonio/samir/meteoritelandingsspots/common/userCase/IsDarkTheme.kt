@@ -1,8 +1,7 @@
 package com.antonio.samir.meteoritelandingsspots.common.userCase
 
 import android.util.Log
-import com.antonio.samir.meteoritelandingsspots.data.repository.UIThemeRepository
-import com.antonio.samir.meteoritelandingsspots.service.address.AddressServiceImpl
+import com.antonio.samir.meteoritelandingsspots.data.local.UIThemeRepository
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject

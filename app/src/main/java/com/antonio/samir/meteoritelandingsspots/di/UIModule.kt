@@ -1,7 +1,7 @@
 package com.antonio.samir.meteoritelandingsspots.di
 
-import com.antonio.samir.meteoritelandingsspots.data.repository.UIThemeRepository
-import com.antonio.samir.meteoritelandingsspots.data.repository.UIThemeRepositoryImpl
+import com.antonio.samir.meteoritelandingsspots.data.local.UIThemeRepository
+import com.antonio.samir.meteoritelandingsspots.data.local.UIThemeRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
