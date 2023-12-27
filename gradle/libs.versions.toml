@@ -75,8 +75,6 @@ ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 material3 = { group = "androidx.compose.material3", name = "material3" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "shimmer" }
-androidx-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version = "navigationFragmentKtx" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version = "18.2.0" }
 kpermissions = { module = "com.github.fondesa:kpermissions", version.ref = "kpermissions" }
 kpermissions-coroutines = { module = "com.github.fondesa:kpermissions-coroutines", version.ref = "kpermissions" }

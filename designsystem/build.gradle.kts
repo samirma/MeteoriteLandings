@@ -67,7 +67,6 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
 
-    implementation(libs.shimmer)
     implementation(libs.androidx.material)
 
     testImplementation(libs.junit)
