@@ -176,16 +176,6 @@ fun TextLazyColumn() {
         items.forEach {
             item {
                 MeteoriteItem(it, null)
-                Image(
-                    painter = painterResource(id = R.drawable.divider),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            start = 16.dp,
-                            bottom = 1.dp
-                        )
-                )
             }
         }
 
