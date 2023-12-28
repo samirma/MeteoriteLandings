@@ -59,7 +59,7 @@ fun ToolbarButtons(
             contentDescription = "",
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .padding(start = 26.dp)
+                .padding(start = 24.dp)
                 .clickable {
                     onDarkModeToggleClick()
                 },

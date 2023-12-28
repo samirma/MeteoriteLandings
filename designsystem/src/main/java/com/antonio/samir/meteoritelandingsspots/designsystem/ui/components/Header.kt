@@ -82,12 +82,10 @@ fun Header(
             }
             Row(
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .height(72.dp)
+                    .align(if (isScrollOnTop) Alignment.TopCenter else Alignment.BottomCenter)
                     .fillMaxWidth()
                     .padding(16.dp),
                 horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
             ) {
                 AnimatedVisibility(
                     visible = isScrollOnTop,
@@ -103,7 +101,7 @@ fun Header(
                     )
                 }
                 ToolbarButtons(
-                    modifier = Modifier,
+                    modifier = Modifier.align(Alignment.Bottom),
                     onDarkModeToggleClick = onDarkModeToggleClick,
                     onEnterSearch = { isSearch.value = true }
                 )
