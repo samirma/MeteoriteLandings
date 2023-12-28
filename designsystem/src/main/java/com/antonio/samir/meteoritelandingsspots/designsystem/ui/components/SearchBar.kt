@@ -76,7 +76,8 @@ fun SearchBar(
             Icon(
                 imageVector = Icons.Filled.ArrowBack,
                 modifier = Modifier,
-                contentDescription = stringResource(R.string.close_search)
+                contentDescription = stringResource(R.string.close_search),
+                tint = ExtendedTheme.colors.highlight
             )
         }
 

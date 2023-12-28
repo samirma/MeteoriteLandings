@@ -65,6 +65,7 @@ fun MeteoriteDetail(
         GoogleMap(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(bottom = 16.dp)
                 .weight(1f),  // This makes the GoogleMap fill all available space
             cameraPositionState = cameraPositionState
         ) {
