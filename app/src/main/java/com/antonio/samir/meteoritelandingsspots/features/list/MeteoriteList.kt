@@ -1,18 +1,24 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState.Error
 import androidx.paging.LoadState.Loading
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Loading
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MessageError
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
@@ -37,7 +43,19 @@ fun MeteoriteList(
             items.itemCount,
             key = items.itemKey { it.id }
         ) { index ->
-            items[index]?.let { MeteoriteItem(it, onItemClick) }
+            items[index]?.let {
+                MeteoriteItem(it, onItemClick)
+                Image(
+                    painter = painterResource(id = R.drawable.divider),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            start = 16.dp,
+                            bottom = 1.dp
+                        )
+                )
+            }
         }
 
         items.apply {
