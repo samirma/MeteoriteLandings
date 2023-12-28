@@ -6,7 +6,6 @@ import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalReposit
 import com.antonio.samir.meteoritelandingsspots.data.local.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.rule.CoroutineTestRule
 import com.antonio.samir.meteoritelandingsspots.service.address.AddressServiceImpl
-import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
 import io.mockk.mockk
@@ -29,7 +28,7 @@ class AddressServiceTest {
     var coroutinesTestRule = CoroutineTestRule()
 
     private val mockLocalRepository: MeteoriteLocalRepository = mockk()
-    private val mockGeoLocationUtil: GeoLocationUtilInterface = mockk()
+    private val mockGeoLocationUtil: GeoLocationUtil = mockk()
     private val address: Address = mockk()
 
     private lateinit var addressService: AddressServiceImpl

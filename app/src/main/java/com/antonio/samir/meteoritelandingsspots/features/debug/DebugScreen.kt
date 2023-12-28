@@ -1,5 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.features.debug
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
@@ -32,7 +33,10 @@ fun DebugScreen(
     onFetchRequest: () -> Unit,
     onAddressStart: () -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+    ) {
         Text("DEBUG SCREEN")
         Button(onClick = onFetchRequest) {
             Text(text = "Retrieve meteorites list")
@@ -40,12 +44,13 @@ fun DebugScreen(
         Button(onClick = onAddressStart) {
             Text(text = "Start address recovery")
         }
+        when (state) {
+            is DebugListState.Error -> DebugListState.Error(R.string.general_error)
+            is DebugListState.Loaded -> AddressProgress(state.addressProgress)
+            is DebugListState.Loading -> Loading(modifier = Modifier.fillMaxSize())
+        }
     }
-    when (state) {
-        is DebugListState.Error -> DebugListState.Error(R.string.general_error)
-        is DebugListState.Loaded -> AddressProgress(state.addressProgress)
-        is DebugListState.Loading -> Loading(modifier = Modifier.fillMaxSize())
-    }
+
 
 }
 

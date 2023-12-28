@@ -2,9 +2,9 @@ package com.antonio.samir.meteoritelandingsspots.service.address
 
 import android.util.Log
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
+import com.antonio.samir.meteoritelandingsspots.common.userCase.GeoLocation
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.local.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.util.GeoLocationUtilInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -13,11 +13,12 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class AddressServiceImpl(
+class AddressServiceImpl @Inject constructor(
     private val meteoriteLocalRepository: MeteoriteLocalRepository,
-    private val geoLocationUtil: GeoLocationUtilInterface
+    private val geoLocation: GeoLocation
 ) : AddressService {
 
     companion object {
@@ -77,7 +78,7 @@ class AddressServiceImpl(
 
     private fun getAddress(recLat: Double, recLong: Double): String? {
         var addressString: String? = null
-        val address = geoLocationUtil.getAddress(recLat, recLong)
+        val address = geoLocation.getAddress(recLat, recLong)
         if (address != null) {
             val finalAddress = ArrayList<String>()
             val city = address.locality
