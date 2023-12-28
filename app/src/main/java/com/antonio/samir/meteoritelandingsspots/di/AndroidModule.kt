@@ -1,6 +1,7 @@
 package com.antonio.samir.meteoritelandingsspots.di
 
 import android.content.Context
+import android.location.Geocoder
 import android.location.LocationManager
 import dagger.Module
 import dagger.Provides
@@ -17,5 +18,9 @@ object AndroidModule {
     @Provides
     fun provideLocationManager(@ApplicationContext context: Context) =
         context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+    @Singleton
+    @Provides
+    fun provideGeocoder(@ApplicationContext context: Context) = Geocoder(context)
 
 }

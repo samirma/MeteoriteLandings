@@ -1,9 +1,8 @@
-package com.antonio.samir.meteoritelandingsspots.common
+package com.antonio.samir.meteoritelandingsspots.common.ui.extension
 
 import android.annotation.SuppressLint
 import android.location.Location
 import android.util.Log
-import com.antonio.samir.meteoritelandingsspots.common.ui.extension.convertToNumberFormat
 import com.antonio.samir.meteoritelandingsspots.data.local.model.Meteorite
 import java.text.SimpleDateFormat
 import java.util.*
