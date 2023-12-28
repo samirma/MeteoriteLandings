@@ -1,4 +1,4 @@
-package com.antonio.samir.meteoritelandingsspots.data.local
+package com.antonio.samir.meteoritelandingsspots.data.local.database
 
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase

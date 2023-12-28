@@ -39,16 +39,15 @@ data class MeteoriteView(
     val type: String,
     val mass: String,
     val reclat: Double,
-    val reclong: Double,
-    val hasAddress: Boolean = true
+    val reclong: Double
 )
 
 @Composable
 fun MeteoriteDetail(
     meteoriteView: MeteoriteView
 ) {
-    val latitude = meteoriteView.reclat.toDouble()
-    val longitude = meteoriteView.reclong.toDouble()
+    val latitude = meteoriteView.reclat
+    val longitude = meteoriteView.reclong
 
     Surface(
         modifier = Modifier.background(MaterialTheme.colorScheme.background)
@@ -74,14 +73,10 @@ fun MeteoriteDetail(
                 )
             }
 
-            LineDetail(
-                icon = R.drawable.ic_globe,
-                label = meteoriteView.address,
-                showShimmer = !meteoriteView.hasAddress
-            )
-            LineDetail(R.drawable.ic_weight, meteoriteView.mass)
-            LineDetail(R.drawable.ic_type, meteoriteView.type)
-            LineDetail(R.drawable.ic_crash, meteoriteView.yearString)
+            LineDetail(icon = R.drawable.ic_globe, label = meteoriteView.address)
+            LineDetail(icon = R.drawable.ic_weight, label = meteoriteView.mass)
+            LineDetail(icon = R.drawable.ic_type, label = meteoriteView.type)
+            LineDetail(icon = R.drawable.ic_crash, label = meteoriteView.yearString)
         }
     }
 }
@@ -89,8 +84,7 @@ fun MeteoriteDetail(
 @Composable
 private fun LineDetail(
     @DrawableRes icon: Int,
-    label: String,
-    showShimmer: Boolean = false
+    label: String
 ) {
     Row(
         verticalAlignment = CenterVertically,
@@ -107,19 +101,12 @@ private fun LineDetail(
                 .size(40.dp)
                 .padding(end = 16.dp),
         )
-        if (showShimmer) {
-            Shimmer(
-                modifier = Modifier
-                    .align(CenterVertically)
-            )
-        } else {
-            Text(
-                text = label,
-                textAlign = TextAlign.Start,
-                style = ExtendedTheme.typography.body2,
-                color = ExtendedTheme.colors.textPrimary
-            )
-        }
+        Text(
+            text = label,
+            textAlign = TextAlign.Start,
+            style = ExtendedTheme.typography.body2,
+            color = ExtendedTheme.colors.textPrimary
+        )
     }
 }
 
@@ -133,8 +120,8 @@ fun MeteoriteDetailDark() {
             id = sample,
             name = "name $sample",
             yearString = "yearString $sample",
-            type = "distance $sample",
             address = "address $sample",
+            type = "distance $sample",
             mass = "mass",
             reclat = 0.0,
             reclong = 0.0
@@ -152,8 +139,8 @@ fun MeteoriteDetailLight() {
             id = sample,
             name = "name $sample",
             yearString = "yearString $sample",
-            type = "distance $sample",
             address = "address $sample",
+            type = "distance $sample",
             mass = "mass",
             reclat = 0.0,
             reclong = 0.0
@@ -171,12 +158,11 @@ fun MeteoriteDetailNoAddressLight() {
             id = sample,
             name = "name $sample",
             yearString = "yearString $sample",
-            type = "distance $sample",
             address = "address $sample",
+            type = "distance $sample",
             mass = "mass",
             reclat = 0.0,
-            reclong = 0.0,
-            hasAddress = false
+            reclong = 0.0
         )
     )
 }
