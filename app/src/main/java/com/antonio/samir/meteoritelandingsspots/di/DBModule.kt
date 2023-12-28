@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepositoryImpl
-import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteMigrations
+import com.antonio.samir.meteoritelandingsspots.data.local.database.MeteoriteMigrations
 import com.antonio.samir.meteoritelandingsspots.data.local.database.AppDataBase
 import dagger.Binds
 import dagger.Module

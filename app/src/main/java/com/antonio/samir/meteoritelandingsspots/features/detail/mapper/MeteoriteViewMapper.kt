@@ -21,8 +21,7 @@ class MeteoriteMapper @Inject constructor() : MapperBase<MeteoriteMapper.Input, 
         type = input.meteorite.recclass ?: "",
         mass = input.meteorite.mass.convertToNumberFormat(input.context.getString(R.string.unkown)),
         reclat = input.meteorite.reclat?.toDouble() ?: 0.0,
-        reclong = input.meteorite.reclong?.toDouble() ?: 0.0,
-        hasAddress = !input.meteorite.address.isNullOrBlank()
+        reclong = input.meteorite.reclong?.toDouble() ?: 0.0
     )
 
     data class Input(val meteorite: Meteorite, val location: Location?, val context: Context)

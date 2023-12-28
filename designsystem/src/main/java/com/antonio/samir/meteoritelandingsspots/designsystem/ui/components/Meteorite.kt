@@ -106,10 +106,6 @@ fun MeteoriteCell(
                             maxLines = 2,
                             style = ExtendedTheme.typography.body2
                         )
-                    } else {
-                        Shimmer(
-                            Modifier.padding(top = 6.dp)
-                        )
                     }
                 }
 

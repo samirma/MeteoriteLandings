@@ -3,6 +3,7 @@ agp = "8.2.0"
 datastorePreferences = "1.0.0"
 fixture = "1.2.0"
 hiltAndroid = "2.48.1"
+hiltCompiler = "1.0.0"
 hiltNavigationCompose = "1.1.0"
 kotlin = "1.9.21"
 core-ktx = "1.12.0"
@@ -36,6 +37,7 @@ hiltCommon = "1.1.0"
 
 [libraries]
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltCompiler" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycle-runtime-ktx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }

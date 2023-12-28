@@ -101,8 +101,7 @@ class MeteoriteDetailViewModelTest {
                     type = "",
                     mass = meteorite.mass!!,
                     reclat = 1.0,
-                    reclong = 0.0,
-                    hasAddress = false
+                    reclong = 0.0
                 )
             )
         )
