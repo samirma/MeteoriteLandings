@@ -123,8 +123,3 @@ dependencies {
     testImplementation(libs.fixture)
     testImplementation(libs.mockk)
 }
-
-//// Allow references to generated code
-//kapt {
-//    correctErrorTypes = true
-//}

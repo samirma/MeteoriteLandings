@@ -59,7 +59,7 @@ class GetMeteorites @Inject constructor(
     data class Input(val query: String?, val activity: AppCompatActivity)
 
     companion object {
-        const val PAGE_SIZE = 30
+        const val PAGE_SIZE = 20
         const val LIMIT = 1000L
     }
 
