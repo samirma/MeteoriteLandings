@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.ActionBar
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MessageError
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteDetail
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteView
 
@@ -50,8 +51,9 @@ fun DetailScreen(
                     DetailContent(meteoriteView, onBack)
                 }
             }
-
-            is MeteoriteListState.Error -> Text(stringResource(id = state.message))
+            is MeteoriteListState.Error -> MessageError(
+                message = stringResource(id = state.message)
+            )
         }
     }
 }

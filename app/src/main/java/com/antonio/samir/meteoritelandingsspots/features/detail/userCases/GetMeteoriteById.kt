@@ -34,8 +34,4 @@ class GetMeteoriteById @Inject constructor(
 
     data class Input(val id: String)
 
-    companion object {
-        private val TAG = GetMeteoriteById::class.java.simpleName
-    }
-
 }
