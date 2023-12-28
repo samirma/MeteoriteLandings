@@ -27,6 +27,7 @@ object DBModule {
         context,
         AppDataBase::class.java, DATABASE_NAME
     )
+        .createFromAsset(DATABASE_NAME)
         .addMigrations(MeteoriteMigrations.MIGRATION_1_2)
         .addMigrations(MeteoriteMigrations.MIGRATION_2_3)
         .build()
