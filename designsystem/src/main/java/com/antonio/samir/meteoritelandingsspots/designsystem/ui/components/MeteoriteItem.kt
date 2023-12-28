@@ -1,5 +1,7 @@
-package com.antonio.samir.meteoritelandingsspots.features.list
+package com.antonio.samir.meteoritelandingsspots.designsystem.ui.components
 
+
+import android.os.Parcelable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -16,10 +18,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
+import com.antonio.samir.meteoritelandingsspots.designsystem.R
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
+import kotlinx.parcelize.Parcelize
+
+
+@Parcelize
+data class MeteoriteItemView(
+    val id: String,
+    val name: String,
+    val yearString: String,
+    val address: String = "",
+    val distance: String,
+    val isSelected: Boolean = false,
+    val hasAddress: Boolean = true,
+) : Parcelable
+
 
 @Composable
 fun MeteoriteItem(
@@ -82,9 +97,9 @@ fun MeteoriteItem(
 }
 
 
-@Preview("MeteoriteItem Dark")
+@Preview("MeteoriteCell Dark")
 @Composable
-fun MeteoriteItemPreviewDark() {
+fun MeteoriteCellPreviewDark() {
     val sample = "test"
     MeteoriteLandingsTheme(darkTheme = true) {
         MeteoriteItem(
@@ -100,7 +115,7 @@ fun MeteoriteItemPreviewDark() {
 }
 
 
-@Preview("MeteoriteItem Light")
+@Preview("MeteoriteCell Light")
 @Composable
 fun MeteoriteCellPreviewLight() {
     val sample = "test"
@@ -117,9 +132,9 @@ fun MeteoriteCellPreviewLight() {
     }
 }
 
-@Preview("MeteoriteItem Light no Address")
+@Preview("MeteoriteCell Light no Adress")
 @Composable
-fun MeteoriteItemPreviewLightNoAddress() {
+fun MeteoriteCellPreviewLightNoAdress() {
     val sample = "test"
     MeteoriteLandingsTheme(darkTheme = false) {
         MeteoriteItem(

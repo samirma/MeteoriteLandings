@@ -29,6 +29,7 @@ import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Header
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Loading
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MessageError
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItem
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 import com.antonio.samir.meteoritelandingsspots.features.Route
