@@ -3,9 +3,9 @@ package com.antonio.samir.meteoritelandingsspots.features.detail.mapper
 import android.content.Context
 import android.location.Location
 import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.common.ui.extension.getLocationText
 import com.antonio.samir.meteoritelandingsspots.common.mapper.MapperBase
 import com.antonio.samir.meteoritelandingsspots.common.ui.extension.convertToNumberFormat
+import com.antonio.samir.meteoritelandingsspots.common.ui.extension.getLocationText
 import com.antonio.samir.meteoritelandingsspots.common.ui.extension.yearString
 import com.antonio.samir.meteoritelandingsspots.data.local.model.Meteorite
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteView
