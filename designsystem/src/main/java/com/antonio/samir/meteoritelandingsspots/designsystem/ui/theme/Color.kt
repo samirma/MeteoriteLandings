@@ -22,3 +22,7 @@ val hoverDark = Color(0xFF263040)
 
 val highlight = backgroundDark
 val highlightDark = background
+
+
+val dividerDark = Color(0x14FFFFFF)
+val divider = Color(0x14212121)
