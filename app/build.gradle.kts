@@ -50,12 +50,17 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("release")
+        }
+        debug {
+            isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("config")
+            versionNameSuffix = "-dev"
         }
     }
     compileOptions {
@@ -82,7 +87,6 @@ dependencies {
     implementation(project(":designsystem"))
 
     implementation(libs.core.ktx)
-    implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.activity.compose)
     implementation(platform(libs.compose.bom))
     implementation(libs.androidx.runtime.tracing)
@@ -90,13 +94,9 @@ dependencies {
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
-    implementation(libs.material)
-    implementation(libs.androidx.material)
     implementation(libs.maps.compose)
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
-
-    implementation(libs.androidx.lifecycle.livedata.ktx)
 
     implementation(libs.kpermissions)
     implementation(libs.kpermissions.coroutines)
@@ -106,8 +106,8 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
 
     //Navigation
-    implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.navigation.compose)
 
     //Room
     implementation(libs.androidx.room.runtime)
@@ -120,8 +120,6 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
 
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.activity.compose)
 
     implementation(libs.androidx.work.runtime.ktx)
 
