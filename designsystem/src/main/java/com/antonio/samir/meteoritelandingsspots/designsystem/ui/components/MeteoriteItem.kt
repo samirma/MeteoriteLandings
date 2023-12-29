@@ -1,6 +1,5 @@
 package com.antonio.samir.meteoritelandingsspots.designsystem.ui.components
 
-import android.os.Parcelable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -25,9 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.antonio.samir.meteoritelandingsspots.designsystem.R
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
 data class MeteoriteItemView(
     val id: String,
     val name: String,
@@ -36,7 +32,7 @@ data class MeteoriteItemView(
     val distance: String,
     val isSelected: Boolean = false,
     val hasAddress: Boolean = true,
-) : Parcelable
+)
 
 @Composable
 fun MeteoriteItem(
@@ -61,29 +57,37 @@ fun MeteoriteItem(
         )
         Column(
             modifier = Modifier
+                .fillMaxWidth()
                 .fillMaxHeight()
                 .weight(1f)
                 .padding(start = 16.dp),
-            verticalArrangement = Arrangement.Center, // this will distribute the space evenly between the children
+            verticalArrangement = Arrangement.Center,
         ) {
-            MainLabel(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                itemView = itemView
-            )
-            if (itemView.hasAddress) {
-                Text(
-                    color = ExtendedTheme.colors.textSecondary,
-                    text = itemView.address,
-                    maxLines = 2,
-                    style = ExtendedTheme.typography.body2
+                    .fillMaxWidth()
+                    .weight(1f),
+                verticalArrangement = Arrangement.Center,
+            ) {
+                MainLabel(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    itemView = itemView
                 )
+                if (itemView.hasAddress) {
+                    Text(
+                        color = ExtendedTheme.colors.textSecondary,
+                        text = itemView.address,
+                        maxLines = 2,
+                        style = ExtendedTheme.typography.body2
+                    )
+                }
             }
             Spacer(
                 modifier = Modifier
                     .height(1.dp)
+                    .fillMaxWidth()
                     .background(color = ExtendedTheme.colors.divider)
-                    .padding(horizontal = 200.dp)
             )
         }
     }
@@ -116,25 +120,6 @@ private fun MainLabel(
         )
     }
 }
-
-
-@Preview("MeteoriteItem Dark")
-@Composable
-fun MeteoriteItemPreviewDark() {
-    val sample = "test"
-    MeteoriteLandingsTheme(darkTheme = true) {
-        MeteoriteItem(
-            MeteoriteItemView(
-                id = sample,
-                name = "name $sample",
-                yearString = "yearString $sample",
-                distance = "distance $sample",
-                address = "address $sample"
-            )
-        ) {}
-    }
-}
-
 
 @Preview("MeteoriteItem Light")
 @Composable
