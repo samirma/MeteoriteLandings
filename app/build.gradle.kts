@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
@@ -15,12 +17,34 @@ android {
         applicationId = "com.antonio.samir.meteoritelandingsspots"
         minSdk = 24
         targetSdk = 34
-        versionCode = 16
-        versionName = "1.0"
+        versionCode = 18
+        versionName = "2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+    }
+
+    val properties = Properties()
+    val keyProp = file("production.properties")
+    properties.load(keyProp.inputStream())
+    val prop_keyAlias = properties.getProperty("keyAlias")
+    val prop_keyPassword = properties.getProperty("keyStorePassword")
+    val prop_storeFile = file(properties.getProperty("keyStore"))
+
+    signingConfigs {
+        create("config") {
+            keyAlias = "dev_key"
+            keyPassword = "dev_key"
+            storeFile = file("dev_key.jks")
+            storePassword = "dev_key"
+        }
+        create("release") {
+            keyAlias = prop_keyAlias
+            keyPassword = prop_keyPassword
+            storeFile = prop_storeFile
+            storePassword = prop_keyPassword
         }
     }
 
@@ -31,7 +55,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
