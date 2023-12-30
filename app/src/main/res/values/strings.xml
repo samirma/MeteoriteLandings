@@ -1,23 +1,18 @@
 <resources>
-    <string name="app_name">Meteorite Landings Spots</string>
+    <string name="app_name">Meteorite Landings</string>
     <string name="title_activity_main">@string/app_name</string>
 
-    <string name="no_network">Please check you network connection!</string>
-    <string name="general_error">Sorry, some kind of error has occurred</string>
+    <string name="no_network">"Current network is unavailable.\nPlease check if you have connected to a valid Wifi or mobile network. "</string>
+    <string name="general_error">Something unexpected happened.\nOur mobile app is unavailable.\nPlease check later back.</string>
 
-    <string name="mass">Mass (g)</string>
-    <string name="nametype">Name Type</string>
-    <string name="year">Year</string>
     <string name="loading_addresses">Loading addresses</string>
     <string name="name">%s, %s</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="no_result_found">No results found</string>
     <string name="searchView_query_hint">Title, places, countries</string>
-    <string name="without_address_placeholder">Address not loaded yet</string>
     <string name="search">Search</string>
 
-    <string name="title">Search for title, place or country</string>
     <string name="unkown">\???</string>
 
 </resources>

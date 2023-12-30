@@ -1,17 +1,17 @@
 package com.antonio.samir.meteoritelandingsspots.data.local
 
-import androidx.paging.DataSource
-import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
+import androidx.paging.PagingSource
+import com.antonio.samir.meteoritelandingsspots.data.local.model.Meteorite
 import kotlinx.coroutines.flow.Flow
 
 interface MeteoriteLocalRepository {
 
-    suspend fun meteoriteOrdered(
-            filter: String?,
-            latitude: Double?,
-            longitude: Double?,
-            limit: Long,
-    ): DataSource.Factory<Int, Meteorite>
+    fun meteoriteOrdered(
+        filter: String?,
+        latitude: Double?,
+        longitude: Double?,
+        limit: Long,
+    ): PagingSource<Int, Meteorite>
 
     fun meteoritesWithOutAddress(): Flow<List<Meteorite>>
 
@@ -19,7 +19,7 @@ interface MeteoriteLocalRepository {
 
     suspend fun update(meteorite: Meteorite)
 
-    suspend fun getMeteoritesCount(): Int
+    suspend fun getValidMeteoritesCount(): Int
 
     suspend fun getMeteoritesWithoutAddressCount(): Int
 
@@ -27,4 +27,5 @@ interface MeteoriteLocalRepository {
 
     suspend fun updateAll(meteorites: List<Meteorite>)
 
+    suspend fun getMeteoritesCount(): Int
 }

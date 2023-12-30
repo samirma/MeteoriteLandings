@@ -1,20 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-
-    <color name="title_color">#fff</color>
-
-    <color name="title_default">@color/title_color</color>
-
-    <color name="meta_bar_background_color">#333</color>
-
-    <!-- our detail accent colors -->
-    <color name="detail_accent_pane_background">#455A64</color>
-    <color name="detail_accent_label">#90A4AE</color>
-    <color name="unselected_item_color">@color/meta_bar_background_color</color>
-    <color name="selected_item_color">#eee</color>
-    <color name="selected_title_color">@color/meta_bar_background_color</color>
-
+    <color name="background">#2196F3</color>
 </resources>

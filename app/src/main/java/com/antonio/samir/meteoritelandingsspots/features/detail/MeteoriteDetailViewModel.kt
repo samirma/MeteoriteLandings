@@ -1,70 +1,55 @@
 package com.antonio.samir.meteoritelandingsspots.features.detail
 
-import android.content.Context
-import android.location.Location
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.data.Result
-import com.antonio.samir.meteoritelandingsspots.data.Result.*
-import com.antonio.samir.meteoritelandingsspots.data.repository.MeteoriteRepository
-import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.features.getLocationText
-import com.antonio.samir.meteoritelandingsspots.features.yearString
-import com.antonio.samir.meteoritelandingsspots.ui.extension.convertToNumberFormat
-import com.antonio.samir.meteoritelandingsspots.util.GPSTrackerInterface
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.combine
+import androidx.lifecycle.viewModelScope
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf
+import com.antonio.samir.meteoritelandingsspots.features.detail.userCases.GetMeteoriteById
+import com.antonio.samir.meteoritelandingsspots.features.detail.userCases.GetMeteoriteById.Input
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-@FlowPreview
-@ExperimentalCoroutinesApi
-class MeteoriteDetailViewModel(
-        private val meteoriteRepository: MeteoriteRepository,
-        gpsTracker: GPSTrackerInterface,
+@HiltViewModel
+class MeteoriteDetailViewModel @Inject constructor(
+    private val getMeteoriteById: GetMeteoriteById,
 ) : ViewModel() {
 
-    private var currentMeteorite = ConflatedBroadcastChannel<String>()
+    private val currentMeteorite = MutableStateFlow<String?>(null)
 
-    val location = gpsTracker.location
+    private val _state = MutableStateFlow<MeteoriteListState>(MeteoriteListState.Loading)
 
-    fun getMeteorite(context: Context): LiveData<Result<MeteoriteView>> = currentMeteorite.asFlow()
-        .flatMapLatest(meteoriteRepository::getMeteoriteById)
-        .combine(location) { meteorite, location -> //Add location
-            when (meteorite) {
-                is Success -> Success(getMeteoriteView(meteorite.data, location, context))
-                is Error -> Error(meteorite.exception)
-                is InProgress -> InProgress()
+    // UI state exposed to the UI
+    val meteoriteDetailState: StateFlow<MeteoriteListState> = _state
+
+    init {
+        viewModelScope.launch(Dispatchers.Default) {
+            getMeteorite().collect { result ->
+                if (result is ResultOf.Success) {
+                    _state.value = MeteoriteListState.Loaded(result.data)
+                }
             }
         }
-        .asLiveData()
-
-    private fun getMeteoriteView(meteorite: Meteorite, location: Location?, context: Context) =
-        MeteoriteView(
-            id = meteorite.id.toString(),
-            name = meteorite.name,
-            yearString = meteorite.yearString,
-            address = meteorite.getLocationText(
-                location = location,
-                noAddress = context.getString(R.string.without_address_placeholder)
-            ),
-            recclass = meteorite.recclass,
-            mass = meteorite.mass.convertToNumberFormat(context.getString(R.string.unkown)),
-            reclat = meteorite.reclat?.toDouble() ?: 0.0,
-            reclong = meteorite.reclong?.toDouble() ?: 0.0,
-            hasAddress = !meteorite.address.isNullOrBlank()
-        )
-
-    fun loadMeteorite(meteoriteId: String) {
-        currentMeteorite.trySend(meteoriteId).isSuccess
     }
 
-    fun requestAddressUpdate(meteorite: MeteoriteView) {
+    private fun getMeteorite() = currentMeteorite.asStateFlow()
+        .filterNotNull()
+        .flatMapLatest { meteoriteId ->
+            getMeteoriteById(
+                Input(
+                    id = meteoriteId
+                )
+            )
+        }
 
+
+    fun loadMeteorite(meteoriteId: String) {
+        this.currentMeteorite.value = meteoriteId
     }
 
 }
