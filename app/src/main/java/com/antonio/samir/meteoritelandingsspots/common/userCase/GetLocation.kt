@@ -25,7 +25,7 @@ class GetLocation @Inject constructor(
     )
         .map {
             when (it) {
-                is ResultOf.Success -> ResultOf.Success(Output(getLocation()))
+                is ResultOf.Success -> ResultOf.Success(Output(getLocation().getOrNull()))
                 is ResultOf.InProgress -> ResultOf.Success(Output(null))
                 is ResultOf.Error -> it
             }
@@ -38,7 +38,8 @@ class GetLocation @Inject constructor(
     }
 
     @SuppressLint("MissingPermission")
-    private fun getLocation() = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+    private fun getLocation() =
+        Result.runCatching { locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) }
 
     class Input(val activity: AppCompatActivity)
 
