@@ -26,25 +26,24 @@ android {
         }
     }
 
-    val properties = Properties()
-    val keyProp = file("production.properties")
-    properties.load(keyProp.inputStream())
-    val prop_keyAlias = properties.getProperty("keyAlias")
-    val prop_keyPassword = properties.getProperty("keyStorePassword")
-    val prop_storeFile = file(properties.getProperty("keyStore"))
+    val properties = Properties().apply {
+        this.load(file("production.properties").inputStream())
+    }
 
     signingConfigs {
         getByName("debug") {
-            keyAlias = "dev_key"
-            keyPassword = "dev_key"
+            val devKey = "dev_key"
+            keyAlias = devKey
+            keyPassword = devKey
             storeFile = file("dev_key.jks")
-            storePassword = "dev_key"
+            storePassword = devKey
         }
         create("release") {
-            keyAlias = prop_keyAlias
-            keyPassword = prop_keyPassword
-            storeFile = prop_storeFile
-            storePassword = prop_keyPassword
+            val keyPassword = properties.getProperty("keyStorePassword")
+            keyAlias = properties.getProperty("keyAlias")
+            this.keyPassword = keyPassword
+            storeFile = file(properties.getProperty("keyStore"))
+            storePassword = keyPassword
         }
     }
 
