@@ -87,14 +87,10 @@ dependencies {
     implementation(project(":designsystem"))
 
     implementation(libs.core.ktx)
-    implementation(libs.activity.compose)
     implementation(platform(libs.compose.bom))
     implementation(libs.androidx.runtime.tracing)
-    implementation(libs.ui)
-    implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
-    implementation(libs.maps.compose)
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
 
