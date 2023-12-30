@@ -25,9 +25,9 @@ https://app-privacy-policy-generator.firebaseapp.com/
 ## Build with
 
 - Kotlin
-- Coroutines/Flow - Rx free
-- Koin - Dagger free
-- LiveData
+- Coroutines/Flow
+- Hilt
+- Compose
 - Room
 - Navigation-ui
 - Retrofit2
