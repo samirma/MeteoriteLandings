@@ -54,7 +54,6 @@ dependencies {
 
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
-    implementation(libs.material)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.activity.compose)
     implementation(platform(libs.compose.bom))
@@ -67,7 +66,6 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
 
-    implementation(libs.androidx.material)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
