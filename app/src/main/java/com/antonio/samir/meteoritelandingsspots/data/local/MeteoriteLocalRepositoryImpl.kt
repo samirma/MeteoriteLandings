@@ -1,44 +1,38 @@
 package com.antonio.samir.meteoritelandingsspots.data.local
 
 import com.antonio.samir.meteoritelandingsspots.data.local.database.MeteoriteDao
-import com.antonio.samir.meteoritelandingsspots.data.repository.model.Meteorite
-import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
+import com.antonio.samir.meteoritelandingsspots.data.local.model.Meteorite
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.Locale
+import javax.inject.Inject
 
-class MeteoriteLocalRepositoryImpl(
-        private val meteoriteDao: MeteoriteDao,
-        private val dispatchers: DispatcherProvider
-
+class MeteoriteLocalRepositoryImpl @Inject constructor(
+    private val meteoriteDao: MeteoriteDao
 ) : MeteoriteLocalRepository {
 
-    override suspend fun meteoriteOrdered(
-            filter: String?,
-            latitude: Double?,
-            longitude: Double?,
-            limit: Long,
-    ) = withContext(dispatchers.io()) {
-
-        return@withContext if (latitude == null || longitude == null) {
-            if (filter.isNullOrEmpty()) {
-                meteoriteDao.meteoriteOrdered(limit)
-            } else {
-                meteoriteDao.meteoriteFiltered(filter.toLowerCase(Locale.getDefault()))
-            }
-        } else {
-
-            if (filter != null) {
-                meteoriteDao.meteoriteOrderedByLocationFiltered(latitude, longitude, filter.toLowerCase(Locale.getDefault()))
-            } else {
-                meteoriteDao.meteoriteOrderedByLocation(latitude, longitude)
-            }
-        }
-
+    override fun meteoriteOrdered(
+        filter: String?,
+        latitude: Double?,
+        longitude: Double?,
+        limit: Long,
+    ) = if (latitude == null || longitude == null) {
+        meteoriteDao.meteoriteFiltered(filter = prepareFilter(filter))
+    } else {
+        meteoriteDao.meteoriteOrderedByLocationFiltered(
+            lat = latitude,
+            lng = longitude,
+            filter = prepareFilter(filter)
+        )
     }
+
+    private fun prepareFilter(filter: String?) = filter?.lowercase(Locale.getDefault()) ?: ""
 
     override suspend fun getMeteoritesCount(): Int {
         return meteoriteDao.getMeteoritesCount()
+    }
+
+    override suspend fun getValidMeteoritesCount(): Int {
+        return meteoriteDao.getValidMeteoritesCount()
     }
 
     override suspend fun getMeteoritesWithoutAddressCount(): Int {
@@ -53,9 +47,8 @@ class MeteoriteLocalRepositoryImpl(
         return meteoriteDao.getMeteoriteById(id)
     }
 
-    override fun meteoritesWithOutAddress(): Flow<List<Meteorite>> {
-        return meteoriteDao.meteoritesWithOutAddress()
-    }
+
+    override fun meteoritesWithOutAddress() = meteoriteDao.meteoritesWithOutAddress()
 
     override suspend fun insertAll(meteorites: List<Meteorite>) {
         meteoriteDao.insertAll(meteorites)
