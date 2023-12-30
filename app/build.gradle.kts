@@ -18,7 +18,7 @@ android {
         minSdk = 24
         targetSdk = 34
         versionCode = 19
-        versionName = "2.0"
+        versionName = "2.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -91,7 +91,6 @@ dependencies {
     implementation(libs.androidx.runtime.tracing)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
-    implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
 
     implementation(libs.kpermissions)
