@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepositoryImpl
 import com.antonio.samir.meteoritelandingsspots.data.local.database.AppDataBase
+import com.antonio.samir.meteoritelandingsspots.data.local.database.DATABASE_NAME
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -13,7 +14,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-const val DATABASE_NAME = "meteorites"
 
 // Hilt module for providing the necessary dependencies
 @Module
@@ -26,7 +26,7 @@ object DBModule {
         context,
         AppDataBase::class.java, DATABASE_NAME
     )
-//        .createFromAsset(DATABASE_NAME)
+        .createFromAsset(DATABASE_NAME)
         .build()
         .meteoriteDao()
 
