@@ -34,7 +34,7 @@ android {
     val prop_storeFile = file(properties.getProperty("keyStore"))
 
     signingConfigs {
-        create("config") {
+        getByName("debug") {
             keyAlias = "dev_key"
             keyPassword = "dev_key"
             storeFile = file("dev_key.jks")
@@ -59,8 +59,9 @@ android {
         }
         debug {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("config")
+            signingConfig = signingConfigs.getByName("debug")
             versionNameSuffix = "-dev"
+            applicationIdSuffix = ".dev"
         }
     }
     compileOptions {
