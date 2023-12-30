@@ -5,7 +5,6 @@ import androidx.room.Room
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepositoryImpl
 import com.antonio.samir.meteoritelandingsspots.data.local.database.AppDataBase
-import com.antonio.samir.meteoritelandingsspots.data.local.database.MeteoriteMigrations
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -27,9 +26,7 @@ object DBModule {
         context,
         AppDataBase::class.java, DATABASE_NAME
     )
-        .createFromAsset(DATABASE_NAME)
-        .addMigrations(MeteoriteMigrations.MIGRATION_1_2)
-        .addMigrations(MeteoriteMigrations.MIGRATION_2_3)
+//        .createFromAsset(DATABASE_NAME)
         .build()
         .meteoriteDao()
 
