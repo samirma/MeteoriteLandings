@@ -22,6 +22,9 @@ https://www.norio.be/android-feature-graphic-generator/
 Privacy Policy:
 https://app-privacy-policy-generator.firebaseapp.com/
 
+Figma:
+https://www.figma.com/file/5QPuIqE2otf4SJMhwnBzmo/New-UI---App-MeteoR?node-id=0%3A1
+
 ## Build with
 
 - Kotlin
