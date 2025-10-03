@@ -1,25 +1,13 @@
-@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
-    alias(libs.plugins.androidApplication) apply false
-    alias(libs.plugins.androidLibrary) apply false
-    alias(libs.plugins.dependencyGraphGenerator) apply false
-    alias(libs.plugins.googleServices) apply false
-    alias(libs.plugins.kotlinAndroid) apply false
-    alias(libs.plugins.kotlinSerialization) apply false
-    alias(libs.plugins.devtoolsKsp) apply false
-    id("com.google.dagger.hilt.android") version "2.48.1" apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.compose) apply false
+    alias(libs.plugins.hiltAndroid) apply false
+    alias(libs.plugins.kotlinAndroidKsp) apply false
 }
 
 buildscript {
-    repositories {
-        gradlePluginPortal()
-        google()
-    }
-
     dependencies {
-        classpath(libs.navigation.safe.args.gradle.plugin)
+        classpath("com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1")
     }
 }
-
-
-true // Needed to make the Suppress annotation work for the plugins block
