@@ -1,18 +1,18 @@
 [versions]
-agp = "8.2.0"
-datastorePreferences = "1.0.0"
+agp = "8.13.0"
+datastorePreferences = "1.1.7"
 fixture = "1.2.0"
-hiltAndroid = "2.48.1"
+hiltVersion = "2.57.2"
 hiltCompiler = "1.1.0"
 hiltNavigationCompose = "1.1.0"
-kotlin = "1.9.21"
+kotlin = "2.0.21"
 core-ktx = "1.12.0"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.1.5"
 espresso-core = "3.5.1"
 kotlinxCoroutinesTest = "1.7.3"
 lifecycle-runtime-ktx = "2.6.2"
-compose-bom = "2023.10.01"
+compose-bom = "2024.05.00"
 appcompat = "1.6.1"
 loggingInterceptor = "5.0.0-alpha.11"
 mapsCompose = "2.14.0"
@@ -28,7 +28,7 @@ runtimeTracing = "1.0.0-beta01"
 kpermissions = "3.4.0"
 paging = "3.2.1"
 workRuntimeKtx = "2.9.0"
-ksp = "1.9.21-1.0.15"
+kspVersion = "2.0.21-1.0.28"
 hiltWork = "1.1.0"
 hiltCommon = "1.1.0"
 
@@ -48,8 +48,8 @@ androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 fixture = { module = "com.appmattus.fixture:fixture", version.ref = "fixture" }
-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltVersion" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
@@ -77,13 +77,8 @@ androidx-hilt-common = { group = "androidx.hilt", name = "hilt-common", version.
 
 
 [plugins]
-androidApplication = { id = "com.android.application", version.ref = "agp" }
-kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-androidLibrary = { id = "com.android.library", version.ref = "agp" }
-googleServices = { id = "com.google.gms.google-services", version.ref = "googleServices" }
-dependencyGraphGenerator = { id = "com.vanniktech.dependency.graph.generator", version.ref = "dependencyGraphGenerator" }
-kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-devtoolsKsp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-
-[bundles]
-
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlinAndroidKsp = { id = "com.google.devtools.ksp", version.ref ="kspVersion" }
+hiltAndroid = { id = "com.google.dagger.hilt.android", version.ref ="hiltVersion" }
