@@ -86,57 +86,52 @@ dependencies {
 
     implementation(project(":designsystem"))
 
-    implementation(libs.core.ktx)
-    implementation(platform(libs.compose.bom))
-    implementation(libs.androidx.runtime.tracing)
-    implementation(libs.ui.tooling.preview)
-    implementation(libs.material3)
-    implementation(libs.play.services.location)
 
-    implementation(libs.kpermissions)
-    implementation(libs.kpermissions.coroutines)
-
-    //Paging
-    implementation(libs.paging.compose)
-    implementation(libs.androidx.paging.runtime)
-
-    //Navigation
-    implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.androidx.navigation.compose)
+    //Dagger
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+    ksp(libs.hilt.compiler)
 
     //Room
     implementation(libs.androidx.room.runtime)
-    ksp(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.paging)
+    //For Kotlin extension coroutines for room.
+    implementation(libs.androidx.room.ktx)
+    //To use kotlin annotation processor.
+    ksp(libs.androidx.room.compiler)
 
-    //Retrofit
+    // Retrofit
     implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-    implementation(libs.logging.interceptor)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.gson)
+    implementation(libs.okhttp.logging.interceptor)
+
+    // Coil
+    implementation(libs.coil.compose)
+
+    // Pagination
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
 
 
-    implementation(libs.androidx.work.runtime.ktx)
-
-    //Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.android.compiler)
-    ksp(libs.androidx.hilt.compiler)
-    implementation(libs.androidx.hilt.work)
-    implementation(libs.androidx.hilt.common)
-    implementation(libs.androidx.hilt.navigation.compose)
-
-    //DataStore
-    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material3)
 
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.espresso.core)
-    androidTestImplementation(platform(libs.compose.bom))
-    androidTestImplementation(libs.ui.test.junit4)
-    debugImplementation(libs.ui.tooling)
-    debugImplementation(libs.ui.test.manifest)
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.fixture)
     testImplementation(libs.mockk)
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.turbine)
+
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
+
