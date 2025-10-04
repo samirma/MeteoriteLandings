@@ -2,7 +2,8 @@ package com.antonio.samir.meteoritelandingsspots.features
 
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,13 +17,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.antonio.samir.meteoritelandingsspots.BuildConfig
-import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.common.userCase.IsDarkTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
 import com.antonio.samir.meteoritelandingsspots.features.Route.DEBUG
@@ -37,7 +36,7 @@ import javax.inject.Inject
 
 @OptIn(ExperimentalAnimationApi::class)
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var isDarkTheme: IsDarkTheme
@@ -45,9 +44,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_meteorite_list)
-
-        findViewById<ComposeView>(R.id.compose_view).setContent {
+        setContent {
 
             val darkThemeFlow = isDarkTheme(Unit)
 
@@ -83,8 +80,7 @@ class MainActivity : AppCompatActivity() {
         NavHost(navController, startDestination = MAIN) {
             composable(MAIN) {
                 ListScreenNavigation(
-                    navController = navController,
-                    activity = this@MainActivity
+                    navController = navController
                 )
             }
             composable(DETAIL) { backStackEntry ->

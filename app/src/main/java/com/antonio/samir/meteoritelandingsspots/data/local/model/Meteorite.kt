@@ -1,14 +1,11 @@
 package com.antonio.samir.meteoritelandingsspots.data.local.model
 
-import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
 
 @Entity(tableName = "meteorites", indices = [Index("id")])
-@Parcelize
 data class Meteorite(
     @PrimaryKey
     @SerializedName("id")
@@ -22,5 +19,4 @@ data class Meteorite(
     var reclong: String? = null,
     var reclat: String? = null,
     var address: String? = null
-
-) : Parcelable
+)

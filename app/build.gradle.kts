@@ -84,12 +84,13 @@ android {
 
 dependencies {
 
-    implementation(project(":designsystem"))
-
+    // Datastore
+    implementation(libs.androidx.datastore.preferences)
 
     //Dagger
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.play.services.maps)
     ksp(libs.hilt.compiler)
 
     //Room
@@ -113,6 +114,12 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
 
+    //Worker
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.hilt.work)
+
+    implementation(libs.kpermissions)
+    implementation(libs.kpermissions.coroutines)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

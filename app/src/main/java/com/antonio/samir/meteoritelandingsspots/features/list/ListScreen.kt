@@ -1,6 +1,5 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,13 +36,13 @@ import kotlinx.coroutines.flow.flowOf
 @ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 @Composable
-fun ListScreenNavigation(navController: NavHostController, activity: AppCompatActivity) {
+fun ListScreenNavigation(navController: NavHostController) {
 
     val viewModel: MeteoriteListViewModel = hiltViewModel()
     val uiState = viewModel.uiState.collectAsState()
 
     LaunchedEffect(viewModel) {
-        viewModel.fetchMeteoriteList(activity)
+        viewModel.fetchMeteoriteList()
     }
 
     ListScreen(
@@ -54,8 +53,7 @@ fun ListScreenNavigation(navController: NavHostController, activity: AppCompatAc
         onDarkModeToggleClick = viewModel::onDarkModeToggleClick,
         onSearch = { query: String ->
             viewModel.searchLocation(
-                query = query,
-                activity = activity
+                query = query
             )
         }
     )
