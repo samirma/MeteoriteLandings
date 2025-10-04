@@ -36,22 +36,23 @@ fun DetailScreenNavigation(
 
 }
 
+
 @Composable
 fun DetailScreen(
-    state: MeteoriteListState,
+    state: MeteoriteDetailState,
     onBack: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         when (state) {
-            is MeteoriteListState.Loading -> CircularProgressIndicator()
-            is MeteoriteListState.Loaded -> {
+            is MeteoriteDetailState.Loading -> CircularProgressIndicator()
+            is MeteoriteDetailState.Loaded -> {
                 val meteoriteView = state.meteoriteView
                 if (meteoriteView != null) {
                     DetailContent(meteoriteView, onBack)
                 }
             }
 
-            is MeteoriteListState.Error -> MessageError(
+            is MeteoriteDetailState.Error -> MessageError(
                 message = stringResource(id = state.message)
             )
         }

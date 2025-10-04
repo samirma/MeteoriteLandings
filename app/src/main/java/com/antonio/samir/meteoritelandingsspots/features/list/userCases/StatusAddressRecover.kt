@@ -15,15 +15,11 @@ import javax.inject.Inject
 class StatusAddressRecover @Inject constructor(@ApplicationContext val context: Context) :
     UserCaseBase<UUID, ResultOf<Float>>() {
 
-    override fun action(input: UUID): Flow<ResultOf.InProgress<Float>> {
+    override fun action(input: UUID): Flow<ResultOf<Float>> {
         return WorkManager.getInstance(context)
             .getWorkInfoByIdLiveData(input).asFlow().map { workInfo ->
-                ResultOf.InProgress(
-                    data = workInfo.progress.getFloat(
-                        AddressRecoverWorker.PROGRESS,
-                        0.0f
-                    )
-                )
+                val percentage = workInfo?.progress?.getInt(AddressRecoverWorker.PROGRESS, 0) ?: 0
+                ResultOf.InProgress(percentage.toFloat())
             }
     }
 
