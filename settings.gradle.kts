@@ -15,4 +15,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "MeteoriteLandings"
 include(":app")
-include(":designsystem")

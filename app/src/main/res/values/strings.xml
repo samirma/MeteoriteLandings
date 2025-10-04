@@ -15,4 +15,12 @@
 
     <string name="unkown">\???</string>
 
+    //Design System
+    <string name="message_titile" translatable="false">Oops...</string>
+    <string name="clear">Clear search</string>
+    <string name="close_search">Close search</string>
+    <string name="loading_resources">loading resources...</string>
+    <string name="title_header">Search for your meteorite</string>
+    <string name="search_placeholder">Search for title, place or country</string>
+
 </resources>

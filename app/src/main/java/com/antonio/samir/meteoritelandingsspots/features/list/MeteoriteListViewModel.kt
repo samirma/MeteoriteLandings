@@ -1,6 +1,5 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListState.Loaded
@@ -31,26 +30,24 @@ class MeteoriteListViewModel @Inject constructor(
         }
     }
 
-    fun fetchMeteoriteList(activity: AppCompatActivity) {
+    fun fetchMeteoriteList() {
 
         _uiState.value = Loaded(
             meteorites = getMeteorites(
                 GetMeteorites.Input(
-                    query = "",
-                    activity = activity
+                    query = ""
                 )
             )
         )
     }
 
 
-    fun searchLocation(query: String, activity: AppCompatActivity) {
+    fun searchLocation(query: String) {
         (_uiState.value as? Loaded)?.let {
             _uiState.value = Loaded(
                 meteorites = getMeteorites(
                     GetMeteorites.Input(
-                        query = query,
-                        activity = activity
+                        query = query
                     )
                 )
             )

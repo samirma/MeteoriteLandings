@@ -1,7 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.common.userCase
 
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.common.userCase.RequestPermission.Input
 import com.fondesa.kpermissions.allGranted
@@ -13,19 +12,10 @@ import javax.inject.Inject
 class RequestPermission @Inject constructor() : UserCaseBase<Input, ResultOf<Boolean>>() {
 
     override fun action(input: Input) = flow {
-        try {
-            val result =
-                input.activity.permissionsBuilder(input.permissions[0], *input.permissions)
-                    .build().sendSuspend()
-
-            emit(ResultOf.Success(result.allGranted()))
-        } catch (e: Exception) {
-            Log.e(TAG, e.message, e)
-            emit(ResultOf.Error(e))
-        }
+        emit(ResultOf.Success(true))
     }
 
-    class Input(val activity: AppCompatActivity, vararg val permissions: String)
+    class Input( vararg val permissions: String)
 
     companion object {
         private val TAG = RequestPermission::class.java.simpleName

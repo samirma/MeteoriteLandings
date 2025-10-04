@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.location.Location
 import android.location.LocationManager
-import androidx.appcompat.app.AppCompatActivity
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.common.userCase.GetLocation.Input
 import com.antonio.samir.meteoritelandingsspots.common.userCase.GetLocation.Output
@@ -18,7 +17,6 @@ class GetLocation @Inject constructor(
 
     override fun action(input: Input) = requestPermission(
         RequestPermission.Input(
-            activity = input.activity,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION
         )
@@ -41,7 +39,7 @@ class GetLocation @Inject constructor(
     private fun getLocation() =
         Result.runCatching { locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) }
 
-    class Input(val activity: AppCompatActivity)
+    class Input()
 
     data class Output(val location: Location?)
 

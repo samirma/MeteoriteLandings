@@ -1,6 +1,5 @@
 package com.antonio.samir.meteoritelandingsspots.features.list.userCases
 
-import androidx.appcompat.app.AppCompatActivity
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -28,7 +27,7 @@ class GetMeteorites @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun action(input: Input): Flow<PagingData<MeteoriteItemView>> =
-        getLocation(GetLocation.Input(activity = input.activity)).flatMapLatest {
+        getLocation(GetLocation.Input()).flatMapLatest {
 
             val location = (it as? ResultOf.Success)?.data?.location
 
@@ -56,7 +55,7 @@ class GetMeteorites @Inject constructor(
             paging
         }
 
-    data class Input(val query: String?, val activity: AppCompatActivity)
+    data class Input(val query: String?)
 
     companion object {
         const val PAGE_SIZE = 20
