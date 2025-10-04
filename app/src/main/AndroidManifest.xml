@@ -45,9 +45,19 @@
             </intent-filter>
         </activity>
 
+        <!--
+            TODO: Before you run your application, you need a Google Maps API key.
+
+            To get one, follow the directions here:
+
+            https://developers.google.com/maps/documentation/android-sdk/get-api-key
+
+            Once you have your API key (it starts with "AIza"), replace the "YOUR_API_KEY"
+            string in this file with your API key.
+        -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/key_map" />
+            android:value="YOUR_API_KEY" />
 
     </application>
 

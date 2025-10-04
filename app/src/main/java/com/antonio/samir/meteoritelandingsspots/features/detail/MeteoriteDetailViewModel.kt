@@ -22,16 +22,16 @@ class MeteoriteDetailViewModel @Inject constructor(
 
     private val currentMeteorite = MutableStateFlow<String?>(null)
 
-    private val _state = MutableStateFlow<MeteoriteListState>(MeteoriteListState.Loading)
+    private val _state = MutableStateFlow<MeteoriteDetailState>(MeteoriteDetailState.Loading)
 
     // UI state exposed to the UI
-    val meteoriteDetailState: StateFlow<MeteoriteListState> = _state
+    val meteoriteDetailState: StateFlow<MeteoriteDetailState> = _state
 
     init {
         viewModelScope.launch(Dispatchers.Default) {
             getMeteorite().collect { result ->
                 if (result is ResultOf.Success) {
-                    _state.value = MeteoriteListState.Loaded(result.data)
+                    _state.value = MeteoriteDetailState.Loaded(result.data)
                 }
             }
         }

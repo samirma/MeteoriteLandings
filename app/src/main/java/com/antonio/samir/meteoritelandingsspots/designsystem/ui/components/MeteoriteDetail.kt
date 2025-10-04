@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -23,10 +24,8 @@ import androidx.compose.ui.unit.dp
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.ExtendedTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
-import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
@@ -63,6 +62,8 @@ fun MeteoriteDetail(
         val cameraPositionState = rememberCameraPositionState {
             position = CameraPosition.fromLatLngZoom(target, 10f)
         }
+        val markerState = remember { MarkerState(position = target) }
+
         GoogleMap(
             modifier = Modifier
                 .fillMaxSize()
@@ -71,7 +72,7 @@ fun MeteoriteDetail(
             cameraPositionState = cameraPositionState
         ) {
             Marker(
-                state = MarkerState(position = target)
+                state = markerState
             )
         }
         LineDetail(icon = R.drawable.ic_globe, label = meteoriteView.address)

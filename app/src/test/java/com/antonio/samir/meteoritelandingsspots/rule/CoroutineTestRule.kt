@@ -1,6 +1,6 @@
 package com.antonio.samir.meteoritelandingsspots.rule
 
-import com.antonio.samir.meteoritelandingsspots.util.DispatcherProvider
+import com.antonio.samir.meteoritelandingsspots.common.userCase.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
