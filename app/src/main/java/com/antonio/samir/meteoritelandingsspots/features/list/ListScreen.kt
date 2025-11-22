@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import androidx.paging.PagingData
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Header
@@ -27,7 +26,6 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Messa
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItem
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
-import com.antonio.samir.meteoritelandingsspots.features.Route
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListState.Error
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListState.Loaded
 import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListState.Loading
@@ -36,7 +34,9 @@ import kotlinx.coroutines.flow.flowOf
 @ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 @Composable
-fun ListScreenNavigation(navController: NavHostController) {
+fun ListScreenNavigation(
+    onItemClick: (String) -> Unit
+) {
 
     val viewModel: MeteoriteListViewModel = hiltViewModel()
     val uiState = viewModel.uiState.collectAsState()
@@ -48,7 +48,7 @@ fun ListScreenNavigation(navController: NavHostController) {
     ListScreen(
         uiState = uiState.value,
         onItemClick = { itemView: MeteoriteItemView ->
-            navController.navigate(Route.getDetailUrlById(itemView.id))
+            onItemClick(itemView.id)
         },
         onDarkModeToggleClick = viewModel::onDarkModeToggleClick,
         onSearch = { query: String ->

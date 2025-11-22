@@ -10,7 +10,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.ActionBar
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MessageError
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteDetail
@@ -18,8 +17,8 @@ import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Meteo
 
 @Composable
 fun DetailScreenNavigation(
-    navController: NavController,
-    meteoriteId: String
+    meteoriteId: String,
+    onBack: () -> Unit
 ) {
 
     val viewModel: MeteoriteDetailViewModel = hiltViewModel()
@@ -31,7 +30,7 @@ fun DetailScreenNavigation(
     }
 
     DetailScreen(state) {
-        navController.popBackStack()
+        onBack()
     }
 
 }
