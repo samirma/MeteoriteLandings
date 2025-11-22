@@ -3,6 +3,7 @@ package com.antonio.samir.meteoritelandingsspots.features
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
@@ -14,20 +15,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.ui.NavDisplay
 import com.antonio.samir.meteoritelandingsspots.BuildConfig
 import com.antonio.samir.meteoritelandingsspots.common.userCase.IsDarkTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
-import com.antonio.samir.meteoritelandingsspots.features.Route.DEBUG
-import com.antonio.samir.meteoritelandingsspots.features.Route.DETAIL
-import com.antonio.samir.meteoritelandingsspots.features.Route.MAIN
-import com.antonio.samir.meteoritelandingsspots.features.Route.METEORITE_ID_ARG
 import com.antonio.samir.meteoritelandingsspots.features.debug.DebugNavigation
 import com.antonio.samir.meteoritelandingsspots.features.detail.DetailScreenNavigation
 import com.antonio.samir.meteoritelandingsspots.features.list.ListScreenNavigation
@@ -50,7 +49,18 @@ class MainActivity : ComponentActivity() {
 
             val darkTheme by darkThemeFlow.collectAsState(initial = false)
 
-            val navController = rememberNavController()
+            val backStack = rememberSaveable(
+                saver = listSaver(
+                    save = { it.toList() },
+                    restore = { it.toMutableStateList() }
+                )
+            ) {
+                mutableStateListOf<NavigationKey>(NavigationKey.List)
+            }
+
+            BackHandler(enabled = backStack.size > 1) {
+                backStack.removeLastOrNull()
+            }
 
             MeteoriteLandingsTheme(
                 darkTheme = darkTheme
@@ -60,10 +70,10 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .background(MaterialTheme.colorScheme.background)
                 ) {
-                    Navigation(navController)
+                    Navigation(backStack)
                     if (BuildConfig.DEBUG) {
                         Button(
-                            onClick = { navController.navigate(DEBUG) },
+                            onClick = { backStack.add(NavigationKey.Debug) },
                             modifier = Modifier.align(Alignment.BottomEnd)
                         ) {
                             Text(text = "Debug")
@@ -76,23 +86,39 @@ class MainActivity : ComponentActivity() {
 
     @OptIn(ExperimentalComposeUiApi::class)
     @Composable
-    private fun Navigation(navController: NavHostController) {
-        NavHost(navController, startDestination = MAIN) {
-            composable(MAIN) {
-                ListScreenNavigation(
-                    navController = navController
-                )
+    private fun Navigation(
+        backStack: androidx.compose.runtime.snapshots.SnapshotStateList<NavigationKey>
+    ) {
+        NavDisplay(
+            backStack = backStack,
+            onBack = { backStack.removeLastOrNull() },
+            entryProvider = { key ->
+                when (key) {
+                    is NavigationKey.List -> {
+                        NavEntry(key) {
+                            ListScreenNavigation(
+                                onItemClick = { meteoriteId ->
+                                    backStack.add(NavigationKey.Detail(meteoriteId))
+                                }
+                            )
+                        }
+                    }
+                    is NavigationKey.Detail -> {
+                        NavEntry(key) {
+                            DetailScreenNavigation(
+                                meteoriteId = key.meteoriteId,
+                                onBack = { backStack.removeLastOrNull() }
+                            )
+                        }
+                    }
+                    is NavigationKey.Debug -> {
+                        NavEntry(key) {
+                            DebugNavigation()
+                        }
+                    }
+                }
             }
-            composable(DETAIL) { backStackEntry ->
-                DetailScreenNavigation(
-                    navController = navController,
-                    meteoriteId = backStackEntry.arguments?.getString(METEORITE_ID_ARG).orEmpty()
-                )
-            }
-            composable(DEBUG) {
-                DebugNavigation()
-            }
-        }
+        )
 
     }
 }
