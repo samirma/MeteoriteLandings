@@ -6,7 +6,7 @@
     <string name="general_error">Something unexpected happened.\nOur mobile app is unavailable.\nPlease check later back.</string>
 
     <string name="loading_addresses">Loading addresses</string>
-    <string name="name">%s, %s</string>
+    <string name="name">%1$s, %2$s</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="no_result_found">No results found</string>
