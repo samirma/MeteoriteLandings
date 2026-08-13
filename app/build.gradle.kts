@@ -2,7 +2,6 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlinAndroidKsp)
     alias(libs.plugins.hiltAndroid)
@@ -11,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.antonio.samir.meteoritelandingsspots"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.antonio.samir.meteoritelandingsspots"
@@ -67,9 +66,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
 
     buildFeatures {
         compose = true
@@ -80,6 +76,17 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+}
+
+// The test source set only contains helpers (no @Test methods yet); Gradle 9 fails on that by default
+tasks.withType<Test>().configureEach {
+    failOnNoDiscoveredTests = false
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
     }
 }
 
@@ -107,9 +114,6 @@ dependencies {
     implementation(libs.retrofit.converter.gson)
     implementation(libs.gson)
     implementation(libs.okhttp.logging.interceptor)
-
-    // Coil
-    implementation(libs.coil.compose)
 
     // Pagination
     implementation(libs.androidx.paging.runtime)
