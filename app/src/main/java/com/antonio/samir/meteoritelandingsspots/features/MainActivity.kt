@@ -1,126 +1,74 @@
 package com.antonio.samir.meteoritelandingsspots.features
 
-
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.background
+import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.saveable.listSaver
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.navigation3.runtime.NavEntry
-import androidx.navigation3.ui.NavDisplay
+import androidx.compose.ui.unit.dp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation3.runtime.rememberNavBackStack
 import com.antonio.samir.meteoritelandingsspots.BuildConfig
-import com.antonio.samir.meteoritelandingsspots.common.userCase.IsDarkTheme
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
-import com.antonio.samir.meteoritelandingsspots.features.debug.DebugNavigation
-import com.antonio.samir.meteoritelandingsspots.features.detail.DetailScreenNavigation
-import com.antonio.samir.meteoritelandingsspots.features.list.ListScreenNavigation
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
-@OptIn(ExperimentalAnimationApi::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var isDarkTheme: IsDarkTheme
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
+        // Edge-to-edge has had no opt-out since targetSdk 35; opting in explicitly means the
+        // system bars are transparent and Compose owns the inset handling.
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
+        // Hold the splash until the persisted theme has been read, so the first frame is already
+        // the right colour instead of flashing light before DataStore emits.
+        splashScreen.setKeepOnScreenCondition { !viewModel.themeState.value.isResolved }
+
         setContent {
+            val themeState by viewModel.themeState.collectAsStateWithLifecycle()
+            val darkTheme = themeState.isDark ?: isSystemInDarkTheme()
 
-            val darkThemeFlow = isDarkTheme(Unit)
-
-            val darkTheme by darkThemeFlow.collectAsState(initial = false)
-
-            val backStack = rememberSaveable(
-                saver = listSaver(
-                    save = { it.toList() },
-                    restore = { it.toMutableStateList() }
-                )
-            ) {
-                mutableStateListOf<NavigationKey>(NavigationKey.List)
-            }
-
-            BackHandler(enabled = backStack.size > 1) {
-                backStack.removeLastOrNull()
-            }
-
-            MeteoriteLandingsTheme(
-                darkTheme = darkTheme
-            ) {
-                Box(
-                    Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background)
-                        .safeDrawingPadding()
+            MeteoriteLandingsTheme(darkTheme = darkTheme) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background,
                 ) {
-                    Navigation(backStack)
-                    if (BuildConfig.DEBUG) {
-                        Button(
-                            onClick = { backStack.add(NavigationKey.Debug) },
-                            modifier = Modifier.align(Alignment.BottomEnd)
-                        ) {
-                            Text(text = "Debug")
+                    val backStack = rememberNavBackStack(NavigationKey.List)
+
+                    Box(Modifier.fillMaxSize()) {
+                        // No BackHandler here: NavDisplay registers its own predictive-back
+                        // handler, and a second one competing for the same stack could double-pop.
+                        MeteoriteNavDisplay(backStack = backStack)
+
+                        if (BuildConfig.DEBUG) {
+                            ExtendedFloatingActionButton(
+                                onClick = { backStack.add(NavigationKey.Debug) },
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .padding(16.dp),
+                            ) {
+                                Text(text = "Debug")
+                            }
                         }
                     }
                 }
             }
         }
-    }
-
-    @OptIn(ExperimentalComposeUiApi::class)
-    @Composable
-    private fun Navigation(
-        backStack: androidx.compose.runtime.snapshots.SnapshotStateList<NavigationKey>
-    ) {
-        NavDisplay(
-            backStack = backStack,
-            onBack = { backStack.removeLastOrNull() },
-            entryProvider = { key ->
-                when (key) {
-                    is NavigationKey.List -> {
-                        NavEntry(key) {
-                            ListScreenNavigation(
-                                onItemClick = { meteoriteId ->
-                                    backStack.add(NavigationKey.Detail(meteoriteId))
-                                }
-                            )
-                        }
-                    }
-                    is NavigationKey.Detail -> {
-                        NavEntry(key) {
-                            DetailScreenNavigation(
-                                meteoriteId = key.meteoriteId,
-                                onBack = { backStack.removeLastOrNull() }
-                            )
-                        }
-                    }
-                    is NavigationKey.Debug -> {
-                        NavEntry(key) {
-                            DebugNavigation()
-                        }
-                    }
-                }
-            }
-        )
-
     }
 }

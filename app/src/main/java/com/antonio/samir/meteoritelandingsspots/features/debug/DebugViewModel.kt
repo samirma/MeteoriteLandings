@@ -3,18 +3,15 @@ package com.antonio.samir.meteoritelandingsspots.features.debug
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.antonio.samir.meteoritelandingsspots.R
+import com.antonio.samir.meteoritelandingsspots.common.DataError
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.common.userCase.FetchMeteoriteList
-import com.antonio.samir.meteoritelandingsspots.features.debug.DebugListState.Error
-import com.antonio.samir.meteoritelandingsspots.features.debug.DebugListState.Loaded
-import com.antonio.samir.meteoritelandingsspots.features.debug.DebugListState.Loading
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StartAddressRecover
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StatusAddressRecover
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,38 +23,60 @@ class DebugViewModel @Inject constructor(
     private val fetchMeteoriteList: FetchMeteoriteList,
 ) : ViewModel() {
 
-    private var _uiState = MutableStateFlow<DebugListState>(Loading)
-
-    // UI state exposed to the UI
-    val uiState: StateFlow<DebugListState> = _uiState
+    private val _uiState = MutableStateFlow(DebugUiState())
+    val uiState: StateFlow<DebugUiState> = _uiState.asStateFlow()
 
     fun loadRawMeteoriteList() {
-        viewModelScope.launch(Dispatchers.Default) {
-            fetchMeteoriteList(Unit).collect { resultOf ->
-                _uiState.update {
-                    when (resultOf) {
-                        is ResultOf.InProgress -> Loading
-                        is ResultOf.Success -> Loaded(100f)
-                        else -> Error(R.string.general_error)
+        viewModelScope.launch {
+            fetchMeteoriteList().collect { result ->
+                _uiState.update { state ->
+                    when (result) {
+                        is ResultOf.InProgress -> state.copy(isSyncing = true, message = null)
+                        is ResultOf.Success -> state.copy(
+                            isSyncing = false,
+                            message = R.string.debug_sync_complete,
+                        )
+
+                        is ResultOf.Error -> state.copy(
+                            isSyncing = false,
+                            message = result.error.toMessageRes(),
+                        )
                     }
                 }
             }
         }
     }
 
-    private fun recoverAddressStatus() = startAddressRecover(Unit)
-        .flatMapConcat { statusAddressRecover(it) }
-
     fun loadAddresses() {
         viewModelScope.launch {
-            recoverAddressStatus().collect { it: ResultOf<Float> ->
-                _uiState.value = when (it) {
-                    is ResultOf.Error -> Error(R.string.general_error)
-                    is ResultOf.InProgress -> Loaded(it.data ?: 0f)
-                    is ResultOf.Success -> Loaded(100f)
+            val workId = startAddressRecover()
+            _uiState.update { it.copy(isRecoveringAddresses = true, message = null) }
+            statusAddressRecover(workId).collect { result ->
+                _uiState.update { state ->
+                    when (result) {
+                        is ResultOf.InProgress -> state.copy(
+                            addressProgress = result.progress ?: 0f,
+                        )
+
+                        is ResultOf.Success -> state.copy(
+                            addressProgress = result.data,
+                            isRecoveringAddresses = false,
+                            message = R.string.debug_addresses_complete,
+                        )
+
+                        is ResultOf.Error -> state.copy(
+                            isRecoveringAddresses = false,
+                            message = result.error.toMessageRes(),
+                        )
+                    }
                 }
             }
         }
     }
+}
 
+private fun DataError.toMessageRes() = when (this) {
+    DataError.NETWORK -> R.string.no_network
+    DataError.GEOCODER_UNAVAILABLE -> R.string.geocoder_unavailable
+    else -> R.string.general_error
 }

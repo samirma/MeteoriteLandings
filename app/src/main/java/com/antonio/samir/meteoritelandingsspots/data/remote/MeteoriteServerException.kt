@@ -1,6 +1,11 @@
 package com.antonio.samir.meteoritelandingsspots.data.remote
 
+import com.antonio.samir.meteoritelandingsspots.common.DataError
+
 /**
- * Server Exception created in order to prevent the ui layer be aware the exception of service layer
+ * Wraps transport failures so callers above the data layer never see Retrofit or OkHttp types.
  */
-class MeteoriteServerException(exception: Exception) : Exception(exception)
+class MeteoriteServerException(
+    val error: DataError,
+    cause: Throwable? = null,
+) : Exception("Meteorite feed unavailable: $error", cause)

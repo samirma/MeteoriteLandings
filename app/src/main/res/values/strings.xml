@@ -1,26 +1,44 @@
 <resources>
     <string name="app_name">Meteorite Landings</string>
-    <string name="title_activity_main">@string/app_name</string>
 
-    <string name="no_network">"Current network is unavailable.\nPlease check if you have connected to a valid Wifi or mobile network. "</string>
-    <string name="general_error">Something unexpected happened.\nOur mobile app is unavailable.\nPlease check later back.</string>
-
-    <string name="loading_addresses">Loading addresses</string>
-    <string name="name">%s, %s</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="no_result_found">No results found</string>
-    <string name="searchView_query_hint">Title, places, countries</string>
+    <!-- List -->
+    <string name="title_header">Search for your meteorite</string>
     <string name="search">Search</string>
-
-    <string name="unkown">\???</string>
-
-    //Design System
-    <string name="message_titile" translatable="false">Oops...</string>
+    <string name="search_placeholder">Search for title, place or country</string>
     <string name="clear">Clear search</string>
     <string name="close_search">Close search</string>
-    <string name="loading_resources">loading resources...</string>
-    <string name="title_header">Search for your meteorite</string>
-    <string name="search_placeholder">Search for title, place or country</string>
+    <string name="no_result_found">No results found</string>
+    <string name="navigate_up">Navigate up</string>
+    <string name="toggle_theme">Toggle dark mode</string>
+    <string name="theme_state_dark">Dark theme</string>
+    <string name="theme_state_light">Light theme</string>
 
+    <!-- Detail -->
+    <string name="detail_placeholder">Select a meteorite to see where it landed</string>
+    <string name="detail_map_description">Map showing where %1$s landed</string>
+    <string name="detail_location">Location</string>
+    <string name="detail_mass">Mass in grams</string>
+    <string name="detail_type">Classification</string>
+    <string name="detail_year">Year</string>
+
+    <!-- Location permission -->
+    <string name="location_permission_rationale">Allow location access to sort meteorites by how close they landed to you.</string>
+    <string name="location_permission_allow">Allow</string>
+    <string name="location_permission_settings">Settings</string>
+
+    <!-- Progress and errors -->
+    <string name="loading_resources">Loading…</string>
+    <string name="loading_addresses_progress">Loading addresses: %1$.0f%%</string>
+    <string name="error_title">Oops…</string>
+    <string name="no_network">You are offline. Showing meteorites saved on this device.</string>
+    <string name="general_error">Something unexpected happened.\nPlease try again later.</string>
+    <string name="meteorite_not_found">That meteorite is no longer available.</string>
+    <string name="geocoder_unavailable">Addresses are unavailable on this device right now.</string>
+
+    <!-- Debug screen (debug builds only) -->
+    <string name="debug_title" translatable="false">Debug</string>
+    <string name="debug_fetch_list" translatable="false">Refresh list from NASA</string>
+    <string name="debug_start_addresses" translatable="false">Start address recovery</string>
+    <string name="debug_sync_complete" translatable="false">Sync complete</string>
+    <string name="debug_addresses_complete" translatable="false">Address recovery complete</string>
 </resources>

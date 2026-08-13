@@ -1,10 +1,21 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="AppTheme" parent="android:Theme.Material.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="android:windowContentTransitions">true</item>
+    <!-- Base theme. The UI is entirely Compose, so this only needs to describe the window
+         before the first frame: no action bar, edge-to-edge, and a background that matches
+         the Compose surface so there is no flash on cold start. -->
+    <style name="Theme.MeteoriteLandings" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/splash_background</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
     </style>
 
-    <style name="AppTheme.NoActionBar" parent="android:Theme.Material.Light.NoActionBar"></style>
+    <!-- Launch theme: androidx.core.splashscreen draws the adaptive icon over the window
+         background and hands over to Theme.MeteoriteLandings once Compose is ready. -->
+    <style name="Theme.MeteoriteLandings.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/ic_launcher_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.MeteoriteLandings</item>
+    </style>
 
 </resources>

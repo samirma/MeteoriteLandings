@@ -1,0 +1,76 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "517af1b31b41d6fa25eb8ecf573c7453",
+    "entities": [
+      {
+        "tableName": "meteorites",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `mass` TEXT, `nametype` TEXT, `recclass` TEXT, `name` TEXT, `fall` TEXT, `year` TEXT, `reclong` REAL, `reclat` REAL, `address` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mass",
+            "columnName": "mass",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "nametype",
+            "columnName": "nametype",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "recclass",
+            "columnName": "recclass",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "fall",
+            "columnName": "fall",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "year",
+            "columnName": "year",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "reclong",
+            "columnName": "reclong",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "reclat",
+            "columnName": "reclat",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "address",
+            "columnName": "address",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '517af1b31b41d6fa25eb8ecf573c7453')"
+    ]
+  }
+}

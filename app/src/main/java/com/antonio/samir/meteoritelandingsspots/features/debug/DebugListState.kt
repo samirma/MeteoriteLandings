@@ -1,15 +1,12 @@
 package com.antonio.samir.meteoritelandingsspots.features.debug
 
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Immutable
 
-sealed class DebugListState {
-
-    class Error(
-        @StringRes val message: Int,
-    ) : DebugListState()
-
-    data object Loading : DebugListState()
-
-    data class Loaded(val addressProgress: Float) : DebugListState()
-}
-
+@Immutable
+data class DebugUiState(
+    val isSyncing: Boolean = false,
+    val addressProgress: Float = 0f,
+    val isRecoveringAddresses: Boolean = false,
+    @param:StringRes val message: Int? = null,
+)

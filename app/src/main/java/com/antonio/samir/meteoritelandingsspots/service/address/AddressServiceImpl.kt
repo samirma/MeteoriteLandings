@@ -1,107 +1,96 @@
 package com.antonio.samir.meteoritelandingsspots.service.address
 
 import android.util.Log
+import com.antonio.samir.meteoritelandingsspots.common.DataError
 import com.antonio.samir.meteoritelandingsspots.common.ResultOf
-import com.antonio.samir.meteoritelandingsspots.common.userCase.GeoLocation
+import com.antonio.samir.meteoritelandingsspots.common.di.IoDispatcher
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
-import com.antonio.samir.meteoritelandingsspots.data.local.model.Meteorite
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.antonio.samir.meteoritelandingsspots.data.location.GeocoderDataSource
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@ExperimentalCoroutinesApi
+/**
+ * Drains the "meteorites without an address" queue in bounded batches.
+ *
+ * The previous implementation collected an observable Room query and wrote back into the same
+ * table, so every write re-triggered the query: the flow never completed and the worker driving it
+ * ran until WorkManager's 10-minute ceiling killed it. Here each batch is fetched with a one-shot
+ * `suspend` query and the loop ends when a batch comes back empty.
+ */
+@Singleton
 class AddressServiceImpl @Inject constructor(
     private val meteoriteLocalRepository: MeteoriteLocalRepository,
-    private val geoLocation: GeoLocation
+    private val geocoderDataSource: GeocoderDataSource,
+    @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : AddressService {
 
-    companion object {
-        private val TAG = AddressServiceImpl::class.java.simpleName
-    }
-
-    override fun recoveryAddress(): Flow<ResultOf<Float>> =
-        meteoriteLocalRepository.meteoritesWithOutAddress()
-            .onEach { recoverAddress(it) }
-            .map {
-                getReturn(it)
-            }
-            .catch { throwable ->
-                emit(ResultOf.Error(Exception("Fail to load addresses", throwable)))
-            }.flowOn(Dispatchers.Default)
-
-    private suspend fun getReturn(it: List<Meteorite>): ResultOf<Float> {
-        return if (it.isNotEmpty()) {
-            val meteoritesWithoutAddressCount =
-                meteoriteLocalRepository.getMeteoritesWithoutAddressCount()
-            val meteoritesCount = meteoriteLocalRepository.getValidMeteoritesCount()
-            val progress = (1 - (meteoritesWithoutAddressCount.toFloat() / meteoritesCount)) * 100
-            Log.d(
-                TAG,
-                "meteoritesWithoutAddressCount: $meteoritesWithoutAddressCount meteoritesCount: $meteoritesCount progress: $progress"
-            )
-            ResultOf.InProgress(progress)
-        } else {
-            ResultOf.Success(100f)
-        }
-    }
-
-    private suspend fun recoverAddress(list: List<Meteorite>) {
-        list.onEach { meteorite ->
-            meteorite.address = getAddressFromMeteorite(meteorite)
-        }
-        meteoriteLocalRepository.updateAll(list)
-    }
-
-    override suspend fun recoverAddress(meteorite: Meteorite) = withContext(Dispatchers.Default) {
-        meteorite.address = getAddressFromMeteorite(meteorite)
-        meteoriteLocalRepository.update(meteorite)
-    }
-
-    private fun getAddressFromMeteorite(meteorite: Meteorite): String {
-        val recLat = meteorite.reclat
-        val recLong = meteorite.reclong
-
-        var metAddress = " "
-        if (recLat != null && recLong != null) {
-            val address = getAddress(recLat.toDouble(), recLong.toDouble())
-            metAddress = address ?: " "
-        }
-        return metAddress
-    }
-
-
-    private fun getAddress(recLat: Double, recLong: Double): String? {
-        var addressString: String? = null
-        val address = geoLocation.getAddress(recLat, recLong)
-        if (address != null) {
-            val finalAddress = ArrayList<String>()
-            val city = address.locality
-            if (!city.isNullOrBlank()) {
-                finalAddress.add(city)
-            }
-
-            val state = address.adminArea
-            if (!state.isNullOrBlank()) {
-                finalAddress.add(state)
-            }
-
-            val countryName = address.countryName
-            if (!countryName.isNullOrBlank()) {
-                finalAddress.add(countryName)
-            }
-
-            if (finalAddress.isNotEmpty()) {
-                addressString = finalAddress.joinToString(", ")
-            }
-
+    override fun recoveryAddress(): Flow<ResultOf<Float>> = flow {
+        if (!geocoderDataSource.isAvailable()) {
+            emit(ResultOf.Error(DataError.GEOCODER_UNAVAILABLE))
+            return@flow
         }
 
-        return addressString
+        val total = meteoriteLocalRepository.getValidMeteoritesCount()
+        if (total == 0) {
+            emit(ResultOf.Success(FULLY_RECOVERED))
+            return@flow
+        }
+
+        var consecutiveFailures = 0
+
+        while (true) {
+            currentCoroutineContext().ensureActive()
+
+            val batch = meteoriteLocalRepository.meteoritesWithoutAddress(BATCH_SIZE)
+            if (batch.isEmpty()) break
+
+            val resolved = buildMap {
+                batch.forEach { meteorite ->
+                    currentCoroutineContext().ensureActive()
+                    val latitude = meteorite.latitude
+                    val longitude = meteorite.longitude
+                    if (latitude != null && longitude != null) {
+                        put(meteorite.id, geocoderDataSource.addressFor(latitude, longitude))
+                    }
+                    // The platform geocoder throttles aggressively; pacing the calls is the
+                    // difference between filling the column and getting nulls back.
+                    delay(GEOCODE_INTERVAL_MILLIS)
+                }
+            }
+
+            val recovered = resolved.filterValues { !it.isNullOrBlank() }
+            if (recovered.isEmpty()) {
+                // Nothing in this batch resolved. Retrying immediately would spin forever
+                // against a throttled or offline geocoder, so give up and let WorkManager retry.
+                if (++consecutiveFailures >= MAX_CONSECUTIVE_FAILED_BATCHES) {
+                    Log.w(TAG, "Geocoder returned nothing for $consecutiveFailures batches")
+                    emit(ResultOf.Error(DataError.GEOCODER_UNAVAILABLE))
+                    return@flow
+                }
+            } else {
+                consecutiveFailures = 0
+                meteoriteLocalRepository.updateAddresses(recovered)
+            }
+
+            val remaining = meteoriteLocalRepository.getMeteoritesWithoutAddressCount()
+            emit(ResultOf.InProgress((1f - remaining.toFloat() / total) * 100f))
+        }
+
+        emit(ResultOf.Success(FULLY_RECOVERED))
+    }.flowOn(ioDispatcher)
+
+    private companion object {
+        const val BATCH_SIZE = 30
+        const val GEOCODE_INTERVAL_MILLIS = 120L
+        const val MAX_CONSECUTIVE_FAILED_BATCHES = 3
+        const val FULLY_RECOVERED = 100f
+        val TAG: String = AddressServiceImpl::class.java.simpleName
     }
 }

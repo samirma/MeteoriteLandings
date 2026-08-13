@@ -1,38 +1,38 @@
 package com.antonio.samir.meteoritelandingsspots.features.list.userCases
 
-import android.content.Context
 import androidx.work.Constraints
+import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import androidx.work.WorkRequest
-import com.antonio.samir.meteoritelandingsspots.common.userCase.UserCaseBase
 import com.antonio.samir.meteoritelandingsspots.service.address.AddressRecoverWorker
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.flow
 import java.util.UUID
 import javax.inject.Inject
 
-class StartAddressRecover @Inject constructor(@ApplicationContext val context: Context) :
-    UserCaseBase<Unit, UUID>() {
+/**
+ * Enqueues the reverse-geocoding worker and returns its id so the caller can observe progress.
+ */
+class StartAddressRecover @Inject constructor(
+    private val workManager: WorkManager,
+) {
 
-    override fun action(input: Unit) = flow {
-
+    operator fun invoke(): UUID {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
+            .setRequiresBatteryNotLow(true)
             .build()
 
-        val request: WorkRequest =
-            OneTimeWorkRequestBuilder<AddressRecoverWorker>()
-                .setConstraints(constraints)
-                .build()
+        val request = OneTimeWorkRequestBuilder<AddressRecoverWorker>()
+            .setConstraints(constraints)
+            .build()
 
-        WorkManager.getInstance(context).enqueue(request)
-
-        val uuid = request.id
-
-        emit(uuid)
+        // KEEP rather than plain enqueue(): pressing the button twice used to stack a second
+        // full geocoding pass on top of the one already running.
+        workManager.enqueueUniqueWork(
+            AddressRecoverWorker.UNIQUE_WORK_NAME,
+            ExistingWorkPolicy.KEEP,
+            request,
+        )
+        return request.id
     }
-
-
 }

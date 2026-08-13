@@ -3,9 +3,17 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlinAndroidKsp)
     alias(libs.plugins.hiltAndroid)
+    alias(libs.plugins.androidx.room)
     id("kotlin-parcelize")
+}
+
+// Release signing credentials live in an untracked production.properties. A fresh clone does not
+// have it, so fall back to the debug key instead of failing at configuration time.
+val releaseProperties = file("production.properties").takeIf { it.exists() }?.let { propertiesFile ->
+    Properties().apply { propertiesFile.inputStream().use { load(it) } }
 }
 
 android {
@@ -15,7 +23,7 @@ android {
     defaultConfig {
         applicationId = "com.antonio.samir.meteoritelandingsspots"
         minSdk = 30
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 19
         versionName = "2.0.1"
 
@@ -23,10 +31,6 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-    }
-
-    val properties = Properties().apply {
-        this.load(file("production.properties").inputStream())
     }
 
     signingConfigs {
@@ -37,23 +41,26 @@ android {
             storeFile = file("dev_key.jks")
             storePassword = devKey
         }
-        create("release") {
-            val keyPassword = properties.getProperty("keyStorePassword")
-            keyAlias = properties.getProperty("keyAlias")
-            this.keyPassword = keyPassword
-            storeFile = file(properties.getProperty("keyStore"))
-            storePassword = keyPassword
+        if (releaseProperties != null) {
+            create("release") {
+                val releaseKeyPassword = releaseProperties.getProperty("keyStorePassword")
+                keyAlias = releaseProperties.getProperty("keyAlias")
+                keyPassword = releaseKeyPassword
+                storeFile = file(releaseProperties.getProperty("keyStore"))
+                storePassword = releaseKeyPassword
+            }
         }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
         }
         debug {
             isMinifyEnabled = false
@@ -62,14 +69,33 @@ android {
             applicationIdSuffix = ".dev"
         }
     }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
+        }
+    }
+
+    lint {
+        // No baseline: the codebase is clean, and a baseline would quietly absorb new issues
+        // instead of surfacing them.
+        abortOnError = true
+        // Errors gate the build; warnings stay visible in the report without making a
+        // dependency bump able to break CI on someone else's lint check.
+        warningsAsErrors = false
+        checkDependencies = true
+        checkReleaseBuilds = false
     }
 
     packaging {
@@ -79,14 +105,14 @@ android {
     }
 }
 
-// The test source set only contains helpers (no @Test methods yet); Gradle 9 fails on that by default
-tasks.withType<Test>().configureEach {
-    failOnNoDiscoveredTests = false
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 kotlin {
+    jvmToolchain(21)
     compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
     }
 }
 
@@ -95,60 +121,81 @@ dependencies {
     // Datastore
     implementation(libs.androidx.datastore.preferences)
 
-    //Dagger
+    // Hilt
     implementation(libs.hilt.android)
-    implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.play.services.maps)
+    implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
     ksp(libs.hilt.compiler)
+    ksp(libs.androidx.hilt.compiler)
 
-    //Room
+    // Room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.paging)
-    //For Kotlin extension coroutines for room.
     implementation(libs.androidx.room.ktx)
-    //To use kotlin annotation processor.
     ksp(libs.androidx.room.compiler)
 
-    // Retrofit
+    // Network
     implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.gson)
-    implementation(libs.gson)
+    implementation(libs.retrofit.converter.kotlinx.serialization)
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.okhttp.logging.interceptor)
 
     // Pagination
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
 
-    //Worker
+    // Worker
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.hilt.work)
 
-    implementation(libs.kpermissions)
-    implementation(libs.kpermissions.coroutines)
+    // Location
+    implementation(libs.play.services.location)
 
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.profileinstaller)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.activity.compose)
+
+    // Compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.maps.compose)
+
+    // Adaptive layouts
+    implementation(libs.androidx.adaptive)
+    implementation(libs.androidx.adaptive.layout)
+    implementation(libs.androidx.adaptive.navigation3)
 
     // Navigation 3
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
+    testImplementation(libs.robolectric)
     testImplementation(libs.coroutines.test)
     testImplementation(libs.turbine)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.androidx.paging.testing)
+    testImplementation(libs.androidx.work.testing)
 
     androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(libs.androidx.test.espresso.core)
+    androidTestImplementation(libs.androidx.room.testing)
+    androidTestImplementation(libs.hilt.android.testing)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    kspAndroidTest(libs.hilt.compiler)
+
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

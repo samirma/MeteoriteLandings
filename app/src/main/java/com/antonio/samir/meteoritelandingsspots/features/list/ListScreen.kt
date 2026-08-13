@@ -1,189 +1,146 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.PagingData
-import com.antonio.samir.meteoritelandingsspots.R
-import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Header
-import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.Loading
-import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MessageError
-import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItem
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.antonio.samir.meteoritelandingsspots.common.ui.permission.LocationPermissionStatus
+import com.antonio.samir.meteoritelandingsspots.common.ui.permission.rememberLocationPermissionState
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.AddressProgress
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.LocationPermissionBanner
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteListTopBar
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteSearchField
+import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.OfflineBanner
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
-import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListState.Error
-import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListState.Loaded
-import com.antonio.samir.meteoritelandingsspots.features.list.MeteoriteListState.Loading
 import kotlinx.coroutines.flow.flowOf
 
-@ExperimentalAnimationApi
-@ExperimentalComposeUiApi
 @Composable
 fun ListScreenNavigation(
-    onItemClick: (String) -> Unit
+    modifier: Modifier = Modifier,
+    onItemClick: (Int) -> Unit,
 ) {
-
     val viewModel: MeteoriteListViewModel = hiltViewModel()
-    val uiState = viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val items = viewModel.meteorites.collectAsLazyPagingItems()
 
-    LaunchedEffect(viewModel) {
-        viewModel.fetchMeteoriteList()
+    val permissionState = rememberLocationPermissionState()
+    // The permission lives in the composition (only an Activity can request it) but the ordering
+    // decision lives in the ViewModel, so the live status is pushed down whenever it changes.
+    LaunchedEffect(permissionState.status) {
+        viewModel.onLocationPermissionChanged(permissionState.status)
     }
 
     ListScreen(
-        uiState = uiState.value,
-        onItemClick = { itemView: MeteoriteItemView ->
-            onItemClick(itemView.id)
+        uiState = uiState,
+        items = items,
+        modifier = modifier,
+        onItemClick = { itemView -> onItemClick(itemView.id) },
+        onDarkModeToggleClick = { viewModel.onDarkModeToggleClick(uiState.isDarkTheme) },
+        onQueryChange = viewModel::onSearchQueryChange,
+        onSearchOpened = viewModel::onSearchOpened,
+        onSearchClosed = viewModel::onSearchClosed,
+        onGrantLocation = {
+            if (uiState.locationPermission == LocationPermissionStatus.PERMANENTLY_DENIED) {
+                permissionState.openAppSettings()
+            } else {
+                permissionState.request()
+            }
         },
-        onDarkModeToggleClick = viewModel::onDarkModeToggleClick,
-        onSearch = { query: String ->
-            viewModel.searchLocation(
-                query = query
-            )
-        }
     )
 }
 
-@ExperimentalAnimationApi
-@ExperimentalComposeUiApi
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListScreen(
-    uiState: MeteoriteListState,
+    uiState: MeteoriteListUiState,
+    items: LazyPagingItems<MeteoriteItemView>,
+    modifier: Modifier = Modifier,
     onItemClick: (itemView: MeteoriteItemView) -> Unit = {},
     onDarkModeToggleClick: () -> Unit = {},
-    onSearch: (query: String) -> Unit = {},
+    onQueryChange: (String) -> Unit = {},
+    onSearchOpened: () -> Unit = {},
+    onSearchClosed: () -> Unit = {},
+    onGrantLocation: () -> Unit = {},
 ) {
-
     val scrollState = rememberLazyListState()
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
-    val isScrollOnTop: Boolean by remember {
-        derivedStateOf { scrollState.firstVisibleItemIndex > 0 }
-    }
-
-    Column(Modifier.fillMaxSize()) {
-        Header(
-            isScrollOnTop = isScrollOnTop,
-            onDarkModeToggleClick = onDarkModeToggleClick,
-            onSearch = onSearch
-        )
-        Box(
-            Modifier.weight(10f, fill = true)
-        ) {
-            when (uiState) {
-                is Loaded -> MeteoriteList(
-                    scrollState = scrollState,
-                    meteorites = uiState.meteorites,
-                    onItemClick = onItemClick
+    Scaffold(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            if (uiState.isSearching) {
+                MeteoriteSearchField(
+                    query = uiState.query,
+                    onQueryChange = onQueryChange,
+                    onClose = onSearchClosed,
                 )
-
-                Loading -> Loading(modifier = Modifier.fillMaxSize())
-                is Error -> MessageError(
-                    message = uiState.message
+            } else {
+                MeteoriteListTopBar(
+                    isDarkTheme = uiState.isDarkTheme,
+                    onEnterSearch = onSearchOpened,
+                    onDarkModeToggleClick = onDarkModeToggleClick,
+                    scrollBehavior = scrollBehavior,
                 )
             }
+        },
+    ) { contentPadding ->
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(contentPadding)
+        ) {
+            OfflineBanner(visible = !uiState.isOnline)
+            LocationPermissionBanner(
+                visible = uiState.shouldOfferLocationPermission,
+                permanentlyDenied =
+                    uiState.locationPermission == LocationPermissionStatus.PERMANENTLY_DENIED,
+                onGrant = onGrantLocation,
+            )
+            AddressProgress(progress = uiState.addressProgress)
+            MeteoriteList(
+                items = items,
+                scrollState = scrollState,
+                onItemClick = onItemClick,
+            )
         }
     }
 }
 
-
-@ExperimentalAnimationApi
-@ExperimentalComposeUiApi
-@Preview("Meteorite list view Dark")
-@Composable
-fun ListScreenPreviewDark() {
-    val items = getFakeListItems()
-    MeteoriteLandingsTheme(darkTheme = true) {
-        ListScreen(
-            uiState = Loaded(meteorites = flowOf(PagingData.from(items)))
-        )
-    }
-}
-
-
-@ExperimentalAnimationApi
-@ExperimentalComposeUiApi
-@Preview("Meteorite list view Light")
-@Composable
-fun ListScreenPreviewLight() {
-    val items = getFakeListItems()
-    MeteoriteLandingsTheme(darkTheme = false) {
-        ListScreen(
-            uiState = Loaded(meteorites = flowOf(PagingData.from(items)))
-        )
-    }
-}
-
-@ExperimentalAnimationApi
-@ExperimentalComposeUiApi
-@Preview("Meteorite list loading")
-@Composable
-fun ListScreenLoadingPreview() {
-    ListScreen(
-        uiState = Loading
-    )
-
-}
-
-@ExperimentalAnimationApi
-@ExperimentalComposeUiApi
-@Preview("Meteorite list error")
-@Composable
-fun ListScreenErrorPreview() {
-    ListScreen(
-        uiState = Error(R.string.general_error)
-    )
-}
-
-@ExperimentalAnimationApi
-@ExperimentalComposeUiApi
-@Preview("Meteorite list message loading 10%")
-@Composable
-fun ListScreenMessagePreview() {
-    val items = getFakeListItems()
-    ListScreen(
-        uiState = Loaded(meteorites = flowOf(PagingData.from(items)))
-    )
-}
-
+@PreviewLightDark
 @Preview
 @Composable
-fun TextLazyColumn() {
-
-    val items = getFakeListItems()
-
-    LazyColumn(Modifier.height(500.dp)) {
-
-        items.forEach {
-            item {
-                MeteoriteItem(it, null)
-            }
-        }
-
+private fun ListScreenPreview() {
+    val items = (1..10).map {
+        MeteoriteItemView(
+            id = it,
+            name = "Meteorite $it",
+            yearString = "19${50 + it}",
+            address = "Somewhere $it",
+            distance = "$it km",
+        )
     }
-
-}
-
-private fun getFakeListItems(): List<MeteoriteItemView> = (1..10).map {
-    MeteoriteItemView(
-        id = "$it",
-        name = "name $it",
-        yearString = "yearString $it",
-        address = "address $it",
-        distance = "distance $it",
-    )
+    MeteoriteLandingsTheme {
+        ListScreen(
+            uiState = MeteoriteListUiState(isLoading = false),
+            items = flowOf(PagingData.from(items)).collectAsLazyPagingItems(),
+        )
+    }
 }

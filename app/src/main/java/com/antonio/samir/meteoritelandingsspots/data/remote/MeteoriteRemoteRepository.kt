@@ -1,9 +1,9 @@
 package com.antonio.samir.meteoritelandingsspots.data.remote
 
-import com.antonio.samir.meteoritelandingsspots.data.local.model.Meteorite
+import com.antonio.samir.meteoritelandingsspots.data.model.Meteorite
 
 interface MeteoriteRemoteRepository {
 
-    suspend fun getMeteorites(offset: Int, limit: Int): List<Meteorite>
-
+    /** @throws MeteoriteServerException when the feed cannot be fetched or parsed. */
+    suspend fun getMeteorites(): List<Meteorite>
 }

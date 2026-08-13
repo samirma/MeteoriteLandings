@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Backup rules for Android 11 and 12, which predate android:dataExtractionRules. Keep this in
+  step with res/xml/data_extraction_rules.xml.
+
+  The meteorite database is recreated from a bundled asset on first launch, so backing up ~5 MB
+  of it would waste the user's backup quota.
+-->
+<full-backup-content>
+    <exclude
+        domain="database"
+        path="meteorites_v2.db" />
+</full-backup-content>

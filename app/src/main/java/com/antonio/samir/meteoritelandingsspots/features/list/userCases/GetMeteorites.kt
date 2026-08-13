@@ -1,65 +1,29 @@
 package com.antonio.samir.meteoritelandingsspots.features.list.userCases
 
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
+import android.location.Location
 import androidx.paging.PagingData
-import androidx.paging.map
-import com.antonio.samir.meteoritelandingsspots.common.ResultOf
-import com.antonio.samir.meteoritelandingsspots.common.userCase.GetLocation
-import com.antonio.samir.meteoritelandingsspots.common.userCase.UserCaseBase
 import com.antonio.samir.meteoritelandingsspots.data.local.MeteoriteLocalRepository
-import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
-import com.antonio.samir.meteoritelandingsspots.features.list.mapper.MeteoriteViewMapper
-import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites.Input
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.antonio.samir.meteoritelandingsspots.data.model.Meteorite
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+/**
+ * The meteorite list, ordered nearest-first when [location] is known and alphabetically otherwise.
+ *
+ * The location is passed in rather than resolved here: the ViewModel already holds it in order to
+ * render distances, and fetching it twice would mean the ordering and the distance labels could
+ * disagree.
+ *
+ * Returns domain models; turning them into view models is the UI layer's job.
+ */
 class GetMeteorites @Inject constructor(
     private val meteoriteLocalRepository: MeteoriteLocalRepository,
-    private val mapper: MeteoriteViewMapper,
-    private val getLocation: GetLocation,
-) : UserCaseBase<Input, PagingData<MeteoriteItemView>>() {
+) {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override fun action(input: Input): Flow<PagingData<MeteoriteItemView>> =
-        getLocation(GetLocation.Input()).flatMapLatest {
-
-            val location = (it as? ResultOf.Success)?.data?.location
-
-            val paging = Pager(
-                PagingConfig(pageSize = PAGE_SIZE)
-            ) {
-                meteoriteLocalRepository.meteoriteOrdered(
-                    filter = input.query,
-                    longitude = location?.longitude,
-                    latitude = location?.latitude,
-                    limit = LIMIT
-                )
-            }.flow.map { pagingData ->
-                withContext(Dispatchers.Default) {
-                    pagingData.map { meteorite ->
-                        mapper.map(
-                            MeteoriteViewMapper.Input(
-                                meteorite = meteorite,
-                                location = location
-                            )
-                        )
-                    }
-                }
-            }
-            paging
-        }
-
-    data class Input(val query: String?)
-
-    companion object {
-        const val PAGE_SIZE = 20
-        const val LIMIT = 1000L
-    }
-
+    operator fun invoke(query: String, location: Location?): Flow<PagingData<Meteorite>> =
+        meteoriteLocalRepository.meteorites(
+            filter = query,
+            latitude = location?.latitude,
+            longitude = location?.longitude,
+        )
 }

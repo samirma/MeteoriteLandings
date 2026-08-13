@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="background">#2196F3</color>
+    <!-- Slate backdrop of the launcher artwork; the adaptive icon's background layer has to
+         match it so the inset foreground reads as one continuous illustration. -->
+    <color name="ic_launcher_background">#334D5C</color>
+
+    <!-- Window background used before the first Compose frame; kept in sync with the
+         Compose dark/light surface so the launch does not flash. -->
+    <color name="splash_background">#212326</color>
 </resources>

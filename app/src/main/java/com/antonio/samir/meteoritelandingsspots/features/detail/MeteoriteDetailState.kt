@@ -1,18 +1,16 @@
 package com.antonio.samir.meteoritelandingsspots.features.detail
 
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Immutable
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteView
 
-sealed class MeteoriteDetailState {
+@Immutable
+sealed interface MeteoriteDetailUiState {
 
-    class Error(
-        @StringRes val message: Int,
-    ) : MeteoriteDetailState()
+    data object Loading : MeteoriteDetailUiState
 
-    data class Loaded(
-        val meteoriteView: MeteoriteView? = null,
-    ) : MeteoriteDetailState()
+    /** [meteoriteView] is non-null by construction — "loaded but empty" is not a real state. */
+    data class Loaded(val meteoriteView: MeteoriteView) : MeteoriteDetailUiState
 
-    data object Loading : MeteoriteDetailState()
-
+    data class Error(@param:StringRes val message: Int) : MeteoriteDetailUiState
 }

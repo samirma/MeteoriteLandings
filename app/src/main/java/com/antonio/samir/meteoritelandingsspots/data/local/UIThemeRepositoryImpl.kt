@@ -1,41 +1,36 @@
 package com.antonio.samir.meteoritelandingsspots.data.local
 
-import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.preferencesDataStore
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.antonio.samir.meteoritelandingsspots.data.local.model.UITheme
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import java.io.IOException
 import javax.inject.Inject
+import javax.inject.Singleton
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "ui_theme")
-
+@Singleton
 class UIThemeRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
+    private val dataStore: DataStore<Preferences>,
 ) : UIThemeRepository {
 
-    // Define a key for the theme preference
-    companion object {
-        val THEME_KEY = booleanPreferencesKey("is_dark_theme")
-    }
-
-    // Create a flow of UITheme from the DataStore
-    override fun getTheme(): Flow<UITheme> = context.dataStore.data.map { preferences ->
-        // Get the theme preference, defaulting to DARK if not set
-        val isDark = preferences[THEME_KEY] ?: true
-        // Convert the boolean value to a UITheme enum
-        if (isDark == UITheme.DARK.value) UITheme.DARK else UITheme.LIGHT
-    }
-
-    // Update the theme preference in the DataStore
-    override suspend fun setTheme(uiTheme: UITheme) {
-        context.dataStore.edit { preferences ->
-            // Set the theme preference to the value of the enum
-            preferences[THEME_KEY] = uiTheme.value
+    override fun getTheme(): Flow<UITheme> = dataStore.data
+        // DataStore surfaces read failures through the flow; without this a corrupt or
+        // unreadable preferences file would crash the app during its first composition.
+        .catch { throwable ->
+            if (throwable is IOException) emit(emptyPreferences()) else throw throwable
         }
+        .map { preferences -> UITheme.fromStorage(preferences[THEME_KEY]) }
+
+    override suspend fun setTheme(uiTheme: UITheme) {
+        dataStore.edit { preferences -> preferences[THEME_KEY] = uiTheme.name }
+    }
+
+    companion object {
+        val THEME_KEY = stringPreferencesKey("ui_theme")
     }
 }
