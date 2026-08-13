@@ -47,3 +47,4 @@ production.properties
 
 secret.xml
 /app/release/
+gradle/gradle-daemon-jvm.properties

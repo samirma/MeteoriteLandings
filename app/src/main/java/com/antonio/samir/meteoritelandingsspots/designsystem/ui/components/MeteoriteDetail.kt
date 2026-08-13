@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -28,8 +28,8 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberUpdatedMarkerState
 
 
 data class MeteoriteView(
@@ -62,7 +62,12 @@ fun MeteoriteDetail(
         val cameraPositionState = rememberCameraPositionState {
             position = CameraPosition.fromLatLngZoom(target, 10f)
         }
-        val markerState = remember { MarkerState(position = target) }
+        // The camera state survives showing a different meteorite, so re-centre it
+        // whenever the coordinates change instead of only on first composition.
+        LaunchedEffect(target) {
+            cameraPositionState.position = CameraPosition.fromLatLngZoom(target, 10f)
+        }
+        val markerState = rememberUpdatedMarkerState(position = target)
 
         GoogleMap(
             modifier = Modifier
