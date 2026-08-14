@@ -59,8 +59,6 @@ class MeteoriteLocalRepositoryImpl @Inject constructor(
     override suspend fun getMeteoritesWithoutAddressCount() =
         meteoriteDao.getMeteoritesWithoutAddressCount()
 
-    override suspend fun getMeteoritesCount() = meteoriteDao.getMeteoritesCount()
-
     override suspend fun insertAll(meteorites: List<Meteorite>) =
         meteoriteDao.refresh(meteorites.map(Meteorite::toEntity))
 

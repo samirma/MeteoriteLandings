@@ -8,9 +8,6 @@ import android.location.Location
  */
 interface LocationRepository {
 
-    /** True when at least the coarse location permission has been granted. */
-    fun hasLocationPermission(): Boolean
-
     /**
      * A single fix for "sort meteorites near me".
      *

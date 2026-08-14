@@ -71,9 +71,6 @@ interface MeteoriteDao {
     @Query("SELECT count(id) FROM meteorites WHERE reclong IS NOT NULL")
     suspend fun getValidMeteoritesCount(): Int
 
-    @Query("SELECT count(id) FROM meteorites")
-    suspend fun getMeteoritesCount(): Int
-
     @Query("SELECT count(id) FROM meteorites WHERE reclong IS NOT NULL AND (address IS NULL OR LENGTH(TRIM(address)) = 0)")
     suspend fun getMeteoritesWithoutAddressCount(): Int
 

@@ -9,11 +9,11 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,7 +22,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.antonio.samir.meteoritelandingsspots.R
@@ -86,8 +85,15 @@ private fun MeteoriteMap(
     // Keyed on the meteorite id: without a key the camera state was reused across meteorites,
     // which is what commit 2d0a7f3 worked around with a LaunchedEffect that re-centred the map
     // on every coordinate change — and which also fought any manual pan.
-    val cameraPositionState = rememberCameraPositionState(key = meteoriteView.id.toString()) {
-        position = CameraPosition.fromLatLngZoom(target, DEFAULT_ZOOM)
+    //
+    // The identity lives in key() rather than in rememberCameraPositionState's own `key` parameter,
+    // which is deprecated. Both do the same thing — give the underlying rememberSaveable a fresh
+    // slot per meteorite — but key() changes the composition group, so it does not depend on an
+    // API that is on its way out.
+    val cameraPositionState = key(meteoriteView.id) {
+        rememberCameraPositionState {
+            position = CameraPosition.fromLatLngZoom(target, DEFAULT_ZOOM)
+        }
     }
     val markerState = rememberUpdatedMarkerState(position = target)
 
@@ -162,7 +168,6 @@ private const val DARK_MAP_STYLE = """
 """
 
 @PreviewLightDark
-@Preview
 @Composable
 private fun MeteoriteDetailPreview() {
     MeteoriteLandingsTheme {

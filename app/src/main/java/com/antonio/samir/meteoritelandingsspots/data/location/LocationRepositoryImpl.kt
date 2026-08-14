@@ -31,7 +31,12 @@ class LocationRepositoryImpl @Inject constructor(
     private val fusedLocationClient: FusedLocationProviderClient,
 ) : LocationRepository {
 
-    override fun hasLocationPermission(): Boolean =
+    /**
+     * Private: callers observe the live permission through `LocationPermissionState`, which is tied
+     * to the Activity result contract. This is only the pre-flight check that keeps
+     * [currentLocation] from calling the fused provider without permission.
+     */
+    private fun hasLocationPermission(): Boolean =
         LOCATION_PERMISSIONS.any { permission ->
             ContextCompat.checkSelfPermission(context, permission) ==
                 PackageManager.PERMISSION_GRANTED

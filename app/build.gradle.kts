@@ -182,19 +182,12 @@ dependencies {
     testImplementation(libs.robolectric)
     testImplementation(libs.coroutines.test)
     testImplementation(libs.turbine)
-    testImplementation(libs.androidx.test.core)
-    testImplementation(libs.androidx.paging.testing)
-    testImplementation(libs.androidx.work.testing)
 
     androidTestImplementation(libs.androidx.junit)
+    // Named by string in testInstrumentationRunner above, so it has no import to find.
     androidTestImplementation(libs.androidx.test.runner)
-    androidTestImplementation(libs.androidx.test.rules)
-    androidTestImplementation(libs.androidx.test.espresso.core)
-    androidTestImplementation(libs.androidx.room.testing)
-    androidTestImplementation(libs.hilt.android.testing)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    kspAndroidTest(libs.hilt.compiler)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)

@@ -49,9 +49,9 @@ class DebugViewModel @Inject constructor(
 
     fun loadAddresses() {
         viewModelScope.launch {
-            val workId = startAddressRecover()
+            startAddressRecover()
             _uiState.update { it.copy(isRecoveringAddresses = true, message = null) }
-            statusAddressRecover(workId).collect { result ->
+            statusAddressRecover().collect { result ->
                 _uiState.update { state ->
                     when (result) {
                         is ResultOf.InProgress -> state.copy(

@@ -6,17 +6,20 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.antonio.samir.meteoritelandingsspots.service.address.AddressRecoverWorker
-import java.util.UUID
 import javax.inject.Inject
 
 /**
- * Enqueues the reverse-geocoding worker and returns its id so the caller can observe progress.
+ * Enqueues the reverse-geocoding worker.
+ *
+ * Returns nothing: the work is unique, so [StatusAddressRecover] observes it by name. Handing back
+ * this request's id would be misleading — under [ExistingWorkPolicy.KEEP] the id names a request
+ * that is discarded whenever a pass is already running.
  */
 class StartAddressRecover @Inject constructor(
     private val workManager: WorkManager,
 ) {
 
-    operator fun invoke(): UUID {
+    operator fun invoke() {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .setRequiresBatteryNotLow(true)
@@ -33,6 +36,5 @@ class StartAddressRecover @Inject constructor(
             ExistingWorkPolicy.KEEP,
             request,
         )
-        return request.id
     }
 }

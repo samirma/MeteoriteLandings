@@ -59,12 +59,15 @@ class FakeMeteoriteLocalRepository(
         lastQuery = filter
         lastLatitude = latitude
         lastLongitude = longitude
-        val matches = stored.values.filter { meteorite ->
-            filter.isNullOrBlank() ||
-                meteorite.name.orEmpty().contains(filter, ignoreCase = true) ||
-                meteorite.address.orEmpty().contains(filter, ignoreCase = true)
-        }
-        return flowOf(PagingData.from(matches.sortedBy { it.name }))
+        val matches = stored.values
+            .filter { meteorite ->
+                filter.isNullOrBlank() ||
+                    meteorite.name.orEmpty().contains(filter, ignoreCase = true) ||
+                    meteorite.address.orEmpty().contains(filter, ignoreCase = true)
+            }
+            .sortedBy { it.name }
+            .take(limit.toInt())
+        return flowOf(PagingData.from(matches))
     }
 
     override fun getMeteoriteById(id: Int): Flow<Meteorite?> = flowOf(stored[id])
@@ -83,8 +86,6 @@ class FakeMeteoriteLocalRepository(
     override suspend fun getMeteoritesWithoutAddressCount() =
         stored.values.count { it.address.isNullOrBlank() }
 
-    override suspend fun getMeteoritesCount() = stored.size
-
     override suspend fun insertAll(meteorites: List<Meteorite>) {
         meteorites.forEach { incoming ->
             // Mirrors the production behaviour of carrying a known address forward.
@@ -98,7 +99,6 @@ class FakeLocationRepository(
     var location: Location? = null,
     private var granted: Boolean = true,
 ) : LocationRepository {
-    override fun hasLocationPermission() = granted
     override suspend fun currentLocation(): Location? = location.takeIf { granted }
 }
 

@@ -50,7 +50,7 @@ class LocationPermissionState internal constructor(
 ) {
     val status: LocationPermissionStatus by statusState
 
-    val isGranted: Boolean get() = status == LocationPermissionStatus.GRANTED
+    private val isGranted: Boolean get() = status == LocationPermissionStatus.GRANTED
 
     /** Shows the system dialog, or does nothing if permission is already granted. */
     fun request() {

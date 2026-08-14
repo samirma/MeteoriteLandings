@@ -7,7 +7,7 @@ import java.util.Locale
 import kotlin.math.roundToInt
 
 /** The meteorite's coordinates as an Android [Location], or null if it has none. */
-fun Meteorite.toAndroidLocation(): Location? {
+private fun Meteorite.toAndroidLocation(): Location? {
     val latitude = this.latitude ?: return null
     val longitude = this.longitude ?: return null
     return Location(PROVIDER).apply {

@@ -17,6 +17,4 @@ data class Meteorite(
     val latitude: Double?,
     val longitude: Double?,
     val address: String?,
-) {
-    val hasCoordinates: Boolean get() = latitude != null && longitude != null
-}
+)

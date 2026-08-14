@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.common.ui.extension.distanceTextFrom
 import com.antonio.samir.meteoritelandingsspots.common.ui.permission.LocationPermissionStatus
 import com.antonio.samir.meteoritelandingsspots.data.connectivity.ConnectivityRepository
@@ -15,6 +16,8 @@ import com.antonio.samir.meteoritelandingsspots.data.local.model.UITheme
 import com.antonio.samir.meteoritelandingsspots.data.location.LocationRepository
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.components.MeteoriteItemView
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
+import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StartAddressRecover
+import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StatusAddressRecover
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.SwitchUITheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,6 +40,8 @@ import javax.inject.Inject
 class MeteoriteListViewModel @Inject constructor(
     private val getMeteorites: GetMeteorites,
     private val switchUITheme: SwitchUITheme,
+    private val startAddressRecover: StartAddressRecover,
+    private val statusAddressRecover: StatusAddressRecover,
     private val locationRepository: LocationRepository,
     uiThemeRepository: UIThemeRepository,
     connectivityRepository: ConnectivityRepository,
@@ -49,6 +54,31 @@ class MeteoriteListViewModel @Inject constructor(
         MutableStateFlow(LocationPermissionStatus.DENIED)
     private val currentLocation = MutableStateFlow<Location?>(null)
     private val addressProgress = MutableStateFlow(0f)
+
+    init {
+        // The rows arrive from the bundled database without an address, so the geocoding pass is
+        // what fills them in. Nothing else in a release build starts it — the Debug screen's button
+        // is the only other trigger, and it is behind BuildConfig.DEBUG.
+        //
+        // Safe to call on every creation: the work is unique with ExistingWorkPolicy.KEEP, and
+        // AddressService stops at the first empty batch, so a fully geocoded database costs one
+        // query. Observation is by unique work name, so returning to this screen re-attaches to a
+        // pass already in flight instead of showing it from zero.
+        startAddressRecover()
+        viewModelScope.launch {
+            statusAddressRecover().collect { result ->
+                addressProgress.update {
+                    when (result) {
+                        is ResultOf.InProgress -> result.progress ?: 0f
+                        is ResultOf.Success -> result.data
+                        // The banner is progress, not an error surface: a failed pass just stops
+                        // reporting. WorkManager retries it.
+                        is ResultOf.Error -> 0f
+                    }
+                }
+            }
+        }
+    }
 
     val uiState: StateFlow<MeteoriteListUiState> = combine(
         query,
@@ -133,10 +163,6 @@ class MeteoriteListViewModel @Inject constructor(
                 currentLocation.update { locationRepository.currentLocation() }
             }
         }
-    }
-
-    fun onAddressProgress(progress: Float) {
-        addressProgress.update { progress }
     }
 
     private companion object {

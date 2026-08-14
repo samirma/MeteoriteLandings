@@ -36,7 +36,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.antonio.samir.meteoritelandingsspots.R
@@ -194,9 +193,7 @@ fun MeteoriteSearchField(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @PreviewLightDark
-@Preview
 @Composable
 private fun MeteoriteDetailTopBarPreview() {
     MeteoriteLandingsTheme {
@@ -205,7 +202,6 @@ private fun MeteoriteDetailTopBarPreview() {
 }
 
 @PreviewLightDark
-@Preview
 @Composable
 private fun MeteoriteSearchFieldPreview() {
     MeteoriteLandingsTheme {

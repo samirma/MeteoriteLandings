@@ -34,8 +34,6 @@ interface MeteoriteLocalRepository {
 
     suspend fun getMeteoritesWithoutAddressCount(): Int
 
-    suspend fun getMeteoritesCount(): Int
-
     suspend fun insertAll(meteorites: List<Meteorite>)
 
     companion object {

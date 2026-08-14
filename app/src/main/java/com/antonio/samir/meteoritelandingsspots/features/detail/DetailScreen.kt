@@ -83,7 +83,6 @@ private val previewMeteorite = MeteoriteView(
 )
 
 @PreviewLightDark
-@Preview
 @Composable
 private fun DetailScreenLoadedPreview() {
     MeteoriteLandingsTheme {

@@ -1,10 +1,12 @@
 package com.antonio.samir.meteoritelandingsspots.features.list
 
-import android.location.Location
 import androidx.lifecycle.SavedStateHandle
+import com.antonio.samir.meteoritelandingsspots.common.ResultOf
 import com.antonio.samir.meteoritelandingsspots.common.ui.permission.LocationPermissionStatus
 import com.antonio.samir.meteoritelandingsspots.data.local.model.UITheme
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.GetMeteorites
+import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StartAddressRecover
+import com.antonio.samir.meteoritelandingsspots.features.list.userCases.StatusAddressRecover
 import com.antonio.samir.meteoritelandingsspots.features.list.userCases.SwitchUITheme
 import com.antonio.samir.meteoritelandingsspots.testing.FakeConnectivityRepository
 import com.antonio.samir.meteoritelandingsspots.testing.FakeLocationRepository
@@ -14,6 +16,9 @@ import com.antonio.samir.meteoritelandingsspots.testing.MainDispatcherRule
 import com.antonio.samir.meteoritelandingsspots.testing.meteorite
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -24,6 +29,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class MeteoriteListViewModelTest {
 
     @get:Rule
@@ -35,9 +41,18 @@ class MeteoriteListViewModelTest {
     private val locationRepository = FakeLocationRepository()
     private val savedStateHandle = SavedStateHandle()
 
+    /** Stands in for the worker's progress channel so tests can drive it directly. */
+    private val addressStatus = MutableStateFlow<ResultOf<Float>>(ResultOf.InProgress(0f))
+    private val startAddressRecover = mockk<StartAddressRecover>(relaxed = true)
+    private val statusAddressRecover = mockk<StatusAddressRecover> {
+        every { this@mockk.invoke() } returns addressStatus
+    }
+
     private fun viewModel() = MeteoriteListViewModel(
         getMeteorites = GetMeteorites(localRepository),
         switchUITheme = SwitchUITheme(themeRepository),
+        startAddressRecover = startAddressRecover,
+        statusAddressRecover = statusAddressRecover,
         locationRepository = locationRepository,
         uiThemeRepository = themeRepository,
         connectivityRepository = connectivityRepository,
@@ -164,7 +179,41 @@ class MeteoriteListViewModelTest {
 
         assertTrue(viewModel.uiState.value.shouldOfferLocationPermission)
     }
-}
 
-/** Unused import guard: [Location] is referenced only through the relaxed mock above. */
-private typealias UnusedLocation = Location
+    @Test
+    fun `the address recovery pass is started with the screen`() = runTest {
+        val viewModel = viewModel()
+        collecting(viewModel)
+        advanceUntilIdle()
+
+        verify { startAddressRecover.invoke() }
+    }
+
+    @Test
+    fun `worker progress reaches the ui state`() = runTest {
+        // The regression this guards: the progress bar was wired to a flow nothing ever wrote to,
+        // so it sat at 0f and its `progress > 0f` visibility gate could never open.
+        val viewModel = viewModel()
+        collecting(viewModel)
+        advanceUntilIdle()
+        assertEquals(0f, viewModel.uiState.value.addressProgress, 0f)
+
+        addressStatus.value = ResultOf.InProgress(42f)
+        advanceUntilIdle()
+
+        assertEquals(42f, viewModel.uiState.value.addressProgress, 0f)
+    }
+
+    @Test
+    fun `a completed pass reports fully recovered`() = runTest {
+        val viewModel = viewModel()
+        collecting(viewModel)
+        advanceUntilIdle()
+
+        addressStatus.value = ResultOf.Success(100f)
+        advanceUntilIdle()
+
+        // 100f is what hides the bar again — AddressProgress is visible only below it.
+        assertEquals(100f, viewModel.uiState.value.addressProgress, 0f)
+    }
+}

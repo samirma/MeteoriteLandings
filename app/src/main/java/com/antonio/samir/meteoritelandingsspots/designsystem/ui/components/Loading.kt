@@ -9,7 +9,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.antonio.samir.meteoritelandingsspots.R
 import com.antonio.samir.meteoritelandingsspots.designsystem.ui.theme.MeteoriteLandingsTheme
@@ -32,7 +31,6 @@ fun Loading(modifier: Modifier = Modifier) {
 }
 
 @PreviewLightDark
-@Preview
 @Composable
 private fun LoadingPreview() {
     MeteoriteLandingsTheme {
